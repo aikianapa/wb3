@@ -1,0 +1,10 @@
+{
+    "require": {
+        "adbario/php-dot-notation": "^2.2",
+        "awaydian/json-sql": "^1.0",
+        "rosell-dk/webp-convert": "^2.3",
+        "edwinhuish/domquery": "^1.0",
+        "tmarois/filebase": "^1.0",
+        "nahid/jsonq": "^5.2"
+    }
+}
