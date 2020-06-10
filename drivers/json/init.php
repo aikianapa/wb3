@@ -14,7 +14,7 @@ class jsonDb
         if (isset($_ENV['cache'][md5($file.$_SESSION["lang"])][$id])) {
             $item = $_ENV['cache'][md5($file.$_SESSION["lang"])][$id];
         } else {
-            $list = $this->itemList($form, ["orm"=>"where('id','{$id}')"]);
+            $list = $this->itemList($form, ["orm"=>"where('id','{$id}')"])["list"];
             if (isset($list[$id])) {
                 $item = $list[$id];
             } else {
@@ -131,6 +131,14 @@ class jsonDb
 
     public function itemList($form = 'pages', $options = [])
     {
+        if (isset($options["_page"])) {
+            $page = intval($options["_page"]);
+            $size = intval($options["_size"]);
+            $params["limit"] = $size;
+            $params["skip"] = $page - 1;
+        } else {
+            $page = 1;
+        }
         $options = (object)$options;
         $list = [];
         if (isset($options->orm)) {
@@ -163,7 +171,11 @@ class jsonDb
                     wbError('func', __FUNCTION__, 1001, func_get_args());
                     return array();
                 }
-                $json = new Jsonq($file);
+                try {$json = new Jsonq($file);}
+                catch(Exception $err) {
+                  $json = new Jsonq();
+                  $json = $json->collect([]);
+                }
             } elseif ((array)$form === $form) {
                 $json = new Jsonq();
                 $json = $json->collect($form);
@@ -181,9 +193,19 @@ class jsonDb
                 return array();
             }
             $json = new Jsonq($file);
+            $json->empty("");
             $list = $json->where("_removed", "neq", "on")->get();
         }
-        return $list;
+        if (!((array)$list === $list)) {$list = (array)$list;}
+        if (isset($options->filter)) {
+            foreach($list as $key => $item) {
+                $flag = wbItemFilter($item,$options->filter);
+                if (!$flag) unset($list[$key]);
+            }
+        }
+        $count = count($list);
+        if (!isset($size)) $size = $count;
+        return ["list"=>$list,"count"=>$count,"page"=>$page,"size"=>$size];
     }
 
     public function tableFlush($form)
@@ -213,12 +235,10 @@ class jsonDb
                 }
             }
             $data = wbJsonEncode($data);
-
             flock($fp, LOCK_UN);
             fclose($fp);
             if ($flag) {
                 $res = file_put_contents($file, $data, LOCK_EX);
-                wbLog('func', __FUNCTION__, 1009, func_get_args());
             } else {
                 $res = null;
             }

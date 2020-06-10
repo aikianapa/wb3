@@ -9,7 +9,7 @@ class attrIf extends wbDom {
       $res = false;
       $item = $dom->item;
       $dom->removeAttr("wb-if");
-      $res = wbEval( $dom->params->if );
+      $res = wbEval( '$item'.$dom->params->if );
       if (!$res) $dom->remove();
       return $dom;
   }

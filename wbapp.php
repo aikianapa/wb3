@@ -45,6 +45,22 @@ class wbDom extends DomQuery
       }
     }
 
+    public function parents($tag = ":root") {
+        $res = false;
+        if (isset($this->parent)) {
+                  echo $this->tagName;
+                  echo " | ";
+                  echo $this->parent->tagName;
+                  echo "<br />";
+            if ($this->parent->tagName == $tag) {
+                return true;
+            } else {
+                $res = $this->parent->parents($tag);
+            }
+        }
+        return $res;
+    }
+
     public function where($Item=null)
     {
         $res = true;
@@ -123,7 +139,7 @@ class wbDom extends DomQuery
     }
 
     public function fetchStrict() {
-      if ($this->tagName == "template") $this->strict = true;
+      if ($this->tagName == "template" OR $this->closest("template")->length) $this->strict = true;
     }
 
         function params($name = null) {
@@ -152,16 +168,20 @@ class wbDom extends DomQuery
                 foreach ($attrs as $atname => $atval ) {
                     if ($atname == "wb" OR substr($atname,0,3) == "wb-") {
                         $name = $atname;
-                        if ($name !== "wb") $name = substr($atname,3);
-                        $prms = wbAttrToValue($atval);
                         if (!isset($params)) $params = [];
-                        if ($name !== "wb") {
-                            $prms = [$name => $prms];
-                            $this->atrs->$name = $atval;
-                            $this->removeAttr($atname);
+                        if ($name !== "wb") $name = substr($atname,3);
+                        if (in_array($name,["if","where"])) {
+                            $prms = [$name => $atval];
+                        } else {
+                            $prms = wbAttrToValue($atval);
+                            if ($name !== "wb") {
+                                $prms = [$name => $prms];
+                                $this->atrs->$name = $atval;
+                                $this->removeAttr($atname);
+                            }
+                            if (is_string($prms)) $prms = ["wb"=>$prms];
+                            $params = array_merge($params,$prms);
                         }
-                        if (is_string($prms)) $prms = ["wb"=>$prms];
-                        $params = array_merge($params,$prms);
                     }
                 }
                 $this->params = (object)$params;
@@ -229,7 +249,7 @@ class wbDom extends DomQuery
           if (!$this->params("tpl")) return;
               $this->params->route = $this->app->vars("_route");
               $params = json_encode($this->params);
-              $tplId = md5($params);
+              $tplId = "tp_".md5($params);
               if ($real) {
                   $tpl = $this->outerHtml();
                   $this->after("
@@ -253,6 +273,8 @@ class wbDom extends DomQuery
                       unset($this->attributes[$atname]);
                       $atname = wbSetValuesStr($atname, $Item);
                   }
+                  $atval = str_replace("%7B%7B","{{",$atval);
+                  $atval = str_replace("%7D%7D","}}",$atval);
                   if (strpos($atval, "}}")) {
                       $atval = wbSetValuesStr($atval, $Item);
                   }
@@ -275,20 +297,30 @@ class wbDom extends DomQuery
 
         public function setValues()
         {
+            if ($this->strict) return;
             if (!isset($this->item)) $this->item = [];
             $fields = new Dot();
             $fields->setReference($this->item);
-            $inputs = $this->find("input[name],textarea[name],select[name]");
+            $inputs = $this->find("[name]");
             foreach($inputs as $inp) {
-                $name = $inp->attr("name");
-                $value = $fields->get($name);
-                if ((array)$value === $value) $value = wb_json_encode($value);
-                if ($inp->tag() == "textarea") {
-                  $inp->text($value);
-                } else if ($inp->tag() == "select") {
+                if (in_array($inp->tagName,["input","textarea","select"]) && !$inp->hasAttr("done") && !$inp->closest("template")->length) {
+                    $name = $inp->attr("name");
+                    $value = $fields->get($name);
+                    if ((array)$value === $value) $value = wb_json_encode($value);
+                    if ($inp->tag() == "textarea") {
+                      $inp->text($value);
+                    } else if ($inp->tag() == "select") {
+                      if ((array)$value === $value) {
+                          foreach($value as $val) $inp->find("[value='{$val}']")->attr("selected",true);
+                      } else {
+                          $inp->find("[value='{$value}']")->attr("selected",true);
+                      }
 
-                } else if ($inp->tag() == "input") {
-                    $inp->attr("value",$value);
+                    } else if ($inp->tag() == "input") {
+                        $inp->attr("value",$value);
+                        if ($inp->attr("type") == "checkbox" AND $value == "on") $inp->attr("checked",true);
+                    }
+                    $inp->attr("done","");
                 }
             }
             foreach($this->find("template") as $t) $t->inner(str_replace("}}","_}_}_",$t->inner()));
@@ -317,10 +349,13 @@ class wbApp
     public function __construct($settings=[])
     {
         $this->settings = new stdClass();
-        $this->settings->driver = 'json';
-        $this->tags = ["foreach","var","include"];
+//        $this->settings->driver = 'json';
+//        $this->tags = ["foreach","var","include"];
 
         foreach($settings as $key => $val) $this->settings->$key = $val;
+
+        if (!isset($this->settings->driver)) $this->settings->driver = null;
+
         $this->router = new wbRouter();
         $this->vars = new Dot();
         $vars = [
@@ -380,6 +415,18 @@ class wbApp
     }
 
     function driver() {
+        if ($this->settings->driver === null) {
+            $this->settings->driver = 'json';
+            if (is_file($this->route->path_app."/driver.ini")) {
+              $drv = parse_ini_file($this->route->path_app."/driver.ini",true);
+              foreach($drv as $driver => $options) {
+                  $this->settings->driver = $driver;
+                  $this->settings->driver_options = $options;
+                  break;
+              }
+            }
+        }
+
         include_once $this->route->path_engine . "/drivers/json/init.php";
         $path = "/drivers/{$this->settings->driver}/init.php";
         if (is_file($this->route->path_app . $path)) {

@@ -6,16 +6,14 @@ session_start([
     "save_path" => $sessdir,
     "gc_probability" => 5,
     "gc_divisor" => 80,
-    "gc_maxlifetime" => 100,
-    "cookie_lifetime" => 100
+    "gc_maxlifetime" => 84600,
+    "cookie_lifetime" => 0
 ]);
 if (!isset($_SESSION["lang"])) $_SESSION["lang"] = "en";
 ob_start();
 require_once __DIR__."/functions.php";
 
-$app = new wbApp([
-  "driver" => "json"
-]);
+$app = new wbApp();
 
 $dom = $app->fromString("<b>test <i class='fa'>kjasdf</i><br><i class='fa'>4444</i></b>");
 $dom->find(".fa")->each(function($n){

@@ -24,7 +24,7 @@ class tagInclude {
     }
     if (isset($inc)) {
         if ($dom->head()) {
-            $dom->head($inc);
+            $dom->head($inc->outer());
         } else {
           $inner = $dom->app->fromString("<wb>".$dom->html().$inc->outer()."</wb>");
           $inner->copy($inc);

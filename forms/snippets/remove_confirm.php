@@ -1,8 +1,9 @@
-<div class="modal fade removable" id="confirm_{{_form}}_{{_item}}" data-show="true" data-keyboard="false" data-backdrop="true" role="dialog" aria-hidden="true">
+<html>
+<div class="modal fade show " id="confirm_{{_form}}_{{_item}}" data-keyboard="false" data-backdrop="true" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
 	<div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">{{_lang.title}}</h5>
+        <h5 class="modal-title">Удаление записи</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -13,29 +14,22 @@
 				<i class="fa fa-warning fa-4x text-danger"></i>
 			</div>
 			<div class="col-9">
-				{{_lang.confirm}}
+				Пожалуйста, подтвердите удаление записи с идентификатором {{_item}} из таблицы {{_form}}
 			</div>
 		</div>
-          <div class="alert alert-warning text-center d-none" style="margin-top:20px;">{{_lang.error}}</div>
+          <div class="alert alert-warning text-center d-none" style="margin-top:20px;">ВНИМАНИЕ! Ошибка удаления записи</div>
       </div>
 
 		  <div class="modal-footer">
-			<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> {{_lang.cancel}}</button>
-			<button type="button" class="btn btn-danger wb-remove-confirm" data-dismiss="modal"
-					   data-wb="role=save&form={{_form}}&item={{_item}}&remove=true&watcher=#{{_form}}List">
-					 <span class="fa fa-trash"></span> {{_lang.remove}}
+			<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Отмена</button>
+			<button type="button" class="btn btn-danger" data-dismiss="modal"
+					   data-ajax="{'url':'/ajax/rmitem/{{_form}}/{{_item}}?_confirm'}">
+					 <span class="fa fa-trash"></span> Удалить
 			</button>
 		  </div>
 		</div>
 </div>
 </div>
-<script data-wb-tag="success" language="javascript">
-	if ($("[data-wb-table='{{_form}}']").length) {
-		$("[data-wb-table='{{_form}}'] [idx='{{_item}}']").remove();
-	} else {
-		$(document).find("[idx='{{_item}}']").remove();
-	}
-</script>
 <script type="text/locale">
 [en]
 	title		= "Remove item"
@@ -50,3 +44,4 @@
 	cancel		= "Отмена"
 	confirm		= "Пожалуйста, подтвердите удаление записи с идентификатором {{_item}} из таблицы {{_form}}"
 </script>
+</html>

@@ -1,12 +1,12 @@
 function wb_tree() {
-    wbapp.loadStyles(["/engine/tags/tree/tree.less",
+    wbapp.loadStyles(["/engine/attrs/tree/tree.less",
         "/engine/lib/js/nestable/nestable.css",
         "/engine/lib/fonts/materialicons/materialicons.css"]);
     wbapp.loadScripts(["/engine/lib/js/nestable/nestable.min.js"],"nestable-js");
 
     if ($(document).data("wb-tree-ui") == undefined && $(".wb-tree").length) {
 
-        wbapp.getWait("/ajax/tree_getform/tree_ui/", {}, function(data) {
+        wbapp.getSync("/ajax/tree_getform/tree_ui/", {}, function(data) {
             $(document).data("wb-tree-ui", data.content);
         });
     }

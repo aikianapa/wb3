@@ -9,6 +9,7 @@ class attrSave extends wbDom
 
     public function attrSave(&$dom)
     {
+        if (is_string($dom->params->save)) $dom->params->save = $dom->app->attrToValue($dom->params->save);
         $params = wbArrayToObj($dom->params->save);
         unset($params->role);
         if (!isset($params->method)) {
@@ -22,7 +23,12 @@ class attrSave extends wbDom
         $dom->attr("id", $id);
         if (!isset($params->url)) {
             if (!isset($params->table) OR $params->table == "") $params->table = $dom->app->vars("_route.table");
-            $params->url = "/ajax/save/{$params->table}";
+            if (!isset($params->item) OR $params->item == "") $params->item = $dom->app->vars("_route.item");
+            if (isset($params->remove) && $params->remove == "true") {
+                $params->url = "/ajax/rmitem/{$params->table}/{$params->item}?_confirm";
+            } else {
+                $params->url = "/ajax/save/{$params->table}/{$params->item}";
+            }
         }
         $callback = "wbapp.save($(this),".json_encode($params).");";
 

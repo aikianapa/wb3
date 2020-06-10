@@ -15,28 +15,44 @@ class ctrlForm {
       }
   }
 
-    function show() {
-        $app = &$this->app;
-        if (isset($this->route->tpl)) {
-            $dom = $app->getTpl($this->route->tpl);
-        } else if (isset($this->route->form)) {
-            $dom = $app->getForm($this->route->form , $this->route->mode);
-        }
-        if (isset($this->route->item)) {
-            $table = $this->route->form;
-            if (isset($this->route->table)) $table = $this->route->table;
-            $dom->item = $app->db->itemRead($table,$this->route->item);
-        }
-        $dom->fetch();
-        echo $dom->outer();
-        $app->out = &$dom;
-        return $dom;
-    }
+  function show() {
+      $app = &$this->app;
+      if (isset($this->route->tpl)) {
+          $dom = $app->getTpl($this->route->tpl);
+      } else if (isset($this->route->form)) {
+          $dom = $app->getForm($this->route->form , $this->route->mode);
+      }
+      if (isset($this->route->item)) {
+          $table = $this->route->form;
+          if (isset($this->route->table)) $table = $this->route->table;
+          $dom->item = $app->db->itemRead($table,$this->route->item);
+      }
+      $dom->fetch();
+      echo $dom->outer();
+      $app->out = &$dom;
+      return $dom;
+  }
 
+  function ajax() {
+      $app = $this->app;
+      $form = $app->vars("_route.params.0");
+      $mode = $app->vars("_route.params.1");
+      if ($mode == "list" AND $app->vars("_post.render") == "client") {
+          $options = (object)$_POST;
+          if (!isset($options->size)) $options->size = 500;
+          if (!isset($options->page)) $options->page = 1;
+          if (!isset($options->filter)) $options->filter = [];
+          $list = $app->itemList($form,(array)$options);
+          $pages = ceil($list["count"] / $options->size);
+          $pagination = wbPagination($options->page,$pages);
+          echo json_encode(["result"=>$list["list"],"pages"=>$pages,"page"=>$options->page,"pagination"=>$pagination]);
+          die;
+      }
+  }
 
   }
 
-
+/*
 function form__controller__common__controller(&$app)
 {
     $mode=$_ENV["route"]["mode"];
@@ -348,3 +364,4 @@ function form__controller__setup_engine()
     return $out;
     die;
 }
+*/

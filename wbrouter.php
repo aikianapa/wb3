@@ -37,6 +37,23 @@ final class wbRouter {
         self::$routes = array_merge($route,self::$routes);
     }
 
+
+    public function addRouteFile($file) {
+        if (is_file($file)) {
+            $route = file($file);
+        } else if (is_file($app->vars("path_app")."/".$file)) {
+            $route = file($app->vars("path_app")."/".$file);
+        }
+        if (!isset($route)) return;
+        foreach((array)$route  as $key => $r) {
+            $r = explode('=>', $r);
+            if (count($r) == 2) {
+                $this->addRoute(trim($r[0]),trim($r[1]));
+            }
+        }
+        $this->getRoute();
+    }
+
     // Разделить переданный URL на компоненты
     public static function splitUrl($url) {
         return preg_split('/\//', $url, -1, PREG_SPLIT_NO_EMPTY);

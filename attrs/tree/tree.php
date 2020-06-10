@@ -1,4 +1,35 @@
 <?php
+
+use Adbar\Dot;
+class attrTree {
+    public function __construct($dom) {
+        $this->tree($dom);
+    }
+
+    public function tree($dom) {
+        if ($dom->hasAttr("done")) return;
+        if ($dom->is("input")) $this->input($dom);
+    }
+
+    public function input($dom) {
+        $tpl=$dom->app->fromFile(__DIR__ ."/tree_ui.php");
+        $dom->params->name ? $name = $dom->params->name : $name = $dom->attr("name");
+        $fields = new Dot();
+        $fields->setReference($dom->item);
+        $data = (array)$fields->get($name);
+        tagTreeUl($tpl,$data,null);
+        $data=wbJsonEncode($data);
+        $tpl->append("
+            <textarea type='json' class='wb-tree-data wb-value' name='{$dom->params->name}'>{$data}</textarea>
+            <script type='wbapp'>
+            wbapp.loadScripts(['/engine/attrs/tree/tree.js','/engine/js/jquery-ui.min.js'],'tree-js');
+            </script>
+            ");
+        $dom->replaceWith($tpl);
+    }
+
+}
+
 function tagTree(&$dom, $Item=null) {
     if ($dom->hasClass("wb-done")) return;
     if ($Item == null) $Item=$dom->data;
@@ -249,7 +280,7 @@ function tagTreeUl(&$dom,$Item=array(),$param=null,$srcVal=array()) {
                 }
                 $idx++;
                 $lvl--;
-                if (isset($line)) $dom->append($line->outerHtml());
+                if (isset($line)) $dom->append($line->outer());
             }
         }
     }
@@ -264,7 +295,7 @@ function tagTreeForm($dict=[],$data=[]) {
           $set->fetch($fld)->clearValues();
           $set->find("label")->html($fld["label"]);
           $set->find("div.col-12")->append($app->fieldBuild($fld,$data["data"]));
-          $out .= $set->outerHtml()."\n";
+          $out .= $set->outer()."\n";
           //$out .= wbFieldBuild($fld,$data)."\n";
         }
     }
@@ -300,17 +331,17 @@ function ajax__tree_getform() {
     if ($app->vars->get("_route.params.0") == "dict") {
         $dict = $app->fromFile(__DIR__ . "/tree_dict.php");
         $dict->fetch($_POST);
-        return wb_json_encode(["content"=>$dict->outerHtml(),"post"=>$_POST]);
+        return wb_json_encode(["content"=>$dict->outer(),"post"=>$_POST]);
     }
 
     $data = tagTreeForm($_POST["dict"],$_POST["data"]);
     $data = $app->fromString($data);
     $data->fetch($_POST["data"]);
-    if ($app->vars->get("_route.params.0") == "data") return wb_json_encode(["content"=>$data->outerHtml(),"post"=>$_POST]);
+    if ($app->vars->get("_route.params.0") == "data") return wb_json_encode(["content"=>$data->outer(),"post"=>$_POST]);
     $out = $app->fromFile(__DIR__ . "/tree_edit.php");
     $out->fetch($_POST["data"]);
     $out->find(".treeData > form")->html($data);
-    return wb_json_encode(["content"=>$out->outerHtml(),"post"=>$_POST]);
+    return wb_json_encode(["content"=>$out->outer(),"post"=>$_POST]);
 }
 
 function ajax__tree_update() {

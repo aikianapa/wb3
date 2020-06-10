@@ -6,33 +6,98 @@ if (typeof $ == 'undefined') {
 var wbapp = new Object();
 var data = {};
 
+wbapp.bind = {};
+
 wbapp.eventsInit = function() {
-  $(document).delegate("[data-ajax]","tap click",function(e){
-      e.preventDefault();
-      let params = wbapp.parseAttr($(this).attr("data-ajax"));
-      wbapp.ajax(params);
+  $(document).delegate("[data-ajax]","tap click",function(e,tid){
+      if (!$(this).is("input,select")) {
+        e.preventDefault();
+        let params = wbapp.parseAttr($(this).attr("data-ajax"));
+        params._event = e;
+        if (tid !== undefined) params._tid = tid;
+        wbapp.ajax(params);
+      }
   })
-  $(document).delegate("[data-bind]","tap click",function(e){
+
+  $(document).delegate("input[data-ajax],select[data-ajax]","change",function(e,tid){
       e.preventDefault();
-      let params = wbapp.parseAttr($(this).attr("data-bind"));
-      if (params.idx)  eval(params.data + '._idx=params.idx;');
-      eval(params.bind + '=' + params.data + ';');
-      // после бинда нужно пересчитать значения полей
-    //  setTimeout(function(){wbapp.updateInputs()},110);
+      let search = $(this).attr("data-ajax");
+      search = str_replace('$value',$(this).val(),search);
+      console.log(search);
+      let params = wbapp.parseAttr(search);
+      params._event = e;
+      if (tid !== undefined) params._tid = tid;
+      wbapp.ajax(params);
+      return false;
+  })
+
+
+  $(document).delegate(".pagination .page-link","tap click",function(e){
+      e.preventDefault();
+      let paginator = $(this).closest(".pagination");
+      let tid = $(paginator).data("tpl");
+      let params = wbapp.template[tid].params;
+      params.page = $(this).attr("data-page");
+      params._tid = tid;
+      wbapp.ajax(params);
+  });
+}
+
+wbapp.ajaxAuto = function() {
+    $(document).find("[data-ajax][auto]").each(function(){
+        $(this).trigger("click");
+        $(this).removeAttr("auto");
+    })
+}
+
+wbapp.auth = function(form) {
+    var data = $(form).serializeJson();
+    var url = "/ajax/auth/email";
+    if ($(form).attr("action") !== undefined) url = $(form).attr("action");
+    $.post(url,data,function(res){
+          if (res.login) {
+              if (res.redirect) document.location.href = res.redirect;
+          } else {
+              console.log("Login error: " + res.error );
+              $(form)[0].reset();
+          }
+
+    })
+}
+
+wbapp.alive = function() {
+  $.get("/ajax/alive",function(data){
+      if (data.result == false) {
+          console.log("Trigger: session_close");
+          $(document).trigger("session_close");
+      }
   });
 }
 
 wbapp.storage = function (key, value = undefined) {
+  function getKey(list) {
+      key = "";
+      $(list).each(function(i,k){
+        if (k.substr(0,1)*1 > -1) {
+            key += `['${k}']`
+        } else {
+            if (i > 0) key += '.'
+            key += k
+        }
+      })
+      return key
+  }
+
   if (value == undefined) {
     // get data
     let list = key.split(".");
-    let root = list.shift();
-    data = json_decode(localStorage.getItem(root));
+    var res;
+    data = json_decode(localStorage.getItem(list[0]));
     if (list.length) {
-      key = list.join(".");
-      console.log(key);
+      key = getKey(list);
       try {
-        eval (`data = data.${key}`);
+        eval (`res = data.${key}`);
+        return res;
       } catch(err) {
         return undefined
       }
@@ -40,26 +105,43 @@ wbapp.storage = function (key, value = undefined) {
     return data;
   } else {
       // set data
-      if (typeof value !== "string") value = json_encode(value);
-      let data, path, branch, type;
-      let list = key.split(".");
-      let last = list.length;
+      var path, branch, type;
+      var list = key.split(".");
+      var last = list.length;
+
       $(list).each(function(i,k){
-        if ( i+1 == 1 ) {
-          key = k;
-          data = localStorage.getItem(key);
-          if (data !== null) data = json_decode(data);
-          else data = {};
-        } else {
-          key += `.${k}`;
-          eval (`branch = ${key}`);
-          if (branch == undefined) eval (`${key} = {}`);
-        }
-        eval (`type = typeof ${key}`);
-        if ( i+1 < last && type == "string") eval (`${key} = {}`)
+          if (i == 0) {
+              key = k;
+              data = localStorage.getItem(key);
+              if (i+1 !== last && data == null) {
+                data = {}
+              } else {
+                try {
+                    data = json_decode(data);
+                } catch(err) {
+                    data = {}
+                }
+              }
+          } else {
+              if (k.substr(0,1)*1 > -1) {
+                  key += `['${k}']`
+              } else {
+                  if (i > 0) key += '.'
+                  key += k
+              }
+          }
+
+          try {
+              eval (`branch = data.${key}`);
+              if (i+1 < last && typeof branch !== "object") eval (`data.${key} = {}`);
+          } catch(err) {
+              eval (`data.${key} = {}`);
+          }
       })
-      eval (`${key} = value`);
+      eval (`data.${key} = value`);
       localStorage.setItem(list[0],json_encode(data));
+      $(document).trigger("bind-"+key,value);
+      console.log("Trigger: bind-"+key);
       return data;
   }
 }
@@ -115,45 +197,74 @@ wbapp.parseAttr = function(queryString = null) {
 }
 
 wbapp.ajax = async function(params) {
-    if (!params.url && !params.tpl) return;
+    if (!params.url && !params.tpl && !params.target) return;
     if (params.url !== undefined) {
-        $.get(params.url,function(data){
+        let opts = Object.assign({}, params);
+        delete opts._event;
+        $.post(params.url, opts,function(data){
             if (params.html) eval(`$(document).find('${params.html}').html(data);`);
             if (params.append) eval(`$(document).find('${params.append}').append(data);`);
             if (params.prepend) eval(`$(document).find('${params.prepend}').prepend(data);`);
             if (params.replace) eval(`$(document).find('${params.replace}').replaceWith(data);`);
             if (params.form) wbapp.formByObj(params.form,data);
-            if (params.bind) {
-                var update = [];
-                $.each(data,function(key,value){
-                    update[key] = value
-                });
-                eval('data.'+params.bind + ' = update;');
-                console.log(data);
+            if (params.bind) wbapp.storage(params.bind, data);
+            if (params.update && typeof data == "object") wbapp.storageUpdate(params.update, data);
+            if (params._trigger !== undefined && params._trigger == "remove") eval( 'delete ' + params.data ); // ???
+            if (params.dismiss && params.error !== true) $("#"+params.dismiss).modal("hide");
+            $(document).find(".modal.show").modal('show');
+            if (params.render !== undefined && params.render == 'client') wbapp.renderTemplate(params,data);
+            if (params._event !== undefined && $(params._event.target).parent().is(":input")) {
+                $inp = $(params._event.target).parent();
+                // тут нужна обработка значений на клиенте
             }
-            if (params._trigger !== undefined && params._trigger == "remove") eval( 'delete ' + params.data );
-            if (params.dismiss && params.error !== true) {
-                $("#"+params.dismiss).modal("hide");
-            }
-            if (params.callback) eval('params = '+params.callback+'(params,data)');
+            if (params.callback !== undefined ) eval(params.callback+'(params,data)');
             wbapp.tplInit();
-            wbapp.wbappScripts();
+            wbapp.ajaxAuto();
             $(document).trigger("ajax-done",params);
         });
+    } else if (params.target !== undefined) {
+        var target = wbapp.template[params.target];
+        if (!target) {
+            console.log("Template not found: " + params.target);
+            return;
+        } else {
+            if (target.params.filter == undefined) target.params.filter = {};
+            $.each(params,function(key,val){
+                if (key == 'filter') target.params.filter = val;
+                if (key == 'filter_remove' && target.params.filter[val] !== undefined) delete target.params.filter[val];
+                if (key == 'filter_add') {
+                    $.each(val,function(k,v){
+                        target.params.filter[k] = v;
+                    })
+                }
+                if (target.params.page !== undefined) delete target.params.page
+            });
+            wbapp.ajax(target.params);
+        }
     }
-}
 
 wbapp.save = function(obj,params,event) {
   let that = this;
   let data, form, result;
   let method = "POST";
-
   if (params.form !== undefined) {
-      form = $(params.form);} else {form = $(this).closest("form");
+      form = $(params.form);} else {form = $(obj).parents("form");
       if ($(form).attr("method") !== undefined) method = $(form).attr("method");
   }
-  data = wbapp.objByForm(params.form);
+  data = wbapp.objByForm(form);
   if (data._idx) delete data._idx;
+
+  if ($(obj).is(":input") && params.table && params.id && params.field) {
+        let fld = $(obj).attr("name");
+        let value = $(obj).val();
+        if ($(obj).is(":checkbox") &&  $(obj).prop("checked")) value = "on";
+        if ($(obj).is(":checkbox") && !$(obj).prop("checked")) value = "";
+        if ($(obj).is("textarea")) value = $(obj).html();
+        data = {};
+        data['id'] = params.id;
+        eval (`data.${fld} = value;`);
+        params.url = `/ajax/save/${params.table}`;
+  }
 
   $.post(params.url,data,function(data) {
           if (params.callback) eval('params = '+params.callback+'(params,data)');
@@ -172,11 +283,33 @@ wbapp.save = function(obj,params,event) {
                   eval(params.data + ' = update;');
               }
           }
-          if (params.dismiss && params.error !== true) {
-              $("#"+params.dismiss).modal("hide");
-          }
+          if (params.dismiss && params.error !== true) $("#"+params.dismiss).modal("hide");
+          if (params.bind) wbapp.storage(params.bind,data);
+          if (params.update) wbapp.storageUpdate(params.update,data);
   });
 }
+
+wbapp.storageUpdate = function(key,data) {
+    var store = wbapp.storage(key);
+    if (store._id == undefined && store.result !== undefined && data._id !== undefined) {
+        if (data._removed !== undefined && data._removed == true) {
+            try {
+                delete store.result[data._id]
+            } catch(err) {}
+        } else if (data._renamed !== undefined && data._renamed == true) {
+            /// rename
+        } else {
+          try {
+              store.result[data._id] = data
+          } catch(err) {}
+        }
+        wbapp.storage(key,store);
+    } else {
+        wbapp.storage(key,data);
+    }
+}
+}
+
 
 wbapp.formByObj = function(selector,data) {
     var form = $(document).find(selector,0);
@@ -194,19 +327,34 @@ wbapp.objByForm = function(form) {
 
 wbapp.tplInit = function() {
     if (!wbapp.template) wbapp.template = {};
-    $(document).find("template[id]").each(function(){
-        var tid = $(this).attr("id");
-        if (tid > "") {
-            var params = [];
-            if ($(this).attr("data-params") !== undefined) params = json_decode($(this).attr("data-params"));
+    $(document).find("template").each(function(){
+        var tid
+        if (tid == undefined) tid = $(this).parent().attr("id");
+        if (tid == undefined && $(this).is("template[id]")) tid = $(this).attr("id");
+        if (tid == undefined) {
+            $(this).attr("id","fe_"+wbapp.newId());
+            var tid = $(this).attr("id");
+        }
+        tid = "#"+tid;
+        var params = [];
+        if ($(this).attr("data-params") !== undefined) params = json_decode($(this).attr("data-params"));
+        $(this).removeAttr("data-params");
+        if ($(this).attr("data-ajax") !== undefined) {
+            params = wbapp.parseAttr($(this).attr("data-ajax"));
             wbapp.tpl(tid, {
                 html:$(this).html(),
                 params:params
             });
-            $(this).removeAttr("data-params");
-            if ($(this).attr("visible") == undefined) $(this).remove();
+            $(this).trigger("click",tid);
+        } else {
+            wbapp.tpl(tid, {
+                html:$(this).html(),
+                params:params
+            });
         }
+        if ($(this).attr("visible") == undefined) $(this).remove();
     });
+    wbapp.wbappScripts();
 }
 
 wbapp.tpl = function(tid,data=null) {
@@ -215,7 +363,44 @@ wbapp.tpl = function(tid,data=null) {
   } else {
       wbapp.template[tid] = data;
   }
+}
 
+wbapp.renderTemplate = function(params,data) {
+  var tid;
+  if (params._tid !== undefined) tid = params._tid;
+  if (params.target !== undefined) tid = params.target;
+
+
+  /*
+  var that = params._event.target;
+  var tpl = $(that).parent();
+  if ($(that).is("template")) tpl = $(that);
+  var tid = "#"+$(tpl).parent().attr("id");
+  if (params.target !== undefined) tid = params.target;
+  */
+
+  if (wbapp.template[tid] == undefined) return;
+
+  if (wbapp.bind[params.bind] == undefined) wbapp.bind[params.bind] = {};
+
+  wbapp.bind[params.bind][tid] = new Ractive({
+                target: tid,
+                template: wbapp.template[tid].html,
+                data: () => {return wbapp.storage(params.bind)}
+  })
+  wbapp.template[tid].params = params;
+  var pagination = $(tid).find(".pagination");
+  if (pagination) {
+      let page = 1;
+      $(pagination).data("tpl",tid);
+      if (params.page) page = params.page;
+      $(pagination).find(".page-item").removeClass("active");
+      $(pagination).find(`[data-page="${page}"]`).parent(".page-item").addClass("active");
+  }
+
+  $(document).on("bind-"+params.bind,function(e,data){
+        wbapp.bind[params.bind][tid].set(data);
+  })
 }
 
 wbapp.newId = function(separator, prefix) {
@@ -308,11 +493,24 @@ wbapp.modalsInit = function() {
 }
 
 wbapp.getSync = async function(url,data = {}) {
-    return await $.get(url,data)
+    var result;
+    await $.get(url,data).then(function(value){
+        result = value
+    })
+    return result
 }
 
 wbapp.postSync = async function(url,data = {}) {
-    return await $.post(url,data)
+    var result;
+    await $.post(url,data).then(function(value){
+        result = value
+    })
+    return result
+}
+
+wbapp.session = async function() {
+    if (wbapp._session == undefined) wbapp._session = await wbapp.getSync("/ajax/getsess/");
+    return wbapp._session;
 }
 
 wbapp.loadScripts = async function(scripts = [], trigger = null, func = null) {
@@ -392,8 +590,11 @@ wbapp.loadStyles = async function(styles = [], trigger = null, func = null) {
 }
 
 $.fn.serializeJson = function(data = {}) {
-  var form = $(this).clone();
-  $(form).find("form, .wb-unsaved, .wb-tree-item").remove();
+  var form = this;
+  $(form).find("form [name], .wb-unsaved [name], .wb-tree-item [name]").each(function(){
+      $(this).attr("wb-tmp-name",$(this).attr("name"));
+      $(this).removeAttr("name");
+  });
   var branch = $(form).serializeArray();
   $(branch).each(function(i, val) {
     data[val["name"]] = val["value"];
@@ -401,15 +602,17 @@ $.fn.serializeJson = function(data = {}) {
           data[val["name"]] = json_decode(data[val["name"]]);
         }
   });
-  var check = $(form).find('input[type=checkbox]');
+
+  var check = $(form).find('input[name][type=checkbox],input[name][type=radio]');
   // fix unchecked values
   $.each(check,function(){
-      if (this.name > "") {
-        data[this.name] = "";
-        if (this.checked) data[this.name] = "on";
-      }
+      data[this.name] = "";
+      if (this.checked) data[this.name] = "on";
   });
-  $(form).remove();
+  $(form).find("form [wb-tmp-name], .wb-unsaved [wb-tmp-name], .wb-tree-item [wb-tmp-name]").each(function(){
+      $(this).attr("name",$(this).attr("wb-tmp-name"));
+      $(this).removeAttr("wb-tmp-name");
+  });
   return data;
 }
 
@@ -448,9 +651,14 @@ $.fn.jsonVal = function(data = undefined) {
       }
   },1500);
 
+  setInterval(function(){
+    wbapp.alive();
+  },84600);
+
   $(document).on("wbapp-go",function(){
       wbapp.eventsInit();
       wbapp.wbappScripts();
-        wbapp.modalsInit();
+      wbapp.modalsInit();
+      wbapp.ajaxAuto();
   });
 }

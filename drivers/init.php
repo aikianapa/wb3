@@ -8,13 +8,16 @@ function wbItemRead($form = null, $id = null)
     if ($form == "_settings") $db = $_ENV["app"]->_db;
     $item = $db->itemRead($form, $id);
     if (null !== $item) {
-        $item["_form"] = $form;
-        if (isset($item['images']) && $_ENV["route"]["mode"]!=="edit") {
-            $item = wbImagesToText($item);
-        }
         if (isset($item['_removed']) && 'remove' == $item['_removed']) {
             $item = null;
+            $item = wbTrigger('form', __FUNCTION__, 'EmptyItemRead', func_get_args(), $item);
         } // если стоит флаг удаления, то возвращаем null
+        else {
+          $item["_form"] = $item["_table"] = $form;
+          if (isset($item['images']) && $_ENV["route"]["mode"]!=="edit") {
+              $item = wbImagesToText($item);
+          }
+        }
         $item = wbTrigger('form', __FUNCTION__, 'AfterItemRead', func_get_args(), $item);
     } else {
         $item = wbTrigger('form', __FUNCTION__, 'EmptyItemRead', func_get_args(), $item);
@@ -28,23 +31,17 @@ function wbItemList($form = 'pages', $options=[])
     if ($form == "_settings") $db = $_ENV["app"]->_db;
     ini_set('max_execution_time', 900);
     ini_set('memory_limit', '1024M');
-    $list = wbTrigger('func', __FUNCTION__, 'before', func_get_args(), []);
     $list = $db->ItemList($form, $options);
-    $list = wbTrigger('func', __FUNCTION__, 'after', func_get_args(), $list);
     return $list;
 }
 
 function wbItemRemove($form = null, $id = null, $flush = true)
 {
-    $res = true;
-    $drv=wbCallDriver(__FUNCTION__, func_get_args());
-    if ($drv!==false) {
-        $res = $drv["result"];
-    } else {
-        $res =  jsonItemRemove($form, $id, $flush);
-    }
-    //if (!$res) {wbError('func', __FUNCTION__, 1007, func_get_args());}
-    wbTrigger('form', __FUNCTION__, 'AfterItemRemove', func_get_args(), $item);
+    $db = $_ENV["app"]->db;
+    if ($form == "_settings") $db = $_ENV["app"]->_db;
+    $res = $db->itemRemove($form, $id, $flush);
+    if ($res !== false) $res["_removed"] = true;
+    wbTrigger('form', __FUNCTION__, 'AfterItemRemove', func_get_args(), $res);
     return $res;
 }
 
@@ -68,13 +65,13 @@ function wbItemRename($form = null, $old = null, $new = null, $flush = true)
     return false;
 }
 
-function wbItemSave($form, $item = null, $flush = true)
+function wbItemSave($table, $item = null, $flush = true)
 {
     $item = wbItemInit($table, $item);
     $item = wbTrigger('form', __FUNCTION__, 'BeforeItemSave', func_get_args(), $item);
     $db = $_ENV["app"]->db;
-    if ($form == "_settings") $db = $_ENV["app"]->_db;
-    $item = $db->itemSave($form, $item, $flush);
+    if ($table == "_settings") $db = $_ENV["app"]->_db;
+    $item = $db->itemSave($table, $item, $flush);
     return $item;
 }
 

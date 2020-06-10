@@ -4,9 +4,12 @@ $(function(){
 
   $('[data-toggle="tooltip"]').tooltip()
 
-  const asideBody = new PerfectScrollbar('.aside-body', {
-    suppressScrollX: true
-  });
+  if ($('.aside-body').length) {
+    const asideBody = new PerfectScrollbar('.aside-body', {
+      suppressScrollX: true
+    });
+
+  }
 
   if($('.aside-backdrop').length === 0) {
     $('body').append('<div class="aside-backdrop"></div>');
@@ -21,7 +24,7 @@ $(function(){
       $('.aside').removeClass('minimize');
     }
 
-    asideBody.update()
+    if (typeof asideBody == "function") asideBody.update()
   }
 
   mql.addListener(doMinimize);
@@ -37,7 +40,7 @@ $(function(){
       $('body').toggleClass('show-aside');
     }
 
-    asideBody.update()
+    if (typeof asideBody == "function") asideBody.update()
   })
 
   $('.nav-aside .with-sub').on('click', '.nav-link', function(e){
@@ -46,7 +49,7 @@ $(function(){
     $(this).parent().siblings().removeClass('show');
     $(this).parent().toggleClass('show');
 
-    asideBody.update()
+    if (typeof asideBody == "function") asideBody.update()
   })
 
   $('body').on('mouseenter', '.minimize .aside-body', function(e){
@@ -57,7 +60,7 @@ $(function(){
   $('body').on('mouseleave', '.minimize .aside-body', function(e){
     $(this).parent().removeClass('maximize');
 
-    asideBody.update()
+    if (typeof asideBody == "function") asideBody.update()
   })
 
   $('body').on('click', '.aside-backdrop', function(e){

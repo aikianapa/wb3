@@ -106,8 +106,7 @@ $(document).find("wb-multiinput").each(function () {
                   $(e.target).store();
                }
          });
-        $(this).data("wb-tpl",$(this).children("template").html());
-        $(this).children("template").remove();
+        $(this).data("wb-tpl",wbapp.tpl($(this).children("textarea").data("tpl")).html);
         $(this).events();
         $(this).store();
         $(this).find("input:visible:first").trigger("change"); // important

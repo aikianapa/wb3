@@ -6,6 +6,7 @@ class tagData {
   }
 
   public function data(&$dom) {
+    $save = $dom->item;
     $data = new Dot();
     if ($dom->is(":root")) $dom->rootError();
     if ($dom->params("table") AND $dom->params("item")) {
@@ -23,7 +24,7 @@ class tagData {
     }
     $dom->fetch();
     $dom->unwrap("wb-data");
-
+    $dom->item = $save;
     return $dom;
   }
 }
