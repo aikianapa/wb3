@@ -8,7 +8,14 @@ $(document).delegate(".nav-link","tap click",function(){
 
 $(document).delegate("aside .nav-link","tap click",function(){
     $(".content-header .content-search input").prop("disabled",true);
+    $("body").removeClass("show-aside");
+    $("body").addClass("chat-content-show");
 });
+
+$(document).delegate(".chat-sidebar .nav-link","tap click",function(){
+    $("body").addClass("chat-content-show");
+});
+
 
 $(document).on("data-ajax",function(e,params){
   let spinner = '<div class="text-center pt-5"><div class="spinner-border text-primary" role="status"></div></div>';
@@ -22,4 +29,5 @@ $(document).on("ajax-done",function(e,params){
         $(".content-header .content-search [type=search]").attr("data-ajax",$(this).attr("data-ajax")).prop("disabled",false);
         $(this).remove();
     });
+    if ($(document).find(".chat-sidebar").length == 0) $("body").removeClass("chat-content-show");
 });

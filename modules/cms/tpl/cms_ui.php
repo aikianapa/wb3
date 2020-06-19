@@ -23,7 +23,7 @@
           <i data-feather="menu"></i>
           <i data-feather="x"></i>
         </a>
-        <a href="" id="chatContentClose" class="burger-menu d-none"><i data-feather="arrow-left"></i></a>
+        <a href="javascript:$('body').removeClass('chat-content-show');"  class="burger-menu"><i class="ri-arrow-left-line"></i></a>
       </div>
       <div class="aside-body">
         <div class="aside-loggedin">

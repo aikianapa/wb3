@@ -1,7 +1,7 @@
 <?php
 use Nahid\JsonQ\Jsonq;
 
-class jsonDb
+class jsonDrv
 {
     public function __construct($app)
     {
@@ -290,5 +290,3 @@ class jsonDb
         return $list;
     }
 }
-$this->db = new jsonDb($this);
-$this->_db = new jsonDb($this); // default driver to json files

@@ -52,7 +52,7 @@ function wbInitEnviroment()
     array_pop($dir);
     $dir=implode("/", $dir);
     if (!isset($_ENV["driver"])) {
-        $_ENV["driver"] = "default";
+        $_ENV["driver"] = "json";
     }
     if (!isset($_ENV["base"])) {
         $_ENV['base'] = "/tpl/";
@@ -84,7 +84,7 @@ function wbInitEnviroment()
     $_ENV['editors'] = [];
     wbListModules($app);
 
-    $_ENV['drivers'] = wbListDrivers();
+    //$_ENV['drivers'] = wbListDrivers();
     $_ENV['settings']['driver'] = 'json';
     // Load tags
     //$_ENV['tags'] = wbListTags();
@@ -121,6 +121,8 @@ function wbInitSettings(&$app)
     $_ENV['variables'] = array_merge((array)$_ENV['variables'], $variables);
     $settings = array_merge($settings, $variables);
     $_ENV['settings'] = &$settings;
+    if (isset($_ENV['settings']['driver'])) $app->settings->driver = $_ENV['settings']['driver'];
+
     if ($_SERVER["REQUEST_URI"]=="/engine/") {
         unset($_ENV["lang"]);
     } else {
@@ -2504,6 +2506,34 @@ function wbGetWords($str, $w = 100)
     $res = trim($res);
 
     return $res;
+}
+
+function wbPhoneFormat($phoneNumber) {
+    $phoneNumber = preg_replace('/[^0-9]/','',$phoneNumber);
+
+    if(strlen($phoneNumber) > 10) {
+        $countryCode = substr($phoneNumber, 0, strlen($phoneNumber)-10);
+        $areaCode = substr($phoneNumber, -10, 3);
+        $nextThree = substr($phoneNumber, -7, 3);
+        $lastFour = substr($phoneNumber, -4, 4);
+
+        $phoneNumber = '+'.$countryCode.' ('.$areaCode.') '.$nextThree.'-'.$lastFour;
+    }
+    else if(strlen($phoneNumber) == 10) {
+        $areaCode = substr($phoneNumber, 0, 3);
+        $nextThree = substr($phoneNumber, 3, 3);
+        $lastFour = substr($phoneNumber, 6, 4);
+
+        $phoneNumber = '('.$areaCode.') '.$nextThree.'-'.$lastFour;
+    }
+    else if(strlen($phoneNumber) == 7) {
+        $nextThree = substr($phoneNumber, 0, 3);
+        $lastFour = substr($phoneNumber, 3, 4);
+
+        $phoneNumber = $nextThree.'-'.$lastFour;
+    }
+
+    return $phoneNumber;
 }
 
 function wbSetValuesStr($tag = "", $Item = array(), $limit = 2, $vars = null)

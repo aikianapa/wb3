@@ -519,23 +519,26 @@ class wbApp
     {
         if ($this->settings->driver === null) {
             $this->settings->driver = 'json';
-            if (is_file($this->route->path_app."/driver.ini")) {
-                $drv = parse_ini_file($this->route->path_app."/driver.ini", true);
-                foreach ($drv as $driver => $options) {
-                    $this->settings->driver = $driver;
-                    $this->settings->driver_options = $options;
-                    break;
+            if (is_file($this->route->path_app."/database/_driver.ini")) {
+                $drv = parse_ini_file($this->route->path_app."/database/_driver.ini", true);
+                if (isset($drv["driver"])) {
+                    $drvlist = $drv["driver"];
+                    unset($drv["driver"]);
+                } else {
+                    $drvlist = [];
                 }
+                $flag = true;
+                foreach ($drv as $driver => $options) {
+                    if ($flag) {
+                        $this->settings->driver = $driver;
+                        $flag = false;
+                    }
+                    $this->settings->driver_options[$driver] = $options;
+                }
+                $this->settings->driver_tables = $drvlist;
             }
         }
-
-        include_once $this->route->path_engine . "/drivers/json/init.php";
-        $path = "/drivers/{$this->settings->driver}/init.php";
-        if (is_file($this->route->path_app . $path)) {
-            include_once $this->route->path_app . $path;
-        } elseif (is_file($this->route->path_engine.$path)) {
-            include_once $this->route->path_engine.$path;
-        }
+        include_once $this->route->path_engine."/drivers/json/init.php";
         include_once $this->route->path_engine."/drivers/init.php";
     }
 

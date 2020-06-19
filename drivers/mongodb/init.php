@@ -1,7 +1,7 @@
 <?php
 require 'vendor/autoload.php';
 
-class mongoDb
+class mongodbDrv
 {
     public function __construct($app)
     {
@@ -19,7 +19,7 @@ class mongoDb
         if (isset($_ENV["mongodb_connection"])) {
             return $_ENV["mongodb_connection"];
         }
-        $ini = $this->app->settings->driver_options;
+        $ini = $this->app->settings->driver_options["mongodb"];
         $dbname = $ini['dbname'];
         try {
             $mongo = new MongoDB\Client("mongodb://{$ini['user']}:{$ini['password']}@{$ini['host']}:{$ini['port']}");
@@ -208,4 +208,3 @@ class mongoDb
         return $list;
     }
 }
-$this->db = new mongoDb($this);

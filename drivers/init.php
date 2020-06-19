@@ -1,10 +1,29 @@
 <?php
 
+function wbSetDb($form) {
+    $app = &$_ENV["app"];
+    if (isset($app->settings->driver_tables[$form])) {
+          $driver = $app->settings->driver_tables[$form];
+    } else {
+          $driver = $app->settings->driver;
+    }
+    $path = "/drivers/{$driver}/init.php";
+    if (is_file($app->route->path_app . $path)) {
+        include_once $app->route->path_app . $path;
+    } elseif (is_file($app->route->path_engine.$path)) {
+        include_once $app->route->path_engine.$path;
+    }
+    $class = $driver."Drv";
+    $app->db = new $class($app);
+    $app->_db = new jsonDrv($app);
+    return $app->db;
+}
+
 function wbItemRead($form = null, $id = null)
 {
     if ($form == null OR $id == null) return null;
     wbTrigger('form', __FUNCTION__, 'beforeItemRead', func_get_args(), array());
-    $db = $_ENV["app"]->db;
+    $db = wbSetDb($form);
     if ($form == "_settings") $db = $_ENV["app"]->_db;
     $item = $db->itemRead($form, $id);
     if (null !== $item) {
@@ -27,7 +46,7 @@ function wbItemRead($form = null, $id = null)
 
 function wbItemList($form = 'pages', $options=[])
 {
-    $db = $_ENV["app"]->db;
+    $db = wbSetDb($form);
     if ($form == "_settings") $db = $_ENV["app"]->_db;
     ini_set('max_execution_time', 900);
     ini_set('memory_limit', '1024M');
@@ -40,7 +59,7 @@ function wbItemList($form = 'pages', $options=[])
 
 function wbItemRemove($form = null, $id = null, $flush = true)
 {
-    $db = $_ENV["app"]->db;
+    $db = wbSetDb($form);
     if ($form == "_settings") $db = $_ENV["app"]->_db;
     $res = $db->itemRemove($form, $id, $flush);
     if ($res !== false) $res["_removed"] = true;
@@ -72,7 +91,7 @@ function wbItemSave($table, $item = null, $flush = true)
 {
     $item = wbItemInit($table, $item);
     $item = wbTrigger('form', __FUNCTION__, 'beforeItemSave', func_get_args(), $item);
-    $db = $_ENV["app"]->db;
+    $db = wbSetDb($form);
     if ($table == "_settings") $db = $_ENV["app"]->_db;
     $item = $db->itemSave($table, $item, $flush);
     $item = wbTrigger('form', __FUNCTION__, 'afterItemSave', func_get_args(), $item);

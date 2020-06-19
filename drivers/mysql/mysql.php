@@ -3,7 +3,7 @@ require 'vendor/autoload.php';
 mysqlConnect();
 
 function mysqlConnect() {
-    if (isset($_ENV["mysql_connection"])) return $_ENV["mongodb_connection"];
+    if (isset($_ENV["mysql_connection"])) return $_ENV["mysql_connection"];
     $ini = parse_ini_file (__DIR__ ."/mysql.ini");
     $db = new MysqliDb($ini["host"], $ini["user"], $ini["pwd"], $ini["dbname"]);
     $result = $db->query("SHOW TABLES");
