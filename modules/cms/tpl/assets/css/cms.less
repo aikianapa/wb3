@@ -32,12 +32,14 @@ body {
 
   &.chat-content-show {
     aside {
-      .burger-menu {
-        display: flex!important;
-      }
+      @media (max-width: 992px) {
+        .burger-menu {
+          display: flex!important;
+        }
 
-      .aside-menu-link {
-        display: none!important;
+        .aside-menu-link {
+          display: none!important;
+        }
       }
     }
   }
