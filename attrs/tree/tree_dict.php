@@ -1,1 +1,3 @@
-<div data-wb="role=dict" name="dict"></div>
+<html>
+<wb-dict name="dict"></wb-dict>
+</html>

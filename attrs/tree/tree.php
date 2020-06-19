@@ -7,48 +7,33 @@ class attrTree {
     }
 
     public function tree($dom) {
-        if ($dom->hasAttr("done")) return;
-        if ($dom->is("input")) $this->input($dom);
+        tagTree($dom,$dom->item);
     }
 
-    public function input($dom) {
-        $tpl=$dom->app->fromFile(__DIR__ ."/tree_ui.php");
-        $dom->params->name ? $name = $dom->params->name : $name = $dom->attr("name");
-        $fields = new Dot();
-        $fields->setReference($dom->item);
-        $data = (array)$fields->get($name);
-        tagTreeUl($tpl,$data,null);
-        $data=wbJsonEncode($data);
-        $tpl->append("
-            <textarea type='json' class='wb-tree-data wb-value' name='{$dom->params->name}'>{$data}</textarea>
-            <script type='wbapp'>
-            wbapp.loadScripts(['/engine/attrs/tree/tree.js','/engine/js/jquery-ui.min.js'],'tree-js');
-            </script>
-            ");
-        $dom->replaceWith($tpl);
-    }
 
 }
 
 function tagTree(&$dom, $Item=null) {
-    if ($dom->hasClass("wb-done")) return;
-    if ($Item == null) $Item=$dom->data;
+    $dom->removeAttr("wb-tree");
+    if ($Item == null) $Item=$dom->item;
     if (!((array)$Item === $Item) ) $Item=array($Item);
-        $name = $dom->params->name;
-        $from = $dom->params->from;
-        $form = $dom->params->form;
-        $item = $dom->params->item;
-        $type = $dom->params->type;
-        $field = $dom->params->field;
+    if (isset($dom->params->tree)) $dom->params = (object)$dom->params->tree;
 
-        $srcData = $Item;
-        if (!$name) $name=$dom->params->name = $dom->attr("name");
+    isset($dom->params->table) ? $table = $dom->params->table : $table = null;
+    isset($dom->params->name) ? $name = $dom->params->name : $name = $dom->attr("name");
+    isset($dom->params->form) ? $form = $dom->params->form : $form = null;
+    isset($dom->params->from) ? $from = $dom->params->from : $from = null;
+    isset($dom->params->item) ? $item = $dom->params->item : $item = null;
+    isset($dom->params->type) ? $type = $dom->params->type : $type = null;
+    isset($dom->params->field) ? $field = $dom->params->field : $field = null;
 
-        if (!$dom->params->from AND !$dom->params->field) {$field = $name;}
+    if ($table && !isset($form)) $form = $table;
+    if ($form > "" AND $item > "") $Item = $dom->app->itemRead($form,$item);
+
+    $srcData = $Item;
+
+    if (!isset($dom->params->from) AND !isset($dom->params->field)) {$field = $name;}
         if ($dom->is("select") AND !$dom->params->form) {$field = "tree";}
-
-        if ($form > "" AND $item>"") $Item = $dom->app->itemRead($form,$item);
-
         if ($form == "" AND $item > "") {
             $Item = $dom->app->treeRead($item);
             $field = "tree";
@@ -56,13 +41,15 @@ function tagTree(&$dom, $Item=null) {
 
         if ($from > "") $Item = $Item[$from];
 
+
         if ($field > "") {
+            if (!isset($dom->params->name)) $dom->params->name = $field;
             if (!isset($Item[$field])) {
                 $id = $dom->app->newId();
                 $Item = [$id=>["id"=>$id,"name"=>""]];
                 $tree["dict"] = [];
             } else {
-                $tree["dict"] = $Item[$field]["dict"];
+                isset($Item[$field]["dict"]) ? $tree["dict"] = $Item[$field]["dict"] : $tree["dict"] = [];
                 $Item = $Item[$field]["data"];
                 unset($Item["data"]);
                 unset($Item["dict"]);
@@ -71,17 +58,14 @@ function tagTree(&$dom, $Item=null) {
 
 
         if (isset($dom->params->dict)) {
-            $dictdata=wbItemRead("tree",$dom->params->dict);
+            $dictdata = wbItemRead("tree",$dom->params->dict);
             if (!isset($Item[$name])) $Item[$name]=$dictdata["tree"];
             unset($dictdata);
         }
 
         if (($dom->hasAttr("name") OR $dom->is("input")) AND !$dom->is("select") ) {
-            $Item = wbItemToArray($Item);
             $inp = tagTreeInput($dom,["data"=>$Item,"dict"=>$tree["dict"]]);
-            $dom->after($inp);
-            $dom->addClass("wb-out-inner");
-
+            $dom->replaceWith($inp);
 
         } elseif ($dom->is("select")) {
             $select = new tagTreeSelect();
@@ -91,10 +75,8 @@ function tagTree(&$dom, $Item=null) {
             $select->stage();
             //tagTreeUl($dom,$Item,null,$srcVal);
         } else {
-            tagTreeUl($dom,$Item,null,$srcVal);
+            tagTreeUl($dom,$Item,null,$srcData);
         }
-        $dom->addClass("wb-done");
-        $dom->removeAttr("data-wb");
     }
 
 class tagTreeSelect {
@@ -190,13 +172,14 @@ class tagTreeSelect {
 
 
 function tagTreeInput($dom,$data=array()) {
-    $tpl=$dom->app->fromFile(__DIR__ ."/tree_ui.php");
-    tagTreeUl($tpl,$data["data"],null);
+    $tpl = $dom->app->fromFile(__DIR__ ."/tree_ui.php");
+    $tpl->params = $dom->params;
+    tagTreeUl($tpl,$data["data"]);
     $data=wbJsonEncode($data);
     $tpl->append("
         <textarea type='json' class='wb-tree-data wb-value' name='{$dom->params->name}'>{$data}</textarea>
         <script type='wbapp'>
-        wbapp.loadScripts(['/engine/tags/tree/tree.js','/engine/js/jquery-ui.min.js'],'tree-js');
+        wbapp.loadScripts(['/engine/attrs/tree/tree.js','/engine/js/jquery-ui.min.js'],'tree-js');
         </script>
         ");
     return $tpl;
@@ -208,29 +191,23 @@ function tagTreeUl(&$dom,$Item=array(),$param=null,$srcVal=array()) {
         $level=-1;
         $idx=0;
         $tree=$Item;
-        if ($dom->params->branch > "") {$branch = $dom->params->branch;} else {$branch = null;}
-        if ($dom->params->parent == "false") {$parent = 0;} else {$parent=1;}
-        if ($dom->params->limit > "") {$limit = intval($dom->params->limit);}
         $parent_id="";
         $pardis=0;
-        if ($dom->params->children == "false") {$children = 0;} else {$children=1;}
-        if ($dom->params->rand == "true") {$rand = true;} else {$rand=false;}
+        isset($dom->params->branch) ? $branch = $dom->params->branch : $branch = null;
+        isset($dom->params->limit) ? $limit = intval($dom->params->limit) : $limit = -1;
+        if (isset($dom->params->parent) && $dom->params->parent == "false") {$parent = 0;} else {$parent=1;}
+        if (isset($dom->params->children) && $dom->params->children == "false") {$children = 0;} else {$children=1;}
+        if (isset($dom->params->rand) && $dom->params->rand == "true") {$rand = true;} else {$rand=false;}
 
         $srcItem = $Item;
-        $tag = $dom->tag();
+        $tag = $dom->tagName;
         if ($param==null) {
-            $name=$dom->attr("name");
+            isset($dom->params->name) ? $name  = $dom->params->name : $name=$dom->attr("name");
             if (isset($from)) $name=$from;
-            // /$tree = wbItemToArray($Item);
             if (isset($call) AND $call > "" AND is_callable($call)) $tree=@$call();
             if (isset($rand) AND $rand=="true") {$rand=true;}
-            if (!isset($limit) OR $limit=="false" OR intval($limit) < 0) {
-                $limit=-1;
-            }
-            else {
-                $limit=$limit*1;
-            }
             $tpl = $dom->html();
+            $tree = $Item;
         } else {
             foreach($param as $k =>$val) $$k=$val;
         }
@@ -258,23 +235,21 @@ function tagTreeUl(&$dom,$Item=array(),$param=null,$srcVal=array()) {
                 $item["_ndx"]=$idx+1;
                 $item["_lvl"]=$lvl-1;
                 if ($parent_id>"") $item["%id"]=$parent_id;
-                $line=$dom->app->fromString($tpl);
-                $child=$dom->app->fromString($tpl,true);
+                $line = $dom->app->fromString($tpl);
+                $child = $dom->app->fromString($tpl);
                 $line->fetch($item);
-                if ($parent==0 OR (isset($item["children"]) AND (array)$item["children"] === $item["children"] AND count($item["children"]))) {
-                    if ($pardis==1 AND ($limit!==$lvl-1)) {
-                        $line->attr("disabled",true);
-                    }
 
+
+                if ($parent==0 OR (isset($item["children"]) AND (array)$item["children"] === $item["children"] AND count($item["children"]))) {
+                    if ($pardis==1 AND ($limit!==$lvl-1)) $line->attr("disabled",true);
                     if ($lvl>1) $parent=1;
                     tagTreeUl($child,$item["children"],array("name"=>$name,"tag"=>$tag,"lvl"=>$lvl,"tpl"=>$tpl,"idx"=>$idx,"level"=>$level,"parent_id"=>$item["id"],"pardis"=>$pardis,"parent"=>$parent,"children"=>$children,"limit"=>$limit),$srcVal);
                     if (($limit==-1 OR $lvl<=$limit)) {
-
                             if ($parent !== 1) {
                                 $lvl--;
-                                $line->html($child->find(".wb-html")->html());
+                                $line->html($child->inner());
                             } else {
-                                if ($children == 1) $line->append("<{$tag}>".$child->find(".wb-html")->html()."</{$tag}>");
+                                if ($children == 1) $line->append("<{$tag}>".$child->inner()."</{$tag}>");
                             }
                     }
                 }

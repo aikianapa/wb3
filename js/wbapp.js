@@ -16,6 +16,8 @@ wbapp.eventsInit = function() {
         params._event = e;
         if (tid !== undefined) params._tid = tid;
         wbapp.ajax(params);
+        console.log("Trigger: data-ajax");
+        $(document).trigger("data-ajax",params);
       }
   })
 
@@ -41,6 +43,22 @@ wbapp.eventsInit = function() {
       params._tid = tid;
       wbapp.ajax(params);
   });
+
+  $(document).delegate("input[type=search][data-ajax]","keyup",function(){
+    var minlen = 0;
+    var that = this;
+    var val = $(this).val();
+    if ($(this).attr("minlength")) minlen = $(this).attr("minlength") * 1;
+    if (that.waitajax == undefined && val.length >= minlen) {
+        that.waitajax = true;
+        $(this).trigger("change");
+        console.log(val);
+        setTimeout(function(){
+          that.waitajax = undefined;
+        },700);
+    }
+  })
+
 }
 
 wbapp.ajaxAuto = function() {
@@ -140,6 +158,8 @@ wbapp.storage = function (key, value = undefined) {
       })
       eval (`data.${key} = value`);
       localStorage.setItem(list[0],json_encode(data));
+      $(document).trigger("bind",key,value);
+      console.log("Trigger: bind ["+key+"]");
       $(document).trigger("bind-"+key,value);
       console.log("Trigger: bind-"+key);
       return data;
@@ -220,6 +240,7 @@ wbapp.ajax = async function(params) {
             if (params.callback !== undefined ) eval(params.callback+'(params,data)');
             wbapp.tplInit();
             wbapp.ajaxAuto();
+            console.log("Trigger: ajax-done");
             $(document).trigger("ajax-done",params);
         });
     } else if (params.target !== undefined) {
@@ -413,7 +434,7 @@ wbapp.newId = function(separator, prefix) {
   if (prefix !== undefined && prefix > "") {
     id = prefix + separator + id + md;
   } else {
-    id = id + separator + md;
+    id = "id" + id + separator + md;
   }
   return id;
 }
@@ -585,6 +606,16 @@ wbapp.loadStyles = async function(styles = [], trigger = null, func = null) {
         }
       }
       document.head.appendChild(style);
+    }
+  });
+}
+
+$.fn.runScripts = function() {
+  $(this).find("script").each(function() {
+    var type = $(this).attr("type");
+    if (type !== "text/locale" && type !== "text/template") {
+      eval($(this).text());
+      if ($(this).attr("removable")!==undefined) $(this).remove();
     }
   });
 }

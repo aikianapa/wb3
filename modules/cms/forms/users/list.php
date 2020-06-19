@@ -5,11 +5,11 @@
     <div class="chat-sidebar-body" style="top:0;bottom:0;">
       <div class="flex-fill pd-y-20 pd-x-10">
         <div class="d-flex align-items-center justify-content-between pd-x-10 mg-b-10">
-          <span class="tx-10 tx-uppercase tx-medium tx-color-03 tx-sans tx-spacing-1"><i class="fa fa-users"></i> Роли</span>
+          <span class="tx-10 tx-uppercase tx-medium tx-color-03 tx-sans tx-spacing-1"><i class="ri-group-line"></i> Роли</span>
 
             <span data-toggle="tooltip" title="" data-original-title="New role">
               <a href="#" data-ajax="{'url':'/cms/ajax/form/users/role/_new','html':'.users-edit-modal'}">
-                <i class="fa fa-plus"></i>
+                <i class="ri-add-circle-line"></i>
               </a>
             </span>
 
@@ -21,7 +21,7 @@
               {{name}}
             </a>
             <a href="#" data-ajax="{'url':'/cms/ajax/form/users/role/{{_id}}','html':'.users-edit-modal'}"
-            class="pos-absolute r-10"><i class="fa fa-edit"></i></a>
+            class="pos-absolute r-10"><i class="ri-file-edit-line"></i></a>
           </span>
           </wb-foreach>
         </nav>
@@ -53,15 +53,9 @@
           </li>
         </ul>
         <form class="form-inline mg-t-10 mg-lg-0">
-          <div class="form-group wd-200-f mg-r-5">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fa fa-search"></i></span>
-              </div>
-              <input class="form-control" type="search" placeholder="Поиск..." aria-label="Поиск..."
+              <input class="form-control search-header" type="search" placeholder="Поиск..." aria-label="Поиск..."
                data-ajax="{'target':'#{{_form}}List','filter_add':{'$or':[{ 'id' : {'$like' : '$value'} }, { 'first_name': {'$like' : '$value'} }, { 'last_name': {'$like' : '$value'} },{ 'phone': {'$like' : '$value'} },{ 'email': {'$like' : '$value'} } ]} }">
-            </div>
-          </div>
+
           <button class="btn btn-success" type="button" data-ajax="{'url':'/cms/ajax/form/{{_form}}/edit/_new','html':'.users-edit-modal'}">Создать</button>
         </form>
       </div>
@@ -75,16 +69,15 @@
             <div>
               <a href="javascript:" data-ajax="{'url':'/cms/ajax/form/users/edit/{{_id}}','html':'.users-edit-modal','modal':'#{{_form}}ModalEdit'}"
                 class="tx-13 tx-inverse tx-semibold mg-b-0">
-                <i class="fa fa-user-o"></i> {{first_name}} {{last_name}}
-                <span class="badge badge-secondary"><i class="fa fa-users"></i> {{role}}</span>
-                <span class="badge badge-default"> <i class="fa fa-id-badge"></i> {{_id}}</span>
+                <i class="ri-user-3-line"></i> {{first_name}} {{last_name}}
+                <span class="badge badge-secondary"><i class="ri-group-line"></i> {{role}}</span>
               </a>
               <span class="d-block tx-11 text-muted">
                 {{#if email}}
-                  <nobr><i class="fa fa-envelope-o"></i> {{email}}</nobr>
+                  <nobr><i class="ri-mail-line"></i> {{email}}</nobr>
                 {{/if}}
                 {{#if phone}}
-                  <nobr><i class="fa fa-phone"></i> {{phone}}</nobr>
+                  <nobr><i class="ri-phone-line"></i> {{phone}}</nobr>
                 {{/if}}
               </span>
             </div>
@@ -109,11 +102,11 @@
           </div>
 
           <a href="javascript:" data-ajax="{'url':'/cms/ajax/form/users/edit/{{_id}}','html':'.users-edit-modal'}"
-            class="pos-absolute r-40"><i class="fa fa-edit"></i></a>
+            class="pos-absolute r-40"><i class="ri-file-edit-line"></i></a>
           <div class="dropdown dropright pos-absolute r-10 p-0 m-0" style="line-height: normal;">
             <a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
               aria-expanded="false">
-              <i class="fa fa-ellipsis-v"></i>
+              <i class="ri-more-2-fill"></i>
             </a>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="#" data-ajax="{'url':'/cms/ajax/form/users/edit/{{_id}}','html':'.users-edit-modal'}">Изменить</a>

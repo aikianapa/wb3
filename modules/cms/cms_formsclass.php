@@ -15,8 +15,12 @@ class cmsFormsClass {
     function list() {
         $app = $this->app;
         $form = $this->getForm("list");
-        $form->fetch();
-        echo $form->html();
+        if (!$form) {
+          echo "Form {$app->vars("_route.form")}->list not found!";
+        } else {
+          $form->fetch();
+          echo $form->html();
+        }
     }
 
     function methodForm($method) {
@@ -35,7 +39,9 @@ class cmsFormsClass {
 
     function getForm($form) {
       $app = $this->app;
-      if (is_file(__DIR__."/forms/{$this->form}/{$form}.php")) {
+      if (is_file($app->vars("_env.path_app")."/forms/{$this->form}/{$form}.php")) {
+        $form = $app->fromFile($app->vars("_env.path_app")."/forms/{$this->form}/{$form}.php");
+      } else if (is_file(__DIR__."/forms/{$this->form}/{$form}.php")) {
         $form = $app->fromFile(__DIR__."/forms/{$this->form}/{$form}.php");
       } else {
         $form = false;

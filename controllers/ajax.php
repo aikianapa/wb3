@@ -2,6 +2,7 @@
 class ctrlAjax {
   function __construct($app) {
       include_once($_ENV["path_engine"]."/attrs/save/ajax.php");
+      include_once($_ENV["path_engine"]."/attrs/tree/ajax.php");
       if (is_file($_ENV["path_app"]."/ajax.php")) {
           include_once($_ENV["path_app"]."/ajax.php");
           $this->ajax = new wbAjax($app);
@@ -14,12 +15,12 @@ class ctrlAjax {
   }
 
   function __call($mode, $params)  {
-      switch($mode) {
-        case "save":
-              require_once($_ENV["path_engine"]."/attrs/save/ajax.php");
-              $this->ajax = new wbAjaxSave($this->app);
-              break;
+      if (in_array($mode,["save","tree"])) {
+          require_once($_ENV["path_engine"]."/attrs/".strtolower($mode)."/ajax.php");
+          $class = "wbAjax".ucfirst($mode);
+          $this->ajax = new $class($this->app);
       }
+
       if ($this->ajax) {
           $this->ajax->$mode();
       } else if (is_callable(@$this->$mode)) {

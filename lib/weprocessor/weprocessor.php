@@ -152,7 +152,6 @@ class WEProcessor {
 			echo "Error!!! PHP function <b>{$name}</b> is not exists !";
 			die;
         }
-
 		switch ($name) {
 			// если нужно реализовать некую новую функцию то пишем соответствующую ветку в этом свитче
 			case "today": 	$res = date("Y-m-d", time()); break;

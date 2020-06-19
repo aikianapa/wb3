@@ -1,4 +1,5 @@
-    <div class="col-12 wb-dict" data-wb="role=multiinput" name="dict">
+<html>
+    <wb-multiinput class="col-12 wb-dict" name="dict">
         <div class="col-4">
             <div class="form-group mb-0">
                 <div class="input-group">
@@ -59,10 +60,10 @@
             <input type="hidden" name="value">
             <textarea type="json" name="prop" class="d-none"></textarea>
         </div>
-    </div>
+    </wb-multiinput>
 
 <script id="dict-js-remove">wbapp.loadScripts(["/engine/tags/dict/dict.js"],"dict-js");</script>
-<script type="text/locale">
+<wb-lang>
 [en]
         label	= "Label"
         name    = "Field name"
@@ -93,4 +94,5 @@
         selector= "Селектор"
         locales = "Локализации"
         prop	= "Свойства"
-</script>
+</wb-lang>
+</html>

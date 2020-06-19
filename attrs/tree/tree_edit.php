@@ -47,7 +47,7 @@
         </div>
     </div>
 
-<script type="text/locale" >
+<wb-lang>
 [en]
         id    = "ID"
         name    = "Name"
@@ -60,5 +60,5 @@
         active  = "Активен"
         data    = "Данные"
         dict    = "Словарь"
-</script>
+</wb-lang>
 </div>

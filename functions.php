@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__."/static.php";
 require_once __DIR__.'/lib/vendor/autoload.php';
 require_once __DIR__."/lib/weprocessor/weprocessor.php";
 require_once __DIR__."/lib/weprocessor/weparser.class";
@@ -28,8 +29,7 @@ function wbInit()
             wbLoadDriver($_ENV["driver"]);
             wbInitFunctions($app);
             //wbTableList();
-            $app->routerAdd();
-            $app->routerGet();
+
             wbCacheEnvState();
             if (is_callable("wbAfterInit")) wbAfterInit();
         }
@@ -87,16 +87,13 @@ function wbInitEnviroment()
     $_ENV['drivers'] = wbListDrivers();
     $_ENV['settings']['driver'] = 'json';
     // Load tags
-    $_ENV['tags'] = wbListTags();
+    //$_ENV['tags'] = wbListTags();
     $_ENV['stop_func'] = explode(",", "exec,system,passthru,readfile,shell_exec,escapeshellarg,escapeshellcmd,proc_close,proc_open,ini_alter,dl,popen,parse_ini_file,show_source,curl_exec,file_get_contents,file_put_contents,file,eval,chmod,chown");
 }
 
 
 function wbInitSettings(&$app)
 {
-    if (isset($_ENV["settings"]["lang"])) {
-        return $_ENV["settings"];
-    }
     if (!$app->vars("_sess.events")) {
         $app->vars("_sess.events", []);
     } // массив для передачи событий в браузер во время вызова wbapp.alive()
@@ -112,27 +109,24 @@ function wbInitSettings(&$app)
         setcookie("user", $app->user->id, time()+3600, "/"); // срок действия час
     }
 
-    $variables = array();
-    $settings = wbItemRead('admin', 'settings');
+    $variables = [];
+    $settings = $app->ItemRead('_settings', 'settings');
     if (!$settings) {
-        $settings = array();
+        $settings = [];
     } else {
         foreach ((array) $settings['variables'] as $v) {
             $variables[$v['var']] = $v['value'];
         }
     }
-    $_ENV['variables'] = $variables;
+    $_ENV['variables'] = array_merge((array)$_ENV['variables'], $variables);
     $settings = array_merge($settings, $variables);
     $_ENV['settings'] = &$settings;
     if ($_SERVER["REQUEST_URI"]=="/engine/") {
         unset($_ENV["lang"]);
     } else {
-        $_ENV["lang"] = "en";
-        if ($settings["lang"] > "") {
-            $_ENV["lang"] = $settings["lang"];
-        }
+        isset($settings["lang"]) ? $_ENV["lang"] = $settings["lang"] : $_ENV["lang"] = "ru";
     }
-    $_ENV["locales"]=wbListLocales($app);
+    //    $_ENV["locales"]=wbListLocales($app);
     $_ENV["settings"]["locale"]=substr($_ENV["lang"], 0, 2);
 
     if (isset($_ENV['settings']['path_tpl']) and $_ENV['settings']['path_tpl'] > '') {
@@ -158,7 +152,7 @@ function wbInitSettings(&$app)
         $_ENV['base'] = $_ENV['settings']['base'];
         $_ENV['path_tpl'] = str_replace("//", "/", $_ENV['path_app']."/".$_ENV['base']);
     }
-    if ($_ENV['settings']['editor'] == "") {
+    if ($app->vars("_env.settings.editor") == "") {
         $_ENV['settings']['editor'] = 'jodit';
     }
     $_ENV['settings']['max_upload_size'] = wbMaxUplSize();
@@ -225,6 +219,183 @@ function wbGetSysMsg()
         $_ENV['driver'] = $drv;
     }
 
+function wbFormClass($form = null) {
+  require_once($_ENV["path_engine"]."/modules/cms/cms_formsclass.php");
+  $app = $_ENV["app"];
+  if ($form == null) $form = $app->vars("_route.form");
+  if (is_file($app->vars("_env.path_app")."/forms/{$form}/_class.php")) {
+      require_once($app->vars("_env.path_app")."/forms/{$form}/_class.php");
+  } else if (is_file($app->vars("_env.path_engine")."/forms/{$form}/_class.php")) {
+      require_once($app->vars("_env.path_engine")."/forms/{$form}/_class.php");
+  } else if (is_file($app->vars("_env.path_engine")."/modules/cms/forms/{$form}/_class.php")) {
+      require_once($app->vars("_env.path_engine")."/modules/cms/forms/{$form}/_class.php");
+  }
+  $class = $form."Class";
+  if (class_exists($class)) {
+      $form = new $class($app);
+  } else {
+      $form = new cmsFormsClass($app);
+  }
+  return $form;
+}
+
+function wbCorrelation($form,$id,$fld) {
+    $app = $_ENV["app"];
+    $data = new Dot();
+    $item = wbItemRead($form,$id);
+    $item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', func_get_args(), $item);
+    if ($item) {
+        $data->setReference($item);
+        return $data->get($fld);
+    } else {
+        return null;
+    }
+
+
+}
+
+
+function wbMime($path) {
+    $mime = "text/plain";
+    if (is_file($path)) {
+        $info = new SplFileInfo($path);
+        $ext  = $info->getExtension();
+    } else {
+        $ext = explode("?",$path);
+        $ext = explode(".",$ext[0]);
+        $ext = array_pop($ext);
+    }
+    $types = [
+        "mid" => "audio/midi",
+        "midi" => "audio/midi",
+        "kar" => "audio/midi",
+        "aac" => "audio/mp4",
+        "f4a" => "audio/mp4",
+        "f4b" => "audio/mp4",
+        "m4a" => "audio/mp4",
+        "mp3" => "audio/mpeg",
+        "oga" => "audio/ogg",
+        "ogg" => "audio/ogg",
+        "ra" => "audio/x-realaudio",
+        "wav" => "audio/x-wav",
+        "bmp" => "image/bmp",
+        "gif" => "image/gif",
+        "jpeg" => "image/jpeg",
+        "jpg" => "image/jpeg",
+        "png" => "image/png",
+        "tif" => "image/tiff",
+        "tiff" => "image/tiff",
+        "wbmp" => "image/vnd.wap.wbmp",
+        "webp" => "image/webp",
+        "ico" => "image/x-icon",
+        "cur" => "image/x-icon",
+        "jng" => "image/x-jng",
+        "js" => "application/javascript",
+        "json" => "application/json",
+        "webapp" => "application/x-web-app-manifest+json",
+        "manifest" => "text/cache-manifest",
+        "appcache" => "text/cache-manifest",
+        "doc" => "application/msword",
+        "xls" => "application/vnd.ms-excel",
+        "ppt" => "application/vnd.ms-powerpoint",
+        "docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "pptx" => "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "3gpp" => "video/3gpp",
+        "3gp" => "video/3gpp",
+        "mp4" => "video/mp4",
+        "m4v" => "video/mp4",
+        "f4v" => "video/mp4",
+        "f4p" => "video/mp4",
+        "mpeg" => "video/mpeg",
+        "mpg" => "video/mpeg",
+        "ogv" => "video/ogg",
+        "mov" => "video/quicktime",
+        "webm" => "video/webm",
+        "flv" => "video/x-flv",
+        "mng" => "video/x-mng",
+        "asx" => "video/x-ms-asf",
+        "asf" => "video/x-ms-asf",
+        "wmv" => "video/x-ms-wmv",
+        "avi" => "video/x-msvideo",
+        "atom" => "application/xml",
+        "rdf" => "application/xml",
+        "rss" => "application/xml",
+        "xml" => "application/xml",
+        "woff" => "application/font-woff",
+        "woff2" => "application/font-woff2",
+        "eot" => "application/vnd.ms-fontobject",
+        "ttc" => "application/x-font-ttf",
+        "ttf" => "application/x-font-ttf",
+        "otf" => "font/opentype",
+        "svg" => "image/svg+xml",
+        "svgz" => "image/svg+xml",
+        "jar" => "application/java-archive",
+        "war" => "application/java-archive",
+        "ear" => "application/java-archive",
+        "hqx" => "application/mac-binhex40",
+        "pdf" => "application/pdf",
+        "ps" => "application/postscript",
+        "eps" => "application/postscript",
+        "ai" => "application/postscript",
+        "rtf" => "application/rtf",
+        "wmlc" => "application/vnd.wap.wmlc",
+        "xhtml" => "application/xhtml+xml",
+        "kml" => "application/vnd.google-earth.kml+xml",
+        "kmz" => "application/vnd.google-earth.kmz",
+        "7z" => "application/x-7z-compressed",
+        "crx" => "application/x-chrome-extension",
+        "oex" => "application/x-opera-extension",
+        "xpi" => "application/x-xpinstall",
+        "cco" => "application/x-cocoa",
+        "jardiff" => "application/x-java-archive-diff",
+        "jnlp" => "application/x-java-jnlp-file",
+        "run" => "application/x-makeself",
+        "pl" => "application/x-perl",
+        "pm" => "application/x-perl",
+        "prc" => "application/x-pilot",
+        "pdb" => "application/x-pilot",
+        "rar" => "application/x-rar-compressed",
+        "rpm" => "application/x-redhat-package-manager",
+        "sea" => "application/x-sea",
+        "swf" => "application/x-shockwave-flash",
+        "sit" => "application/x-stuffit",
+        "tcl" => "application/x-tcl",
+        "tk" => "application/x-tcl",
+        "der" => "application/x-x509-ca-cert",
+        "pem" => "application/x-x509-ca-cert",
+        "crt" => "application/x-x509-ca-cert",
+        "torrent" => "application/x-bittorrent",
+        "zip" => "application/zip",
+        "bin" => "application/octet-stream",
+        "exe" => "application/octet-stream",
+        "dll" => "application/octet-stream",
+        "deb" => "application/octet-stream",
+        "dmg" => "application/octet-stream",
+        "iso" => "application/octet-stream",
+        "img" => "application/octet-stream",
+        "msi" => "application/octet-stream",
+        "msp" => "application/octet-stream",
+        "msm" => "application/octet-stream",
+        "safariextz" => "application/octet-stream",
+        "css" => "text/css",
+        "html" => "text/html",
+        "htm" => "text/html",
+        "shtml" => "text/html",
+        "mml" => "text/mathml",
+        "txt" => "text/plain",
+        "jad" => "text/vnd.sun.j2me.app-descriptor",
+        "wml" => "text/vnd.wap.wml",
+        "vtt" => "text/vtt",
+        "htc" => "text/x-component",
+        "vcf" => "text/x-vcard",
+        "map" => 'application/json'
+      ];
+    if (isset($types[$ext])) $mime = $types[$ext];
+    return $mime;
+}
+
+
 function wbMailer(
     $from = null,
     $sent = null,
@@ -235,15 +406,13 @@ function wbMailer(
     return wbMail($from, $sent, $subject, $message, $attach);
 }
 
-
-
 function wbMail(
     $from = null,
     $sent = null,
     $subject = null,
     $message = null,
     $attach = null
-) {
+    ) {
     if ($from == null) {
         $from=$_ENV["settings"]["email"].";".$_ENV["settings"]["header"];
     } elseif (!is_array($from)) {
@@ -327,7 +496,7 @@ function wbMail(
         $error=$_ENV["error"][__FUNCTION__]=$mail->ErrorInfo;
     } else {
 
-// Set content-type header for sending HTML email
+        // Set content-type header for sending HTML email
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
@@ -1472,7 +1641,7 @@ function wb_file_get_contents($file)
     return $contents;
 }
 
-function wbTrigger($type, $name, $trigger, $args = null, $data = null)
+function wbTrigger($type, $name, $trigger, $args = [], $data = null)
 {
 
     //$env_error = $_ENV['error'];
@@ -1484,6 +1653,13 @@ function wbTrigger($type, $name, $trigger, $args = null, $data = null)
     }
     switch ($type) {
     case 'form':
+        $form = $args[0];
+        $class = wbFormClass($form);
+        if ($class && method_exists($class,$trigger)) {
+            $class->$trigger($data);
+        }
+/*
+
     $_ENV["trigger"][$trigger]=$args;
     $arg0 = $args[0];
         if ((string)$arg0 === $arg0) {
@@ -1513,7 +1689,7 @@ function wbTrigger($type, $name, $trigger, $args = null, $data = null)
                 }
             }
         }
-
+*/
         return $data;
         break;
     case 'func':
@@ -1637,25 +1813,6 @@ function wbErrorOut($error, $ret = false)
     }
 }
 
-function wbLoopProtect($func, $args=array())
-{
-    if (!isset($_ENV['wbGetFormStack'])) {
-        $_ENV['wbGetFormStack'] = array();
-    }
-    $_ENV['wbGetFormStack'][] = $func."_".md5(json_encode($args).$_ENV["lang"].$_ENV["lang"]);
-}
-
-function wbLoopCheck($func, $args)
-{
-    if (!isset($_ENV['wbGetFormStack'])) {
-        $_ENV['wbGetFormStack'] = array();
-    }
-    if (in_array($func."_".md5(json_encode($args).$_ENV["lang"].$_ENV["lang"]), $_ENV['wbGetFormStack'])) {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 function wbOconv($value, $oconv)
 {
@@ -1764,10 +1921,8 @@ function wbNewId($separator = '', $prefix = '')
     if ($prefix > '') {
         $id = $prefix.$separator.$id.$md;
     } else {
-        $id = $id.$separator.$md;
+        $id = "id".$id.$separator.$md;
     }
-    $_ENV['newIdLast']=$_SESSION['newIdLast'] = $id;
-
     return $id;
 }
 
@@ -2200,159 +2355,6 @@ function wbWherePhp($str = '', $item = array())
     return $str;
 }
 
-function wbt_where($table, $where)
-{
-    $where = htmlspecialchars_decode($where);
-    foreach ($where as $key => $val) {
-        if ('$' == mb_substr($val, 0, 1)) {
-            $tmp = explode('.', $val);
-            if (2 == count($tmp)) {
-                $val = '$'.mb_substr($tmp[0], 1).'["'.$tmp[1].'"]';
-            } else {
-                $val = '$'.$table.'["'.mb_substr($tmp[0], 1).'"]';
-            }
-            $where[$key] = $val;
-        }
-    }
-    $res = implode(' ', $where);
-
-    return $res;
-}
-
-
-function wbt_route($sid, $e, $r = 'TABLE')
-{
-    if (!isset($_ENV['sql'][$sid][$r])) {
-        $_ENV['sql'][$sid][$r] = array();
-    }
-    $t = &$_ENV['sql'][$sid][$r];
-    if (isset($_ENV['sql'][$sid]['JOIN'])) {
-        $t = &$_ENV['sql'][$sid]['FROM'][$_ENV['sql'][$sid]['JOIN']]['join'];
-    }
-    if (isset($_ENV['sql'][$sid]['EXPR'])) {
-        $t = &$_ENV['sql'][$sid]['EXPR'];
-    }
-    switch ($e['expr_type']) {
-    case 'table':
-        if (is_array($e['alias'])) {
-            $key = $e['alias']['no_quotes'];
-        } else {
-            $key = $e['no_quotes'];
-        }
-        $t[$key]['name'] = $e['no_quotes'];
-        if (isset($e['join_type']) and isset($e['ref_clause']) and is_array($e['ref_clause']) and 'JOIN' == $e['join_type']) {
-            $_ENV['sql'][$sid]['JOIN'] = $key;
-            foreach ($e['ref_clause'] as $s) {
-                wbt_route($sid, $s, 'WHERE');
-            }
-            unset($_ENV['sql'][$sid]['JOIN']);
-        }
-        break;
-    case 'expression':
-        $_ENV['sql'][$sid]['EXPR'] = array();
-        if (isset($e['sub_tree'])) {
-            foreach ($e['sub_tree'] as $s) {
-                wbt_route($sid, $s, 'WHERE');
-            }
-        }
-        if (isset($e['alias']) and $e['alias']['no_quotes'] > '') {
-            $t[$e['alias']['no_quotes']] = implode(' ', $_ENV['sql'][$sid]['EXPR']);
-        } else {
-            $t[] = implode(' ', $_ENV['sql'][$sid]['EXPR']);
-        }
-        unset($_ENV['sql'][$sid]['EXPR']);
-        break;
-    case 'colref':
-        if (in_array($r, array('WHERE', 'TABLE', 'SELECT'), true)) {
-            $t[] = '$'.$e['no_quotes'];
-        }
-        if (is_array($e['sub_tree'])) {
-            foreach ($e['sub_tree'] as $s) {
-                wbt_route($sid, $s, $r);
-            }
-        }
-        break;
-    case 'operator':
-        $op = strtr(mb_strtoupper($e['base_expr']), array(
-                        '<=' => '<=',
-                        '>=' => '>=',
-                        '=' => '==',
-                        '<>' => '!==',
-                        'NOT' => '!==',
-                    ));
-        $t[] = $op;
-        break;
-    case 'const':
-        if (in_array($r, array('WHERE', 'TABLE', 'SELECT'), true)) {
-            $t[] = $e['base_expr'];
-        }
-        break;
-    case 'bracket_expression':
-        if (in_array($r, array('WHERE', 'TABLE', 'SELECT'), true)) {
-            $t[] = '(';
-            if (isset($e['sub_tree'])) {
-                foreach ($e['sub_tree'] as $s) {
-                    wbt_route($sid, $s, $r);
-                }
-            }
-            $t[] = ')';
-        }
-        break;
-    }
-}
-
-function wbDotName($name)
-{
-    $name = str_replace(["[","]"], [".",""], $name);
-    $name = str_replace(["...",".."], ".", $name);
-    if (substr($name, -1) == ".") {
-        $name = substr($name, 0, -1);
-    }
-    return $name;
-}
-
-class wbt_filter extends FilterIterator
-{
-    private $userFilter;
-    private $variable;
-    private $join;
-    private $table;
-    private $type;
-    private $data;
-
-    public function __construct(Iterator $iterator, $type, $data)
-    {
-        parent::__construct($iterator);
-        //$tname, $filter, $join=null
-        $this->type = $type;
-        switch ($type) {
-        case 'where':
-            $this->userFilter = $data['where'];
-            $this->table = $data['table'];
-            $this->join = $data['join'];
-            break;
-        }
-    }
-
-    public function accept()
-    {
-        $item = $this->getInnerIterator()->current();
-        switch ($this->type) {
-        case 'where':
-            eval('$'.$this->table.' = $item;');
-            break;
-        }
-        eval('if ( '.$this->userFilter.' ) { $res=1; } else { $res=0; } ;');
-        if (0 == $res) {
-            return false;
-        }
-
-        return true;
-    }
-}
-
-
-
 function wbRouterAdd($route = null, $destination = null)
 {
     if (null == $route) { // Роутинг по-умолчанию
@@ -2506,12 +2508,8 @@ function wbGetWords($str, $w = 100)
 
 function wbSetValuesStr($tag = "", $Item = array(), $limit = 2, $vars = null)
 {
-    if (is_object($tag)) {
-        $tag = $tag->outer();
-    }
-    if (!strpos($tag, "}}")) {
-        return $tag;
-    }
+    if (is_object($tag)) $tag = $tag->outer();
+    if (!strpos($tag, "}}")) return $tag;
     $processor = new WEProcessor($Item);
     $tag=$processor->substitute($tag);
     return $tag;
@@ -3029,7 +3027,9 @@ function wbListTpl()
     {
         $str = preg_replace('/(rn|n|r)/', '', $str);
         return preg_replace('=<br */?>=i', 'n', $str);
-    } function wbCheckPhpCode($code)
+    }
+
+    function wbCheckPhpCode($code)
     {
         $file=$_ENV["path_app"]."/uploads/".wbNewId().".php";
         $umask=umask(0);

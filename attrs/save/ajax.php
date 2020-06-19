@@ -14,6 +14,7 @@ class wbAjaxSave
         $item = $this->app->vars("_post");
         if (!isset($item["_id"]) && $this->app->vars("_route.item") > "") $item["_id"] = $this->app->vars("_route.item");
         if (count($item)) $res = $this->app->itemSave($table,$item,true);
+        if ($res) $res = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], $res);
         echo json_encode($res);
     }
 }

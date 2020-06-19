@@ -1,4 +1,5 @@
 <?php
+// replaced with static.php
 class ctrlFile {
   function __construct($app) {
       $this->app = $app;
@@ -16,10 +17,7 @@ class ctrlFile {
 
   public function output() {
       if (isset($this->route->file)) {
-        $info = wbArrayToObj(pathinfo($this->route->file));
-        $mime = mime_content_type($this->route->file);
-        if ($mime == "image/svg") $mime = "image/svg+xml";
-        if (in_array($info->extension,["ttf","woff","woff2","eot","otf"])) $mime = "application/font-".$info->extension;
+        $mime = wbMime($this->route->file);
         header("Content-type: {$mime}");
         echo file_get_contents($this->route->file);
       } else {

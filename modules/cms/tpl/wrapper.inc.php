@@ -30,28 +30,35 @@
     <meta name="author" content="Oleg Frolov">
 
 		<wb-snippet name="wbapp" />
-		<wb-snippet name="fontawesome4" />
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{_var.base}}./assets/assets/img/favicon.png">
     <title>Web Basic - Pandorum varsion</title>
-    <!-- vendor css -->
-    <link href="{{_var.base}}./assets/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="{{_var.base}}./assets/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
-    <!-- DashForge CSS -->
-    <link rel="stylesheet" href="{{_var.base}}./assets/css/dashforge.css">
-    <link rel="stylesheet" href="{{_var.base}}./assets/css/dashforge.chat.css">
+
+
   </head>
   <body class="app-chat">
 
-		<script src="{{_var.base}}./assets/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="{{_var.base}}./assets/lib/feather-icons/feather.min.js"></script>
-    <script src="{{_var.base}}./assets/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+		<script type="wbapp">
+			wbapp.loadStyles([
+				"{{_var.base}}./assets/css/dashforge.css"
+				,"{{_var.base}}./assets/css/dashforge.chat.css"
+				,"{{_var.base}}./assets/css/cms.less"
+				,"/engine/lib/fonts/font-awesome/css/font-awesome.min.css"
+				,"/engine/lib/fonts/remixicons/remixicon.css"
+				,"{{_var.base}}./assets/lib/ionicons/css/ionicons.min.css"
+			]);
 
-    <script src="{{_var.base}}./assets/js/dashforge.js"></script>
-    <script src="{{_var.base}}./assets/js/dashforge.aside.js"></script>
+			wbapp.loadScripts([
+				 "{{_var.base}}./assets/lib/bootstrap/js/bootstrap.bundle.min.js"
+				,"{{_var.base}}./assets/lib/feather-icons/feather.min.js"
+				,"{{_var.base}}./assets/lib/perfect-scrollbar/perfect-scrollbar.min.js"
+				,"{{_var.base}}./assets/js/dashforge.js"
+				,"{{_var.base}}./assets/js/dashforge.aside.js"
+				,"{{_var.base}}./assets/lib/js-cookie/js.cookie.js"
+				,"{{_var.base}}./assets/js/dashforge.settings.js"
+			]);
 
-    <!-- append theme customizer -->
-    <script src="{{_var.base}}./assets/lib/js-cookie/js.cookie.js"></script>
-    <script src="{{_var.base}}./assets/js/dashforge.settings.js"></script>
+		</script>
+
   </body>
 </html>

@@ -10,7 +10,6 @@ class ctrlModule {
 			if (is_file($aModule)) {require_once($aModule);}
 			elseif (is_file($eModule)) {require_once($eModule);}
 			$class = "mod".ucfirst($module);
-
 			if (class_exists($class)) {
 				$out = new $class($app);
 				$out->$mode();

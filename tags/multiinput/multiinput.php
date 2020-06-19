@@ -14,11 +14,13 @@ class tagMultiinput {
         if ($dom->params("name") > "") $field = $dom->params("name");
         $dom->attr("name",$field);
         $dom->params->name = $field;
+        if (isset($dom->item[$field])) $dom->item = [$field => $dom->item[$field],"_parent"=>$dom->item];
         $inner=$dom->inner();
         if ($inner == "") $inner = "<input type='text' name='{$field}' class='form-control' />";
         $inner = $dom->app->fromString($inner);
         $wrp = str_replace("{{inner}}",$inner->outer(),$wrp);
-        $tplId='mi_'.wbNewId();
+        $dom->attr("id") > "" ? $tplId = $dom->attr("id") : $tplId='mi_'.wbNewId();
+        $dom->attr("id",$tplId);
         $textarea = $dom->app->fromString("<textarea name='{$field}' type='json' class='wb-multiinput-data' style='display:none;'></textarea>");
         $textarea->copy($dom);
         $textarea->attr("data-tpl",$tplId);

@@ -111,6 +111,13 @@ class ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d
                 0 => __DIR__ . '/..' . '/greenlion/php-sql-parser/src',
             ),
         ),
+        'M' => 
+        array (
+            'Mustache' => 
+            array (
+                0 => __DIR__ . '/..' . '/mustache/mustache/src',
+            ),
+        ),
         'J' => 
         array (
             'JSONSQL\\' => 

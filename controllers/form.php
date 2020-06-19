@@ -28,9 +28,9 @@ class ctrlForm {
           $dom->item = $app->db->itemRead($table,$this->route->item);
       }
       $dom->fetch();
-      echo $dom->outer();
-      $app->out = &$dom;
-      return $dom;
+      $app->show = &$dom;
+      echo $dom;
+      die;
   }
 
   function ajax() {
@@ -43,6 +43,9 @@ class ctrlForm {
           if (!isset($options->page)) $options->page = 1;
           if (!isset($options->filter)) $options->filter = [];
           $list = $app->itemList($form,(array)$options);
+          foreach ($list["list"] as &$item) {
+            $item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$form], $item);
+          }
           $pages = ceil($list["count"] / $options->size);
           $pagination = wbPagination($options->page,$pages);
           echo json_encode(["result"=>$list["list"],"pages"=>$pages,"page"=>$options->page,"pagination"=>$pagination]);

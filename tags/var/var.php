@@ -14,6 +14,7 @@ class tagVar {
           if (!in_array($wb,["wb","wb-"])) {
               $atval = wbAttrToValue($atval);
               $dom->app->vars("_var.{$atname}",$atval);
+              $parent->variables[$atname] = $atval;
           }
       }
       $dom->remove();

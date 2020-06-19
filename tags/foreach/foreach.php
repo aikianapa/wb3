@@ -69,6 +69,7 @@ class tagForeach {
             $val->_page = $page;
             $val->_pages = $pages;
             if (!isset($val->_id)) isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
+            if ($table > "") $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], (array)$val);
             if ($render > "") {
                 $list[$key] = (array)$val;
             } else {

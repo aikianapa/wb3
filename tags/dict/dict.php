@@ -1,14 +1,20 @@
 <?php
-    function tagDict(&$dom) {
-        if (!$dom->app) $dom->app = new wbApp();
+
+class tagDict {
+
+  public function __construct($dom) {
+      $this->dict($dom);
+  }
+
+  public function dict(&$dom) {
         $out = $dom->app->fromFile( __DIR__ ."/dict_ui.php");
-        $out->data = $dom->data;
+        $out->item = $dom->item;
         $out->app = $dom->app;
         $name = $dom->attr("name");
         $out->find(".wb-dict")->attr("name",$name);
         $out->fetch();
-        $dom->removeAttr("data-wb");
-        $dom->html($out);
+        $dom->after($out->inner());
+        $dom->remove();
     }
-
+}
 ?>

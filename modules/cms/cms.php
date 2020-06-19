@@ -22,14 +22,7 @@ class modCms {
   function ajax() {
       $app = $this->app;
       if ($app->vars("_route.form") > "") {
-          require_once(__DIR__."/cms_formsclass.php");
-          require_once(__DIR__."/forms/{$app->vars("_route.form")}/_class.php");
-          $class = $app->vars("_route.form")."Class";
-          if (class_exists($class)) {
-              $form = new $class($app);
-          } else {
-              $form = new cmsFormsClass($app);
-          }
+          $form = $app->formClass($app->vars("_route.form"));
           $action = $app->vars("_route.action");
           $form->$action();
       }
