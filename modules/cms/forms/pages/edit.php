@@ -30,6 +30,17 @@
           </div>
 
           <div class="form-group row">
+            <label class="col-sm-2 form-control-label">Шаблон</label>
+            <div class="col-sm-10">
+              <select class="form-control" name="template" placeholder="Шаблон">
+                  <wb-foreach wb='call=wbListTpl()'>
+                  <option>{{_val}}</option>
+                  </wb-foreach>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group row">
             <label class="col-12 form-control-label">Текст</label>
             <div class="col-12">
               <wb-module wb="{'module':'jodit'}" name="text"/>

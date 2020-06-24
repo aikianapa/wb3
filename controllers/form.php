@@ -25,7 +25,14 @@ class ctrlForm {
       if (isset($this->route->item)) {
           $table = $this->route->form;
           if (isset($this->route->table)) $table = $this->route->table;
-          $dom->item = $app->db->itemRead($table,$this->route->item);
+          $item = $app->db->itemRead($table,$this->route->item);
+          if ($item["template"] > "" AND $item["active"] == "on") {
+              $dom = $app->getTpl($item["template"]);
+          } else {
+              header( "HTTP/1.1 404 Not Found" );
+              $dom = $app->getTpl("404.php");
+          }
+          $dom->item = $item;
       }
       $dom->fetch();
       $app->show = &$dom;

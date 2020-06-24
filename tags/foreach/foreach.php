@@ -32,6 +32,10 @@ class tagForeach {
           $count = $res["count"];
         }
 
+        if ($dom->params("call") > "") {
+            $list = wbEval($dom->params("call"));
+        }
+
         if ($dom->params("size") > "") {
             $dom->params("page") ? $page = $dom->params->page : $page = 1;
             $list = array_chunk($list,$dom->params->size);
@@ -63,11 +67,13 @@ class tagForeach {
         if (!$render) $tpl = "<wb>{$tpl}</wb>";
 
         foreach($list as $key => $val) {
+            $value = $val;
             $val = (object)$val;
             $val->_idx = $idx;
             $val->_ndx = $ndx;
             $val->_page = $page;
             $val->_pages = $pages;
+            $val->_val = $value;
             if (!isset($val->_id)) isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
             if ($table > "") $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], (array)$val);
             if ($render > "") {

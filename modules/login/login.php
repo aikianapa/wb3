@@ -8,6 +8,7 @@ class modLogin
         if ($obj instanceof wbDom) {
             $app = $obj->app;
             $dom = $obj;
+            if (!isset($dom->params->mode)) $dom->params->mode = "signin";
             $this->mode = $dom->params->mode;
             $this->embed = true;
         } elseif ($obj instanceof wbApp) {
