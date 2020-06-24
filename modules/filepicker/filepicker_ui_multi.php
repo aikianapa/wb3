@@ -32,13 +32,15 @@
   </div>
 
   <template id="fp-listviewItem">
-    <div class="card col-2 p-2 m-2">
-      <img class="card-img-top" src="/thumb/200x200/src/%url%?nocache=true" data-src="%url%" data-img='%name%' title="%title%" alt="%alt%">
+  {{#each images}}
+    <div class="card p-2">
+      <img class="card-img-top" data-src="{{img}}" data-img='{{name}}' loading title="{{title}}" alt="{{alt}}" onload="$(this).removeAttr('loading onload')">
       <div class="card-body">
         <a href="#" class="action action-primary crop"><i class="fa fa-crop"></i></a>
         <a href="#" class="action action-danger delete pull-right"><i class="fa fa-trash-o text-danger"></i></a>
       </div>
     </div>
+  {{/each}}
   </template>
 
   <!-- Drop Window -->
@@ -104,13 +106,26 @@
   </div>
   <!-- end of #camera-modal -->
 
-<script type="text/locale">
+<wb-lang>
 [en]
 camera = "Camera"
-choose = "Choose files"
+choose = "Files"
 [ru]
 camera = "Камера"
-choose = "Выбрать файлы"
-</script>
+choose = "Файлы"
+</wb-lang>
+<style>
+.filepicker .card img {
+    width:200px;
+    height:200px;
+}
+.filepicker .card > i {
+    font-size: 200px;
+}
+.filepicker .card img[loading] {
+    background: url(/engine/modules/filepicker/assets/img/loader.gif) 50% 50% no-repeat;
+    background-size: contain;
+}
+</style>
 </div>
 <!-- end of #filepicker -->

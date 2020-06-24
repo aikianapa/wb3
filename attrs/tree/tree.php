@@ -27,13 +27,13 @@ function tagTree(&$dom, $Item=null) {
     isset($dom->params->type) ? $type = $dom->params->type : $type = null;
     isset($dom->params->field) ? $field = $dom->params->field : $field = null;
 
-    if ($table && !isset($form)) $form = $table;
+    if ($table && !isset($form)) $form = $dom->params->form = $table;
     if ($form > "" AND $item > "") $Item = $dom->app->itemRead($form,$item);
 
     $srcData = $Item;
 
     if (!isset($dom->params->from) AND !isset($dom->params->field)) {$field = $name;}
-        if ($dom->is("select") AND !$dom->params->form) {$field = "tree";}
+        if ($dom->is("select") AND !isset($dom->params->form)) {$field = "tree";}
         if ($form == "" AND $item > "") {
             $Item = $dom->app->treeRead($item);
             $field = "tree";
@@ -81,7 +81,9 @@ function tagTree(&$dom, $Item=null) {
 
 class tagTreeSelect {
   function stage() {
+      $app = $this->dom->app;
       if ($this->dom->is("select")) {
+          $app = &$this->dom->app;
           $params = $this->dom->params;
           $this->tpl = $this->dom->html();
           $this->dom->html("");
@@ -89,51 +91,57 @@ class tagTreeSelect {
           $this->idx = 0;
           $this->limit = -1;
           $this->level = -1;
-          $this->parent = $params->parent;
-          if (!$params->parent) $this->parent = true;
+          if (!isset($params->parent)) $params->parent = "true";
           if ($params->parent == "true") $this->parent = true;
           if ($params->parent == "false") $this->parent = false;
 
-          if (!$params->children) $this->children = true;
+          if (!isset($params->children)) $params->children = true;
           if ($params->children == "true") $this->children = true;
           if ($params->children == "false") $this->children = false;
 
+          if (!isset($params->level)) $params->level = 0;
           if ($params->level) $this->level = intval($params->level);
 
           $this->select = &$this->dom;
-          $app = &$this->dom->app;
+
+          if (!isset($params->branch)) $params->branch = null;
           if ($params->branch !== null AND $params->branch == "") {
               $this->tree = [];
           } else if ($params->branch > "") {
               $this->tree = wbTreeFindBranch($this->tree,$params->branch);
           }
-      } else {
-          $app = $this->dom->app;
+          if (!isset($params->rand)) $params->rand = false;
       }
       $flag = false;
       if ((array)$this->tree === $this->tree) {
-        if ($rand==true) shuffle($tree);
+        if ($params->rand==true) shuffle($tree);
         foreach($this->tree as $i => $item) {
             if (!((array)$item === $item)) $item = (array)$item;
             if (!isset($item["id"])) $item["id"] = $i;
             $line=$app->fromString($this->tpl);
-            $line->fetch($item);
+
             if ($this->parent === "disabled") {
                 $line->attr("disabled",true);
                 $this->parent = null;
             }
 
-            if ($this->dom->tag() == "option") {
-                $line->prepend("<span>".str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;",$this->lvl)."</span>");
-            }
 
             $item["_parent"]=&$Item;
             if ($this->children == false && $this->lvl > 1) return;
+
+
+            $line->fetch($item);
+            if ($line->tag() == "option") {
+                $line->prepend("<span>".str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;",$this->lvl)."</span>");
+            }
+
+
             $this->lvl++;
-            $item=(array)$srcVal + (array)$item;
+
             $item["_idx"]=$this->idx;
             $item["_ndx"]=$this->idx+1;
             $item["_lvl"]=$this->lvl;
+
 
             if ($this->parent !== false && $item["active"] == "on")  $flag = true;
             if ($this->level > "" && $this->level !== $this->lvl) $flag = false;
@@ -166,7 +174,7 @@ class tagTreeSelect {
             $this->lvl--;
         }
       }
-            $this->dom->selectValues();
+          //  $this->dom->selectValues();
   }
 }
 

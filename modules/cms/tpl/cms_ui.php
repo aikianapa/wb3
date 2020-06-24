@@ -32,7 +32,7 @@
             <div class="aside-alert-link">
               <a href="" class="new" data-toggle="tooltip" title="You have 2 unread messages"><i data-feather="message-square"></i></a>
               <a href="" class="new" data-toggle="tooltip" title="You have 4 new notifications"><i data-feather="bell"></i></a>
-              <a href="" data-ajax="{'url':'/cms/ajax/logout'}" data-toggle="tooltip" title="Sign out"><i data-feather="log-out"></i></a>
+              <a href="#" data-ajax="{'url':'/cms/ajax/logout'}" data-toggle="tooltip" title="{{_lang.signout}}"><i class="ri-logout-box-r-line"></i></a>
             </div>
           </div>
           <div class="aside-loggedin-user">
@@ -46,28 +46,13 @@
           <div class="collapse" id="loggedinMenu">
             <ul class="nav nav-aside mg-b-0">
               <li class="nav-item">
-                <a href="" class="nav-link"><i data-feather="edit"></i>
-                  <span>Edit Profile</span>
+                <a href="" class="nav-link"><i class="ri-user-settings-line"></i>
+                  <span>&nbsp;{{_lang.profile}}</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="" class="nav-link"><i data-feather="user"></i>
-                  <span>View Profile</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="" class="nav-link"><i data-feather="settings"></i>
-                  <span>Account Settings</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="" class="nav-link"><i data-feather="help-circle"></i>
-                  <span>Help Center</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="" class="nav-link"><i data-feather="log-out"></i>
-                  <span>Sign Out</span>
+                <a href="#" data-ajax="{'url':'/cms/ajax/logout'}" class="nav-link"><i class="ri-logout-box-r-line"></i>
+                  <span>&nbsp;{{_lang.signout}}</span>
                 </a>
               </li>
             </ul>
@@ -106,29 +91,11 @@
 
       <div class="content-body pd-0">
 
+        <meta href="#" data-ajax="{'url':'/cms/ajax/form/places/list','html':'.content-body'}" auto >
+
       </div>
     </div>
     <!-- content -->
-
-    <div class="modal fade effect-scale" id="modalCreateChannel" tabindex="-1" role="dialog"
-      aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-        <div class="modal-content">
-          <div class="modal-body pd-20">
-            <button type="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true"><i data-feather="x" class="wd-20"></i></span>
-            </button>
-
-            <h6 class="tx-uppercase tx-spacing-1 tx-semibold mg-b-20">Create Channel</h6>
-            <input type="text" class="form-control" placeholder="Channel name" value="">
-          </div>
-          <div class="modal-footer pd-x-20 pd-b-20 pd-t-0 bd-t-0">
-            <button type="button" class="btn btn-secondary tx-13" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary tx-13">Create</button>
-          </div>
-        </div>
-      </div>
-    </div>
 
   </div>
 
@@ -139,7 +106,11 @@
 <wb-lang>
 [en]
 forms = Forms
+profile = Profile
+signout = Sign Out
 [ru]
 forms = Формы
+profile = Профиль
+signout = Выход
 </wb-lang>
 </html>

@@ -31,7 +31,7 @@
 
 		<wb-snippet name="wbapp" />
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{_var.base}}./assets/assets/img/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="{{_var.base}}/assets/img/favicon.png">
     <title>Web Basic - Pandorum varsion</title>
 
 
@@ -42,10 +42,11 @@
 			wbapp.loadStyles([
 				"{{_var.base}}./assets/css/dashforge.css"
 				,"{{_var.base}}./assets/css/dashforge.chat.css"
+				,"{{_var.base}}./assets/css/skin.cool.css"
 				,"{{_var.base}}./assets/css/cms.less"
-				,"/engine/lib/fonts/font-awesome/css/font-awesome.min.css"
 				,"/engine/lib/fonts/remixicons/remixicon.css"
-				,"{{_var.base}}./assets/lib/ionicons/css/ionicons.min.css"
+				,"/engine/lib/fonts/font-awesome/css/font-awesome.min.css"
+				,"/engine/lib/fonts/materialicons/materialicons.css"
 			]);
 
 			wbapp.loadScripts([
@@ -55,7 +56,6 @@
 				,"{{_var.base}}./assets/js/dashforge.js"
 				,"{{_var.base}}./assets/js/dashforge.aside.js"
 				,"{{_var.base}}./assets/lib/js-cookie/js.cookie.js"
-				,"{{_var.base}}./assets/js/dashforge.settings.js"
 			]);
 
 		</script>

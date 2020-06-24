@@ -1,5 +1,4 @@
 "use strict"
-wbapp.session();
 
 $(document).delegate(".nav-link","tap click",function(){
     $(this).parents("ul,nav").find(".nav-link").removeClass("active");

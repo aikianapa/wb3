@@ -32,13 +32,6 @@ class ctrlAjax {
   }
 
   public function alive() {
-    session_start([
-        "save_path" => $sessdir,
-        "gc_probability" => 5,
-        "gc_divisor" => 80,
-        "gc_maxlifetime" => 84600,
-        "cookie_lifetime" => 0
-    ]);
     if (isset($_SESSION["user"])) echo json_encode(["result" => true]);
     else echo json_encode(["result" => false]);
   }

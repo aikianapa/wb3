@@ -116,8 +116,7 @@ class wbDom extends DomQuery
     {
         $this->fetchStrict();
         $this->fetchLang();
-        if ($this->strict) return;
-        if (isset($this->fetched)) return;
+        if ($this->strict OR isset($this->fetched)) return;
         if (!$this->app) $this->app = $_ENV["app"];
         if ($item == null) $item = $this->item;
         if ($this->tagName == "head") $this->head = $this;
@@ -181,12 +180,19 @@ class wbDom extends DomQuery
         if ($this->tagName == "template" or $this->closest("template")->length) {
             $this->strict = true;
         }
+/*
         if ($this->tagName == "template") {
             // set locale for template
             $tpl = $this->inner();
             isset($_ENV["locales"][$_SESSION["lang"]]) ? $data = ["_lang" => $_ENV["locales"][$_SESSION["lang"]]] : $data = [];
             $tpl = wbSetValuesStr($tpl, $data);
             $this->inner($tpl);
+        }
+*/
+        if ($this->tagName == "template") {
+            // set locale for template
+            isset($_ENV["locales"][$_SESSION["lang"]]) ? $data = ["_lang" => $_ENV["locales"][$_SESSION["lang"]]] : $data = [];
+            $this->setValues();
         }
     }
 
@@ -250,6 +256,7 @@ class wbDom extends DomQuery
             }
             $this->params = (object)$params;
         }
+        if (isset($this->params->module)) $this->role = "module";
         $this->fetchAllows();
         if ($this->role) {
             $func="tag".ucfirst($this->role);

@@ -91,7 +91,7 @@ function wbItemSave($table, $item = null, $flush = true)
 {
     $item = wbItemInit($table, $item);
     $item = wbTrigger('form', __FUNCTION__, 'beforeItemSave', func_get_args(), $item);
-    $db = wbSetDb($form);
+    $db = wbSetDb($table);
     if ($table == "_settings") $db = $_ENV["app"]->_db;
     $item = $db->itemSave($table, $item, $flush);
     $item = wbTrigger('form', __FUNCTION__, 'afterItemSave', func_get_args(), $item);

@@ -13,18 +13,6 @@
     <button type="button" class="btn btn-primary camera-show">
       <i class="fa fa-camera"></i><span class="d-none d-md-inline"> {{_lang.camera}}</span>
     </button>
-
-    <!--button type="button" class="btn btn-info start-all">
-      <i class="fa fa-arrow-circle-o-up"></i> Start all
-    </button>
-
-    <button type="button" class="btn btn-warning cancel-all">
-      <i class="fa fa-ban"></i> Cancel all
-    </button>
-
-    <button type="button" class="btn btn-danger delete-all">
-      <i class="fa fa-trash-o"></i> Delete all
-    </button-->
   </div>
 
   <!-- Files -->
@@ -32,14 +20,21 @@
 
   </div>
 
+
   <template id="fp-listviewItem">
+  {{#each images}}
     <div class="card p-2">
-      <img class="card-img-top" src="/thumb/200x200/src/%url%?nocache=true" data-src="%url%" data-img='%name%' title="%title%" alt="%alt%">
+      <img class="card-img-top" data-src="{{img}}" data-img='{{name}}' loading title="{{title}}" alt="{{alt}}" onload="$(this).removeAttr('loading onload')">
       <div class="card-body">
         <a href="#" class="action action-primary crop"><i class="fa fa-crop"></i></a>
         <a href="#" class="action action-danger delete pull-right"><i class="fa fa-trash-o text-danger"></i></a>
       </div>
     </div>
+  {{else}}
+    <div class="card p-2">
+      <i class="fa file-icon-jpg"></i>
+    </div>
+  {{/each}}
   </template>
 
   <!-- Drop Window -->
@@ -105,18 +100,25 @@
   </div>
   <!-- end of #camera-modal -->
 
-<script type="text/locale">
+<wb-lang>
 [en]
 camera = "Camera"
-choose = "Choose files"
+choose = "Files"
 [ru]
 camera = "Камера"
-choose = "Выбрать файлы"
-</script>
+choose = "Файлы"
+</wb-lang>
 <style>
-#fp-listviewItem .card img {
+.filepicker .card img {
     width:200px;
     height:200px;
+}
+.filepicker .card > i {
+    font-size: 200px;
+}
+.filepicker .card img[loading] {
+    background: url(/engine/modules/filepicker/assets/img/loader.gif) 50% 50% no-repeat;
+    background-size: contain;
 }
 </style>
 </div>

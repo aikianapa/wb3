@@ -7,26 +7,26 @@
           <span class="tx-10 tx-uppercase tx-medium tx-color-03 tx-sans tx-spacing-1"><i class="ri-settings-4-line"></i> {{_lang.settings}}</span>
         </div>
         <nav id="{{_form}}ListSettings" class="nav flex-column nav-chat mg-b-20">
-          <span class="nav-link">
-            <a href="#" data-ajax="{'url':'/cms/settings/ui_common/','html':'#editSettingsForm'}"
+          <span class="nav-item">
+            <a class="nav-link" href="#" data-ajax="{'url':'/cms/settings/ui_common/','html':'#editSettingsForm'}"
               auto>
               {{_lang.common}}
             </a>
           </span>
-          <span class="nav-link">
-            <a href="#" data-ajax="{'url':'/cms/settings/ui_vars/','html':'#editSettingsForm'}">
+          <span class="nav-item">
+            <a class="nav-link" href="#" data-ajax="{'url':'/cms/settings/ui_vars/','html':'#editSettingsForm'}">
               {{_lang.variables}}
             </a>
           </span>
 
-          <span class="nav-link">
-            <a href="#" data-ajax="{'url':'/cms/settings/ui_menu/','html':'#editSettingsForm'}">
+          <span class="nav-item">
+            <a class="nav-link" href="#" data-ajax="{'url':'/cms/settings/ui_menu/','html':'#editSettingsForm'}">
               {{_lang.menu}}
             </a>
           </span>
 
-          <span class="nav-link">
-            <a href="#" data-ajax="{'url':'/cms/settings/ui_prop/','html':'#editSettingsForm'}">
+          <span class="nav-item">
+            <a class="nav-link" href="#" data-ajax="{'url':'/cms/settings/ui_prop/','html':'#editSettingsForm'}">
               {{_lang.properties}}
             </a>
           </span>

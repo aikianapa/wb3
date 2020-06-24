@@ -166,6 +166,52 @@ wbapp.storage = function (key, value = undefined) {
   }
 }
 
+wbapp.save = function(obj,params,event) {
+  let that = this;
+  let data, form, result;
+  let method = "POST";
+  if (params.form !== undefined) {
+      form = $(params.form);} else {form = $(obj).parents("form");
+      if ($(form).attr("method") !== undefined) method = $(form).attr("method");
+  }
+  data = wbapp.objByForm(form);
+  if (data._idx) delete data._idx;
+
+  if ($(obj).is(":input") && params.table && params.id && params.field) {
+        let fld = $(obj).attr("name");
+        let value = $(obj).val();
+        if ($(obj).is(":checkbox") &&  $(obj).prop("checked")) value = "on";
+        if ($(obj).is(":checkbox") && !$(obj).prop("checked")) value = "";
+        if ($(obj).is("textarea")) value = $(obj).html();
+        data = {};
+        data['id'] = params.id;
+        eval (`data.${fld} = value;`);
+        params.url = `/ajax/save/${params.table}`;
+  }
+
+  $.post(params.url,data,function(data) {
+          if (params.callback) eval('params = '+params.callback+'(params,data)');
+          if (params.data && params.error !== true) {
+              var update = [];
+              var dataname;
+              $.each(data,function(key,value){
+                  update[key] = value
+              });
+              eval('var checknew = (typeof ' +params.data+');');
+              if (checknew == "undefined") {
+                  eval(`dataname = str_replace("['`+data._id+`']","","`+params.data+`");`);
+                  console.log(dataname);
+                  eval(dataname+'.push(update)');
+              } else {
+                  eval(params.data + ' = update;');
+              }
+          }
+          if (params.dismiss && params.error !== true) $("#"+params.dismiss).modal("hide");
+          if (params.bind) wbapp.storage(params.bind,data);
+          if (params.update) wbapp.storageUpdate(params.update,data);
+  });
+}
+
 
 wbapp.updateInputs = function(){
     $(document).find(":checkbox").each(function(){
@@ -231,7 +277,6 @@ wbapp.ajax = async function(params) {
             if (params.update && typeof data == "object") wbapp.storageUpdate(params.update, data);
             if (params._trigger !== undefined && params._trigger == "remove") eval( 'delete ' + params.data ); // ???
             if (params.dismiss && params.error !== true) $("#"+params.dismiss).modal("hide");
-            $(document).find(".modal.show").modal('show');
             if (params.render !== undefined && params.render == 'client') wbapp.renderTemplate(params,data);
             if (params._event !== undefined && $(params._event.target).parent().is(":input")) {
                 $inp = $(params._event.target).parent();
@@ -242,6 +287,8 @@ wbapp.ajax = async function(params) {
             wbapp.ajaxAuto();
             console.log("Trigger: ajax-done");
             $(document).trigger("ajax-done",params);
+            let showmod = $(document).find(".modal.show:not(:visible)");
+            if (showmod.length) showmod.removeClass("show").modal('show');
         });
     } else if (params.target !== undefined) {
         var target = wbapp.template[params.target];
@@ -263,52 +310,6 @@ wbapp.ajax = async function(params) {
             wbapp.ajax(target.params);
         }
     }
-
-wbapp.save = function(obj,params,event) {
-  let that = this;
-  let data, form, result;
-  let method = "POST";
-  if (params.form !== undefined) {
-      form = $(params.form);} else {form = $(obj).parents("form");
-      if ($(form).attr("method") !== undefined) method = $(form).attr("method");
-  }
-  data = wbapp.objByForm(form);
-  if (data._idx) delete data._idx;
-
-  if ($(obj).is(":input") && params.table && params.id && params.field) {
-        let fld = $(obj).attr("name");
-        let value = $(obj).val();
-        if ($(obj).is(":checkbox") &&  $(obj).prop("checked")) value = "on";
-        if ($(obj).is(":checkbox") && !$(obj).prop("checked")) value = "";
-        if ($(obj).is("textarea")) value = $(obj).html();
-        data = {};
-        data['id'] = params.id;
-        eval (`data.${fld} = value;`);
-        params.url = `/ajax/save/${params.table}`;
-  }
-
-  $.post(params.url,data,function(data) {
-          if (params.callback) eval('params = '+params.callback+'(params,data)');
-          if (params.data && params.error !== true) {
-              var update = [];
-              var dataname;
-              $.each(data,function(key,value){
-                  update[key] = value
-              });
-              eval('var checknew = (typeof ' +params.data+');');
-              if (checknew == "undefined") {
-                  eval(`dataname = str_replace("['`+data._id+`']","","`+params.data+`");`);
-                  console.log(dataname);
-                  eval(dataname+'.push(update)');
-              } else {
-                  eval(params.data + ' = update;');
-              }
-          }
-          if (params.dismiss && params.error !== true) $("#"+params.dismiss).modal("hide");
-          if (params.bind) wbapp.storage(params.bind,data);
-          if (params.update) wbapp.storageUpdate(params.update,data);
-  });
-}
 
 wbapp.storageUpdate = function(key,data) {
     var store = wbapp.storage(key);
@@ -610,6 +611,10 @@ wbapp.loadStyles = async function(styles = [], trigger = null, func = null) {
   });
 }
 
+$.fn.outer = function(s) {
+  return s ? this.before(s).remove() : jQuery("<p>").append(this.eq(0).clone()).html();
+};
+
 $.fn.runScripts = function() {
   $(this).find("script").each(function() {
     var type = $(this).attr("type");
@@ -687,9 +692,11 @@ $.fn.jsonVal = function(data = undefined) {
   },84600);
 
   $(document).on("wbapp-go",function(){
+      wbapp.tplInit();
       wbapp.eventsInit();
       wbapp.wbappScripts();
       wbapp.modalsInit();
       wbapp.ajaxAuto();
+      wbapp.session();
   });
 }

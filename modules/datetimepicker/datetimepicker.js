@@ -3,18 +3,22 @@ $(document).on("datatimepicker-js",function() {
                     "/engine/modules/datetimepicker/datetimepicker.less",
                     "/engine/lib/fonts/font-awesome/css/font-awesome.min.css"]);
   var scripts = ["/engine/js/php.js","/engine/modules/datetimepicker/datetimepicker/bootstrap-datetimepicker.min.js"];
+
   wbapp.loadScripts(scripts, "datetimepicker-js-init");
   $(document).on("datetimepicker-js-init", function() {
         $(".dtpmod:not(.wb-done)").each(function(){
             var input = this;
             var picker = $(input).prev("input");
-            var lang = $(picker).attr("data-lang");
+            var params = JSON.parse($(input).attr("wb-params"));
+            $(input).removeAttr("wb-params");
+            var lang = params.lang;
+            if (params.lang == undefined && wbapp._session.lang !== undefined) lang = wbapp._session.lang;
             var options = {
               autoclose: true,
               todayBtn: true,
               setDate: new Date(),
               initialDate: $(this).val(),
-              language: "ru",
+              language: lang,
               todayHighlight: true,
               fontAwesome: true
             }
@@ -31,16 +35,14 @@ $(document).on("datatimepicker-js",function() {
               options.viewSelect = 'hour';
               options.todayBtn = false;
             }
-
-            if (!in_array(lang,[undefined,"en"])) {
-                wbapp.loadScripts(["/engine/modules/datetimepicker/datetimepicker/locales/bootstrap-datetimepicker."+lang+".js"],"bootstrap-datetimepicker.lang.js",function(){
-                    options.language = lang;
-                    datetimepicker_start();
+            if (wbapp._session.lang !== undefined) {
+                wbapp.loadScripts(["/engine/modules/datetimepicker/datetimepicker/locales/bootstrap-datetimepicker." + lang + ".js"],null,function(){
+                  datetimepicker_start();
                 });
-
             } else {
-                  datetimepicker_start()
+                datetimepicker_start()
             }
+
             function datetimepicker_start() {
               $(picker).datetimepicker(options).datetimepicker("show").datetimepicker("hide").on("change",function(){
                   if ($(picker).attr("type")=="datetimepicker") {

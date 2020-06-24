@@ -1,20 +1,20 @@
 <?php
-function engine__controller(&$app)
+class ctrlEngine
 {
-    wbTrigger("func", __FUNCTION__, "before");
-    $call=__FUNCTION__ ."_".$_ENV["route"]["mode"];
-    if (is_callable($call)) {
-        $app->dom=$call($app);
-    } else {
-        echo __FUNCTION__ .": {$_ENV['sysmsg']['err_func_lost']} ".$call."()";
-        die;
+    public function __construct(&$app)
+    {
+        $mode = $app->vars("_route.mode");
+        try {
+            $app->dom = $this->$mode($app);
+        } catch (Exception $err) {
+        }
     }
-    wbTrigger("func", __FUNCTION__, "after");
-    return $app->dom;
-}
 
-function engine__controller_include()
-{
-    include_once($_ENV["path_app"].$_SERVER["SCRIPT_NAME"]);
-    die;
+    public function modules(&$app)
+    {
+        $uri = $app->vars("_srv.REQUEST_URI");
+        $params = explode("?",$uri);
+        $script = $params[0];
+        include_once($_ENV["path_app"].$script);
+    }
 }
