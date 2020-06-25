@@ -552,6 +552,7 @@ class wbApp
     public function controller()
     {
         if ($this->route->controller) {
+            if (isset($this->route->file) && in_array($this->route->fileinfo->extension,["php","html"])) return;
             $path = "/controllers/{$this->route->controller}.php";
             if (is_file($this->route->path_app . $path)) {
                 require_once $this->route->path_app . $path;

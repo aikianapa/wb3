@@ -180,7 +180,10 @@ final class wbRouter {
         $ROUTE["url"] = $ROUTE["host"].$ROUTE["uri"];
         $ROUTE["path_app"] = $_ENV["path_app"];
         $ROUTE["path_engine"] = $_ENV["path_engine"];
-        if (is_file($ROUTE["path_app"].$ROUTE["uri"])) $ROUTE["file"] = $ROUTE["path_app"].$ROUTE["uri"];
+        if (is_file($ROUTE["path_app"].$ROUTE["uri"])) {
+            $ROUTE["file"] = $ROUTE["path_app"].$ROUTE["uri"];
+            $ROUTE["fileinfo"] = pathinfo($ROUTE["file"]);
+        }
         if (!isset($ROUTE["table"]) AND isset($ROUTE["form"])) $ROUTE["table"] = $ROUTE["form"];
         return $ROUTE;
     }
