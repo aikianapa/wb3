@@ -111,6 +111,9 @@ class tagTreeSelect {
               $this->tree = wbTreeFindBranch($this->tree,$params->branch);
           }
           if (!isset($params->rand)) $params->rand = false;
+          if ($this->dom->attr("placeholder") > "") {
+              $this->dom->prepend("<option>".$this->dom->attr("placeholder")."</option>");
+          }
       }
       $flag = false;
       if ((array)$this->tree === $this->tree) {

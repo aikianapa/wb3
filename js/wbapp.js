@@ -167,6 +167,8 @@ wbapp.storage = function (key, value = undefined) {
 }
 
 wbapp.save = function(obj,params,event) {
+  console.log("Trigger: wb-save-start");
+  $(obj).trigger("wb-save-start",params);
   let that = this;
   let data, form, result;
   let method = "POST";
@@ -209,6 +211,8 @@ wbapp.save = function(obj,params,event) {
           if (params.dismiss && params.error !== true) $("#"+params.dismiss).modal("hide");
           if (params.bind) wbapp.storage(params.bind,data);
           if (params.update) wbapp.storageUpdate(params.update,data);
+          console.log("Trigger: wb-save-done");
+          $(obj).trigger("wb-save-done",{params:params,data:data});
   });
 }
 

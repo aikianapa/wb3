@@ -94,6 +94,11 @@ function wbItemSave($table, $item = null, $flush = true)
     $db = wbSetDb($table);
     if ($table == "_settings") $db = $_ENV["app"]->_db;
     $item = $db->itemSave($table, $item, $flush);
+    if ($item) {
+        // читаем всю запись, иначе возвращаются не все поля
+        $item = $db->itemRead($table, $item["id"]);
+    }
+
     $item = wbTrigger('form', __FUNCTION__, 'afterItemSave', func_get_args(), $item);
     return $item;
 }

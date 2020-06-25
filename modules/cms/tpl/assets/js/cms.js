@@ -23,6 +23,23 @@ $(document).on("data-ajax",function(e,params){
   if (params.target) $(params.target).html(spinner);
 })
 
+$(document).on("wb-save-start",function(e,params){
+  if ($(e.target).is("button.cms") && !$(e.target).find(".spinner-border").length) {
+      let spinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ';
+      $(e.target).find("i").addClass("d-none");
+      $(e.target).prepend(spinner).prop("disabled",true);
+  }
+})
+
+$(document).on("wb-save-done",function(e,params){
+  if ($(e.target).is("button.cms") && $(e.target).find(".spinner-border").length) {
+      $(e.target).find(".spinner-border").remove();
+      $(e.target).find("i").removeClass("d-none");
+      $(e.target).prop("disabled",false);
+  }
+})
+
+
 $(document).on("ajax-done",function(e,params){
     $(document).find(".content-body [type=search][data-ajax].search-header").each(function(){
         $(".content-header .content-search [type=search]").attr("data-ajax",$(this).attr("data-ajax")).prop("disabled",false);

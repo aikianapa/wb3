@@ -52,8 +52,7 @@
 
       </div>
       <div class="modal-footer pd-x-20 pd-b-20 pd-t-0 bd-t-0">
-        <button type="button" class="btn btn-secondary tx-13" data-dismiss="modal">Закрыть</button>
-        <button type="button" class="btn btn-primary tx-13" wb-save="{'table':'{{_table}}','id':'{{_id}}','form':'#{{_form}}EditForm','update':'cms.list.{{_form}}' }">Сохранить</button>
+        <wb-include wb="{'form':'common_formsave.php'}" />
       </div>
     </div>
   </div>

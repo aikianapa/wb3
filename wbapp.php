@@ -401,18 +401,18 @@ class wbDom extends DomQuery
             if (in_array($inp->tagName, ["input","textarea","select"]) && !$inp->hasAttr("done") && !$inp->closest("template")->length) {
                 $name = $inp->attr("name");
                 $value = $fields->get($name);
-                if ((array)$value === $value) $value = wb_json_encode($value);
-                if ($inp->tag() == "textarea") {
+                if ((array)$value === $value AND $inp->tagName !== "select") $value = wb_json_encode($value);
+                if ($inp->tagName == "textarea") {
                     $inp->text($value);
-                } elseif ($inp->tag() == "select") {
+                } elseif ($inp->tagName == "select") {
                     if ((array)$value === $value) {
                         foreach ($value as $val) {
-                            $inp->find("[value='{$val}']")->attr("selected", true);
+                            if ($val > "") $inp->find("[value='{$val}']")->attr("selected", true);
                         }
                     } else {
-                        $inp->find("[value='{$value}']")->attr("selected", true);
+                        if ($value > "") $inp->find("[value='{$value}']")->attr("selected", true);
                     }
-                } elseif ($inp->tag() == "input") {
+                } elseif ($inp->tagName == "input") {
                     $inp->attr("value", $value);
                     if ($inp->attr("type") == "checkbox" and $value == "on") $inp->attr("checked", true);
                 }

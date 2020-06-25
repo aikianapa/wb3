@@ -140,26 +140,34 @@ class mongodbDrv
       return $id;
     }
 
+    public function ItemPrepare(&$item) {
+        if (!( (array)$item === $item  )) return;
+        foreach($item as $key => &$val) {
+            if ($key == "_id" && (array)$val === $val && array_keys($val) == ['$oid']) {
+                $val = $this->init_id($val['$oid']);
+            }
+            if ((array)$val === $val) $this->ItemPrepare($val);
+        }
+    }
+
     public function ItemSave($form, $item = null, $flush = true)
     {
         $res = null;
         if (!$form) return null;
+        $this->ItemPrepare($item);
         $item = wbItemInit($form, $item);
-        $tmp = $this->app->itemRead($form,$item["_id"]);
-        $sid = $item["_id"];
-        $id = $item["_id"] = $this->init_id($sid);
+        $tmp = $this->itemRead($form,$item["id"]);
+        $id = $sid = $item["id"];
+        $item["_id"] = $this->init_id($sid);
         try {
             if (!$tmp) {
                 $this->db->$form->insertOne($item);
             } else {
-                $this->db->$form->updateOne(["_id" => $id],['$set' => $item]);
+                $this->db->$form->updateOne(["id" => $id],['$set' => $item]);
             }
         } catch(Exception $err) {
-          echo $err;
-            echo "Error"; die;
+            echo "Error: ".$err; die;
         }
-        wbTrigger('form', __FUNCTION__, 'AfterItemSave', func_get_args(), $item);
-        $item["_id"] = $sid;
         return $item;
     }
 
