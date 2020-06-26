@@ -47,7 +47,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fa fa-sign-out"></i></span>
               </div>
-              <input type="text" name="last_name" class="form-control" placeholder="Точка выхода">
+              <input type="text" name="url_logout" class="form-control" placeholder="Точка выхода">
             </div>
           </div>
         </form>

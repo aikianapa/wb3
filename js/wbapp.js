@@ -272,6 +272,9 @@ wbapp.ajax = async function(params) {
         let opts = Object.assign({}, params);
         delete opts._event;
         $.post(params.url, opts,function(data){
+            if (count(data) == 2 && data.error !== undefined && data.callback !== undefined) {
+                eval(data.callback);
+            }
             if (params.html) eval(`$(document).find('${params.html}').html(data);`);
             if (params.append) eval(`$(document).find('${params.append}').append(data);`);
             if (params.prepend) eval(`$(document).find('${params.prepend}').prepend(data);`);

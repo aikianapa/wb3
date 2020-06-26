@@ -32,7 +32,7 @@
             <div class="aside-alert-link">
               <a href="" class="new" data-toggle="tooltip" title="You have 2 unread messages"><i data-feather="message-square"></i></a>
               <a href="" class="new" data-toggle="tooltip" title="You have 4 new notifications"><i data-feather="bell"></i></a>
-              <a href="#" data-ajax="{'url':'/cms/ajax/logout'}" data-toggle="tooltip" title="{{_lang.signout}}"><i class="ri-logout-box-r-line"></i></a>
+              <a href="#" data-ajax="{'url':'/cms/logout'}" data-toggle="tooltip" title="{{_lang.signout}}"><i class="ri-logout-box-r-line"></i></a>
             </div>
           </div>
           <div class="aside-loggedin-user">
@@ -51,7 +51,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" data-ajax="{'url':'/cms/ajax/logout'}" class="nav-link"><i class="ri-logout-box-r-line"></i>
+                <a href="#" data-ajax="{'url':'/cms/logout'}" class="nav-link"><i class="ri-logout-box-r-line"></i>
                   <span>&nbsp;{{_lang.signout}}</span>
                 </a>
               </li>

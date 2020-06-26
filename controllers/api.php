@@ -1,4 +1,6 @@
 <?php
+use Adbar\Dot;
+
 class ctrlApi {
   function __construct($app) {
       header('Content-Type: charset=utf-8');
@@ -12,8 +14,18 @@ class ctrlApi {
   function query($app) {
       $table = $app->route->table;
       $query = $this->prepQuery($app->route->query);
-      $json = $app->itemList($table,["filter"=>$query]);
-      echo $app->jsonEncode($json["list"]);
+      if (isset($app->route->item)) {
+            $json = $app->itemRead($table,$app->route->item);
+            if (isset($app->route->field)) {
+                $fields = new Dot();
+                $fields->setReference($json);
+                $json = $fields->get($app->route->field);
+            }
+            echo $app->jsonEncode($json);
+      } else {
+            $json = $app->itemList($table,["filter"=>$query]);
+            echo $app->jsonEncode($json["list"]);
+      }
   }
 
   function prepQuery($query) {

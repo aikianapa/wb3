@@ -30,7 +30,7 @@ class modCms {
 
   function login() {
       unset($_SESSION["user"]);
-      unset($_COOKIE["user"]);
+      setcookie("user", null, time() - 3600, "/");
       $app = $this->app;
       $out = $app->fromFile(__DIR__ . "/tpl/cms_login.php");
       $out->fetch();
@@ -39,10 +39,16 @@ class modCms {
   }
 
   function logout() {
-      print_r($_SESSION["user"]);
-      unset($_SESSION["user"]);
-      unset($_COOKIE["user"]);
-      echo $out;
+      if (isset($_SESSION["user"])) {
+          $role = $this->app->itemRead("users",$_SESSION["user"]["role"]);
+          if ($role && $role["url_logout"] > "") {
+            header('Content-Type: charset=utf-8');
+            header('Content-Type: application/json');
+            unset($_SESSION["user"]);
+            setcookie("user", null, time() - 3600, "/");
+            return json_encode(["error"=>false,"callback"=>"document.location.href = '{$role["url_logout"]}';"]);
+          }
+      }
       die;
   }
 
