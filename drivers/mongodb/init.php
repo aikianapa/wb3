@@ -89,6 +89,7 @@ class mongodbDrv
     }
 
     function filterPrepare($filter) {
+        $filter = (array)$filter;
         if (in_array('$like',array_keys($filter))) {
             if (isset($filter['$like'])) {
               $filter = ['$regex' => '(?i)'.$filter['$like']];
