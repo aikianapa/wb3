@@ -30,9 +30,18 @@ class modCms {
 
   function login() {
       unset($_SESSION["user"]);
+      unset($_COOKIE["user"]);
       $app = $this->app;
       $out = $app->fromFile(__DIR__ . "/tpl/cms_login.php");
       $out->fetch();
+      echo $out;
+      die;
+  }
+
+  function logout() {
+      print_r($_SESSION["user"]);
+      unset($_SESSION["user"]);
+      unset($_COOKIE["user"]);
       echo $out;
       die;
   }

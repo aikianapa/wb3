@@ -23,16 +23,9 @@
     </ul>
     <form class="form-inline mg-t-10 mg-lg-0">
 
-      <div class="form-group wd-200-f mg-r-5">
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fa fa-search"></i></span>
-          </div>
+    <input class="form-control search-header" type="search" placeholder="Поиск..." aria-label="Поиск..."
+    data-ajax="{'target':'#{{_form}}List','filter_add':{'$or':[{ '_id' : {'$like' : '$value'} }, { 'header': {'$like' : '$value'} }]} }">
 
-          <input class="form-control" type="search" placeholder="Поиск..." aria-label="Поиск..."
-           data-ajax="{'target':'#{{_form}}List','filter_add':{'$or':[{ '_id' : {'$like' : '$value'} }, { 'header': {'$like' : '$value'} }]} }">
-        </div>
-      </div>
 
       <div class="form-group">
         <button class="btn btn-success" type="submit" data-ajax="{'url':'/cms/ajax/form/pages/edit/_new','html':'.pages-edit-modal'}">Создать</button>

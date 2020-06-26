@@ -1,7 +1,7 @@
 <html>
 
 <nav class="nav navbar navbar-expand-md col">
-  <a class="navbar-brand tx-bold tx-spacing--2 order-1" href="javascript:">{{_lang.catalogs}}</a>
+  <a class="navbar-brand tx-bold tx-spacing--2 order-1" href="javascript:"><i class="ri-node-tree"></i> {{_lang.catalogs}}</a>
   <button class="navbar-toggler order-2" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <i class="wd-20 ht-20 fa fa-ellipsis-v"></i>
@@ -23,16 +23,8 @@
     </ul>
     <form class="form-inline mg-t-10 mg-lg-0">
 
-      <div class="form-group wd-200-f mg-r-5">
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fa fa-search"></i></span>
-          </div>
-
-          <input class="form-control" type="search" placeholder="Поиск..." aria-label="Поиск..."
-           data-ajax="{'target':'#{{_form}}List','filter_add':{'$or':[{ '_id' : {'$like' : '$value'} }, { 'header': {'$like' : '$value'} }]} }">
-        </div>
-      </div>
+          <input class="form-control search-header" type="search" placeholder="Поиск..." aria-label="Поиск..."
+           data-ajax="{'target':'#{{_form}}List','filter_add':{'$or':[{ '_id' : {'$like' : '$value'} }, { 'name': {'$like' : '$value'} }]} }">
 
       <div class="form-group">
         <button class="btn btn-success" type="submit" data-ajax="{'url':'/cms/ajax/form/{{_form}}/edit/_new','html':'.{{_form}}-edit-modal'}">Создать</button>
