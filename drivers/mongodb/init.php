@@ -175,7 +175,7 @@ class mongodbDrv
             if (!$tmp) {
                 $this->db->$form->insertOne($item);
             } else {
-                $this->db->$form->updateOne(["id" => $id],['$set' => $item]);
+                $this->db->$form->updateOne(["_id" => $item["_id"]],['$set' => $item]);
             }
         } catch(Exception $err) {
             echo "Error: ".$err; die;
