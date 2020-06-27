@@ -1,5 +1,14 @@
 <?php
 
+function wbItemList ($form = 'pages', $options=[])
+{
+    $db = wbSetDb($form);
+    if ($form == "_settings") $db = $_ENV["app"]->_db;
+    ini_set('max_execution_time', 900);
+    ini_set('memory_limit', '1024M');
+    return $db->ItemList($form, $options);
+}
+
 function wbSetDb($form) {
     $app = &$_ENV["app"];
     if (isset($app->settings->driver_tables[$form])) {
@@ -30,7 +39,8 @@ function wbItemRead($form = null, $id = null)
         if (isset($item['_removed']) && 'remove' == $item['_removed']) {
             $item = null;
             $item = wbTrigger('form', __FUNCTION__, 'emptyItemRead', func_get_args(), $item);
-        } // если стоит флаг удаления, то возвращаем null
+            // если стоит флаг удаления, то возвращаем null
+        }
         else {
           $item["_form"] = $item["_table"] = $form;
           if (isset($item['images']) && $_ENV["route"]["mode"]!=="edit") {
@@ -42,19 +52,6 @@ function wbItemRead($form = null, $id = null)
         $item = wbTrigger('form', __FUNCTION__, 'emptyItemRead', func_get_args(), $item);
     }
     return $item;
-}
-
-function wbItemList($form = 'pages', $options=[])
-{
-    $db = wbSetDb($form);
-    if ($form == "_settings") $db = $_ENV["app"]->_db;
-    ini_set('max_execution_time', 900);
-    ini_set('memory_limit', '1024M');
-    $list = $db->ItemList($form, $options);
-    foreach ($list["list"] as &$item) {
-      $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
-    }
-    return $list;
 }
 
 function wbItemRemove($form = null, $id = null, $flush = true)

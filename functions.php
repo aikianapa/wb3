@@ -2869,11 +2869,13 @@ function wbArraySort($array = array(), $args = array('votes' => 'd'))
 
 function wbArrayAttr($attr)
 {
-    $attr = trim($attr);
     $attr = str_replace(',', ' ', $attr);
     $attr = str_replace(';', ' ', $attr);
-
-    return explode(' ', trim($attr));
+    $attr = explode(" ", trim($attr));
+    foreach($attr as $k => $v) {
+        if ($v == "") unset($attr[$k]);
+    }
+    return $attr;
 }
 
 function wbNormalizePath($path)

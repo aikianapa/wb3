@@ -6,6 +6,7 @@ class tagForeach {
   }
 
   public function foreach($dom) {
+        $app = &$dom->app;
         if ($dom->is(":root")) $dom->rootError();
         $idx = 0;
         $ndx = 1;
@@ -25,14 +26,22 @@ class tagForeach {
             $dom->attr("data-ajax",'{"url":"/ajax/'.$dom->params("table").'/list/"}');
             unset($table);
         }
+        if ($dom->params("return") > "") {
+            $options["return"] = $app->attrToArray($dom->params("return"));
+        }
 
-        if ($table > "") {
+        $dom->options = $options;
+        if ($table > "" AND $dom->params("call") == "") {
           $res = wbItemList($table,$options);
           $list = $res["list"];
           $count = $res["count"];
-        }
-
-        if ($dom->params("call") > "") {
+        } else if ($table > "" AND $dom->params("call") > "") {
+          $list = [];
+          $formClass = $app->formClass($table);
+          $method = $dom->params("call");
+          if (method_exists($formClass,$method)) $list = $formClass->$method($dom);
+          $count = count($list);
+        } else if ($table == "" AND $dom->params("call") > "") {
             $list = wbEval($dom->params("call"));
         }
 

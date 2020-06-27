@@ -71,18 +71,31 @@ class mongodbDrv
             $params["skip"] = ($page - 1) * $size;
         } else {
             $page = 1;
+            if (isset($options["limit"])) $params["limit"] = $options["limit"];
         }
-        $filter = $this->filterPrepare($filter);
+        if (isset($options["return"])) {
+            if (! ((array)$options["return"] === $options["return"])) {
+                $options["return"] = $this->app->ArrayAttr($options["return"]);
+            }
+            $params["projection"] = [];
+            foreach((array)$options["return"] as $fld) {
+                $params["projection"][$fld] = 1;
+            }
+        }
 
-        $count = $find = $this->db->$form->count($filter);
+        $filter = $this->filterPrepare($filter);
+        $count = $this->db->$form->count($filter);
         if (!isset($size)) $size = $count;
+
         $find = $this->db->$form->find($filter, $params);
-        $find = json_decode(json_encode($find->toArray()), true);
         $list = [];
-        foreach ($find as &$doc) {
-            $oid = '$oid';
-            if ((array)$doc['_id'] === $doc['_id']) $doc['_id'] = $doc['_id'][$oid];
+        $iter = new IteratorIterator($find);
+        foreach ($iter as $doc) {
+            $doc = $doc->getArrayCopy();
+            if ((object)$doc['_id'] === $doc['_id']) $doc['_id'] = (array)$doc['_id'];
+            if ((array)$doc['_id'] === $doc['_id']) $doc['_id'] = $doc['_id']['oid'];
             $doc["_form"] = $doc["_table"] = $form;
+            $doc = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $doc);
             $list[$doc['_id']] = $doc;
         }
         return ["list"=>$list,"count"=>$count,"page"=>$page,"size"=>$size];
@@ -96,8 +109,6 @@ class mongodbDrv
               return $filter;
             }
         }
-
-
         foreach($filter as $key => $node) {
             if ((array)$node === $node) $node = $this->filterPrepare($node);
             $filter[$key] = $node;

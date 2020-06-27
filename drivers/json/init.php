@@ -200,7 +200,17 @@ class jsonDrv
         if (isset($options->filter)) {
             foreach($list as $key => $item) {
                 $flag = wbItemFilter($item,$options->filter);
-                if (!$flag) unset($list[$key]);
+                if (!$flag) {unset($list[$key]); } else {
+                  if (isset($options["return"])) {
+                      $tmp = [];
+                      foreach((array)$options["return"] as $fld) {
+                          if (isset($item[$fld])) $tmp[$fld] = $item["fld"];
+                      }
+                      $item = $tmp;
+                  }
+                  $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
+                  $list[$key] = $item;
+                }
             }
         }
         $count = count($list);
