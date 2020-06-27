@@ -168,13 +168,12 @@ class mongodbDrv
         if (!$form) return null;
         $this->ItemPrepare($item);
         $item = wbItemInit($form, $item);
-        $tmp = $this->itemRead($form,$item["id"]);
         $id = $sid = $item["id"];
         $item["_id"] = $this->init_id($sid);
         try {
-            if (!$tmp) {
+            try {
                 $this->db->$form->insertOne($item);
-            } else {
+            } catch(Exception $err) {
                 $this->db->$form->updateOne(["_id" => $item["_id"]],['$set' => $item]);
             }
         } catch(Exception $err) {
