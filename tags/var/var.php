@@ -12,7 +12,7 @@ class tagVar {
       foreach($attrs as $atname => $atval) {
           $wb = substr($atname,0,3);
           if (!in_array($wb,["wb","wb-"])) {
-              $atval = wbAttrToValue($atval);
+              if ( !(strpos($atval,">") AND strpos(" ".$atval,"<")) ) $atval = wbAttrToValue($atval);
               $dom->app->vars("_var.{$atname}",$atval);
               $parent->variables[$atname] = $atval;
           }
