@@ -29,6 +29,9 @@ class tagForeach {
         if ($dom->params("return") > "") {
             $options["return"] = $app->attrToArray($dom->params("return"));
         }
+        if ($dom->params("sort") > "") {
+            $options["sort"] = $app->attrToArray($dom->params("sort"));
+        }
 
         $dom->options = $options;
         if ($table > "" AND $dom->params("call") == "") {
