@@ -11,6 +11,7 @@ class jsonDrv
     public function itemRead($form = null, $id = null)
     {
         $file = $this->tableFile($form);
+        if (!isset($_SESSION["lang"])) $_SESSION["lang"] = "en";
         if (isset($_ENV['cache'][md5($file.$_SESSION["lang"])][$id])) {
             $item = $_ENV['cache'][md5($file.$_SESSION["lang"])][$id];
         } else {

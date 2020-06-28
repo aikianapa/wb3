@@ -14,6 +14,12 @@
       <label for="_setSiteEmail">Эл.почта</label>
       <input type="text" class="form-control" name="email" id="_setSiteEmail" placeholder="Эл.почта">
     </fieldset>
+
+    <fieldset class="form-group">
+      <label for="_setSiteLogo">Логотип</label>
+      <input wb-module="module=filepicker&mode=single" name="logo">
+    </fieldset>
+
     <nav class="text-right">
       <button type="button" class="btn btn-primary tx-13 r-0" wb-save="{'table':'_settings','item':'settings'}">
         <i class="fa fa-save"></i> Сохранить

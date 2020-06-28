@@ -1,16 +1,16 @@
 <?php
 // Include composer autoload
-ini_set('display_errors', 0);
+ini_set('display_errors', 1);
 require __DIR__.'/../vendor/autoload.php';
+require $_SERVER["DOCUMENT_ROOT"]."/engine/functions.php";
+
 
 use Hazzard\Filepicker\Handler;
 use Hazzard\Filepicker\Uploader;
 use Intervention\Image\ImageManager;
 use Hazzard\Config\Repository as Config;
 
-
-
-$app = $_ENV["app"];
+$app = new wbApp();
 
 $uploader = new Uploader($config = new Config, new ImageManager(array('driver' => 'imagick')));
 $handler = new Handler($uploader);
