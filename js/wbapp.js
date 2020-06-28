@@ -59,6 +59,15 @@ wbapp.eventsInit = function() {
     }
   })
 
+  $(document).delegate("input[type=checkbox]","tap click",function(){
+      if ($(this).prop("checked") == false) {
+          $(this).removeAttr("checked");
+      } else {
+          $(this).prop("checked",true);
+          $(this).attr("checked",true);
+      }
+  });
+
 }
 
 wbapp.ajaxAuto = function() {

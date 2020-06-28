@@ -414,7 +414,12 @@ class wbDom extends DomQuery
                     }
                 } elseif ($inp->tagName == "input") {
                     $inp->attr("value", $value);
-                    if ($inp->attr("type") == "checkbox" and $value == "on") $inp->attr("checked", true);
+                    if ($inp->attr("type") == "checkbox") {
+                        if ( $value == "on" OR $value == "true"  OR $value == "1")  {
+                            $inp->attr("checked", true);
+                            $inp->removeAttr("value");
+                        }
+                    }
                 }
                 $inp->attr("done", "");
             }

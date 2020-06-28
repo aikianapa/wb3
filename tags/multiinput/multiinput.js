@@ -90,6 +90,13 @@ function wb_multiinput_init() {
         } else if (field !== undefined) {
           item[field] = value;
         }
+        if ($(this).is('input[type=checkbox]')) {
+            if ($(this).prop('checked') == true) {
+                item[field] = "on";
+            } else {
+                item[field] = "";
+            }
+        }
         $(this).attr("wb-name", name).removeAttr("name");
       });
       data[i] = item;

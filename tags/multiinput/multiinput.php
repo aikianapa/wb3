@@ -36,12 +36,15 @@ class tagMultiinput {
     function setData(&$dom, $data=[[]]) {
         $name = $dom->params("name");
         $str = "";
+        $_idx = 0;
         if ((array)$data === $data) {
             foreach($data as $i => $item) {
                 $line = $dom->app->fromString($dom->tpl);
                 if ((array)$item === $item) {
+                    $item['_idx'] = $_idx;
                     $line->item = $item;
                     $line->fetch();
+                    $_idx++;
                 } else {
                     $line->find("[name='{$name}']")->attr("value",$item);
                 }

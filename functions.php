@@ -1661,38 +1661,6 @@ function wbTrigger($type, $name, $trigger, $args = [], $data = null)
         if ($class && method_exists($class,$trigger)) {
             $class->$trigger($data);
         }
-/*
-
-    $_ENV["trigger"][$trigger]=$args;
-    $arg0 = $args[0];
-        if ((string)$arg0 === $arg0) {
-            $call = "wb".$trigger;
-            if (is_callable($call)) {
-                $data = $call($data, $args);
-            }
-
-            $call = $arg0.$trigger;
-            if (is_callable($call)) {
-                $data = $call($data, $args);
-            } else {
-                $call = '_'.$call;
-                if (is_callable($call)) {
-                    $data = $call($data, $args);
-                }
-            }
-        }
-        if (isset($_SESSION['trigger'][$trigger])) {
-            foreach ($_SESSION['trigger'][$trigger] as $module => $param) {
-                $ecall = $module.'__'.$trigger;
-                $acall = $module.'_'.$trigger;
-                if (is_callable($acall)) {
-                    $data['_furl'] = $acall($args, $data);
-                } elseif (is_callable($ecall)) {
-                    $data['_furl'] = $ecall($args, $data);
-                }
-            }
-        }
-*/
         return $data;
         break;
     case 'func':
