@@ -59,9 +59,9 @@ $(document).on("filepicker-init", function() {
             var getthumb = function (file,update = false) {
               var thumb;
               if (update == true) {
-                thumb = "/thumb/"+width+"x"+height+"/src"+file+"?"+wbapp.newId();
+                thumb = "/thumbc/"+width+"x"+height+"/src"+file+"?"+wbapp.newId();
               } else {
-                thumb = "/thumb/"+width+"x"+height+"/src"+file;
+                thumb = "/thumbc/"+width+"x"+height+"/src"+file;
               }
               return thumb;
             }

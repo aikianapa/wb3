@@ -5,8 +5,8 @@ class attrMask {
   }
 
   public function mask(&$dom) {
-      if ($dom->attr("data-mask") == "" && $dom->attr("wb-mask") > "") {
-          $dom->attr("data-mask",$dom->attr("wb-mask"));
+      if ($dom->attr("data-mask") == "" && isset($dom->params->mask) && $dom->params->mask > "") {
+          $dom->attr("data-mask",$dom->params->mask);
       }
       $dom->removeAttr("wb-mask")->addClass("wb-mask");
       $script = "

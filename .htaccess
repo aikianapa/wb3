@@ -4,6 +4,8 @@ AddDefaultCharset UTF-8
 RewriteBase /
 RewriteEngine On
 
+RewriteRule ^(.*)\.less$ index.php [L,QSA]
+
 RewriteCond %{REQUEST_FILENAME} !-f [L]
 RewriteCond %{REQUEST_FILENAME} !-d [L]
 

@@ -27,26 +27,31 @@
       </div>
       <div class="aside-body">
         <div class="aside-loggedin">
-          <div class="d-flex align-items-center justify-content-start">
-            <a href="" class="avatar"><img src="https://via.placeholder.com/500" class="rounded-circle" alt=""></a>
-            <div class="aside-alert-link">
-              <a href="" class="new" data-toggle="tooltip" title="You have 2 unread messages"><i data-feather="message-square"></i></a>
-              <a href="" class="new" data-toggle="tooltip" title="You have 4 new notifications"><i data-feather="bell"></i></a>
-              <a href="#" data-ajax="{'url':'/cms/logout'}" data-toggle="tooltip" title="{{_lang.signout}}"><i class="ri-logout-box-r-line"></i></a>
+          <div  id="userProfileMenu">
+          <template>
+            <div class="d-flex align-items-center justify-content-start">
+              <a href="#loggedinMenu" data-toggle="collapse" class="avatar">
+                <img data-src="/thumbc/48x48/src/{{avatar.0.img}}" class="rounded-circle" alt="">
+              </a>
+              <div class="aside-alert-link">
+                <a href="#" data-ajax="{'url':'/cms/ajax/form/users/profile','html':'.content-body'}" class="nav-link"><i class="ri-user-settings-line"></i></a>
+                <a href="#" data-ajax="{'url':'/cms/logout'}" data-toggle="tooltip" title="{{_lang.signout}}"><i class="ri-logout-box-r-line"></i></a>
+              </div>
             </div>
-          </div>
-          <div class="aside-loggedin-user">
-            <a href="#loggedinMenu" class="d-flex align-items-center justify-content-between mg-b-2"
-              data-toggle="collapse">
-              <h6 class="tx-semibold mg-b-0">{{_sess.user.first_name}} {{_sess.user.last_name}}</h6>
-              <i data-feather="chevron-down"></i>
-            </a>
-            <p class="tx-color-03 tx-12 mg-b-0">{{_sess.user.role}}</p>
+            <div class="aside-loggedin-user">
+              <a href="#loggedinMenu" class="d-flex align-items-center justify-content-between mg-b-2"
+                data-toggle="collapse">
+                <h6 class="tx-semibold mg-b-0">{{first_name}} {{last_name}}</h6>
+                <i data-feather="chevron-down"></i>
+              </a>
+              <p class="tx-color-03 tx-12 mg-b-0">{{role}}</p>
+            </div>
+          </template>
           </div>
           <div class="collapse" id="loggedinMenu">
             <ul class="nav nav-aside mg-b-0">
               <li class="nav-item">
-                <a href="" class="nav-link"><i class="ri-user-settings-line"></i>
+                <a href="#" data-ajax="{'url':'/cms/ajax/form/users/profile','html':'.content-body'}" class="nav-link"><i class="ri-user-settings-line"></i>
                   <span>&nbsp;{{_lang.profile}}</span>
                 </a>
               </li>

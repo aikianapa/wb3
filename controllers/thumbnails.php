@@ -21,8 +21,9 @@ class ctrlThumbnails
         if ($app->vars("_route.params.src") > "") {
             $app->vars("_get.src", $params["src"]);
         } else {
-            $re = '/\/thumbc|thumb\/.*\/src\/(.*)/m';
+            $re = '/[\/thumbc|thumb\/].*\/src\/(.*)/m';
             preg_match($re, $app->vars("_route.uri"), $matches, PREG_OFFSET_CAPTURE, 0);
+
             $app->vars("_get.src", $matches[1][0]);
         }
 
