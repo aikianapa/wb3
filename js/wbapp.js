@@ -9,11 +9,7 @@ var data = {};
 wbapp.bind = {};
 
 wbapp.lazyload = function() {
-  $("img[data-src]").unveil(200, function() {
-    $(this).load(function() {
-      this.style.opacity = 1;
-    });
-  });
+  $("img[data-src]").lazyload();
 }
 
 wbapp.eventsInit = function() {

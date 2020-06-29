@@ -1,5 +1,26 @@
 body {
   aside {
+
+    transition-duration: .4s;
+
+    .aside-logo {
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+@media (max-width: 991px) {
+  &:not(.aside-show) {
+    .aside-logo {
+        margin-right:21px;
+    }
+  }
+}
+
+@media (min-width: 992px) {
+    .aside-logo {
+      margin-right:10px;
+    }
+}
     .aside-menu-link {
       display: flex;
     }
