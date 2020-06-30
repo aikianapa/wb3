@@ -87,19 +87,24 @@ class mongodbDrv
                 $params["projection"][$fld] = 1;
             }
         }
-        if (isset($options['sort']) AND is_array($options['sort'])) $params['sort'] = $options['sort'];
-        if (isset($options['sort']) AND !is_array($options['sort'])) {
+
+        if (isset($options['sort'])) {
             $params['sort'] = [];
-            foreach((array)$options['sort'] as $fld) {
-                $fld = explode(":",$fld);
-                if (!isset($fld[1])) {
-                    $fld[1] = 1;
-                } else if (in_array(strtolower($fld[1]),['a','asc','1'])) {
-                    $fld[1] = 1;
-                } else if (in_array(strtolower($fld[1]),['d','desc','-1'])) {
-                    $fld[1] = -1;
+            foreach((array)$options['sort'] as $key=> $fld) {
+                if (!((array)$fld === $fld)) {
+                    $fld = explode(":",$fld);
+                    if (!isset($fld[1])) {
+                        $fld[1] = 1;
+                    } else if (in_array(strtolower($fld[1]),['a','asc','1'])) {
+                        $fld[1] = 1;
+                    } else if (in_array(strtolower($fld[1]),['d','desc','-1'])) {
+                        $fld[1] = -1;
+                    }
+                    $params['sort'][$fld[0]] = $fld[1];
+                } else {
+                    $params['sort'][$key] = $fld;
                 }
-                $params['sort'][$fld[0]] = $fld[1];
+
             }
         }
 
