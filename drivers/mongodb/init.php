@@ -48,6 +48,7 @@ class mongodbDrv
                 try {
                     $item = $this->db->$form->findOne(['_id' => $id]);
                     $item = $this->app->objToArray($item);
+                    $this->ItemPrepare($item);
                     if ((array)$item['_id'] === $item['_id'] AND count($item)) $item['_id'] = $item['_id']['$oid'];
                 }
                 catch(Exception $err) {
@@ -73,6 +74,10 @@ class mongodbDrv
             $page = 1;
             if (isset($options["limit"])) $params["limit"] = $options["limit"];
         }
+
+        if (isset($options["projection"])) {
+            $params["projection"] = $options["projection"];
+        }
         if (isset($options["return"])) {
             if (! ((array)$options["return"] === $options["return"])) {
                 $options["return"] = $this->app->ArrayAttr($options["return"]);
@@ -82,7 +87,8 @@ class mongodbDrv
                 $params["projection"][$fld] = 1;
             }
         }
-        if (isset($options["sort"])) {
+        if (isset($options['sort']) AND is_array($options['sort'])) $params['sort'] = $options['sort'];
+        if (isset($options['sort']) AND !is_array($options['sort'])) {
             $params['sort'] = [];
             foreach((array)$options['sort'] as $fld) {
                 $fld = explode(":",$fld);
@@ -169,6 +175,7 @@ class mongodbDrv
     public function ItemPrepare(&$item) {
         if (!( (array)$item === $item  )) return;
         foreach($item as $key => &$val) {
+            if (is_object($val)) $val = (array)$val;
             if ($key == "_id" && (array)$val === $val && array_keys($val) == ['$oid']) {
                 $val = $this->init_id($val['$oid']);
             }

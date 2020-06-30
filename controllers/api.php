@@ -13,7 +13,7 @@ class ctrlApi {
 
   function query($app) {
       $table = $app->route->table;
-      $query = $this->prepQuery($app->route->query);
+      $options = $this->prepQuery($app->route->query);
       if (isset($app->route->item)) {
             $json = $app->itemRead($table,$app->route->item);
             if (isset($app->route->field)) {
@@ -23,13 +23,48 @@ class ctrlApi {
             }
             echo $app->jsonEncode($json);
       } else {
-            $json = $app->itemList($table,["filter"=>$query]);
+            $json = $app->itemList($table,$options);
             echo $app->jsonEncode($json["list"]);
       }
   }
 
   function prepQuery($query) {
     $query = (array)$query;
+    $options = [];
+    if ($query["__options"]) {
+      $opt = $query["__options"];
+
+  		$list = explode(';',$opt);
+		  foreach($list as $key => $item) {
+  			  $item = explode('=',$list[$key]);
+  			  if ($item[0] == 'sort') {
+  				  $sort = $item[1];
+  				  $sarr = [];
+  				  $sort = explode(',',$sort);
+  				  foreach($sort as $key => $fld) {
+  						$fld = explode(':',$sort[$key]);
+  						if (!isset($fld[1])) $sarr[$fld[0]] = 1;
+  						if ($fld[1] == 'a' || $fld[1] == 'asc' || $fld[1] == '1') $sarr[$fld[0]] = 1;
+  						if ($fld[1] == 'd' || $fld[1] == 'desc' || $fld[1] == '-1') $sarr[$fld[0]] = -1;
+  				  }
+  				  $item[1] = $sarr;
+  			  } else if ($item[0] == 'return') {
+  				  $item[0] = 'projection';
+  				  $sarr = [];
+  				  $sort = explode(',',$item[1]);
+  				  foreach($sort as $key => $fld) {
+  						$fld = explode(',',$sort[$key]);
+  						$sarr[trim($fld[0])] = 1;
+  				  }
+  				  $item[1] = $sarr;
+  			  } else {
+  				  if (is_numeric($item[1])) $item[1] = $item[1] * 1;
+  			  }
+  			  $options[$item[0]] = $item[1];
+  		  }
+        unset($query["__options"]);
+    }
+
     foreach($query as $key => $val) {
         if (substr($val,-1) == "]" && substr($val,0,1) == "[") {
             // считаем что в val массив и разбтраем его
@@ -69,7 +104,8 @@ class ctrlApi {
               }
         }
     }
-    return $query;
+    $options["filter"] = $query;
+    return $options;
 
   }
 }

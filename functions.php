@@ -105,9 +105,9 @@ function wbInitSettings(&$app)
         $_ENV["user"] = $_SESSION['user'];
         $app->user = (object)$_ENV["user"];
         unset($_COOKIE['user']);
-        setcookie("user", $app->user->id, time()+3600, "/"); // срок действия час
+        isset($app->user->id) ? $cookuser = $app->user->id : $cookuser = "";
+        setcookie("user", $cookuser, time()+3600, "/"); // срок действия час
     }
-
     $variables = [];
     $settings = $app->ItemRead('_settings', 'settings');
     if (!$settings) {
@@ -160,7 +160,7 @@ function wbInitSettings(&$app)
     $_ENV['sysmsg'] = wbGetSysMsg();
     $_ENV['settings']['sysmsg'] = &$_ENV['sysmsg']; // для доступа из JS
     $_ENV['settings']['user'] = $_SESSION["user"];
-    unset($_ENV['settings']['user']['password']);
+    if (isset($_ENV['settings']['user']['password'])) unset($_ENV['settings']['user']['password']);
     $app->vars("_sett", $_ENV["settings"]);
     if (in_array($app->vars("_route.controller"),["thumbnails","file"])) {
           if ($app->vars("_sett.user")) {
