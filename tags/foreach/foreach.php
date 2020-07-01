@@ -48,6 +48,10 @@ class tagForeach {
             $list = wbEval($dom->params("call"));
         }
 
+        if ($dom->params("from")) {
+            if (isset($list[$dom->params->from])) {$list = $list[$dom->params->from];} else {$list = [];}
+        }
+
         if ($dom->params("size") > "") {
             $dom->params("page") ? $page = $dom->params->page : $page = 1;
             $list = array_chunk($list,$dom->params->size);

@@ -36,7 +36,7 @@
                 <img data-src="/thumbc/48x48/src/{{avatar.0.img}}" class="rounded-circle" alt="">
               </a>
               <div class="aside-alert-link">
-                <a href="#" data-ajax="{'url':'/cms/ajax/form/users/profile','html':'.content-body'}" class="nav-link"><i class="ri-user-settings-line"></i></a>
+                <a href="#" data-ajax="{'url':'/cms/ajax/form/users/profile','html':'.content-body'}"><i class="ri-user-settings-line"></i></a>
                 <a href="#" data-ajax="{'url':'/cms/logout'}" data-toggle="tooltip" title="{{_lang.signout}}"><i class="ri-logout-box-r-line"></i></a>
               </div>
             </div>
@@ -89,9 +89,8 @@
           <input type="search" class="form-control" placeholder="Поиск..." disabled>
         </div>
         <nav class="nav">
-          <a href="" class="nav-link"><i data-feather="help-circle"></i></a>
-          <a href="" class="nav-link"><i data-feather="grid"></i></a>
-          <a href="" class="nav-link"><i data-feather="align-left"></i></a>
+          <a href="#" data-ajax="{'url':'/cms/ajax/form/users/profile','html':'.content-body'}" class="nav-link tx-18"><i class="ri-user-settings-line"></i></a>
+          <a href="#" data-ajax="{'url':'/cms/logout'}" data-toggle="tooltip" title="{{_lang.signout}}" class="nav-link tx-18"><i class="ri-logout-box-r-line"></i></a>
         </nav>
       </div>
       <!-- content-header -->
