@@ -2507,10 +2507,11 @@ function wbPhoneFormat($phoneNumber) {
 
 function wbSetValuesStr($tag = "", $Item = array(), $limit = 2, $vars = null)
 {
-    if (is_object($tag)) $tag = $tag->outer();
+    if ((object)$tag === $tag) $tag = $tag->outer();
     if (!strpos($tag, "}}")) return $tag;
+
     $processor = new WEProcessor($Item);
-    $tag=$processor->substitute($tag);
+    $tag = $processor->substitute($tag);
     return $tag;
 }
 

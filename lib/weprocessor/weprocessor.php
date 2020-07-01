@@ -174,6 +174,12 @@ class WEProcessor {
 								$res = null;
 							}
 						} else {
+							$argproc = new WEProcessor($this->vars["_context"]);
+							foreach($args as $k => &$v) {
+									if (is_string($v) AND strpos($v,"}}")) {
+											$v = $argproc->substitute($v);
+									}
+							}
 							$res = @call_user_func_array($name, array_values($args));
 						}
 					} else {

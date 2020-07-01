@@ -18,11 +18,8 @@
         <a href="#" class="aside-logo">
 					<img data-src="/engine/modules/cms/tpl/assets/img/virus.svg" width="30" wb-if='"{{_sett.logo.0.img}}" == ""'>
           <img data-src="{{_sett.logo.0.img}}" width="30" wb-if='"{{_sett.logo.0.img}}" > ""'>
-          <strong wb-if='"{{_sett.logo1}}" == ""'>Pad</strong>
-          <strong wb-if='"{{_sett.logo1}}" > ""'>{{_sett.logo1}}</strong>
-
-          <span wb-if='"{{_sett.logo2}}" > ""'>{{_sett.logo2}}</span>
-          <span wb-if='"{{_sett.logo2}}" == ""'>Demic</span>
+          <strong wb-if='"{{_sett.logo1}}" == ""'>Pad</strong><span wb-if='"{{_sett.logo2}}" == ""'>Demic</span>
+          <strong wb-if='"{{_sett.logo1}}" > ""'>{{_sett.logo1}}</strong><span wb-if='"{{_sett.logo2}}" > ""'>{{_sett.logo2}}</span>
         </a>
         <a href="" class="aside-menu-link">
           <i data-feather="menu"></i>
@@ -108,7 +105,11 @@
     <!-- content -->
 
   </div>
-
+  <style wb-if='"{{_sett.logofontsize}}" > ""'>
+      .aside-logo {
+        font-size: {{_sett.logofontsize}}px;
+      }
+  </style>
   <script type="wbapp">
     wbapp.loadScripts(["{{_var.base}}./assets/js/cms.js"]);
   </script>
