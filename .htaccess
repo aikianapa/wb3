@@ -6,7 +6,7 @@ RewriteEngine On
 
 RewriteRule ^(.*)\.less$ index.php [L,QSA]
 
-RewriteCond %{REQUEST_FILENAME} !-f [L]
-RewriteCond %{REQUEST_FILENAME} !-d [L]
+RewriteCond %{REQUEST_FILENAME} !-f [NC]
+RewriteCond %{REQUEST_FILENAME} !-d [NC]
 
 RewriteRule ^(.*)$ index.php [L,QSA]

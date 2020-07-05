@@ -1,3 +1,4 @@
+<html>
 <script type="wbapp">wbapp.loadScripts(["/engine/modules/filepicker/filepicker.js"],"filepicker-js")</script>
 <div class="filepicker">
   <textarea type="json" name class="d-none filepicker-data"></textarea>
@@ -128,4 +129,4 @@ choose = "Файлы"
 }
 </style>
 </div>
-<!-- end of #filepicker -->
+</html>

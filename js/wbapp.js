@@ -29,7 +29,6 @@ wbapp.eventsInit = function() {
       e.preventDefault();
       let search = $(this).attr("data-ajax");
       search = str_replace('$value',$(this).val(),search);
-      console.log(search);
       let params = wbapp.parseAttr(search);
       params._event = e;
       if (tid !== undefined) params._tid = tid;
@@ -56,7 +55,6 @@ wbapp.eventsInit = function() {
     if (that.waitajax == undefined && val.length >= minlen) {
         that.waitajax = true;
         $(this).trigger("change");
-        console.log(val);
         setTimeout(function(){
           that.waitajax = undefined;
         },700);
@@ -282,6 +280,9 @@ wbapp.parseAttr = function(queryString = null) {
 wbapp.ajax = async function(params) {
     if (!params.url && !params.tpl && !params.target) return;
     if (params.url !== undefined) {
+        if (params.form !== undefined) {
+            params.formdata = wbapp.objByForm(params.form);
+        }
         let opts = Object.assign({}, params);
         delete opts._event;
         $.post(params.url, opts,function(data){
@@ -292,7 +293,7 @@ wbapp.ajax = async function(params) {
             if (params.append) eval(`$(document).find('${params.append}').append(data);`);
             if (params.prepend) eval(`$(document).find('${params.prepend}').prepend(data);`);
             if (params.replace) eval(`$(document).find('${params.replace}').replaceWith(data);`);
-            if (params.form) wbapp.formByObj(params.form,data);
+            //if (params.form) wbapp.formByObj(params.form,data);
             if (params.bind) wbapp.storage(params.bind, data);
             if (params.update && typeof data == "object") wbapp.storageUpdate(params.update, data);
             if (params._trigger !== undefined && params._trigger == "remove") eval( 'delete ' + params.data ); // ???
@@ -306,7 +307,12 @@ wbapp.ajax = async function(params) {
             wbapp.tplInit();
             wbapp.ajaxAuto();
             console.log("Trigger: ajax-done");
-            $(document).trigger("ajax-done",params);
+            params['data'] = data;
+            if (params.form !== undefined) {
+                $(params.form).trigger("ajax-done", params);
+            } else {
+                $(document).trigger("ajax-done", params);
+            }
             let showmod = $(document).find(".modal.show:not(:visible)");
             if (showmod.length) showmod.removeClass("show").modal('show');
         });
@@ -318,7 +324,11 @@ wbapp.ajax = async function(params) {
         } else {
             if (target.params.filter == undefined) target.params.filter = {};
             $.each(params,function(key,val){
-                if (key == 'filter') target.params.filter = val;
+                if (key == 'filter') {
+                    if (val == 'clear') {target.params.filter = {};} else {
+                        target.params.filter = val;
+                    }
+                }
                 if (key == 'filter_remove' && target.params.filter[val] !== undefined) delete target.params.filter[val];
                 if (key == 'filter_add') {
                     $.each(val,function(k,v){
@@ -327,6 +337,7 @@ wbapp.ajax = async function(params) {
                 }
                 if (target.params.page !== undefined) delete target.params.page
             });
+            delete params['data'];
             wbapp.ajax(target.params);
         }
     }
@@ -350,6 +361,8 @@ wbapp.storageUpdate = function(key,data) {
         wbapp.storage(key,data);
     }
 }
+
+
 }
 
 
@@ -630,6 +643,27 @@ wbapp.loadStyles = async function(styles = [], trigger = null, func = null) {
       document.head.appendChild(style);
     }
   });
+}
+
+
+var array_column = function (list, column, indice){
+    var result, key;
+if (list.length) {
+    if(typeof indice !== "undefined"){
+        result = {};
+
+        for(key in list)
+            if(typeof list[key][column] !== 'undefined' && typeof list[key][indice] !== 'undefined')
+                result[list[key][indice]] = list[key][column];
+    }else{
+        result = [];
+
+        for(key in list)
+            if(typeof list[key][column] !== 'undefined')
+                result.push( list[key][column] );
+    }
+}
+    return result;
 }
 
 $.fn.outer = function(s) {

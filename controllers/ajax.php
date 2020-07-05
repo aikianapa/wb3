@@ -1,6 +1,8 @@
 <?php
 class ctrlAjax {
   function __construct($app) {
+    header('Content-Type: charset=utf-8');
+    header('Content-Type: application/json');
       include_once($_ENV["path_engine"]."/attrs/save/ajax.php");
       include_once($_ENV["path_engine"]."/attrs/tree/ajax.php");
       if (is_file($_ENV["path_app"]."/ajax.php")) {
@@ -57,8 +59,9 @@ class ctrlAjax {
       $user = (object)$user;
       if ($user->password == md5($post->password)) {
           $role = (object)$app->itemRead("users",$user->role);
-          if ($role->active !== "on" OR $user->active !== "on") return json_encode(["login"=>false,"error"=>"Account is not active"]);
-          if ($role->url_login > "") $url = $role->url_login;
+          $url = '/cms';
+          if (!isset($role->active) OR $role->active !== "on" OR $user->active !== "on") return json_encode(["login"=>false,"error"=>"Account is not active"]);
+          if (isset($role->url_login) AND $role->url_login > "") $url = $role->url_login;
           $_SESSION["user"] = (array)$user;
           $_SESSION["userole"] = (array)$role;
           return json_encode(["login"=>true,"error"=>false,"redirect"=>$url,"user"=>$user,"role"=>$role]);

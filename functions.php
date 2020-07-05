@@ -113,7 +113,8 @@ function wbInitSettings(&$app)
     if (!$settings) {
         $settings = [];
     } else {
-        foreach ((array) $settings['variables'] as $v) {
+        if (!isset($settings['variables'])) $settings['variables'] = [];
+        foreach ((array)$settings['variables'] as $v) {
             $variables[$v['var']] = $v['value'];
         }
     }
@@ -1291,7 +1292,7 @@ function wbTreeFindBranchById($Item, $id)
             if ($item['id'] === $id) {
                 return $item;
             }
-            if ((array)$item['children'] === $item['children']) {
+            if (isset($item['children']) AND (array)$item['children'] === $item['children']) {
                 $res = wbTreeFindBranchById($item['children'], $id);
                 if ($res) {
                     return $res;
@@ -2152,7 +2153,10 @@ function wbItemFilter($item, $filter)
             foreach ($expr as $cond => $val) {
                 if ($cond == '$ne' and $fields->get($fld) == $val) {
                     $result = false;
+                } else if ($cond == '$like' and  !preg_match('/'.$val.'/ui', $fields->get($fld))) {
+                    $result = false;
                 }
+
             }
         }
         if ($result == false) {

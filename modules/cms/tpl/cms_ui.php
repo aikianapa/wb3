@@ -18,7 +18,7 @@
         <a href="#" class="aside-logo">
 					<img data-src="/engine/modules/cms/tpl/assets/img/virus.svg" width="30" wb-if='"{{_sett.logo.0.img}}" == ""'>
           <img data-src="{{_sett.logo.0.img}}" width="30" wb-if='"{{_sett.logo.0.img}}" > ""'>
-          <strong wb-if='"{{_sett.logo1}}" == ""'>Pad</strong><span wb-if='"{{_sett.logo2}}" == ""'>Demic</span>
+          <strong wb-if='"{{_sett.logo1}}" == ""'>Pan</strong><span wb-if='"{{_sett.logo2}}" == ""'>Demic</span>
           <strong wb-if='"{{_sett.logo1}}" > ""'>{{_sett.logo1}}</strong><span wb-if='"{{_sett.logo2}}" > ""'>{{_sett.logo2}}</span>
         </a>
         <a href="" class="aside-menu-link">
@@ -33,7 +33,11 @@
           <template>
             <div class="d-flex align-items-center justify-content-start">
               <a href="#loggedinMenu" data-toggle="collapse" class="avatar">
+                {{#if avatar.0.img}}
                 <img data-src="/thumbc/48x48/src/{{avatar.0.img}}" class="rounded-circle" alt="">
+                {{else}}
+                <img data-src="/thumbc/48x48/src/engine/modules/cms/tpl/assets/img/human.png" class="rounded-circle" alt="">
+                {{/if}}
               </a>
               <div class="aside-alert-link">
                 <a href="#" data-ajax="{'url':'/cms/ajax/form/users/profile','html':'.content-body'}"><i class="ri-user-settings-line"></i></a>
@@ -88,9 +92,8 @@
           <i data-feather="search"></i>
           <input type="search" class="form-control" placeholder="Поиск..." disabled>
         </div>
-        <nav class="nav">
-          <a href="#" data-ajax="{'url':'/cms/ajax/form/users/profile','html':'.content-body'}" class="nav-link tx-18"><i class="ri-user-settings-line"></i></a>
-          <a href="#" data-ajax="{'url':'/cms/logout'}" data-toggle="tooltip" title="{{_lang.signout}}" class="nav-link tx-18"><i class="ri-logout-box-r-line"></i></a>
+        <nav class="nav" wb-tree="{'table':'_settings','item':'settings','field':'cmsmenu','branch':'top','parent':'false'}">
+          <a href="#" data-ajax="{{data.ajax}}" data-toggle="tooltip" title="{{data.label}}" class="nav-link tx-18"><i class="{{data.icon}}"></i></a>
         </nav>
       </div>
       <!-- content-header -->

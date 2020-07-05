@@ -1,5 +1,5 @@
 <html>
-<div class="modal fade effect-scale show removable" id="{{_form}}ModalEdit" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade effect-scale show removable" id="{{_form}}ModalEdit" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -18,7 +18,7 @@
           <div class="form-group row">
             <label class="col-sm-2 form-control-label">Каталог</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" name="id" placeholder="Идентификатор каталога" required>
+              <input type="text" class="form-control" name="_id" placeholder="Идентификатор каталога" required>
             </div>
           </div>
 

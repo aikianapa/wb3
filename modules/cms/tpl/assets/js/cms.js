@@ -45,7 +45,6 @@ $(document).on("wb-save-done",function(e,params){
 })
 
 $(document).on("ajax-done",function(e,params){
-  console.log(params);
     $(document).find(".content-body [type=search][data-ajax].search-header").each(function(){
         $(".content-header .content-search [type=search]").attr("data-ajax",$(this).attr("data-ajax")).prop("disabled",false);
         $(this).remove();

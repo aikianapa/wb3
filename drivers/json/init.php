@@ -18,6 +18,8 @@ class jsonDrv
             $list = $this->itemList($form, ["orm"=>"where('id','{$id}')"])["list"];
             if (isset($list[$id])) {
                 $item = $list[$id];
+            } else if (isset($list[0])) {
+                $item = $list[0];
             } else {
                 wbError('func', __FUNCTION__, 1006, func_get_args());
                 $item = null;
@@ -35,12 +37,12 @@ class jsonDrv
         return "{$db}/{$form}.json";
     }
 
-    public function tableCreate($form, $engine)
+    public function tableCreate($form, $engine=false)
     {
         $file = $this->tablePath($form, $engine);
         if (!is_file($file)) {
             $json = wbJsonEncode(null);
-            $res = file_put_contents($form, $json, LOCK_EX);
+            $res = file_put_contents($file, $json, LOCK_EX);
             if ($res) {
                 @chmod($file, 0766);
             }
@@ -132,16 +134,38 @@ class jsonDrv
 
     public function itemList($form = 'pages', $options = [])
     {
-        if (isset($options["_page"])) {
-            $page = intval($options["_page"]);
-            $size = intval($options["_size"]);
+        if (isset($options["page"])) {
+            $page = intval($options["page"]);
+            $size = intval($options["size"]);
             $params["limit"] = $size;
             $params["skip"] = $page - 1;
         } else {
             $page = 1;
         }
+        $params['sort'] = [];
         $options = (object)$options;
         $list = [];
+
+        if (isset($options->sort)) {
+            foreach((array)$options->sort as $key=> $fld) {
+                if (!((array)$fld === $fld)) {
+                    $fld = explode(":",$fld);
+                    if (!isset($fld[1])) {
+                        $fld[1] = 1;
+                    } else if (in_array(strtolower($fld[1]),['a','asc','1'])) {
+                        $fld[1] = '';
+                    } else if (in_array(strtolower($fld[1]),['d','desc','-1'])) {
+                        $fld[1] = 'desc';
+                    }
+                    $params['sort'][$fld[0]] = $fld[1];
+                } else {
+                    $params['sort'][$key] = $fld;
+                }
+
+            }
+        }
+
+
         if (isset($options->orm)) {
             $orm = $options->orm;
             $tmp = explode("->", $orm);
@@ -185,6 +209,9 @@ class jsonDrv
             $orm = implode("->", $tmp);
             eval('$list = $json->where("_removed","neq","on")->'.$orm.';');
             if (is_object($list)) {
+                if (count($params['sort'])) {
+                    foreach($params['sort'] as $fld => $order) $list->sortBy($fld,$order);
+                }
                 $list = $list->get();
             }
         } else {
@@ -193,18 +220,28 @@ class jsonDrv
                 wbError('func', __FUNCTION__, 1001, func_get_args());
                 return array();
             }
-            $json = new Jsonq($file);
+            try {$json = new Jsonq($file);}
+            catch(Exception $err) {
+              $json = new Jsonq();
+              $json = $json->collect([]);
+            }
             $json->empty("");
-            $list = $json->where("_removed", "neq", "on")->get();
+            $list = $json->where("_removed", "neq", "on");
+            if (count($params['sort'])) {
+                foreach($params['sort'] as $fld => $order) $list->sortBy($fld,$order);
+            }
+            $list = $list->get();
         }
+
         if (!((array)$list === $list)) {$list = (array)$list;}
-        if (isset($options->filter)) {
+            $flag = true;
             foreach($list as $key => $item) {
-                $flag = wbItemFilter($item,$options->filter);
+                if (isset($options->filter)) $flag = wbItemFilter($item,$options->filter);
                 if (!$flag) {unset($list[$key]); } else {
-                  if (isset($options["return"])) {
+                  if (isset($item["id"]) AND !isset($item["_id"])) $item["_id"] = $item["id"];
+                  if (isset($options->return)) {
                       $tmp = [];
-                      foreach((array)$options["return"] as $fld) {
+                      foreach((array)$options->return as $fld) {
                           if (isset($item[$fld])) $tmp[$fld] = $item["fld"];
                       }
                       $item = $tmp;
@@ -213,9 +250,13 @@ class jsonDrv
                   $list[$key] = $item;
                 }
             }
-        }
+
         $count = count($list);
         if (!isset($size)) $size = $count;
+        if ($size > 0 ) {
+          $list = array_chunk($list,$size);
+          if (isset($list[$page -1])) {$list = $list[$page -1];} else {$list = [];}
+        }
         return ["list"=>$list,"count"=>$count,"page"=>$page,"size"=>$size];
     }
 
@@ -272,7 +313,7 @@ class jsonDrv
         }
         $file = $this->tablePath($form, $engine);
         if (!is_file($file) and ($form > '' or $create == true)) {
-            wbTableCreate($tname);
+            $this->TableCreate($form);
         }
         if (!is_file($file)) {
             wbError('func', __FUNCTION__, 1001, func_get_args());

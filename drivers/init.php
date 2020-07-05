@@ -43,7 +43,7 @@ function wbItemRead($form = null, $id = null)
         }
         else {
           $item["_form"] = $item["_table"] = $form;
-          if (isset($item['images']) && $_ENV["route"]["mode"]!=="edit") {
+          if (isset($item['images']) && isset($_ENV["route"]["mode"]) && $_ENV["route"]["mode"]!=="edit") {
               $item = wbImagesToText($item);
           }
         }

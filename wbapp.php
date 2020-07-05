@@ -227,6 +227,7 @@ class wbDom extends DomQuery
             $this->role = substr($this->tagName, 3);
         }
         $attrs = $this->attributes();
+
         if (count($attrs)) {
             foreach ($attrs as $atname => $atval) {
                 if ($atname == "wb" or substr($atname, 0, 3) == "wb-") {

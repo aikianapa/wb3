@@ -42,6 +42,7 @@ class ctrlThumbnails
     {
         $remote = false;
         $cache = true;
+        $query = $app->vars("_route.query");
         if ($app->vars("_route.http")) {
             $remote=true;
             $p="http";
@@ -50,7 +51,7 @@ class ctrlThumbnails
             $remote=true;
             $p="https";
         }
-        if ($app->vars("_get.nocache")>"") {
+        if (isset($query["nocache"])) {
             $cache=false;
         }
         if ($app->vars("_route.params") and isset($app->vars("_route.params")[0])) {
@@ -92,7 +93,7 @@ class ctrlThumbnails
                     if ($remote) {
                         unlink($file);
                     }
-                    if ($_GET["zc"]==1) {
+                    if ($_GET["zc"]==0) {
                         $image->cropThumbnailImage($app->vars("_route.w"), $app->vars("_route.h"), true);
                     } else {
                         $image->thumbnailImage($app->vars("_route.w"), $app->vars("_route.h"), true);

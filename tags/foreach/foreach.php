@@ -1,5 +1,6 @@
 <?php
 use Adbar\Dot;
+use Nahid\JsonQ\Jsonq;
 class tagForeach {
   public function __construct($dom) {
       return $this->foreach($dom);
@@ -50,6 +51,30 @@ class tagForeach {
 
         if ($dom->params("from")) {
             if (isset($list[$dom->params->from])) {$list = $list[$dom->params->from];} else {$list = [];}
+            if (isset($options["sort"]) AND (array)$options["sort"] === $options["sort"]) {
+                foreach((array)$options["sort"] as $key=> $fld) {
+                    if (!((array)$fld === $fld)) {
+                        $fld = explode(":",$fld);
+                        if (!isset($fld[1])) {
+                            $fld[1] = 1;
+                        } else if (in_array(strtolower($fld[1]),['a','asc','1'])) {
+                            $fld[1] = '';
+                        } else if (in_array(strtolower($fld[1]),['d','desc','-1'])) {
+                            $fld[1] = 'desc';
+                        }
+                        $params['sort'][$fld[0]] = $fld[1];
+                    } else {
+                        $params['sort'][$key] = $fld;
+                    }
+
+                }
+                $json = new Jsonq();
+                $json = $json->collect($list);
+                if (count($params['sort'])) {
+                    foreach($params['sort'] as $fld => $order) $json->sortBy($fld,$order);
+                }
+                $list = $json->get();
+            }
         }
 
         if ($dom->params("size") > "") {

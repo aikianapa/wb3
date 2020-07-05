@@ -13,6 +13,13 @@ class tagData {
         $dom->item = wbItemRead($dom->params->table, $dom->params->item);
     } else if ($dom->params("json")) {
         $dom->item = $dom->params("json");
+    } else if ($dom->params("table") AND $dom->params("filter")) {
+       $dom->item = $dom->app->itemList($dom->params->table,['filter'=>$dom->params->filter,'limit'=>1]);
+       if (!count($dom->item["list"])) {
+          $dom->item = [];
+       } else {
+          $dom->item = $dom->item["list"][0];
+       }
     } else if (!$dom->params("field")) {
         $dom->item = [];
     }
@@ -22,6 +29,12 @@ class tagData {
         $data->setReference($dom->item);
         $dom->item = $data->get($dom->params("field"));
         if (!((array)$dom->item === $dom->item)) $dom->item = [$dom->params("field") => $dom->item];
+    }
+
+    if ($dom->find("wb-empty")->length) {
+        $empty = $dom->find("wb-empty")[0];
+        $dom->find("wb-empty")->remove();
+        if (!count($dom->item)) $dom->inner($empty->inner());
     }
     $dom->fetch();
     $dom->unwrap("wb-data");

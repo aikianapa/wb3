@@ -254,7 +254,7 @@ function tagTreeUl(&$dom,$Item=array(),$param=null,$srcVal=array()) {
                 if ($parent==0 OR (isset($item["children"]) AND (array)$item["children"] === $item["children"] AND count($item["children"]))) {
                     if ($pardis==1 AND ($limit!==$lvl-1)) $line->attr("disabled",true);
                     if ($lvl>1) $parent=1;
-                    tagTreeUl($child,$item["children"],array("name"=>$name,"tag"=>$tag,"lvl"=>$lvl,"tpl"=>$tpl,"idx"=>$idx,"level"=>$level,"parent_id"=>$item["id"],"pardis"=>$pardis,"parent"=>$parent,"children"=>$children,"limit"=>$limit),$srcVal);
+                    if (isset($item["children"])) tagTreeUl($child,$item["children"],array("name"=>$name,"tag"=>$tag,"lvl"=>$lvl,"tpl"=>$tpl,"idx"=>$idx,"level"=>$level,"parent_id"=>$item["id"],"pardis"=>$pardis,"parent"=>$parent,"children"=>$children,"limit"=>$limit),$srcVal);
                     if (($limit==-1 OR $lvl<=$limit)) {
                             if ($parent !== 1) {
                                 $lvl--;

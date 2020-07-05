@@ -13,7 +13,7 @@ class modFilepicker
         } else {
             $out=$app->fromFile(__DIR__ ."/filepicker_ui_multi.php", true);
         }
-
+        $out->copy($dom);
         if ($dom->params("name")) {
             $out
             ->find(".filepicker-data")
@@ -24,7 +24,6 @@ class modFilepicker
             ->find(".filepicker-data")
             ->attr("name", $dom->attr("name"));
         }
-
         if ($dom->params("path")) {
             $out
             ->find("input[name=upload_url]")
@@ -32,10 +31,9 @@ class modFilepicker
         }
         if ($dom->params("ext")) {
             $out
-                    ->find("input[name=upload_url]")
-                    ->after("<input type='hidden' name='upload_ext' value='{$dom->params->ext}'>");
+              ->find("input[name=upload_url]")
+              ->after("<input type='hidden' name='upload_ext' value='{$dom->params->ext}'>");
         }
-        $out->copy($dom);
         $out->fetch();
         $dom->html($out);
     }

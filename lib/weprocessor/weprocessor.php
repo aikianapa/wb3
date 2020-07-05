@@ -140,7 +140,7 @@ class WEProcessor {
 	}
 
 	public function call_fn($name, $args) {
-		if ($this->failedEval) return null;
+		//if ($this->failedEval) return null;
 		if ($this->debug) print("##call_fn($name, '".json_encode($args)."') -> ");
 		$res = null;
 		$exclude=explode(",","exec,system,passthru,readfile,shell_exec,escapeshellarg,escapeshellcmd,proc_close,proc_open,ini_alter,dl,popen,parse_ini_file,show_source,curl_exec,file_get_contents,file_put_contents,file,eval,chmod,chown");
@@ -161,6 +161,7 @@ class WEProcessor {
 			// если не срабатывает - нужно определить ветку в этом свитче с необходимым преобразованием аргументов
 			default: {
 				try {
+					if ($name == "is_file") print_r($args);
 					if ((array)$args === $args) {
 						if (empty($args)) {
 							// есть специальный случай. если мы вызываем функцию, у которой

@@ -23,7 +23,6 @@ $(document).on("filepicker-init", function() {
       var width = size*1;
       var height = size*1;
 
-
       $(document).find(selector).each(async function(){
             let $filepicker = $(this);
             let $listview = $(this).find(".listview");
@@ -31,7 +30,7 @@ $(document).on("filepicker-init", function() {
             let inpfile = $filepicker.find("input[type=file]");
             let save;
             let field = "images";
-
+            var path = $filepicker.find("[name=upload_url]").val();
 
             $filepicker.prop("done",true);
 
@@ -72,6 +71,8 @@ $(document).on("filepicker-init", function() {
                   let file = explode("?",$(this).attr("data-src"));
                   file = file[0];
                   file = $(this).attr("data-src");
+                  let tmp = file;
+                  if (tmp.split("/").length == 1) file = path + file;
                   let thumb = getthumb(file,update);
                   let src = $(this).attr("src");
                   if  (!src) src = "";
@@ -87,9 +88,21 @@ $(document).on("filepicker-init", function() {
                   });
               });
               input.html(json_encode(data));
-              $filepicker.find("[name=prevent_img]").val("");
-              $filepicker.find("[name=upload_url]").val("");
+              //$filepicker.find("[name=prevent_img]").val("");
+              //$filepicker.find("[name=upload_url]").val("");
             }
+
+            var fixoldimg = function() {
+                let path = $filepicker.find("[name=upload_url]").val();
+                $($filepicker.list).each(function(i,img){
+                    let tmp = img.img;
+                    if (tmp.split('/').length == 1) {
+                        img.img = path + img.img;
+                        $filepicker.list[i] = img;
+                    }
+                });
+            }
+
 
             var listview = function() {
                 let lvid = "lv-"+wbapp.newId();
@@ -103,8 +116,7 @@ $(document).on("filepicker-init", function() {
                 if (!$(inpfile).is("[multiple]") && $filepicker.list.length) {
                     $filepicker.list = [$filepicker.list[0]];
                 }
-
-
+                fixoldimg();
                 $listview.attr("id",lvid);
                 var ractive = Ractive({
                   target: '#'+lvid,
@@ -178,6 +190,7 @@ $(document).on("filepicker-init", function() {
                           j++;
                       });
                     }
+                    fixoldimg();
                     ractive.set({images:$filepicker.list});
                     setdata();
                   }
@@ -199,7 +212,7 @@ $(document).on("filepicker-init", function() {
                             $filepicker.list[0] = line;
                         }
                     }
-
+                    fixoldimg();
                     $filepicker.ractive.set({images:$filepicker.list});
                     setdata();
 
