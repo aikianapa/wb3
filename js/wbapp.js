@@ -51,13 +51,14 @@ wbapp.eventsInit = function() {
     var minlen = 0;
     var that = this;
     var val = $(this).val();
+    that.waitajax = false;
     if ($(this).attr("minlength")) minlen = $(this).attr("minlength") * 1;
-    if (that.waitajax == undefined && val.length >= minlen) {
+    if (that.waitajax == false && val.length >= minlen) {
         that.waitajax = true;
         $(this).trigger("change");
         setTimeout(function(){
-          that.waitajax = undefined;
-        },700);
+          that.waitajax = false;
+        },500);
     }
   })
 
@@ -337,7 +338,6 @@ wbapp.ajax = async function(params) {
                 }
                 if (target.params.page !== undefined) delete target.params.page
             });
-            delete params['data'];
             wbapp.ajax(target.params);
         }
     }
@@ -454,8 +454,7 @@ wbapp.renderTemplate = function(params,data) {
   }
 
   $(document).on("bind-"+params.bind,function(e,data){
-        console.log(params.bind,tid,data);
-
+//        console.log(params.bind,tid,data);
         wbapp.bind[params.bind][tid].set(data);
   })
 }

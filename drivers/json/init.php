@@ -234,24 +234,25 @@ class jsonDrv
             $list = $list->get();
         }
 
-        if (!((array)$list === $list)) {$list = (array)$list;}
-            $flag = true;
-            foreach($list as $key => $item) {
-                if (isset($options->filter)) $flag = wbItemFilter($item,$options->filter);
-                if (!$flag) {unset($list[$key]); } else {
-                  if (isset($item["id"]) AND !isset($item["_id"])) $item["_id"] = $item["id"];
-                  $item["_table"] = $item["_form"] = $form;
-                  if (isset($options->return)) {
-                      $tmp = [];
-                      foreach((array)$options->return as $fld) {
-                          if (isset($item[$fld])) $tmp[$fld] = $item["fld"];
-                      }
-                      $item = $tmp;
+        $iter = new ArrayIterator((array)$list);
+        $list = [];
+        $flag = true;
+        foreach($iter as $key => $item) {
+            if (isset($options->filter)) $flag = wbItemFilter($item,$options->filter);
+            if (!$flag) {unset($list[$key]); } else {
+              if (isset($item["id"]) AND !isset($item["_id"])) $item["_id"] = $item["id"];
+              $item["_table"] = $item["_form"] = $form;
+              if (isset($options->return)) {
+                  $tmp = [];
+                  foreach((array)$options->return as $fld) {
+                      if (isset($item[$fld])) $tmp[$fld] = $item["fld"];
                   }
-                  $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
-                  $list[$item["_id"]] = $item;
-                }
+                  $item = $tmp;
+              }
+              $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
+              $list[$item["_id"]] = $item;
             }
+        }
 
         $count = count($list);
         if (!isset($size)) $size = $count;
@@ -260,7 +261,8 @@ class jsonDrv
           if (isset($chunk[$page -1])) {$chunk = $chunk[$page -1];} else {$chunk = [];}
           $list = [];
           foreach($chunk as $item) {
-              $list[$item['_id']] = $item;
+              $item['_id'] = $item['id'];
+              $list[$item['id']] = $item;
           }
 
 

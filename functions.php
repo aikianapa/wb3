@@ -2150,11 +2150,26 @@ function wbItemFilter($item, $filter)
                 $result = false;
             }
         } else {
-            foreach ($expr as $cond => $val) {
-                if ($cond == '$ne' and $fields->get($fld) == $val) {
-                    $result = false;
-                } else if ($cond == '$like' and  !preg_match('/'.$val.'/ui', $fields->get($fld))) {
-                    $result = false;
+            if ($fld == '$or') {
+                $result = false;
+                foreach($expr as $orFilter) {
+                    if (wbItemFilter($item, $orFilter) == true) $result = true;
+                }
+            } else if ($fld == '$or') {
+                $result = true;
+                foreach($expr as $andFilter) {
+                    if (wbItemFilter($item, $andFilter) == false) $result = false;
+                }
+            } else {
+                foreach ($expr as $cond => $val) {
+
+                        if ($cond == '$ne' and $fields->get($fld) == $val) {
+                            $result = false;
+                        } else if ($cond == '$like' and  !preg_match('/'.$val.'/ui', $fields->get($fld))) {
+                            $result = false;
+                        }
+
+
                 }
 
             }

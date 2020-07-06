@@ -18,15 +18,16 @@ class tagMultiinput {
         $inner=$dom->inner();
         if ($inner == "") $inner = "<input type='text' name='{$field}' class='form-control' />";
         $inner = $dom->app->fromString($inner);
-        $wrp = str_replace("{{inner}}",$inner->outer(),$wrp);
+        $wrp = $dom->app->fromString(str_replace("{{inner}}",$inner->outer(),$wrp));
         $dom->attr("id") > "" ? $tplId = $dom->attr("id") : $tplId='mi_'.wbNewId();
         $dom->attr("id",$tplId);
         $textarea = $dom->app->fromString("<textarea name='{$field}' type='json' class='wb-multiinput-data' style='display:none;'></textarea>");
         $textarea->copy($dom);
         $textarea->attr("data-tpl",$tplId);
-        $dom->tpl = $wrp;
+        $dom->tpl = $wrp->outer();
         $fields = new Dot();
         $fields->setReference($textarea->item);
+        $wrp->fetch($fields->get());
         $this->setData($dom,$fields->get($field));
         $dom->append($textarea)
             ->append("\n<template id='{$tplId}'>{$wrp}</template>\n")
