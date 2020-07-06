@@ -95,7 +95,6 @@ class jsonDrv
             $item['_id'] = $item['id'];
         }
         $item = wbItemInit($form, $item);
-
         $_ENV['cache'][md5($file.$_SESSION["lang"])][$item['id']] = $item;
         wbTrigger('form', __FUNCTION__, 'AfterItemSave', func_get_args(), $item);
         $res = $item;
@@ -250,15 +249,21 @@ class jsonDrv
                       $item = $tmp;
                   }
                   $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
-                  $list[$key] = $item;
+                  $list[$item["_id"]] = $item;
                 }
             }
 
         $count = count($list);
         if (!isset($size)) $size = $count;
-        if ($size > 0 ) {
-          $list = array_chunk($list,$size);
-          if (isset($list[$page -1])) {$list = $list[$page -1];} else {$list = [];}
+        if ($size > 0 && $size < $count ) {
+          $chunk = array_chunk($list,$size);
+          if (isset($chunk[$page -1])) {$chunk = $chunk[$page -1];} else {$chunk = [];}
+          $list = [];
+          foreach($chunk as $item) {
+              $list[$item['_id']] = $item;
+          }
+
+
         }
         return ["list"=>$list,"count"=>$count,"page"=>$page,"size"=>$size];
     }
@@ -284,9 +289,9 @@ class jsonDrv
                 }
                 $flag = true;
                 if (isset($item['_removed']) and true == $item['_removed']) {
-                    if (wbRole('admin')) {
+//                    if (wbRole('admin')) {
                         unset($data[$key]);
-                    }
+//                    }
                 }
             }
             $data = wbJsonEncode($data);
@@ -297,7 +302,7 @@ class jsonDrv
             } else {
                 $res = null;
             }
-            unset($_ENV['cache'][md5($file.$_SESSION["lang"])]);
+            unset($_ENV['cache'][md5($file.$_SESSION['lang'])]);
         }
         return $res;
     }

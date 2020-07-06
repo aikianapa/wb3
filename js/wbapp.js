@@ -344,7 +344,7 @@ wbapp.ajax = async function(params) {
 
 wbapp.storageUpdate = function(key,data) {
     var store = wbapp.storage(key);
-    if (store._id == undefined && store.result !== undefined && data._id !== undefined) {
+    if (store._id == undefined && store.result !== undefined && data !== null && data._id !== undefined) {
         if (data._removed !== undefined && data._removed == true) {
             try {
                 delete store.result[data._id]
@@ -454,6 +454,8 @@ wbapp.renderTemplate = function(params,data) {
   }
 
   $(document).on("bind-"+params.bind,function(e,data){
+        console.log(params.bind,tid,data);
+
         wbapp.bind[params.bind][tid].set(data);
   })
 }
@@ -567,6 +569,11 @@ wbapp.postSync = async function(url,data = {}) {
 wbapp.session = async function() {
     if (wbapp._session == undefined) wbapp._session = await wbapp.getSync("/ajax/getsess/");
     return wbapp._session;
+}
+
+wbapp.settings = async function() {
+    if (wbapp._settings == undefined) wbapp._settings = await wbapp.getSync("/ajax/getsett/");
+    return wbapp._settings;
 }
 
 wbapp.loadScripts = async function(scripts = [], trigger = null, func = null) {
@@ -754,6 +761,7 @@ $.fn.jsonVal = function(data = undefined) {
       wbapp.modalsInit();
       wbapp.ajaxAuto();
       wbapp.session();
+      wbapp.settings();
       wbapp.lazyload();
   });
 }

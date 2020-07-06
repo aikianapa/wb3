@@ -95,7 +95,6 @@ function wbItemSave($table, $item = null, $flush = true)
         // читаем всю запись, иначе возвращаются не все поля
         $item = $db->itemRead($table, $item["id"]);
     }
-
     $item = wbTrigger('form', __FUNCTION__, 'afterItemSave', func_get_args(), $item);
     return $item;
 }

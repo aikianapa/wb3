@@ -1,9 +1,9 @@
 $(document).off("jodit-js");
 $(document).on("jodit-js", function() {
   //$(document).on("wb-ajax-done",function(){$(document).trigger("jodit-js");});
-  $('.jodit:not(.ready)').each(function() {
+  $('.jodit:not(.ready):not(.jodit-box)').each(function() {
     $(this).addClass("ready");
-    var editable = this;
+    let editable = this;
 
       $(editable).data("timeout", false);
       var name = $(editable).attr("name");
@@ -14,7 +14,7 @@ $(document).on("jodit-js", function() {
       }
       //var lang = wbapp.settings.i18n;
       var lang = $(editable).attr("data-lang");
-      if (lang == undefined) lang = wbapp.settings.locale;
+      if (lang == undefined) lang = wbapp._settings.locale;
       lang = lang.substr(0,2);
       var theme = $(editable).attr("data-theme");
       if (theme == undefined) theme = "gray";
@@ -66,7 +66,7 @@ $(document).on("jodit-js", function() {
             }
           };
         }
-        console.log(id);
+
         var edit = new Jodit('#' + id, options);
 
       });

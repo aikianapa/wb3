@@ -12,6 +12,7 @@ class wbAjaxSave
         $table = $this->app->vars("_route.params.0");
         if ($this->app->vars("_route.table") > "") $table = $this->app->vars("_route.table");
         $item = $this->app->vars("_post");
+
         if (!isset($item["_id"]) && isset($item["id"]) && $item["id"] > "") $item["_id"] = $item["id"];
         if (!isset($item["_id"]) && $this->app->vars("_route.item") > "") $item["_id"] = $this->app->vars("_route.item");
         if (count($item)) $res = $this->app->itemSave($table,$item,true);
