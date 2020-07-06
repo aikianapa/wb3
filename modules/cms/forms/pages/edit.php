@@ -34,7 +34,7 @@
             <div class="col-sm-10">
               <select class="form-control" name="template" placeholder="Шаблон">
                   <wb-foreach wb='call=wbListTpl()'>
-                  <option>{{_val}}</option>
+                  <option value="{{_val}}">{{_val}}</option>
                   </wb-foreach>
               </select>
             </div>
