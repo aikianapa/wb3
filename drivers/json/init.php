@@ -79,7 +79,6 @@ class jsonDrv
 
     public function itemSave($form, $item = null, $flush = true)
     {
-        $item = wbItemInit($form, $item);
         $file = $this->tablePath($form);
         $res = null;
         if (!is_file($file)) {
@@ -91,8 +90,11 @@ class jsonDrv
             $_ENV['cache'][md5($file.$_SESSION["lang"])] = array();
         }
         if (!isset($item['id']) or '_new' == $item['id'] or $item['id'] == "") {
-            $item['id'] = wbNewId();
+            $item['id'] = $item['_id'] = wbNewId();
+        } else {
+            $item['_id'] = $item['id'];
         }
+        $item = wbItemInit($form, $item);
 
         $_ENV['cache'][md5($file.$_SESSION["lang"])][$item['id']] = $item;
         wbTrigger('form', __FUNCTION__, 'AfterItemSave', func_get_args(), $item);
@@ -239,6 +241,7 @@ class jsonDrv
                 if (isset($options->filter)) $flag = wbItemFilter($item,$options->filter);
                 if (!$flag) {unset($list[$key]); } else {
                   if (isset($item["id"]) AND !isset($item["_id"])) $item["_id"] = $item["id"];
+                  $item["_table"] = $item["_form"] = $form;
                   if (isset($options->return)) {
                       $tmp = [];
                       foreach((array)$options->return as $fld) {
