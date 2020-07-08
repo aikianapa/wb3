@@ -184,9 +184,15 @@ wbapp.save = function(obj,params,event) {
   let that = this;
   let data, form, result;
   let method = "POST";
+          console.log(params);
   if (params.form !== undefined) {
-      form = $(params.form);} else {form = $(obj).parents("form");
-      if ($(form).attr("method") !== undefined) method = $(form).attr("method");
+      form = $(params.form);
+  } else {
+      form = $(obj).parents("form");
+  }
+  if ($(form).attr("method") !== undefined) method = $(form).attr("method");
+  if ($(form).parents('.modal.saveclose').length) {
+      params.dismiss = $(form).parents('.modal.saveclose').attr('id');
   }
   data = wbapp.objByForm(form);
   if (data._idx) delete data._idx;
@@ -220,6 +226,7 @@ wbapp.save = function(obj,params,event) {
                   eval(params.data + ' = update;');
               }
           }
+          console.log(params)
           if (params.dismiss && params.error !== true) $("#"+params.dismiss).modal("hide");
           if (params.bind) wbapp.storage(params.bind,data);
           if (params.update) wbapp.storageUpdate(params.update,data);
@@ -420,7 +427,7 @@ wbapp.tpl = function(tid,data=null) {
   }
 }
 
-wbapp.renderTemplate = function(params,data) {
+wbapp.renderTemplate = function(params,data = {}) {
   var tid;
   if (params._tid !== undefined) tid = params._tid;
   if (params.target !== undefined) tid = params.target;
@@ -437,6 +444,7 @@ wbapp.renderTemplate = function(params,data) {
   if (wbapp.template[tid] == undefined) return;
 
   if (wbapp.bind[params.bind] == undefined) wbapp.bind[params.bind] = {};
+  wbapp.storage(params.bind,data);
 
   wbapp.bind[params.bind][tid] = new Ractive({
                 target: tid,
@@ -562,7 +570,7 @@ wbapp.postSync = async function(url,data = {}) {
     await $.post(url,data).then(function(value){
         result = value
     })
-    return result
+    return result;
 }
 
 wbapp.session = async function() {

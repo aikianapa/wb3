@@ -245,11 +245,10 @@ function wbFormClass($form = null) {
 
 function wbCorrelation($form,$id,$fld) {
     $app = $_ENV["app"];
-    $data = new Dot();
     $item = wbItemRead($form,$id);
     $item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', func_get_args(), $item);
     if ($item) {
-        $data->setReference($item);
+        $data = new Dot($item);
         return $data->get($fld);
     } else {
         return null;
@@ -1660,6 +1659,9 @@ function wbTrigger($type, $name, $trigger, $args = [], $data = null)
         $form = $args[0];
         $class = wbFormClass($form);
         if ($class && method_exists($class,$trigger)) {
+            if ($trigger == 'beforeItemRemove') {
+                $data = wbItemRead($args[0],$args[1]);
+            }
             $class->$trigger($data);
         }
         return $data;
@@ -2155,20 +2157,36 @@ function wbItemFilter($item, $filter)
                 foreach($expr as $orFilter) {
                     if (wbItemFilter($item, $orFilter) == true) $result = true;
                 }
-            } else if ($fld == '$or') {
+            } else if ($fld == '$and') {
                 $result = true;
                 foreach($expr as $andFilter) {
-                    if (wbItemFilter($item, $andFilter) == false) $result = false;
+                    if (wbItemFilter($item, $andFilter) == false) {
+                      $result = false;
+                      break;
+                    }
                 }
             } else {
                 foreach ($expr as $cond => $val) {
-
-                        if ($cond == '$ne' and $fields->get($fld) == $val) {
-                            $result = false;
-                        } else if ($cond == '$like' and  !preg_match('/'.$val.'/ui', $fields->get($fld))) {
-                            $result = false;
-                        }
-
+                    switch($cond) {
+                        case '$ne':
+                            if ($fields->get($fld) == $val) $result = false;
+                            break;
+                        case '$like':
+                            if (!preg_match('/'.$val.'/ui', $fields->get($fld))) $result = false;
+                            break;
+                        case '$gte':
+                            if (!($val >= $fields->get($fld))) $result = false;
+                            break;
+                        case '$lte':
+                            if (!($val <= $fields->get($fld))) $result = false;
+                            break;
+                        case '$gt':
+                            if (!($val > $fields->get($fld))) $result = false;
+                            break;
+                        case '$lt':
+                            if (!($val < $fields->get($fld))) $result = false;
+                            break;
+                    }
 
                 }
 

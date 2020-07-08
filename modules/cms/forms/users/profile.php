@@ -2,7 +2,7 @@
 <wb-data wb="table=users&item={{_sess.user.id}}">
 <nav class="nav navbar navbar-expand-md col">
   <a class="navbar-brand tx-bold tx-spacing--2 order-1" href="javascript:"><i class="ri-user-settings-line"></i> Ваш профиль</a>
-  <button class="cms btn btn-success order-2" type="button"
+  <button class="cms btn btn-success order-2 pos-absolute r-5" type="button"
     wb-save="{'table':'users','item':'{{id}}','form':'#userProfile','______update':'cms.user.profile' }">
     <i class="wd-20 ht-20 fa fa-save"></i> {{_lang.save}}
   </button>
@@ -17,11 +17,30 @@
   <div class="form-group row">
     <div class="input-group col-12">
       <div class="input-group-prepend">
+        <span class="input-group-text">Идентификатор</span>
+      </div>
+      <input type="text" name="id" class="form-control" readonly placeholder="Идентификатор">
+      <div class="input-group-append">
+        <button class="btn btn-warning input-group-text dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-key"></i>
+        </button>
+        <div class="dropdown-menu p-3">
+          <wb-include wb='form=common&mode=changePassword'>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="form-group row">
+    <div class="input-group col-12">
+      <div class="input-group-prepend">
         <span class="input-group-text">Имя</span>
       </div>
       <input type="text" name="first_name" class="form-control" placeholder="Имя">
     </div>
   </div>
+
   <div class="form-group row">
     <div class="input-group col-12">
       <div class="input-group-prepend">
@@ -74,9 +93,11 @@
 [ru]
         close           = "Закрыть"
         save            = "Сохранить"
+        password        = "Пароль"
 [en]
         close           = "Close"
         save            = "Save"
+        password        = "Password"
 </wb-lang>
 
 

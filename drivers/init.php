@@ -56,8 +56,10 @@ function wbItemRead($form = null, $id = null)
 
 function wbItemRemove($form = null, $id = null, $flush = true)
 {
+    $res = false;
     $db = wbSetDb($form);
     if ($form == "_settings") $db = $_ENV["app"]->_db;
+    wbTrigger('form', __FUNCTION__, 'beforeItemRemove', func_get_args());
     $res = $db->itemRemove($form, $id, $flush);
     if ($res !== false) $res["_removed"] = true;
     wbTrigger('form', __FUNCTION__, 'afterItemRemove', func_get_args(), $res);
@@ -116,13 +118,9 @@ function wbTableFlush($form)
     // Сброс кэша в общий файл
     $res = false;
     wbTrigger('form', __FUNCTION__, 'beforeTableFlush', func_get_args(), $form);
-    $drv=wbCallDriver(__FUNCTION__, func_get_args());
-
-    if ($drv !== false) {
-        $res = $drv["result"];
-    } else {
-        $res = jsonTableFlush($form);
-    }
+    $db = wbSetDb($form);
+    if ($form == "_settings") $db = $_ENV["app"]->_db;
+    $res = $db->tableFlush($form);
     wbTrigger('form', __FUNCTION__, 'afterTableFlush', func_get_args(), $form);
     return $res;
 }

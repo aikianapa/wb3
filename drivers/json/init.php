@@ -81,10 +81,6 @@ class jsonDrv
     {
         $file = $this->tablePath($form);
         $res = null;
-        if (!is_file($file)) {
-            wbError('func', __FUNCTION__, 1001, func_get_args());
-            return null;
-        }
 
         if (!isset($_ENV['cache'][md5($file.$_SESSION["lang"])])) {
             $_ENV['cache'][md5($file.$_SESSION["lang"])] = array();
@@ -96,7 +92,7 @@ class jsonDrv
         }
         $item = wbItemInit($form, $item);
         $_ENV['cache'][md5($file.$_SESSION["lang"])][$item['id']] = $item;
-        wbTrigger('form', __FUNCTION__, 'AfterItemSave', func_get_args(), $item);
+
         $res = $item;
         if ($flush == true) {
             $this->tableFlush($form);
@@ -106,6 +102,7 @@ class jsonDrv
 
     public function itemRemove($form = null, $id = null, $flush = true)
     {
+        $res = false;
         $file = $this->tableFile($form);
         if (!is_file($file)) {
             wbError('func', __FUNCTION__, 1001, func_get_args());
@@ -125,7 +122,6 @@ class jsonDrv
             }
             if (is_array($item)) {
                 $item['_removed'] = true;
-                $item=wbTrigger('form', __FUNCTION__, 'BeforeItemRemove', func_get_args(), $item);
                 $_ENV['cache'][md5($file.$_SESSION["lang"])][$id] = $item;
             }
             $res = wbItemSave($form, $item, $flush);
@@ -228,9 +224,6 @@ class jsonDrv
             }
             $json->empty("");
             $list = $json->where("_removed", "neq", "on");
-            if (count($params['sort'])) {
-                foreach($params['sort'] as $fld => $order) $list->sortBy($fld,$order);
-            }
             $list = $list->get();
         }
 
@@ -252,6 +245,14 @@ class jsonDrv
               $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
               $list[$item["_id"]] = $item;
             }
+            if (isset($options->limit) && count($list) == $options->limit) break;
+        }
+
+        if (count($params['sort'])) {
+            $json = new Jsonq();
+            $list = $json->collect($list);
+            foreach($params['sort'] as $fld => $order) $list->sortBy($fld,$order);
+            $list = $list->get();
         }
 
         $count = count($list);
@@ -275,8 +276,8 @@ class jsonDrv
         // Сброс кэша в общий файл
         $res = false;
         $file = $this->tablePath($form);
-        $cache = $_ENV['cache'][md5($file.$_SESSION["lang"])];
         if (is_file($file) and isset($_ENV['cache'][md5($file.$_SESSION["lang"])])) {
+            $cache = $_ENV['cache'][md5($file.$_SESSION["lang"])];
             $fp = fopen($file, 'rb');
             flock($fp, LOCK_SH);
             $data = file_get_contents($file);
