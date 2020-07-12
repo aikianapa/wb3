@@ -93,7 +93,7 @@ class ctrlThumbnails
                     if ($remote) {
                         unlink($file);
                     }
-                    if ($_GET["zc"]==0) {
+                    if ($app->vars("_get.zc")==0) {
                         $image->cropThumbnailImage($app->vars("_route.w"), $app->vars("_route.h"), true);
                     } else {
                         $image->thumbnailImage($app->vars("_route.w"), $app->vars("_route.h"), true);

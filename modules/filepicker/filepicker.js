@@ -96,7 +96,7 @@ $(document).on("filepicker-init", function() {
                 let path = $filepicker.find("[name=upload_url]").val();
                 $($filepicker.list).each(function(i,img){
                     let tmp = img.img;
-                    if (tmp.split('/').length == 1) {
+                    if (tmp !== undefined && tmp.split('/').length == 1) {
                         img.img = path + img.img;
                         $filepicker.list[i] = img;
                     }

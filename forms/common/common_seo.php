@@ -13,7 +13,7 @@
     <div class="col-sm-9">
         <input type="text" class="form-control input-tags" name="meta_keywords" placeholder="{{_lang.keywords}}"> </div>
 </div>
-
+<!--
 <ul class="nav nav-tabs" role="tablist">
 	<li class="nav-item"><a class="nav-link active" href="#{{_form}}SeoHead" data-toggle="tab">{{_lang.head_inc}}</a></li>
 	<li class="nav-item"><a class="nav-link" href="#{{_form}}SeoBody" data-toggle="tab" >{{_lang.body_inc}}</a></li>
@@ -41,6 +41,7 @@
       </div>
   </div>
 </div>
+
 <div id="{{_form}}SeoBody" class="tab-pane fade show" role="tabpanel">
 
   <div class="form-group row">
@@ -63,8 +64,9 @@
   </div>
 </div>
 </div>
+-->
 
-<script type="text/locale">
+<wb-lang>
 [en]
 title           = "Title"
 descr           = "META Description"
@@ -81,4 +83,4 @@ head_inc        = "Вставка в HEAD"
 body_inc        = "Вставка в BODY"
 local_on        = "Включить локальную вставку"
 glob_off        = "Отключить глобальную вставку"
-</script>
+</wb-lang>

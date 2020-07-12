@@ -36,8 +36,9 @@ class ctrlForm {
           if ($dom) $dom->item = $item;
       }
       $dom->fetch();
-      $app->show = &$dom;
-      echo $dom;
+      $out = $dom->outer();
+      if (!strpos(' '.$out,'<!DOCTYPE html>')) $out = '<!DOCTYPE html>'.$out;
+      echo $out;
       die;
   }
 

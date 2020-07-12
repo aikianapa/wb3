@@ -79,6 +79,13 @@ class ctrlAjax {
       //$ctrl->ajax->
   }
 
+  function getform() {
+    $form = $this->app->vars('_route.params.0');
+    $mode = $this->app->vars('_route.params.1');
+    $out = $this->app->getForm($form,$mode);
+    return json_encode(['result'=>$out->outer()]);
+  }
+
   function rmitem()
   {
       $app = $this->app;

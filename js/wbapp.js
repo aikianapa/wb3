@@ -1,5 +1,5 @@
 "use strict"
-if (typeof $ == 'undefined') {
+if (typeof $ === 'undefined') {
     alert("jQuery required!");
 } else {
 
@@ -190,6 +190,9 @@ wbapp.save = function(obj,params,event) {
   } else {
       form = $(obj).parents("form");
   }
+
+  if ($(form).length && !$(form).verify()) return false;
+
   if ($(form).attr("method") !== undefined) method = $(form).attr("method");
   if ($(form).parents('.modal.saveclose').length) {
       params.dismiss = $(form).parents('.modal.saveclose').attr('id');
@@ -372,6 +375,30 @@ wbapp.storageUpdate = function(key,data) {
 
 }
 
+wbapp.toast = function(title,text,params={}) {
+    let options = {
+        target: 'body',
+        delay: 3000
+    }
+    if (params.target) options.target = params.target;
+    if (params.delay) options.delay = params.delay;
+    let $tpl = $(wbapp.tpl('wb.toast').html);
+    $tpl.attr('data-delay',options.delay);
+    let toast = Ractive({
+        el: options.target,
+        append: true,
+        template: $tpl.outer(),
+        data: {title: title, text:text, age:''}
+    });
+
+    $(options.target)
+    .find(".toast")
+    .toast('show')
+    .on('hidden.bs.toast',function(){
+        $(this).remove()
+    });
+}
+
 
 wbapp.formByObj = function(selector,data) {
     var form = $(document).find(selector,0);
@@ -389,6 +416,9 @@ wbapp.objByForm = function(form) {
 
 wbapp.tplInit = function() {
     if (!wbapp.template) wbapp.template = {};
+    wbapp.getForm("snippets","toast").then(function(res){
+        wbapp.tpl('wb.toast',{html:res.result,params:{}});
+    });
     $(document).find("template").each(function(){
         var tid
         if (tid == undefined) tid = $(this).parent().attr("id");
@@ -417,6 +447,12 @@ wbapp.tplInit = function() {
         if ($(this).attr("visible") == undefined) $(this).remove();
     });
     wbapp.wbappScripts();
+}
+
+wbapp.getForm = async function(form,mode,data={}) {
+    return await wbapp.postSync(`/ajax/getform/${form}/${mode}`,data).then(function(res){
+        return res
+    });
 }
 
 wbapp.tpl = function(tid,data=null) {
@@ -680,6 +716,121 @@ if (list.length) {
     return result;
 }
 
+$.fn.verify = function() {
+    var form = this;
+    var res = true;
+    var idx = 0;
+    $(form).find("[required],[type=password],[minlength],[min],[max]").each(function(i) {
+        idx++;
+		var label = $(this).attr("data-label");
+		if (label == undefined || label == "") label = $(this).prev("label").text();
+		if (label == undefined || label == "") label = $(this).next("label").text();
+		if ((label == undefined || label == "") && $(this).attr("id") !== undefined) label = $(this).parents("form").find("label[for="+$(this).attr("id")+"]").text();
+		if (label == undefined || label == "") label = $(this).parents(".form-group").find("label").text();
+		if (label == undefined || label == "") label = $(this).attr("placeholder");
+		if (label == undefined || label == "") label = $(this).attr("name");
+
+        $(this).data("idx", idx);
+        if ($(this).is(":not([disabled],[readonly],[min],[max],[maxlength],[type=checkbox]):visible")) {
+            if ($(this).val() == "") {
+                res = false;
+                console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
+                $(document).trigger("wb-verify-false", [this]);
+            } else {
+                if ($(this).attr("type") == "email" && !wb_check_email($(this).val())) {
+                    res = false;
+                    $(this).data("error", wbapp.settings.sysmsg.email_correct);
+                    console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
+                    $(document).trigger("wb-verify-false", [this]);
+                } else {
+					          console.log("trigger: wb-verify-true");
+                    $(document).trigger("wb-verify-true", [this]);
+                }
+            }
+        }
+        if ($(this).is("[type=checkbox]") && $(this).is(":not(:checked)")) {
+            res = false;
+            console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
+            $(document).trigger("wb-verify-false", [this]);
+        }
+				if ($(this).is("[type=radio]") && $(this).is(":not(:checked)")) {
+            res = false;
+						var fld = $(this).attr("name");
+						if (fld > "") {
+								$("[type=radio][name='"+fld+"']").each(function(){
+									if ($(this).is(":checked")) {res = true;}
+								});
+						}
+						if (!res) {
+            		console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
+            		$(document).trigger("wb-verify-false", [this]);
+						}
+        }
+        if ($(this).is("[type=password]")) {
+            var pcheck = $(this).attr("name") + "_check";
+            if ($("input[type=password][name='" + pcheck + "']").length) {
+                if ($(this).val() !== $("input[type=password][name=" + pcheck + "]").val()) {
+                    res = false;
+                    $(this).data("error", wbapp.settings.sysmsg.pass_match);
+                    console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
+                    $(document).trigger("wb-verify-false", [this]);
+                }
+            }
+        }
+        if ($(this).is("[min]:not([readonly],[disabled]):visible") && $(this).val() > "") {
+			var min = $(this).attr("min") * 1;
+			var minstr = $(this).val() * 1;
+			if (minstr < min) {
+                res = false;
+                $(this).data("error", ucfirst(label) + " " + wbapp.settings.sysmsg.min_val+": " + min);
+                console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
+                $(document).trigger("wb-verify-false", [this]);
+			}
+		}
+
+        if ($(this).is("[max]:not([readonly],[disabled]):visible")  && $(this).val() > "") {
+			var max = $(this).attr("max") * 1;
+			var maxstr = $(this).val() * 1;
+			if (maxstr > max) {
+                res = false;
+                $(this).data("error", ucfirst(label) + " " + wbapp.settings.sysmsg.max_val+": " + max);
+                console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
+                $(document).trigger("wb-verify-false", [this]);
+			}
+		}
+
+        if ($(this).is("[minlength]:not([readonly],[disabled]):visible") && $(this).val() > "") {
+            var minlen = $(this).attr("minlength") * 1;
+            var lenstr = strlen($(this).val());
+            if (lenstr < minlen) {
+                res = false;
+                $(this).data("error", ucfirst(label) + " " + wbapp.settings.sysmsg.min_length+": " + minlen);
+                console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
+                $(document).trigger("wb-verify-false", [this]);
+            }
+        }
+
+        if ($(this).is("button")) {
+    			if (
+    				($(this).attr("value") !== undefined && $(this).val() == "")
+    				||
+    				($(this).attr("value")  == undefined && $(this).html() == "")
+    			) {
+    				res = false;
+    			}
+		    }
+    });
+    if (res == true) {
+	       console.log("trigger: wb-verify-success");
+        $(document).trigger("wb-verify-success", [form]);
+    }
+    if (res == false) {
+	       console.log("trigger: wb-verify-fail");
+         $(document).trigger("wb-verify-fail", [form]);
+    }
+    return res;
+}
+
 $.fn.outer = function(s) {
   return s ? this.before(s).remove() : jQuery("<p>").append(this.eq(0).clone()).html();
 };
@@ -762,13 +913,13 @@ $.fn.jsonVal = function(data = undefined) {
   },84600);
 
   $(document).on("wbapp-go",function(){
-      wbapp.tplInit();
-      wbapp.eventsInit();
-      wbapp.wbappScripts();
-      wbapp.modalsInit();
-      wbapp.ajaxAuto();
-      wbapp.session();
-      wbapp.settings();
-      wbapp.lazyload();
+        wbapp.tplInit();
+        wbapp.eventsInit();
+        wbapp.wbappScripts();
+        wbapp.modalsInit();
+        wbapp.ajaxAuto();
+        wbapp.session();
+        wbapp.settings();
+        wbapp.lazyload();
   });
 }

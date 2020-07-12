@@ -97,15 +97,13 @@
         </nav>
       </div>
       <!-- content-header -->
-
+      <div class="content-toasts pos-absolute r-0" style="z-index:5000;"></div>
       <div class="content-body pd-0">
 
         <meta href="#" data-ajax="{'url':'/cms/ajax/form/places/list','html':'.content-body'}" auto >
 
       </div>
     </div>
-    <!-- content -->
-
   </div>
   <style wb-if='"{{_sett.logofontsize}}" > ""'>
       .aside-logo {
