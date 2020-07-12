@@ -12,6 +12,7 @@ return array(
     'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
     'Symfony\\Component\\VarDumper\\' => array($vendorDir . '/symfony/var-dumper'),
     'Nahid\\JsonQ\\' => array($vendorDir . '/nahid/jsonq/src'),
+    'Imagine\\' => array($vendorDir . '/imagine/imagine/src'),
     'ImageMimeTypeGuesser\\' => array($vendorDir . '/rosell-dk/image-mime-type-guesser/src'),
     'Filebase\\' => array($vendorDir . '/tmarois/filebase/src'),
     'Edwinhuish\\CssToXpath\\' => array($vendorDir . '/edwinhuish/css-to-xpath/src'),

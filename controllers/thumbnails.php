@@ -1,4 +1,6 @@
 <?php
+require __DIR__ . '/../lib/vendor/autoload.php';
+
 use WebPConvert\WebPConvert;
 
 class ctrlThumbnails
@@ -9,31 +11,31 @@ class ctrlThumbnails
     }
     public function thumbnails($app)
     {
-        $_GET = $app->vars("_get");
-        $_POST = $app->vars("_post");
+        $_GET = $app->vars('_get');
+        $_POST = $app->vars('_post');
 
-        $params=$app->vars("_route.params");
-        if ($app->vars("_get")) {
-            $app->vars("_get", []);
-            $app->vars("_get.w", $app->vars("_route.w"));
-            $app->vars("_get.h", $app->vars("_route.h"));
+        $params=$app->vars('_route.params');
+        if ($app->vars('_get')) {
+            $app->vars('_get', []);
+            $app->vars('_get.w', $app->vars('_route.w'));
+            $app->vars('_get.h', $app->vars('_route.h'));
         }
-        if ($app->vars("_route.params.src") > "") {
-            $app->vars("_get.src", $params["src"]);
+        if ($app->vars('_route.params.src') > '') {
+            $app->vars('_get.src', $params['src']);
         } else {
             $re = '/[\/thumbc|thumb\/].*\/src\/(.*)/m';
-            preg_match($re, $app->vars("_route.uri"), $matches, PREG_OFFSET_CAPTURE, 0);
+            preg_match($re, $app->vars('_route.uri'), $matches, PREG_OFFSET_CAPTURE, 0);
 
-            $app->vars("_get.src", $matches[1][0]);
+            $app->vars('_get.src', $matches[1][0]);
         }
 
-        if (strpos($app->vars("_get.src"), "?")) {
-            $src = explode("?", $app->vars("_get.src"));
-            $app->vars("_get.src", $src[0]);
+        if (strpos($app->vars('_get.src'), '?')) {
+            $src = explode('?', $app->vars('_get.src'));
+            $app->vars('_get.src', $src[0]);
             $src= $src[0];
         }
 
-        $app->vars("_get.zc", $app->vars("_route.zc"));
+        $app->vars('_get.zc', $app->vars('_route.zc'));
         $this->thumbnail_view($app);
         die;
     }
@@ -42,21 +44,20 @@ class ctrlThumbnails
     {
         $remote = false;
         $cache = true;
-        $query = $app->vars("_route.query");
-        if ($app->vars("_route.http")) {
+        $query = $app->vars('_route.query');
+        if ($app->vars('_route.http')) {
             $remote=true;
-            $p="http";
-        }
-        if ($app->vars("_route.https")) {
+            $p='http';
+        } else if ($app->vars('_route.https')) {
             $remote=true;
-            $p="https";
+            $p='https';
         }
-        if (isset($query["nocache"])) {
+        if (isset($query['nocache'])) {
             $cache=false;
         }
-        if ($app->vars("_route.params") and isset($app->vars("_route.params")[0])) {
-            $tmp=base64_decode($app->vars("_route.params")[0]);
-            if (strpos($tmp, "ttp://") or strpos($tmp, "ttps://")) {
+        if ($app->vars('_route.params') and isset($app->vars('_route.params')[0])) {
+            $tmp=base64_decode($app->vars('_route.params')[0]);
+            if (strpos($tmp, 'ttp://') or strpos($tmp, 'ttps://')) {
                 $remote = true;
                 $url = $tmp;
             }
@@ -64,63 +65,54 @@ class ctrlThumbnails
 
         if ($remote) {
             if (!isset($url)) {
-                $url=$p.substr($app->vars("_route.uri"), strpos($app->vars("_route.uri"), "://"));
+                $url=$p.substr($app->vars('_route.uri'), strpos($app->vars('_route.uri'), '://'));
             }
             $ext = pathinfo($url, PATHINFO_EXTENSION);
-            $file=$_ENV["path_app"]."/uploads/_remote/".md5($url).".".$ext;
+            $file=$_ENV['path_app'].'/uploads/_remote/'.md5($url).'.'.$ext;
             if (!is_file($file) or !$cache) {
                 $image=file_get_contents($url);
                 wbPutContents($file, $image);
             }
         } else {
-            $file=urldecode($_ENV["path_app"]."/".$_GET["src"]);
+            $file=urldecode($_ENV['path_app'].'/'.$_GET['src']);
         }
         if (is_file($file)) {
             list($width, $height, $type) = $size = getimagesize($file);
             $ext = pathinfo($file, PATHINFO_EXTENSION);
-            $mime=$size["mime"];
-            $cachefile=md5($file."_".$app->vars("_route.w")."_".$app->vars("_route.h")).".".$ext;
-            $cachedir=$app->vars("_env.path_app")."/uploads/_cache/".substr($cachefile, 0, 2);
-            $destination = $cachedir."/".$cachefile;
+            $mime=$size['mime'];
+            $cachefile=md5($file.'_'.$app->vars('_route.w').'_'.$app->vars('_route.h').'_'.$app->vars('_get.zc')).'.'.$ext;
+            $cachedir=$app->vars('_env.path_app').'/uploads/_cache/'.substr($cachefile, 0, 2);
+            $destination = $cachedir.'/'.$cachefile;
             if (!is_dir($cachedir)) {
-                $u=umask();
-                mkdir($cachedir, 0766, true);
-                umask($u);
+                mkdir($cachedir, 0755, true);
             }
             if (!is_file($destination) or $cache == false) {
-                if (class_exists("Imagick")) {
-                    $image = new \Imagick(realpath($file));
-                    if ($remote) {
-                        unlink($file);
-                    }
-                    if ($app->vars("_get.zc")==0) {
-                        $image->cropThumbnailImage($app->vars("_route.w"), $app->vars("_route.h"), true);
-                    } else {
-                        $image->thumbnailImage($app->vars("_route.w"), $app->vars("_route.h"), true);
-                    }
-                    $image->writeImage($destination);
-                    if (in_array($ext, ["jpg","jpeg"])) {
-                        $options = [];
-                        WebPConvert::convert($destination, $destination.".webp", $options);
-                    }
+
+                // https://imagine.readthedocs.io/en/latest/
+                if (class_exists('Imagick')) {
+                    $imagine = new Imagine\Imagick\Imagine();
                 } else {
-                    $image=$this->thumbnail_view_gd(realpath($file), $app->vars("_route.w"), $app->vars("_route.h"));
-                    header("Content-Type: ".$mime);
-                    if ($type==3) {
-                        imagepng($image, $destination);
-                    }
-                    if ($type==2) {
-                        imagejpeg($image, $destination);
-                    }
-                    if ($type==1) {
-                        imagegif($image, $destination);
-                    }
-                    $image=file_get_contents($destination);
+                    $imagine = new Imagine\Gd\Imagine();
                 }
-            } else {
+                
+                $size    = new Imagine\Image\Box($app->vars('_route.w'), $app->vars('_route.h'));
+                if ($app->vars('_get.zc') == 0) {
+                    $mode    = Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
+                } else { $mode    = Imagine\Image\ImageInterface::THUMBNAIL_INSET;}
+                
+                $imagine->open(realpath($file))->thumbnail($size, $mode)->save($destination);
                 $image=file_get_contents($destination);
-            }
-            header("Content-Type: ".$mime);
+/*
+                if (in_array($ext, ['jpg','jpeg'])) {
+                    $options = [];
+                    WebPConvert::convert($destination, $destination.'.webp', $options);
+                }
+*/
+            } 
+            
+            $image=file_get_contents($destination);
+            
+            header('Content-Type: '.$mime);
             echo $image;
         }
     }

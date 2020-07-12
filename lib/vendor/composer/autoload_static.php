@@ -36,6 +36,7 @@ class ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d
         ),
         'I' => 
         array (
+            'Imagine\\' => 8,
             'ImageMimeTypeGuesser\\' => 21,
         ),
         'F' => 
@@ -80,6 +81,10 @@ class ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d
         'Nahid\\JsonQ\\' => 
         array (
             0 => __DIR__ . '/..' . '/nahid/jsonq/src',
+        ),
+        'Imagine\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/imagine/imagine/src',
         ),
         'ImageMimeTypeGuesser\\' => 
         array (
