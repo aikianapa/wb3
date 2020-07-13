@@ -27,8 +27,8 @@ class ctrlApi {
             echo $app->jsonEncode($json["list"]);
       }
   }
-    
-    
+
+
     function mail($app) {
         $attachments=[];
         if (!isset($_POST["_subject"])) {
@@ -81,7 +81,7 @@ class ctrlApi {
         if (isset($_POST["_callback"]) and is_callable($_POST["_callback"])) {
             return @$_POST["_callback"]($result);
         }
-        return $result;
+        echo $result;
   }
 
   function prepQuery($query) {

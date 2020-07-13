@@ -490,8 +490,7 @@ function wbMail(
         }
         //send the message, check for errors
         $mail->send();
-        $error=$mail->ErrorInfo;
-
+        $error = $mail->ErrorInfo;
         if ($error>"") {
             return ['error'=>false];
         } else {
