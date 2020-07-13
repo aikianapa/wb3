@@ -435,7 +435,7 @@ function wbMail(
 
         require_once __DIR__.'/modules/phpmailer/phpmailer/PHPMailerAutoload.php';
         //$sett=$_ENV["settings"]["phmail"];
-        $sett = ['smtp'=>'','func'=>'sendmail','host'=>$app->vars('_route.hostname')];
+        $sett = ['smtp'=>'','host'=>$app->vars('_route.hostname')];
         $mail = new PHPMailer;
         /*
             $mail->SMTPDebug = 2;                                 // Enable verbose debug output
@@ -490,11 +490,11 @@ function wbMail(
         }
         //send the message, check for errors
         $mail->send();
-        $error = $mail->ErrorInfo;
-        if ($error>"") {
+        $error=$mail->ErrorInfo;
+        if ($error == "") {
             return ['error'=>false];
         } else {
-            return ['true'=>true,'msg'=>$error];
+            return ['error'=>true,'msg'=>$error];
         }
 }
 
