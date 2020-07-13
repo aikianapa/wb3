@@ -22,15 +22,6 @@
       </button>
     </nav>
   </form>
-  
-  
-  
-  <form method="POST" id="mail">
-      <input name="message" value="qrwerqwerqwer">
-      <a href="#" data-ajax="{'url':'/api/mail/','form':'#mail'}">send</a>
-      
-  </form>
-  
 </wb-data>
 
 <wb-lang>

@@ -48,7 +48,7 @@ class ctrlApi {
         } elseif (isset($_POST["_form"])) {
             $out = $app->getTpl($_POST["_form"]);
         } elseif (isset($_POST["_message"])) {
-            $out = $app->fromString($_POST["_message"]);
+            $out = $app->fromString('<html>'.$_POST["_message"].'</html>');
             $b64img = $out->find("img[src^='data:']");
             foreach ($b64img as $b64) {
                 $attachments[] = $b64->attr("src");
