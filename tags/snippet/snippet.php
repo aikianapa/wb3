@@ -18,8 +18,6 @@ class tagSnippet {
       } else if ($dom->params("src")) {
           $snip = $app->fromFile($app->vars("_env.path_app").$dom->params->src);
       }
-      $snip->fetch((array)$dom->params("data"));
-      $snip->fetch($dom->item);
       $dom->inner($snip);
       $dom->unwrap("wb-snippet");
       $dom->fetch();
