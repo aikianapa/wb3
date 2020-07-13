@@ -54,7 +54,7 @@ class ctrlApi {
         }
         if (!$out) $out = $app->fromString('<html>{{_message}}</html>');
         if (!isset($_POST["email"])) {
-            $_POST["email"]=$_ENV["route"]["mode"]."@".$_ENV["route"]["host"];
+            $_POST["email"]=$_ENV["route"]["mode"]."@".$_ENV["route"]["hostname"];
         }
         if (!isset($_POST["name"])) {
             $_POST["name"]="Site Mailer";

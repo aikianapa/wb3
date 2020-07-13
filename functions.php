@@ -433,13 +433,13 @@ function wbMail(
         $sent=array($sent);
     }
 
-    if ($app->vars('_sett.phpmailer') == 'on') {
+    if ($app->vars('_sett.phpmailer') == '') {
         require_once __DIR__.'/modules/phpmailer/phpmailer/PHPMailerAutoload.php';
-        $sett=$_ENV["settings"]["phmail"];
-        $mail = ($sett["func"]=="sendmail") ? new PHPMailer(true) : new PHPMailer();
+        //$sett=$_ENV["settings"]["phmail"];
+        $sett = ['smtp'=>'','func'=>'sendmail','host'=>$app->vars('_route.hostname')];
+        $mail = new PHPMailer;
         /*
             $mail->SMTPDebug = 2;                                 // Enable verbose debug output
-            $mail->isSMTP();                                      // Set mailer to use SMTP
             $mail->Host = 'smtp1.example.com;smtp2.example.com';  // Specify main and backup SMTP servers
             $mail->SMTPAuth = true;                               // Enable SMTP authentication
             $mail->Username = 'user@example.com';                 // SMTP username
@@ -455,6 +455,8 @@ function wbMail(
             $mail->Password = $sett["password"];
             $mail->SMTPSecure = $sett["secure"];
             intval($sett["port"]) > 0 ? $mail->Port = intval($sett["port"]) : $mail->Port = 587;
+        } else {
+            $mail->isSendmail();
         }
         $mail->setFrom($from[0], $from[1]);
         $mail->addReplyTo($from[0], $from[1]);
@@ -496,7 +498,6 @@ function wbMail(
         // Set content-type header for sending HTML email
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-echo $subject; print_r($sent);
         // Additional headers
         $headers .= "From: {$from[0]}\r\n"."X-Mailer: php";
         foreach ($sent as $s) {
