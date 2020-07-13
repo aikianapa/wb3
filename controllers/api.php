@@ -37,7 +37,12 @@ class ctrlApi {
         if (!isset($_POST["subject"])) {
             $_POST["subject"]=$_POST["_subject"];
         }
-
+        if (isset($_POST['formdata'])) {
+            foreach($_POST['formdata'] as $key => $val) {
+                $_POST[$key] = $val;
+            }
+            unset($_POST['formdata']);
+        }
         if (isset($_POST["_tpl"])) {
             $out = $app->getTpl($_POST["_tpl"]);
         } elseif (isset($_POST["_form"])) {
@@ -52,7 +57,7 @@ class ctrlApi {
         } else {
             $out = $app->getTpl("mail.php");
         }
-        if (!$out) $out = $app->fromString('<html>{{_message}}</html>');
+        if (!$out) $out = $app->fromString('<html>{{message}}</html>');
         if (!isset($_POST["email"])) {
             $_POST["email"]=$_ENV["route"]["mode"]."@".$_ENV["route"]["hostname"];
         }
@@ -64,7 +69,8 @@ class ctrlApi {
         } else {
             $mailto = $_ENV["settings"]["email"];
         }
-        $out->fetch($_POST);
+        $out->item = $_POST;
+        $out->fetch();
         $out=$out->outer();
         $res=wbMail("{$_POST["email"]};{$_POST["name"]}", "{$mailto};{$_ENV["settings"]["header"]}", $_POST["subject"], $out, $attachments);
         if (!$res) {

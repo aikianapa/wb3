@@ -433,7 +433,6 @@ function wbMail(
         $sent=array($sent);
     }
 
-    if ($app->vars('_sett.phpmailer') == '') {
         require_once __DIR__.'/modules/phpmailer/phpmailer/PHPMailerAutoload.php';
         //$sett=$_ENV["settings"]["phmail"];
         $sett = ['smtp'=>'','func'=>'sendmail','host'=>$app->vars('_route.hostname')];
@@ -472,7 +471,6 @@ function wbMail(
         //Replace the plain text body with one created manually
         $mail->AltBody = strip_tags($message);
         //Attach an image file
-
         if (!is_array($attach) and is_string($attach)) {
             $attach=array($attach);
         }
@@ -492,29 +490,13 @@ function wbMail(
         }
         //send the message, check for errors
         $mail->send();
-        $error=$_ENV["error"][__FUNCTION__]=$mail->ErrorInfo;
-    } else {
+        $error=$mail->ErrorInfo;
 
-        // Set content-type header for sending HTML email
-        $headers = "MIME-Version: 1.0" . "\r\n";
-        $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        // Additional headers
-        $headers .= "From: {$from[0]}\r\n"."X-Mailer: php";
-        foreach ($sent as $s) {
-            $error=mail($s[0], $subject, $message, $headers);
-            if ($error==true) {
-                $error=false;
-            } else {
-                $error=true;
-            }
-            $_ENV["error"][__FUNCTION__]=$error;
+        if ($error>"") {
+            return ['error'=>false];
+        } else {
+            return ['true'=>true,'msg'=>$error];
         }
-    }
-    if ($error>"") {
-        return false;
-    } else {
-        return true;
-    }
 }
 
 function wbCheckWorkspace()
