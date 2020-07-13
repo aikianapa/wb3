@@ -10,29 +10,25 @@
       <label for="_setApiKey">{{_lang.apikey}}</label>
       <input type="text" class="form-control" name="api_key" id="_setApiKey" placeholder="{{_lang.apikey}}">
     </fieldset>
-
+    <fieldset class="form-group">
+      <label for="_setApiKey">{{_lang.reqfor}} /api/mail</label>
+      <wb-switch name="api_key_mail" />
+    </fieldset>
     <nav class="text-right">
       <button type="button" class="btn btn-primary tx-13 r-0" wb-save="{'table':'_settings','item':'settings'}">
         <i class="fa fa-save"></i> Сохранить
       </button>
     </nav>
   </form>
-  
-  
-  
-  <form method="POST" id="mail">
-      <input name="message" value="qrwerqwerqwer">
-      <a href="#" data-ajax="{'url':'/api/mail/','form':'#mail'}">send</a>
-      
-  </form>
-  
 </wb-data>
 
 <wb-lang>
 [en]    
 apikey = "API key"
+reqfor = "Required for"
 [ru]
 apikey = "Ключ API"
+reqfor = "Требовать для"
 </wb-lang>
 
 </html>
