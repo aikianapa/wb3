@@ -81,7 +81,7 @@ class ctrlApi {
         if (isset($_POST["_callback"]) and is_callable($_POST["_callback"])) {
             return @$_POST["_callback"]($result);
         }
-        echo $result;
+        echo $result; 
   }
 
   function prepQuery($query) {
