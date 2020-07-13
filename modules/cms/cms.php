@@ -55,7 +55,11 @@ class modCms {
   function settings() {
       $app = $this->app;
       $out = $app->fromFile(__DIR__."/forms/_settings/{$app->vars("_route.form")}.php");
-      $out->fetch();
+      if ($out !== null) {
+          $out->fetch();
+      } else {
+          $out = "Error: /forms/_settings/{$app->vars("_route.form")}.php not found!";
+      }
       echo $out;
       die;
   }

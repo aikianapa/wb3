@@ -105,7 +105,12 @@ class ctrlAjax {
           echo $dom;
           die;
       } else {
-          echo json_encode($app->itemRemove($form, $item));
+          $result = $app->itemRemove($form, $item);
+          if (isset($result['_removed'])) {
+              $result['_id'] = $item;
+              $result['_form'] = $form;
+          }
+          echo json_encode($result);
           die;
       }
   }

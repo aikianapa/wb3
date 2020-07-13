@@ -31,7 +31,12 @@
             </a>
           </span>
 
-
+          <span class="nav-item">
+            <a class="nav-link" href="#" data-ajax="{'url':'/cms/settings/ui_api/','html':'#editSettingsForm'}">
+              {{_lang.api}}
+            </a>
+          </span>
+       
         </nav>
       </div>
     </div>
@@ -52,12 +57,14 @@ common = Common
 variables = Variables
 properties = Properties
 menu = Menu
+api = API settings
 [ru]
 settings = Настройки
 common = Основные
 variables = Переменные
 properties = Свойства
 menu = Меню
+api = Настройки API
 </wb-lang>
 
 </html>

@@ -8,6 +8,9 @@ require_once __DIR__.'/wbapp.php';
 
 use Adbar\Dot;
 use Nahid\JsonQ\Jsonq;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 //use soundintheory\PHPSQL;
 // Rct567\DomQuery\DomQuery;
@@ -399,16 +402,6 @@ function wbMime($path) {
 }
 
 
-function wbMailer(
-    $from = null,
-    $sent = null,
-    $subject = null,
-    $message = null,
-    $attach = null
-) {
-    return wbMail($from, $sent, $subject, $message, $attach);
-}
-
 function wbMail(
     $from = null,
     $sent = null,
@@ -416,6 +409,7 @@ function wbMail(
     $message = null,
     $attach = null
     ) {
+    $app = $_ENV['app'];
     if ($from == null) {
         $from=$_ENV["settings"]["email"].";".$_ENV["settings"]["header"];
     } elseif (!is_array($from)) {
@@ -439,7 +433,7 @@ function wbMail(
         $sent=array($sent);
     }
 
-    if ($_ENV["settings"]["phpmailer"]=="on") {
+    if ($app->vars('_sett.phpmailer') == 'on') {
         require_once __DIR__.'/modules/phpmailer/phpmailer/PHPMailerAutoload.php';
         $sett=$_ENV["settings"]["phmail"];
         $mail = ($sett["func"]=="sendmail") ? new PHPMailer(true) : new PHPMailer();
@@ -502,7 +496,7 @@ function wbMail(
         // Set content-type header for sending HTML email
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-
+echo $subject; print_r($sent);
         // Additional headers
         $headers .= "From: {$from[0]}\r\n"."X-Mailer: php";
         foreach ($sent as $s) {

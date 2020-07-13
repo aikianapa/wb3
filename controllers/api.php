@@ -27,6 +27,56 @@ class ctrlApi {
             echo $app->jsonEncode($json["list"]);
       }
   }
+    
+    
+    function mail($app) {
+        $attachments=[];
+        if (!isset($_POST["_subject"])) {
+            $_POST["_subject"]=$_ENV['sysmsg']["mail_from_site"];
+        }
+        if (!isset($_POST["subject"])) {
+            $_POST["subject"]=$_POST["_subject"];
+        }
+
+        if (isset($_POST["_tpl"])) {
+            $out = $app->getTpl($_POST["_tpl"]);
+        } elseif (isset($_POST["_form"])) {
+            $out = $app->getTpl($_POST["_form"]);
+        } elseif (isset($_POST["_message"])) {
+            $out = $app->fromString($_POST["_message"]);
+            $b64img = $out->find("img[src^='data:']");
+            foreach ($b64img as $b64) {
+                $attachments[] = $b64->attr("src");
+                $b64->remove();
+            }
+        } else {
+            $out = $app->getTpl("mail.php");
+        }
+        if (!$out) $out = $app->fromString('<html>{{_message}}</html>');
+        if (!isset($_POST["email"])) {
+            $_POST["email"]=$_ENV["route"]["mode"]."@".$_ENV["route"]["host"];
+        }
+        if (!isset($_POST["name"])) {
+            $_POST["name"]="Site Mailer";
+        }
+        if (isset($_POST["_mailto"])) {
+            $mailto=$_POST["_mailto"];
+        } else {
+            $mailto = $_ENV["settings"]["email"];
+        }
+        $out->fetch($_POST);
+        $out=$out->outer();
+        $res=wbMail("{$_POST["email"]};{$_POST["name"]}", "{$mailto};{$_ENV["settings"]["header"]}", $_POST["subject"], $out, $attachments);
+        if (!$res) {
+            $result=json_encode(array("error"=>true,"msg"=>$_ENV['sysmsg']["mail_sent_error"].": ".$_ENV["error"]['wbMail']));
+        } else {
+            $result=json_encode(array("error"=>false,"msg"=>$_ENV['sysmsg']["mail_sent_success"]."!"));
+        }
+        if (isset($_POST["_callback"]) and is_callable($_POST["_callback"])) {
+            return @$_POST["_callback"]($result);
+        }
+        return $result;
+  }
 
   function prepQuery($query) {
     $query = (array)$query;

@@ -416,9 +416,11 @@ wbapp.objByForm = function(form) {
 
 wbapp.tplInit = function() {
     if (!wbapp.template) wbapp.template = {};
-    wbapp.getForm("snippets","toast").then(function(res){
-        wbapp.tpl('wb.toast',{html:res.result,params:{}});
-    });
+    if (wbapp.template['wb.toast'] == undefined) {
+        wbapp.getForm("snippets","toast").then(function(res){
+            wbapp.tpl('wb.toast',{html:res.result,params:{}});
+        });
+    }
     $(document).find("template").each(function(){
         var tid
         if (tid == undefined) tid = $(this).parent().attr("id");
