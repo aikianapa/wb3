@@ -30,6 +30,11 @@ class ctrlApi {
 
 
     function mail($app) {
+        if ($app->vars('_sett.api_key_mail') == 'on' && $app->vars('_sett.api_key') !== $app->vars('_post._token') ) {
+            echo json_encode(['error'=>true,'msg'=>'Invalid API key']);
+            die;
+        }
+        
         $attachments=[];
         if (!isset($_POST["_subject"])) {
             $_POST["_subject"]=$_ENV['sysmsg']["mail_from_site"];

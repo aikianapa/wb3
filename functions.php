@@ -437,6 +437,7 @@ function wbMail(
         //$sett=$_ENV["settings"]["phmail"];
         $sett = ['smtp'=>'','host'=>$app->vars('_route.hostname')];
         $mail = new PHPMailer;
+        try {
         /*
             $mail->SMTPDebug = 2;                                 // Enable verbose debug output
             $mail->Host = 'smtp1.example.com;smtp2.example.com';  // Specify main and backup SMTP servers
@@ -489,12 +490,10 @@ function wbMail(
             }
         }
         //send the message, check for errors
-        $mail->send();
-        $error=$mail->ErrorInfo;
-        if ($error == "") {
+            $mail->send();
             return ['error'=>false];
-        } else {
-            return ['error'=>true,'msg'=>$error];
+        } catch (Exception $e) {
+            return ['error'=>true,'msg'=>$mail->ErrorInfo];
         }
 }
 
