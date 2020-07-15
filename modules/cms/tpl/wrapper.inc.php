@@ -32,7 +32,7 @@
 		<wb-snippet name="wbapp" />
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{_var.base}}/assets/img/favicon.png">
-    <title>Web Basic - Pandorum varsion</title>
+    <title>Web Basic - Pandemic version</title>
 
 
   </head>
