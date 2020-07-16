@@ -23,6 +23,8 @@ class tagInclude {
       $inc = $dom->app->getForm($form,$mode,$dom->params("engine"));
     }
     if (isset($inc)) {
+        if (!isset($dom->item['header'])) {$dom->item['header'] = $dom->app->vars('_sett.header');}
+        $inc->copy($dom);
         if ($dom->head()) {
             $dom->head($inc->outer());
         } else {

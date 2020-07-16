@@ -33,7 +33,6 @@ class tagForeach {
         if ($dom->params("sort") > "") {
             $options["sort"] = $app->attrToArray($dom->params("sort"));
         }
-
         $dom->options = $options;
         if ($table > "" AND $dom->params("call") == "") {
           $res = wbItemList($table,$options);

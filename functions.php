@@ -2142,24 +2142,26 @@ function wbItemFilter($item, $filter)
                 }
             } else {
                 foreach ($expr as $cond => $val) {
+                    $field = $fields->get($fld);
+                    if ((array)$field === $field) $field = wbJsonEncode($field);
                     switch($cond) {
                         case '$ne':
-                            if ($fields->get($fld) == $val) $result = false;
+                            if ($field == $val) $result = false;
                             break;
                         case '$like':
-                            if (!preg_match('/'.$val.'/ui', $fields->get($fld))) $result = false;
+                            if (!preg_match('/'.$val.'/ui', $field)) $result = false;
                             break;
                         case '$gte':
-                            if (!($val >= $fields->get($fld))) $result = false;
+                            if (!($val >= $field)) $result = false;
                             break;
                         case '$lte':
-                            if (!($val <= $fields->get($fld))) $result = false;
+                            if (!($val <= $field)) $result = false;
                             break;
                         case '$gt':
-                            if (!($val > $fields->get($fld))) $result = false;
+                            if (!($val > $field)) $result = false;
                             break;
                         case '$lt':
-                            if (!($val < $fields->get($fld))) $result = false;
+                            if (!($val < $field)) $result = false;
                             break;
                     }
 
