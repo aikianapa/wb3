@@ -120,8 +120,9 @@ class modLogin
         return $out;
     }
 
-    public function login__signout(&$app)
+    public function signout(&$dom)
     {
+        $app = $dom->app;
         $user = wbArrayToObj($app->vars("_env.user"));
         $group = wbArrayToObj($app->itemRead("users", $user->role));
         $app->vars->set("_sess.user", null);
@@ -136,8 +137,9 @@ class modLogin
         die;
     }
 
-    public function login__recover(&$app)
+    public function recover(&$dom)
     {
+        $app = $dom->app;
         $out = $app->getTpl("login_ui.php");
         if (!$out) {
             $out = $app->fromFile(__DIR__."/login_ui.php", true);
