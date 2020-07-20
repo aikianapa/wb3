@@ -92,8 +92,8 @@ class ctrlApi {
   function prepQuery($query) {
     $query = (array)$query;
     $options = [];
-    if ($query["__options"]) {
-      $opt = $query["__options"];
+    if (isset($query['__options'])) {
+      $opt = $query['__options'];
 
   		$list = explode(';',$opt);
 		  foreach($list as $key => $item) {
@@ -104,7 +104,7 @@ class ctrlApi {
   				  $sort = explode(',',$sort);
   				  foreach($sort as $key => $fld) {
   						$fld = explode(':',$sort[$key]);
-  						if (!isset($fld[1])) $sarr[$fld[0]] = 1;
+  						if (!isset($fld[1])) $fld[1] = '1';
   						if ($fld[1] == 'a' || $fld[1] == 'asc' || $fld[1] == '1') $sarr[$fld[0]] = 1;
   						if ($fld[1] == 'd' || $fld[1] == 'desc' || $fld[1] == '-1') $sarr[$fld[0]] = -1;
   				  }
@@ -123,7 +123,7 @@ class ctrlApi {
   			  }
   			  $options[$item[0]] = $item[1];
   		  }
-        unset($query["__options"]);
+        unset($query['__options']);
     }
 
     foreach($query as $key => $val) {

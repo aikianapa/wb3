@@ -1630,6 +1630,15 @@ function wb_file_get_contents($file)
     return $contents;
 }
 
+
+function modLoginSignin($user) {
+    
+}
+
+function modLoginSignup($user) {
+    
+}
+
 function wbTrigger($type, $name, $trigger, $args = [], $data = null)
 {
 

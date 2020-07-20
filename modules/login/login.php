@@ -31,7 +31,7 @@ class modLogin
         if ($dom == null) $dom = $this->dom;
         $call = $this->mode;
         if (method_exists($this, $call)) $out = @$this->$call($dom);
-        if ($this->embed == false) {
+        if (!is_string($out) && $this->embed == false) {
           echo $out->fetch();
           die;
         } else {
@@ -52,6 +52,7 @@ class modLogin
         $out->fetch();
         if (count($app->vars("_post"))) {
             $user = $this->modLoginCheckUser($app->vars("_post.l"), $app->vars("_post.p"));
+            if (is_callable("modLoginSignin")) modLoginSignin($user);
             if ($user) {
                 $user = $this->modLoginSuccess($app, $user);
                 header('Location: '.$user->group->url_login);
@@ -62,8 +63,9 @@ class modLogin
         return $out;
     }
 
-    public function login__signup(&$app)
+    public function signup($dom)
     {
+        $app = $dom->app;
         $out = $app->getTpl("login_ui.php");
         if (!$out) {
             $out = $app->fromFile(__DIR__."/login_ui.php", true);
@@ -107,6 +109,7 @@ class modLogin
                 }
                 $user = $app->postToArray($user);
                 $app->itemSave("users", $user);
+                if (is_callable("modLoginSignup")) modLoginSignup($user);
                 header('Location: /signin');
             }
         }
