@@ -162,7 +162,7 @@ class jsonDrv
             }
         }
 
-
+/*
         if (isset($options->orm)) {
             $orm = $options->orm;
             $tmp = explode("->", $orm);
@@ -212,12 +212,15 @@ class jsonDrv
                 $list = $list->get();
             }
         } else {
+*/
             $file = $this->tableFile($form);
             if (!is_file($file)) {
                 wbError('func', __FUNCTION__, 1001, func_get_args());
-                return array();
+                return [];
             }
-            try {$json = new Jsonq($file);}
+        
+            try {
+                $json = new Jsonq($file);}
             catch(Exception $err) {
               $json = new Jsonq();
               $json = $json->collect([]);
@@ -225,7 +228,8 @@ class jsonDrv
             $json->empty("");
             $list = $json->where("_removed", "neq", "on");
             $list = $list->get();
-        }
+        
+//        }
 
         $iter = new ArrayIterator((array)$list);
         $list = [];

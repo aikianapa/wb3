@@ -1384,6 +1384,17 @@ function wb_json_encode($Item=[])
     return wbJsonEncode($Item);
 }
 
+function wbJsonFromFile($file) {
+    // https://github.com/halaxa/json-machine
+    try {
+        return \JsonMachine\JsonMachine::fromFile($file);    
+    } catch(Exception $e) {
+        return [];
+    }
+    
+}
+
+
 function wbJsonEncode($Item = [])
 {
     if (version_compare(phpversion(), "5.6")<0) {
@@ -2148,6 +2159,9 @@ function wbItemFilter($item, $filter)
                         case '$ne':
                             if ($field == $val) $result = false;
                             break;
+                        case '$not':
+                            if ($field === $val) $result = false;
+                            break;
                         case '$like':
                             if (!preg_match('/'.$val.'/ui', $field)) $result = false;
                             break;
@@ -2162,6 +2176,12 @@ function wbItemFilter($item, $filter)
                             break;
                         case '$lt':
                             if (!($val < $field)) $result = false;
+                            break;
+                        case '$nin':
+                            if (in_array($field,$val)) $result = false;
+                            break;
+                        case '$in':
+                            if (!in_array($field,$val)) $result = false;
                             break;
                     }
 

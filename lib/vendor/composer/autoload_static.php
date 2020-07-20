@@ -9,6 +9,7 @@ class ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         'fe62ba7e10580d903cc46d808b5961a4' => __DIR__ . '/..' . '/tightenco/collect/src/Collect/Support/helpers.php',
         'caf31cc6ec7cf2241cb6f12c226c3846' => __DIR__ . '/..' . '/tightenco/collect/src/Collect/Support/alias.php',
@@ -26,6 +27,7 @@ class ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d
         ),
         'S' => 
         array (
+            'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Php72\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\VarDumper\\' => 28,
@@ -69,6 +71,10 @@ class ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d
         'Tightenco\\Collect\\' => 
         array (
             0 => __DIR__ . '/..' . '/tightenco/collect/src/Collect',
+        ),
+        'Symfony\\Polyfill\\Php80\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
         ),
         'Symfony\\Polyfill\\Php72\\' => 
         array (
@@ -140,12 +146,19 @@ class ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d
         ),
     );
 
+    public static $classMap = array (
+        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
+        'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
+        'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d::$prefixDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d::$classMap;
 
         }, null, ClassLoader::class);
     }

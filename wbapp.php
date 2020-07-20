@@ -38,11 +38,30 @@ class wbDom extends DomQuery
         return $attributes;
     }
 
+    public function attrsCopy(&$dom)
+    {
+        $attrs = $this->attributes();
+
+        foreach ($attrs as $attr => $value) {
+            if (substr($attr,0,3) !== 'wb-' && $attr !== 'wb')
+            if ($attr !== 'class' && $attr !== 'name') {
+                $dom->attr($attr, $value);
+            } else if ($attr == 'class') {
+                $dom->addClass($value);
+            } else if ($attr == 'name') {
+                $dom->attr('name',$value);
+            }
+        }
+
+        return $this;
+    }
+
+    
     public function rootError()
     {
-        if ($this->is(":root")) {
+        if ($this->is(':root')) {
             $code = trim(htmlentities($this->outer()));
-            $code = explode("&gt;", $code);
+            $code = explode('&gt;', $code);
             $code = $code[0]."&gt";
             die("WB tag can't be a :root element!<br>".$code."<br>...");
         }

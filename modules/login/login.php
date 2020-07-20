@@ -54,7 +54,7 @@ class modLogin
             $user = $this->modLoginCheckUser($app->vars("_post.l"), $app->vars("_post.p"));
             if ($user) {
                 $user = $this->modLoginSuccess($app, $user);
-                header('Location: '.$user->group->login_url);
+                header('Location: '.$user->group->url_login);
             } else {
                 $out->find("#signin .signin-wrong")->removeClass("d-none");
             }
@@ -126,7 +126,7 @@ class modLogin
         setcookie("user", "", time()-3600, "/");
 
         if ($group->logout_url > "") {
-            header('Location: '.$group->logout_url);
+            header('Location: '.$group->url_logout);
         } else {
             header('Location: /');
         }
@@ -160,12 +160,13 @@ class modLogin
         } else {
             $user->avatar = "/engine/tpl/img/person.svg";
         }
-        if ($user->group->logout_url == "") {
-            $user->group->logout_url = "/";
+        if ($user->group->url_logout == "") {
+            $user->group->url_logout = "/";
         }
-        if ($user->group->login_url == "") {
-            $user->group->login_url = "/";
+        if ($user->group->url_login == "") {
+            $user->group->url_login = "/";
         }
+        
         unset($user->password);
         $app->vars("_sess.user", wbObjToArray($user));
         $app->vars("_env.user", wbObjToArray($user));
@@ -177,30 +178,31 @@ class modLogin
     public function modLoginCheckUser($login=null, $pass=null)
     {
         $app = $_ENV["app"];
-        $fld = "id";
-        if (is_email($login)) {
-            $fld = "email";
-        }
-        if ($app->vars("_sett.modules.login.loginby") == "phone") {
+        if ($app->vars("_sett.modules.login.loginby") == "phone" OR $app->vars("_post._loginby") == "phone") {
             $fld = "phone";
-        }
-        if ($app->vars("_sett.modules.login.loginby") == "email") {
+            $login = preg_replace("/\D/", '', $login);
+        } else if ($app->vars("_sett.modules.login.loginby") == "email" OR $app->vars("_post._loginby") == "email") {
+            $fld = "email";
+        } else if ($app->vars("_sett.modules.login.loginby") == "userid" OR $app->vars("_post._loginby") == "userid") {
+            $fld = "id";
+        } else {
             $fld = "email";
         }
-        if ($app->vars("_sett.modules.login.loginby") == "userid") {
-            $fld = "id";
-        }
-        $users = wbItemList("users", $fld . ' = "'.$login.'" AND isgroup != "on" AND active = "on"');
-        if (!count($users)) {
+        $users = wbItemList("users", ['filter' => [
+            $fld => $login,
+            'isgroup' => ['$ne'=>'on'],
+            'active' => 'on'
+        ]]);
+
+        if (!count($users['list'])) {
             return false;
         }
-        $user = wbArrayToObj(array_shift($users));
-        $group = wbArrayToObj(wbItemRead("users", $user->role));
+        $user = wbArrayToObj(array_shift($users['list']));
+        $group = wbArrayToObj($app->ItemRead("users", $user->role));
         $user->group = $group;
         if ($pass == null) {
             return $user;
-        }
-        if ($group->active == "on" and wbPasswordCheck($pass, $user->password)) {
+        } else if ($group->active == "on" and wbPasswordCheck($pass, $user->password)) {
             return $user;
         }
         return false;
@@ -217,7 +219,7 @@ class modLogin
         if (isset($_POST["l"]) and $_POST["l"]>"") {
             if (strpos($_POST["l"], "@")) {
                 $users=wbItemList("users", 'email="'.$_POST["l"].'"');
-                foreach ($users as $key => $item) {
+                foreach ($users['list'] as $key => $item) {
                     $_POST["l"]=$item["id"];
                     break;
                 }

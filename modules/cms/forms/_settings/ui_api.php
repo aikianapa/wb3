@@ -12,7 +12,7 @@
     </fieldset>
     <fieldset class="form-group">
       <label for="_setApiKey">{{_lang.reqfor}} /api/mail</label>
-      <wb-switch name="api_key_mail" />
+      <wb-module wb="module=switch" name="api_key_mail" />
     </fieldset>
     <nav class="text-right">
       <button type="button" class="btn btn-primary tx-13 r-0" wb-save="{'table':'_settings','item':'settings'}">
