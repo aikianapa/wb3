@@ -1,16 +1,16 @@
 <?php
+use Adbar\Dot;
+use Nahid\JsonQ\Jsonq;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 require_once __DIR__."/static.php";
 require_once __DIR__.'/lib/vendor/autoload.php';
 require_once __DIR__."/lib/weprocessor/weprocessor.php";
 require_once __DIR__."/lib/weprocessor/weparser.class";
 require_once __DIR__.'/wbrouter.php';
 require_once __DIR__.'/wbapp.php';
-
-use Adbar\Dot;
-use Nahid\JsonQ\Jsonq;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
 
 //use soundintheory\PHPSQL;
 // Rct567\DomQuery\DomQuery;
@@ -307,10 +307,11 @@ function wbMail(
         $sent=array($sent);
     }
 
-        require_once __DIR__.'/modules/phpmailer/phpmailer/PHPMailerAutoload.php';
         //$sett=$_ENV["settings"]["phmail"];
         $sett = ['smtp'=>'','host'=>$app->vars('_route.hostname')];
-        $mail = new PHPMailer;
+
+        $mail = new PHPMailer(true);
+        $mail->setLanguage($_SESSION["lang"]);
         try {
         /*
             $mail->SMTPDebug = 2;                                 // Enable verbose debug output
