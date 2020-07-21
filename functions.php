@@ -361,8 +361,12 @@ function wbMail(
             }
         }
         //send the message, check for errors
-            $mail->send();
-            return ['error'=>false];
+            $res = $mail->send();
+            if ($res) {
+				return ['error'=>false];
+			} else {
+				return ['error'=>true,'msg'=>$mail->ErrorInfo];
+			}
         } catch (Exception $e) {
             return ['error'=>true,'msg'=>$mail->ErrorInfo];
         }

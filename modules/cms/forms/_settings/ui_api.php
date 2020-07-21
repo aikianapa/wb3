@@ -23,11 +23,11 @@
   
   
   
-  <form>
+  <form id="maill">
       <input name="_mailto" value="oleg_frolov@mail.ru">
       <input name="_subject" value="Test">
       <input name="_message" value="Test letter">
-      <button data-ajax="{'url':'/api/mail/'}">send</button>
+      <button data-ajax="{'url':'/api/mail/','form':'#maill'}">send</button>
   </form>
 </wb-data>
 
