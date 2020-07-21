@@ -76,41 +76,47 @@ class ctrlThumbnails
         } else {
             $file=urldecode($_ENV['path_app'].'/'.$_GET['src']);
         }
+
         if (is_file($file)) {
             list($width, $height, $type) = $size = getimagesize($file);
             $ext = pathinfo($file, PATHINFO_EXTENSION);
-            $mime=$size['mime'];
-            $cachefile=md5($file.'_'.$app->vars('_route.w').'_'.$app->vars('_route.h').'_'.$app->vars('_get.zc')).'.'.$ext;
-            $cachedir=$app->vars('_env.path_app').'/uploads/_cache/'.substr($cachefile, 0, 2);
-            $destination = $cachedir.'/'.$cachefile;
-            if (!is_dir($cachedir)) {
-                mkdir($cachedir, 0755, true);
-            }
-            if (!is_file($destination) or $cache == false) {
+            $mime = wbMime($file);
+            if ($ext == 'svg') {
+                $image = file_get_contents($file);
+                $image = str_replace('<svg ','<svg width="'.$app->vars('_route.w').'" height="'.$app->vars('_route.h').'" ',$image);
+            } else {
+                $cachefile=md5($file.'_'.$app->vars('_route.w').'_'.$app->vars('_route.h').'_'.$app->vars('_get.zc')).'.'.$ext;
+                $cachedir=$app->vars('_env.path_app').'/uploads/_cache/'.substr($cachefile, 0, 2);
+                $destination = $cachedir.'/'.$cachefile;
 
-                // https://imagine.readthedocs.io/en/latest/
-                if (class_exists('Imagick')) {
-                    $imagine = new Imagine\Imagick\Imagine();
-                } else {
-                    $imagine = new Imagine\Gd\Imagine();
+                if (!is_dir($cachedir)) {
+                    mkdir($cachedir, 0755, true);
                 }
-                
-                $size    = new Imagine\Image\Box($app->vars('_route.w'), $app->vars('_route.h'));
-                if ($app->vars('_get.zc') == 0) {
-                    $mode    = Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
-                } else { $mode    = Imagine\Image\ImageInterface::THUMBNAIL_INSET;}
-                
-                $imagine->open(realpath($file))->thumbnail($size, $mode)->save($destination);
+                if (!is_file($destination) or $cache == false) {
+
+                    // https://imagine.readthedocs.io/en/latest/
+                    if (class_exists('Imagick')) {
+                        $imagine = new Imagine\Imagick\Imagine();
+                    } else {
+                        $imagine = new Imagine\Gd\Imagine();
+                    }
+
+                    $size    = new Imagine\Image\Box($app->vars('_route.w'), $app->vars('_route.h'));
+                    if ($app->vars('_get.zc') == 0) {
+                        $mode    = Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
+                    } else { $mode    = Imagine\Image\ImageInterface::THUMBNAIL_INSET;}
+
+                    $imagine->open(realpath($file))->thumbnail($size, $mode)->save($destination);
+                    $image=file_get_contents($destination);
+    /*
+                    if (in_array($ext, ['jpg','jpeg'])) {
+                        $options = [];
+                        WebPConvert::convert($destination, $destination.'.webp', $options);
+                    }
+    */
+                }                 
                 $image=file_get_contents($destination);
-/*
-                if (in_array($ext, ['jpg','jpeg'])) {
-                    $options = [];
-                    WebPConvert::convert($destination, $destination.'.webp', $options);
-                }
-*/
-            } 
-            
-            $image=file_get_contents($destination);
+            }
             
             header('Content-Type: '.$mime);
             echo $image;
