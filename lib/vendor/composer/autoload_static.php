@@ -32,10 +32,6 @@ class ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\VarDumper\\' => 28,
         ),
-        'P' => 
-        array (
-            'PHPMailer\\PHPMailer\\' => 20,
-        ),
         'N' => 
         array (
             'Nahid\\JsonQ\\' => 12,
@@ -87,10 +83,6 @@ class ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d
         'Symfony\\Component\\VarDumper\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/var-dumper',
-        ),
-        'PHPMailer\\PHPMailer\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
         'Nahid\\JsonQ\\' => 
         array (
