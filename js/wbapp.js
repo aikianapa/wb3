@@ -394,8 +394,8 @@ wbapp.toast = function(title,text,params={}) {
     $(options.target)
     .find(".toast")
     .toast('show')
-    .on('hidden.bs.toast',function(){
-        $(this).remove()
+    .on('hidden.bs.toast',function(e){
+        $(e.currentTarget).remove();
     });
 }
 
@@ -733,27 +733,35 @@ $.fn.verify = function() {
 		if (label == undefined || label == "") label = $(this).attr("name");
 
         $(this).data("idx", idx);
+        
+        if ($(this).is("[required]:visible") && $(this).val() == "") {
+            res = false;
+            $(this).data("error", wbapp._settings.sysmsg.required + ucfirst(label));
+            console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
+            $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
+        }
         if ($(this).is(":not([disabled],[readonly],[min],[max],[maxlength],[type=checkbox]):visible")) {
             if ($(this).val() == "") {
                 res = false;
                 console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
-                $(document).trigger("wb-verify-false", [this]);
+                $(form).trigger("wb-verify-false", [this]);
             } else {
                 if ($(this).attr("type") == "email" && !wb_check_email($(this).val())) {
                     res = false;
-                    $(this).data("error", wbapp.settings.sysmsg.email_correct);
+                    $(this).data("error", wbapp._settings.sysmsg.email_correct);
                     console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
-                    $(document).trigger("wb-verify-false", [this]);
+                    $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
                 } else {
 					          console.log("trigger: wb-verify-true");
-                    $(document).trigger("wb-verify-true", [this]);
+                    $(form).trigger("wb-verify-true", [this]);
                 }
             }
         }
-        if ($(this).is("[type=checkbox]") && $(this).is(":not(:checked)")) {
+        if ($(this).is("[required][type=checkbox]:not(:checked)")) {
             res = false;
+            $(this).data("error", wbapp._settings.sysmsg.required + ucfirst(label));
             console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
-            $(document).trigger("wb-verify-false", [this]);
+            $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
         }
 				if ($(this).is("[type=radio]") && $(this).is(":not(:checked)")) {
             res = false;
@@ -765,7 +773,7 @@ $.fn.verify = function() {
 						}
 						if (!res) {
             		console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
-            		$(document).trigger("wb-verify-false", [this]);
+            		$(form).trigger("wb-verify-false", [this]);
 						}
         }
         if ($(this).is("[type=password]")) {
@@ -773,9 +781,9 @@ $.fn.verify = function() {
             if ($("input[type=password][name='" + pcheck + "']").length) {
                 if ($(this).val() !== $("input[type=password][name=" + pcheck + "]").val()) {
                     res = false;
-                    $(this).data("error", wbapp.settings.sysmsg.pass_match);
+                    $(this).data("error", wbapp._settings.sysmsg.pass_match);
                     console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
-                    $(document).trigger("wb-verify-false", [this]);
+                    $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
                 }
             }
         }
@@ -784,9 +792,9 @@ $.fn.verify = function() {
 			var minstr = $(this).val() * 1;
 			if (minstr < min) {
                 res = false;
-                $(this).data("error", ucfirst(label) + " " + wbapp.settings.sysmsg.min_val+": " + min);
+                $(this).data("error", ucfirst(label) + " " + wbapp._settings.sysmsg.min_val+": " + min);
                 console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
-                $(document).trigger("wb-verify-false", [this]);
+                $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
 			}
 		}
 
@@ -795,9 +803,9 @@ $.fn.verify = function() {
 			var maxstr = $(this).val() * 1;
 			if (maxstr > max) {
                 res = false;
-                $(this).data("error", ucfirst(label) + " " + wbapp.settings.sysmsg.max_val+": " + max);
+                $(this).data("error", ucfirst(label) + " " + wbapp._settings.sysmsg.max_val+": " + max);
                 console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
-                $(document).trigger("wb-verify-false", [this]);
+                $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
 			}
 		}
 
@@ -806,9 +814,9 @@ $.fn.verify = function() {
             var lenstr = strlen($(this).val());
             if (lenstr < minlen) {
                 res = false;
-                $(this).data("error", ucfirst(label) + " " + wbapp.settings.sysmsg.min_length+": " + minlen);
+                $(this).data("error", ucfirst(label) + " " + wbapp._settings.sysmsg.min_length+": " + minlen);
                 console.log("trigger: wb-verify-false ["+$(this).attr("name")+"]");
-                $(document).trigger("wb-verify-false", [this]);
+                $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
             }
         }
 
@@ -824,11 +832,11 @@ $.fn.verify = function() {
     });
     if (res == true) {
 	       console.log("trigger: wb-verify-success");
-        $(document).trigger("wb-verify-success", [form]);
+        $(form).trigger("wb-verify-success", [form]);
     }
     if (res == false) {
 	       console.log("trigger: wb-verify-fail");
-         $(document).trigger("wb-verify-fail", [form]);
+         $(form).trigger("wb-verify-fail", [form]);
     }
     return res;
 }
