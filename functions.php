@@ -5,6 +5,9 @@ require_once __DIR__."/lib/weprocessor/weprocessor.php";
 require_once __DIR__."/lib/weprocessor/weparser.class";
 require_once __DIR__.'/wbrouter.php';
 require_once __DIR__.'/wbapp.php';
+if (is_file($_SERVER['DOCUMENT_ROOT'].'/functions.php')) {
+    require_once $_SERVER['DOCUMENT_ROOT'].'/functions.php';
+}
 
 use Adbar\Dot;
 use Nahid\JsonQ\Jsonq;
@@ -81,7 +84,6 @@ function wbInitEnviroment()
 
     $_ENV['forms'] = wbListForms(false);
     $_ENV['editors'] = [];
-    wbListModules($app);
 
     //$_ENV['drivers'] = wbListDrivers();
     $_ENV['settings']['driver'] = 'json';
@@ -2603,7 +2605,7 @@ function wbListDrivers()
 }
 
 
-function wbListModules(&$app = null)
+function wbListModules()
 {
     $arr = [];
     $p=[$_ENV['path_engine'].'/modules',$_ENV['path_app'].'/modules'];
@@ -2613,13 +2615,18 @@ function wbListModules(&$app = null)
         }
         foreach ($list as $e) {
             if (!in_array($e, [".",".."]) and substr($e, 1)!=="_" and !in_array($e, $arr) and is_dir($d.'/'.$e) and is_file($d.'/'.$e.'/'.$e.".php")) {
-                $arr[$e] = $d.'/'.$e.'/'.$e.".php";
-                if ($app !== null) {
-                    $app->addModule($e, $arr[$e]);
+                $arr[$e] = [
+                    'module' => $d.'/'.$e.'/'.$e.".php",
+                    'path' => $d.'/'.$e,
+                    'sett' => ''
+                ];
+                if (is_file($d.'/'.$e.'/'.$e.'_sett.php')) {
+                    $arr[$e]['sett'] = is_file($d.'/'.$e.'/'.$e.'_sett.php');
                 }
             }
         }
     }
+    print_r($arr);
     return $arr;
 }
 

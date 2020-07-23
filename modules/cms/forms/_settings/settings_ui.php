@@ -26,6 +26,12 @@
           </span>
 
           <span class="nav-item">
+            <a class="nav-link" href="#" data-ajax="{'url':'/cms/settings/ui_mods/','html':'#editSettingsForm'}">
+              {{_lang.modules}}
+            </a>
+          </span>
+         
+          <span class="nav-item">
             <a class="nav-link" href="#" data-ajax="{'url':'/cms/settings/ui_prop/','html':'#editSettingsForm'}">
               {{_lang.properties}}
             </a>
@@ -58,6 +64,7 @@ variables = Variables
 properties = Properties
 menu = Menu
 api = API settings
+modules = Modules
 [ru]
 settings = Настройки
 common = Основные
@@ -65,6 +72,7 @@ variables = Переменные
 properties = Свойства
 menu = Меню
 api = Настройки API
+modules = Модули
 </wb-lang>
 
 </html>
