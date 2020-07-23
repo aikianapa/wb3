@@ -2616,17 +2616,18 @@ function wbListModules()
         foreach ($list as $e) {
             if (!in_array($e, [".",".."]) and substr($e, 1)!=="_" and !in_array($e, $arr) and is_dir($d.'/'.$e) and is_file($d.'/'.$e.'/'.$e.".php")) {
                 $arr[$e] = [
+                    'id' => $e,
                     'module' => $d.'/'.$e.'/'.$e.".php",
                     'path' => $d.'/'.$e,
                     'sett' => ''
                 ];
                 if (is_file($d.'/'.$e.'/'.$e.'_sett.php')) {
-                    $arr[$e]['sett'] = is_file($d.'/'.$e.'/'.$e.'_sett.php');
+                    $arr[$e]['sett'] = $d.'/'.$e.'/'.$e.'_sett.php';
                 }
             }
         }
     }
-    print_r($arr);
+    $arr = wbArraySort($arr,['id'=>'a']);
     return $arr;
 }
 
@@ -2711,10 +2712,6 @@ function wbListFormsFull()
     return $list;
 }
 
-function wbArraySortMulti($array = array(), $args = array('votes' => 'd'))
-{
-    return wbArraySort($array, $args);
-}
 function wbArraySort($array = array(), $args = array('votes' => 'd'))
 {
     // если передан атрибут, то предварительно готовим массив параметров

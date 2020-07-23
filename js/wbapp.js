@@ -200,17 +200,27 @@ wbapp.save = function(obj,params,event) {
   data = wbapp.objByForm(form);
   if (data._idx) delete data._idx;
 
-  if ($(obj).is(":input") && params.table && params.id && params.field) {
+  if ($(obj).is(":input") && params.table && (params.id || params.item) && params.field) {
         let fld = $(obj).attr("name");
         let value = $(obj).val();
+        let id;
         if ($(obj).is(":checkbox") &&  $(obj).prop("checked")) value = "on";
         if ($(obj).is(":checkbox") && !$(obj).prop("checked")) value = "";
         if ($(obj).is("textarea")) value = $(obj).html();
-        data = {};
-        data['id'] = params.id;
-        eval (`data.${fld} = value;`);
+        if (params.id) {id = params.id;} else if (params.item) id = params.item;
+        if (fld !== undefined) {
+            data = {};
+            data['id'] = id;
+            eval (`data.${fld} = value;`);    
+        } else {
+            let tmpId = wbapp.newId();
+            wbapp.storage(tmpId,{'id':params.item});
+            wbapp.storage(tmpId+'.'+params.field,data);
+            data = wbapp.storage(tmpId);
+                        console.log(data);
+        }
         params.url = `/ajax/save/${params.table}`;
-  }
+  } 
 
   $.post(params.url,data,function(data) {
           if (params.callback) eval('params = '+params.callback+'(params,data)');

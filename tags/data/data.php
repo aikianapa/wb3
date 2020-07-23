@@ -36,6 +36,8 @@ class tagData {
         $dom->find("wb-empty")->remove();
         if (!count($dom->item)) $dom->inner($empty->inner());
     }
+
+    $dom->item['_parent'] = $save;
     $dom->fetch();
     $dom->unwrap("wb-data");
     $dom->item = $save;

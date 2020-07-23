@@ -45,7 +45,7 @@ class tagForeach {
           if (method_exists($formClass,$method)) $list = $formClass->$method($dom);
           $count = count($list);
         } else if ($table == "" AND $dom->params("call") > "") {
-            $list = wbEval($dom->params("call"));
+            $list = (array)wbEval($dom->params("call"));
         }
 
         if ($dom->params("from")) {
@@ -106,7 +106,7 @@ class tagForeach {
         $dom->attr("data-ajax") == "" ? $render = false : $render = true;
         if (!$render) $tpl = "<wb>{$tpl}</wb>";
 
-        foreach($list as $key => $val) {
+        foreach((array)$list as $key => $val) {
             $value = $val;
             $val = (object)$val;
             $val->_idx = $idx;
@@ -132,7 +132,7 @@ class tagForeach {
             $dom->append("<template id = \"{$tid}\" data-ajax=\"".$dom->attr("data-ajax")."\">\n{{#each result}}\n".$tpl."\n{{/each}}</template>\n");
             $dom->find("template[id=\"{$tid}\"] .pagination")->attr("data-tpl",$tid);
         }
-        if (!count($list) OR $dom->html() == "") $dom->inner($empty->inner());
+        if (!count((array)$list) OR $dom->html() == "") $dom->inner($empty->inner());
         if ($dom->tagName == "wb-foreach") $dom->unwrap("wb-foreach");
         return $dom;
   }
