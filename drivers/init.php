@@ -3,7 +3,7 @@
 function wbItemList ($form = 'pages', $options=[])
 {
     $db = wbSetDb($form);
-    if ($form == "_settings") $db = $_ENV["app"]->_db;
+    if (substr($form,0,1) == '_') $db = $_ENV["app"]->_db;
     ini_set('max_execution_time', 900);
     ini_set('memory_limit', '1024M');
     return $db->ItemList($form, $options);
@@ -33,7 +33,7 @@ function wbItemRead($form = null, $id = null)
     if ($form == null OR $id == null) return null;
     wbTrigger('form', __FUNCTION__, 'beforeItemRead', func_get_args(), array());
     $db = wbSetDb($form);
-    if ($form == "_settings") $db = $_ENV["app"]->_db;
+    if (substr($form,0,1) == '_') $db = $_ENV["app"]->_db;
     $item = $db->itemRead($form, $id);
     if (null !== $item) {
         if (isset($item['_removed']) && 'remove' == $item['_removed']) {
@@ -58,7 +58,7 @@ function wbItemRemove($form = null, $id = null, $flush = true)
 {
     $res = false;
     $db = wbSetDb($form);
-    if ($form == "_settings") $db = $_ENV["app"]->_db;
+    if (substr($form,0,1) == '_') $db = $_ENV["app"]->_db;
     wbTrigger('form', __FUNCTION__, 'beforeItemRemove', func_get_args());
     $res = $db->itemRemove($form, $id, $flush);
     if ($res !== false) $res["_removed"] = true;
@@ -86,16 +86,16 @@ function wbItemRename($form = null, $old = null, $new = null, $flush = true)
     return false;
 }
 
-function wbItemSave($table, $item = null, $flush = true)
+function wbItemSave($form, $item = null, $flush = true)
 {
-    $item = wbItemInit($table, $item);
+    $item = wbItemInit($form, $item);
     $item = wbTrigger('form', __FUNCTION__, 'beforeItemSave', func_get_args(), $item);
-    $db = wbSetDb($table);
-    if ($table == "_settings") $db = $_ENV["app"]->_db;
-    $item = $db->itemSave($table, $item, $flush);
+    $db = wbSetDb($form);
+    if (substr($form,0,1) == '_') $db = $_ENV["app"]->_db;
+    $item = $db->itemSave($form, $item, $flush);
     if ($item) {
         // читаем всю запись, иначе возвращаются не все поля
-        $item = $db->itemRead($table, $item["id"]);
+        $item = $db->itemRead($form, $item["id"]);
     }
     $item = wbTrigger('form', __FUNCTION__, 'afterItemSave', func_get_args(), $item);
     return $item;
@@ -119,7 +119,7 @@ function wbTableFlush($form)
     $res = false;
     wbTrigger('form', __FUNCTION__, 'beforeTableFlush', func_get_args(), $form);
     $db = wbSetDb($form);
-    if ($form == "_settings") $db = $_ENV["app"]->_db;
+    if (substr($form,0,1) == '_') $db = $_ENV["app"]->_db;
     $res = $db->tableFlush($form);
     wbTrigger('form', __FUNCTION__, 'afterTableFlush', func_get_args(), $form);
     return $res;

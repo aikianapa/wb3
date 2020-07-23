@@ -24,9 +24,9 @@ class ctrlAjax {
       }
 
       if ($this->ajax) {
-          $this->ajax->$mode();
+          echo $this->ajax->$mode();
       } else if (is_callable(@$this->$mode)) {
-          @$this->$mode();
+          echo $this->$mode();
       } else {
           echo json_encode([null]);
       }
