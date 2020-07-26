@@ -336,6 +336,7 @@ function wbMail(
         $mail->isHTML(true);
         $mail->Subject = $subject;
         foreach ($sent as $s) {
+            if (!isset($s[1])) $s[1] = $s[0];
             $mail->addAddress($s[0], $s[1]);
         }
         //Read an HTML message body from an external file, convert referenced images to embedded,
