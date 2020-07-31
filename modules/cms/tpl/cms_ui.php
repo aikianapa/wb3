@@ -10,7 +10,6 @@
       </div>
     </div>
   </div>
-
   <div wb-allow="admin">
 
     <aside class="aside aside-fixed">
@@ -71,7 +70,6 @@
         </div>
 
         <ul class="nav nav-aside" wb-tree="{'table':'_settings','item':'settings','field':'cmsmenu','branch':'aside','parent':'false'}">
-<level>
               <li class="nav-label mg-t-25" wb-if=' "{{_lvl}}" == "1" '>
                 {{data.label}}
               </li>
@@ -80,7 +78,6 @@
                   <span>{{data.label}}</span>
                 </a>
               </li>
-</level>
         </ul>
 
       </div>
@@ -93,11 +90,13 @@
           <input type="search" class="form-control" placeholder="Поиск..." disabled>
         </div>
         <nav class="nav" wb-tree="{'table':'_settings','item':'settings','field':'cmsmenu','branch':'top','parent':'false'}">
-          <a href="#" data-ajax="{{data.ajax}}" data-toggle="tooltip" title="{{data.label}}" class="nav-link tx-18"><i class="{{data.icon}}"></i></a>
+          <a href="#" data-ajax="{{data.ajax}}" data-toggle="tooltip" title="{{data.label}}" class="nav-link tx-18">
+          <i class="{{data.icon}}"></i>
+          </a>
         </nav>
       </div>
       <!-- content-header -->
-      <div class="content-toasts pos-absolute r-0" style="z-index:5000;"></div>
+      <div class="content-toasts pos-absolute t-10 r-10" style="z-index:5000;"></div>
       <div class="content-body pd-0">
 
         <meta href="#" data-ajax="{'url':'/cms/ajax/form/places/list','html':'.content-body'}" auto >

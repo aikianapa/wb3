@@ -24,13 +24,13 @@
 
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#{{_form}}EditForm-tab1" role="tab" aria-controls="{{_form}}EditForm-tab1" aria-selected="true">Main</a>
+                            <a class="nav-link active" data-toggle="tab" href="#{{_form}}EditForm-tab1" role="tab" aria-controls="{{_form}}EditForm-tab1" aria-selected="true">{{_lang.main}}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#{{_form}}EditForm-tab2" role="tab" aria-controls="{{_form}}EditForm-tab2" aria-selected="false">Properties</a>
+                            <a class="nav-link" data-toggle="tab" href="#{{_form}}EditForm-tab2" role="tab" aria-controls="{{_form}}EditForm-tab2" aria-selected="false">{{_lang.prop}}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#{{_form}}EditForm-tab3" role="tab" aria-controls="{{_form}}EditForm-tab3" aria-selected="false">SEO</a>
+                            <a class="nav-link" data-toggle="tab" href="#{{_form}}EditForm-tab3" role="tab" aria-controls="{{_form}}EditForm-tab3" aria-selected="false">{{_lang.seo}}</a>
                         </li>
                     </ul>
                     <div class="tab-content p-3">
@@ -79,5 +79,14 @@
         </div>
     </div>
 </div>
-
+<wb-lang>
+[ru]
+main = Основное
+prop = Свойства
+seo = Оптимизация
+[en]
+main = Main
+prop = Properties
+seo = SEO
+</wb-lang>
 </html>

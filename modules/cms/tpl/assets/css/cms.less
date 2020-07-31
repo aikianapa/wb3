@@ -5,13 +5,15 @@ body {
   }
 
   aside {
-
     transition-duration: .4s;
-
     .aside-logo {
       white-space: nowrap;
       overflow: hidden;
     }
+      .nav-link {
+        text-transform: none;
+        font-weight: normal;
+      }
 
 @media (max-width: 991px) {
   &:not(.aside-show) {
@@ -42,7 +44,7 @@ body {
 
       ul {
         padding-left: 15px;
-
+        font-size: 12px;
         li {
           list-style: none;
         }

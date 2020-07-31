@@ -18,7 +18,7 @@ $(document).on("jodit-js", function() {
       lang = lang.substr(0,2);
       var theme = $(editable).attr("data-theme");
       if (theme == undefined) theme = "gray";
-      wbapp.loadStyles(["/engine/modules/jodit/build/jodit.min.css"]);
+      wbapp.loadStyles(["/engine/modules/jodit/build/jodit.min.css","/engine/modules/jodit/jodit.css"]);
 
 
       var loadjs = ["/engine/js/php.js",
@@ -29,6 +29,15 @@ $(document).on("jodit-js", function() {
       wbapp.loadScripts(loadjs, "jodit-init", function() {
 
         //lang = explode("-", lang);
+          
+        $(document).on('ajax-done',function(){
+            // Чистим  "хвосты" jodit
+            if (!$('.jodit-workplace').length) {
+                $('.jodit').remove();
+            }
+        });
+          
+          
         var options = {
           theme: theme,
           language: lang,

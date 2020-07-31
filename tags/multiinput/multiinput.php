@@ -3,7 +3,7 @@ use Adbar\Dot;
 class tagMultiinput {
 
   public function __construct($dom) {
-      $this->multiinput($dom);
+      if (!$dom->is('[done]')) $this->multiinput($dom);
   }
 
   public function multiinput($dom) {
@@ -15,10 +15,9 @@ class tagMultiinput {
         $dom->attr("name",$field);
         $dom->params->name = $field;
         if (isset($dom->item[$field])) $dom->item = [$field => $dom->item[$field],"_parent"=>$dom->item];
-        $inner=$dom->inner();
+        $inner = $dom->inner();
         if ($inner == "") $inner = "<input type='text' name='{$field}' class='form-control' />";
-        $inner = $dom->app->fromString($inner);
-        $wrp = $dom->app->fromString(str_replace("{{inner}}",$inner->outer(),$wrp));
+        $wrp = $dom->app->fromString(str_replace("{{inner}}",$inner,$wrp));
         $dom->attr("id") > "" ? $tplId = $dom->attr("id") : $tplId='mi_'.wbNewId();
         $dom->attr("id",$tplId);
         $textarea = $dom->app->fromString("<textarea name='{$field}' type='json' class='wb-multiinput-data' style='display:none;'></textarea>");
@@ -28,10 +27,12 @@ class tagMultiinput {
         $fields = new Dot();
         $fields->setReference($textarea->item);
         $wrp->fetch($fields->get());
+
         $this->setData($dom,$fields->get($field));
         $dom->append($textarea)
             ->append("\n<template id='{$tplId}'>{$wrp}</template>\n")
             ->append('<script type="wbapp">wbapp.loadScripts(["/engine/js/php.js","/engine/js/jquery-ui.min.js","/engine/tags/multiinput/multiinput.js"],"multiinput-js");</script>'."\n\r");
+        $dom->attr('done',"");
     }
 
     function setData(&$dom, $data=[[]]) {

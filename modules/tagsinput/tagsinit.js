@@ -12,6 +12,8 @@ function wb_tagsinput() {
                 // duplicate validation
                 unique: true
             });
+            $(this).removeClass('wb-tagsinput');
+            $(this).next(".tagsinput").addClass($(this).attr('class'));
             $(this).data("wb-tagsinput", true);
             $(this).on("change",function(){
                 $(this).attr("value",$(this).val());

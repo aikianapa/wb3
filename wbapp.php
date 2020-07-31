@@ -15,6 +15,7 @@ class wbDom extends DomQuery
         if ($html == null) return $this->getinnerHtml();
             $esc = "wb";
             if ($this->head) $esc = "head";
+            
             $html = "<{$esc}>{$html}</{$esc}>"; // magick
             $this->html($html);         // magick
             $this->children("{$esc}")->unwrap("{$esc}"); // magick
@@ -84,6 +85,18 @@ class wbDom extends DomQuery
         return $res;
     }
 
+    public function getField($fld) {
+        $fields = new Dot();
+        $fields->setReference($this->item);
+        return $fields->get($fld);
+    }
+    
+    public function setField($fld, $data = []) {
+        $fields = new Dot();
+        $fields->setReference($this->item);
+        return $fields->set($fld,$data);
+    }
+    
     public function where($Item=null)
     {
         $res = true;
@@ -632,8 +645,10 @@ class wbApp
     public function fieldBuild($dict=[], $data=[])
     {
         if ((array)$dict == $dict) $dict = wbArrayToObj($dict);
+        if ($dict->name == "") return "";
         $this->dict = $dict;
         $this->item = $data["data"];
+        $this->data = $data;
         $this->tpl = $this->getForm('snippets', $dict->type);
         if (!is_object($this->tpl)) {
             $this->tpl = $this->fromString("<b>Snippet {$dict->type} not found</b>");
@@ -659,6 +674,17 @@ class wbApp
         $mult->dict = $this->dict;
         $mult->fetch();
         return $mult;
+    }
+    
+    public function fieldBuild_image()
+    {
+        $img = $this->tpl;
+        $img->item = $this->item;
+        $img->item['_name'] = $this->dict->name;
+        $img->item['_form'] = 'treedata';
+        $img->item['_item'] = $this->data['id'];
+        $img->fetch();
+        return $img;
     }
 
     public function fieldBuild_forms()

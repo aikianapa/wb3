@@ -322,7 +322,7 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
 
         $this->length = \count($this->nodes);
         /** @noinspection PhpUnhandledExceptionInspection */
-        $this->setDomDocument($dom_node->ownerDocument);
+        if ($dom_node->ownerDocument) $this->setDomDocument($dom_node->ownerDocument);
     }
 
     /* @noinspection PhpDocMissingThrowsInspection */
@@ -881,6 +881,7 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
     {
         $html = '';
         if ($content_node = $this->getFirstElmNode()) {
+            if (isset($content_node->ownerDocument)) {
             $document = $content_node->ownerDocument;
 
             foreach ($content_node->childNodes as $node) {
@@ -890,7 +891,7 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
                     $html .= $document->saveHTML($node);
                 }
             }
-
+            }
             $html = $this->handleHtmlResult($html);
         }
 

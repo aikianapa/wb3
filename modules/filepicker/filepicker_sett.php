@@ -22,7 +22,7 @@
         </div>
 </form>
 
-<script type="text/locale">
+<wb-lang>
 [en]
   quality = "Image quality"
   resizeTo = "Resize to"
@@ -31,4 +31,4 @@
   resizeTo = "Уменьшать до"
   resizeToHint = "Изменить размер изображения, если исходная ширина изображения более указанной ширина"
   quality = "Качество"
-</script>
+</wb-lang>

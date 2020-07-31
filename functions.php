@@ -117,7 +117,7 @@ function wbInitSettings(&$app)
     } else {
         if (!isset($settings['variables'])) $settings['variables'] = [];
         foreach ((array)$settings['variables'] as $v) {
-            $variables[$v['var']] = $v['value'];
+            if (isset($v['var']) AND $v['var'] > '') $variables[$v['var']] = $v['value'];
         }
     }
     $_ENV['variables'] = array_merge((array)$_ENV['variables'], $variables);
@@ -1099,14 +1099,6 @@ function wbInitDatabase()
         @mkdir($_ENV['dbac'], 0766);
     }
     $_ENV['tables'] = wbTableList();
-}
-
-function wbTreeRead($name)
-{
-    wbTrigger('form', __FUNCTION__, 'BeforeTreeRead', func_get_args(), array());
-    $tree = wbItemRead('tree', $name);
-    $tree = wbTrigger('form', __FUNCTION__, 'AfterTreeRead', func_get_args(), $tree);
-    return $tree;
 }
 
 function wbTreeToArray($tree)

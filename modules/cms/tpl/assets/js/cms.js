@@ -29,6 +29,20 @@ $(document).on("wb-save-start",function(e,params) {
   }
 })
 
+$(document).on('wb-verify-false',function(e,el,err){
+    if (err !== undefined) {
+        wbapp.toast(wbapp._settings.sysmsg.error,err,{target:'.content-toasts','bgcolor':'warning','txcolor':'white'});
+    }
+});
+
+$(document).on("wb-save-error", function (e, params) {
+    if ($(e.target).is("button.cms") && $(e.target).find(".spinner-border").length) {
+        $(e.target).find(".spinner-border").remove();
+        $(e.target).find("i").removeClass("d-none");
+        $(e.target).prop("disabled", false);
+    }
+});
+
 $(document).on("wb-save-done", function (e, params) {
     if ($(e.target).is("button.cms") && $(e.target).find(".spinner-border").length) {
         $(e.target).find(".spinner-border").remove();
@@ -41,7 +55,7 @@ $(document).on("wb-save-done", function (e, params) {
         $("#userProfileMenu").data("ractive").set(params.data);
         wbapp.lazyload();
     }
-    wbapp.toast("Сохранение","Данные успешно сохранены",{target:'.content-toasts'});
+    wbapp.toast("Сохранение","Данные успешно сохранены",{target:'.content-toasts','bgcolor':'success','txcolor':'white'});
 })
 
 $(document).on("ajax-done",function(e,params) {

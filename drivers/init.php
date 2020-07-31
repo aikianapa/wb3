@@ -28,6 +28,14 @@ function wbSetDb($form) {
     return $app->db;
 }
 
+function wbTreeRead($name)
+{
+    wbTrigger('form', __FUNCTION__, 'BeforeTreeRead', func_get_args(), array());
+    $tree = wbItemRead('catalogs', $name);
+    $tree = wbTrigger('form', __FUNCTION__, 'AfterTreeRead', func_get_args(), $tree);
+    return $tree;
+}
+
 function wbItemRead($form = null, $id = null)
 {
     if ($form == null OR $id == null) return null;

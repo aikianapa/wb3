@@ -46,7 +46,7 @@
   </div>
 </form>
 
-<script type="text/locale">
+<wb-lang>
 [en]
   loginby = "Login by"
   save = "Save"
@@ -63,4 +63,4 @@
   blur = "Размытие"
   status = "Активировать без потдверждения"
   group = "Роль пользователя по-умолчанию"
-</script>
+</wb-lang>

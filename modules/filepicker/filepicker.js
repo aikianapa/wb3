@@ -106,6 +106,9 @@ $(document).on("filepicker-init", function() {
 
             var listview = function() {
                 let lvid = "lv-"+wbapp.newId();
+                if (wbapp.template["#fp-listviewItem"] == undefined) {
+                    wbapp.template["#fp-listviewItem"] = {html:$(document).find("#fp-listviewItem").html(),params:{}};
+                }
                 let tpl = wbapp.template["#fp-listviewItem"].html;
                 $filepicker.list = input.html();
                 if ($filepicker.list == "") {

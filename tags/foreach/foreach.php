@@ -12,11 +12,10 @@ class tagForeach {
         $idx = 0;
         $ndx = 1;
         $page = $pages = 1;
-        $list = [];
         if (!isset($dom->role)) return $dom;
         if (!$dom->app) $dom->app = new wbApp();
         $dom->attr("id") > "" ? $tid = $dom->attr("id") : $tid = "fe_".$dom->app->newId();
-        $list = $dom->item;
+        $list = $parent = $dom->item;
         $options = [];
         $dom->params("table") > "" ? $table = $dom->params->table : $table = "";
         if ($dom->params("orm") > "") $options["orm"] = $dom->params->orm;
@@ -88,15 +87,15 @@ class tagForeach {
             $item = $list;
             $list = [];
             $count = intval($dom->params->count);
-            if (count($item)) {
-                for ( $i=0; $i<$count; $i++ ) {
-                    foreach($item as $line) $list[] = $line;
-                }
-            } else {
+//            if (count($item)) {
+//                for ( $i=0; $i<$count; $i++ ) {
+//                    foreach($item as $line) $list[] = $line;
+//                }
+//            } else {
                 for ( $i=0; $i<$count; $i++ ) {
                     $list[] = ["_id"=>$i];
                 }
-            }
+//            }
         }
         if ($dom->params("rand") == "true") shuffle($list);
         $empty = $dom->find("wb-empty")[0];
@@ -105,7 +104,7 @@ class tagForeach {
         $dom->html("");
         $dom->attr("data-ajax") == "" ? $render = false : $render = true;
         if (!$render) $tpl = "<wb>{$tpl}</wb>";
-
+      
         foreach((array)$list as $key => $val) {
             $value = $val;
             $val = (object)$val;
@@ -114,6 +113,7 @@ class tagForeach {
             $val->_page = $page;
             $val->_pages = $pages;
             $val->_val = $value;
+            $val->_parent = &$parent;
             if (!isset($val->_id)) isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
             if ($table > "") $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], (array)$val);
             if ($render > "") {

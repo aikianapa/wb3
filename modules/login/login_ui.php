@@ -94,7 +94,7 @@
   </body>
 </html>
 
-<script type="text/locale">
+<wb-lang>
 [en]
         login           = "Login"
         password        = "Password"
@@ -153,7 +153,7 @@
     phoneentry = "Введите ваш телефон"
     firstname = "Имя"
     lastname = "Фамилия"
-</script>
+</wb-lang>
 <meta data-wb="role=variable" var="bkg" data-wb-if='"{{_sett.modules.login.background.0.img}}">""' value='/uploads/_modules/login/{{_sett.modules.login.background.0.img}}' else='/engine/modules/login/login.jpg'>
 <style data-wb="role=module&load=less">
 	.bkg {
