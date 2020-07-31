@@ -2949,6 +2949,14 @@ function wbListTpl()
         return $str;
     }
 
+    function wbUrlOnly($str) {
+        $str = wbLiteralOnly($str);
+        $str = wbTranslit($str);
+        $str = str_replace(' ','_',$str);
+        return $str;
+        
+    }
+
     function is_email($email)
     {
         $res=true;
