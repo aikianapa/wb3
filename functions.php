@@ -2019,8 +2019,8 @@ function wbItemFilter($item, $filter)
         } else {
             if ($fld == '$or') {
                 $result = false;
-                foreach($expr as $orFilter) {
-                    if (wbItemFilter($item, $orFilter) == true) $result = true;
+                foreach($expr as $key => $orFilter) {
+                    if (wbItemFilter($item, [$key => $orFilter]) == true) $result = true;
                 }
             } else if ($fld == '$and') {
                 $result = true;
