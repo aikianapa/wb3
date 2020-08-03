@@ -38,11 +38,18 @@ if (typeof $ === 'undefined') {
 
 
         $(document).delegate(".pagination .page-link", "tap click", function (e) {
+            if ($(this).is('[disabled]') || $(this).parents('[disabled]').length) return false;
             e.preventDefault();
             let paginator = $(this).closest(".pagination");
             let tid = $(paginator).data("tpl");
             let params = wbapp.template[tid].params;
-            params.page = $(this).attr("data-page");
+            let page = $(this).attr("data-page");
+            if (params._route) {
+                params.url = params._route.url;
+                params._params.page = page;
+            } else {
+                params.page = page;
+            }
             params._tid = tid;
             wbapp.ajax(params);
         });
@@ -336,8 +343,15 @@ if (typeof $ === 'undefined') {
                     $inp = $(params._event.target).parent();
                     // тут нужна обработка значений на клиенте
                 }
+                if (params.render == 'client') {
+                    let res = $(data).find(params.target).html();
+                    $(document).find(params.target).html(res);
+                } else if (params.render == undefined || params.render == 'server') {
+                    $(document).find(params.target).html(data.html);
+                }
                 if (params.callback !== undefined) eval(params.callback + '(params,data)');
                 wbapp.tplInit();
+                wbapp.lazyload();
                 wbapp.ajaxAuto();
                 console.log("Trigger: ajax-done");
                 params['data'] = data;

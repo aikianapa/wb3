@@ -5,6 +5,36 @@ use DQ\DomQuery;
 
 class wbDom extends DomQuery
 {
+    
+    public function __call($name, $arguments) {
+        if (method_exists($this->getFirstElmNode(), $name)) {
+            return \call_user_func_array(array($this->getFirstElmNode(), $name), $arguments);
+        } else if (substr($name,0,3) == 'tag') {
+
+                $class = $name;
+                $fname = strtolower(substr($name,3));
+                $file_e = $this->app->vars("_env.path_engine")."/tags/{$fname}/{$fname}.php";
+                $file_a = $this->app->vars("_env.path_app")."/tags/{$fname}/{$fname}.php";
+                if (is_file($file_a)) {
+                    require_once $file_a;
+                    if (class_exists($class)) {
+                        return new $class($arguments[0]);
+                    }
+                } else if (is_file($file_e)) {
+                    require_once $file_e;
+                    if (class_exists($class)) {
+                        return new $class($arguments[0]);
+                    }
+                } else {
+                    unset($this->role);
+                }
+        }
+
+        throw new \Exception('Unknown call '.$name);
+    }
+    
+    
+    
     public function outer()
     {
         return $this->getouterHtml();
@@ -547,6 +577,12 @@ class wbApp
         $_ENV["route"] = $route;
         $this->route = wbArrayToObj($route);
         return $this->route;
+    }
+    
+    public function getField($item,$fld) {
+        $fields = new Dot();
+        $fields->setReference($item);
+        return $fields->get($fld);
     }
 
     public function initApp()

@@ -112,6 +112,7 @@ final class wbRouter {
 
     // Сборка ответа
     public static function returnRoute() {
+        if (isset($_POST['_route'])) return $_POST['_route'];
         $ROUTE=array();
         $controller="form";
         $action="mode";

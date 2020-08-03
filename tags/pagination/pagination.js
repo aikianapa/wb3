@@ -33,11 +33,11 @@ $(document).one("pagination-js", function() {
   });
 
 
-  $.fn.wbPagination = function() {
+  $.fn.wbPagination = async function() {
     var paginator = $(this).closest(".pagination");
     var that = $(this);
     var id = $(paginator).attr("id");
-    var tid = $(paginator).attr("id").split("-")[1];
+    var tid = '#'+id;
 
     console.log("Trigger: pagination-click");
     $(document).trigger("pagination-click",that);
@@ -46,13 +46,16 @@ $(document).one("pagination-js", function() {
     //=======//
     // Short function
     var tpl = tid;
-    var page = explode("/", $(this).attr("data-wb-ajaxpage"));
+    var page = explode("/", $(this).attr("data-page"));
     var c = count(page);
     var pagenum = page[c - 2];
-    var params = wbapp.template(tpl).params;
+    var params = wbapp.tpl(tpl).params;
     var uri = params.route.uri;
-    var result = wbapp.postWait(uri, {
+      console.log(uri)
+    var result = await wbapp.postSync(uri, {
       _watch_page: pagenum
+    },function(data){
+        console.log(data);
     });
     var pager = $(result).find(".pagination#ajax-"+tpl).html();
     result = $(result).find("[data-wb-tpl='"+tpl+"']");

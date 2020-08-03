@@ -12,12 +12,20 @@ class tagForeach {
         $idx = 0;
         $ndx = 1;
         $page = $pages = 1;
+        $srvpag = false;
         if (!isset($dom->role)) return $dom;
         if (!$dom->app) $dom->app = new wbApp();
+      
+        $empty = $dom->find("wb-empty")[0];
+        $dom->find("wb-empty")->remove();
+        $tpl = $dom->html();
+        $dom->html("");
+      
         $dom->attr("id") > "" ? $tid = $dom->attr("id") : $tid = "fe_".$dom->app->newId();
         $list = $parent = $dom->item;
         $options = [];
         $dom->params("table") > "" ? $table = $dom->params->table : $table = "";
+        isset( $dom->params->field ) ? $field = $dom->params->field : $field = null;
         if ($dom->params("orm") > "") $options["orm"] = $dom->params->orm;
         if ($dom->params("item") > "") $options["item"] = $dom->params->item;
         if ($dom->params("filter") > "") $options["filter"] = $dom->params->filter;
@@ -48,7 +56,7 @@ class tagForeach {
         }
 
         if ($dom->params("from")) {
-            if (isset($list[$dom->params->from])) {$list = $list[$dom->params->from];} else {$list = [];}
+            if (isset($list[$dom->params->from])) {$list = $list[$dom->params->from];} else {$list = $dom->getField($dom->params->from);}
             if (isset($options["sort"]) AND (array)$options["sort"] === $options["sort"]) {
                 foreach((array)$options["sort"] as $key=> $fld) {
                     if (!((array)$fld === $fld)) {
@@ -77,8 +85,13 @@ class tagForeach {
 
         if ($dom->params("size") > "") {
             $dom->params("page") ? $page = $dom->params->page : $page = 1;
+            if ($dom->parent()->attr('id') == '') $dom->parent()->attr('id','fe_'.md5($dom->outer()));
+            if ($app->vars('_post._route') AND $app->vars('_post._params') AND $app->vars('_post._tid') == '#'.$dom->parent()->attr('id')) {
+                $page = $app->vars('_post._params.page');
+                $srvpag = true;
+            }
             $list = array_chunk($list,$dom->params->size);
-            $pages = ceil($count / $dom->params->size);
+            $dom->params->pages = $pages = ceil($count / $dom->params->size);
             if ($page > $pages OR $page<=0) $list = [];
             if ($pages >= 1 && isset($list[$page -1])) $list = $list[$page -1];
             $ndx = ($page -1) * $dom->params("size") +1;
@@ -98,10 +111,6 @@ class tagForeach {
 //            }
         }
         if ($dom->params("rand") == "true") shuffle($list);
-        $empty = $dom->find("wb-empty")[0];
-        $dom->find("wb-empty")->remove();
-        $tpl = $dom->html();
-        $dom->html("");
         $dom->attr("data-ajax") == "" ? $render = false : $render = true;
         if (!$render) $tpl = "<wb>{$tpl}</wb>";
       
@@ -128,13 +137,40 @@ class tagForeach {
             $idx++;
             $ndx++;
         }
-        if ($render) {
+      
+        if ($render > "") {
             $dom->append("<template id = \"{$tid}\" data-ajax=\"".$dom->attr("data-ajax")."\">\n{{#each result}}\n".$tpl."\n{{/each}}</template>\n");
             $dom->find("template[id=\"{$tid}\"] .pagination")->attr("data-tpl",$tid);
+        } else if ($dom->params("size") > "") {
+                $dom->params->count = $count;
+                $dom->params->tpl = $dom->parent()->attr('id');
+                $dom->params->page = $page;
+                $pag = $dom->tagPagination($dom);
+                $html = $dom->html();
+
+                if ($dom->params->pos == '') $html .= "\n".$pag->outer();    
+                if ($dom->params->pos == 'bottom') $html .= "\n".$pag->outer();
+                if ($dom->params->pos == 'top') $html = $pag->outer()."\n".$html;
+                if ($dom->params->pos == 'both') $html = $pag->outer()."\n".$html."\n".$pag->outer();
+            
+                if ($srvpag) {
+                    $res = [
+                        'html' => $html,
+                        'route' => $app->route,
+                        'params' => $dom->params
+                    ];
+                    header('Content-Type: charset=utf-8');
+                    header('Content-Type: application/json');
+                    echo json_encode($res); 
+                    die;
+                }
         }
         if (!count((array)$list) OR $dom->html() == "") $dom->inner($empty->inner());
-        if ($dom->tagName == "wb-foreach") $dom->unwrap("wb-foreach");
-        return $dom;
+
+            $dom->before($dom->html());
+            $dom->remove();
+
+
   }
 }
 ?>

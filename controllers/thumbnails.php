@@ -120,6 +120,12 @@ class ctrlThumbnails
             
             header('Content-Type: '.$mime);
             echo $image;
+        } else {
+            $file = $app->vars('_env.path_engine').'/uploads/__system/image.svg';
+            $image=file_get_contents($file);
+            $mime = wbMime($file);
+            header('Content-Type: '.$mime);
+            echo $image;
         }
     }
 

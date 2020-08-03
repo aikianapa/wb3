@@ -256,14 +256,13 @@ function tagTreeUl( &$dom, $Item = array(), $param = null, $srcVal = array() ) {
         }
     }
     $idx = 0;
-
     if ( ( array )$tree === $tree ) {
         if ( $rand == true ) shuffle( $tree );
         foreach ( $tree as $i => $item ) {
             if ( !( ( array )$item === $item ) ) $item = ( array )$item;
             $item['_parent'] = &$tree;
             $lvl++;
-            $item = ( array )$srcVal + ( array )$item;
+//            $item = ( array )$srcVal + ( array )$item;
             if ( !isset( $item['id'] ) ) $item['id'] = $i;
             $item['_pid'] = $parent_id;
             $item['_idx'] = $idx;
@@ -272,6 +271,7 @@ function tagTreeUl( &$dom, $Item = array(), $param = null, $srcVal = array() ) {
             if ( $parent_id>'' ) $item['%id'] = $parent_id;
             $line = $dom->app->fromString( '<level>'.$tpl.'</level>' );
             $child = $dom->app->fromString( $tpl );
+
             $line->fetch( $item );
             if ( $parent == 0 OR ( isset( $item['children'] ) AND ( array )$item['children'] === $item['children'] AND count( $item['children'] ) ) ) {
                 if ( $pardis == 1 AND ( $limit !== $lvl-1 ) ) $line->attr( 'disabled', true );
