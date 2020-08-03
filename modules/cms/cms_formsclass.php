@@ -29,7 +29,7 @@ class cmsFormsClass {
         $form = $this->getForm($method);
         if ($form) {
             $form->item = $this->app->itemRead($this->form,$app->vars("_route.id"));
-            $form->item = wbTrigger('form', __FUNCTION__, 'beforeItem'.ucfirst($method), [$form->item["_form"]], $form->item);
+            $form->item = wbTrigger('form', __FUNCTION__, 'beforeItem'.ucfirst($method), [$this->form], $form->item);
             $form->fetch();
             echo $form->html();
         } else {
