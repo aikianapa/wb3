@@ -7,6 +7,7 @@
         "tmarois/filebase": "^1.0",
         "nahid/jsonq": "^5.2",
         "mustache/mustache": "^2.13",
-        "imagine/imagine": "^1.2"
+        "imagine/imagine": "^1.2",
+        "spatie/async": "^1.4"
     }
 }

@@ -238,6 +238,10 @@ if (typeof $ === 'undefined') {
             params.url = `/ajax/save/${params.table}`;
         }
 
+        if ($(obj).data('saved-id') !== undefined) {
+            data['id'] = $(obj).data('saved-id');
+        }
+        
         $.post(params.url, data, function (data) {
             if (params.callback) eval('params = ' + params.callback + '(params,data)');
             if (params.data && params.error !== true) {
@@ -259,6 +263,10 @@ if (typeof $ === 'undefined') {
             if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
             if (params.bind) wbapp.storage(params.bind, data);
             if (params.update) wbapp.storageUpdate(params.update, data);
+            if (data._id !== undefined) $(obj).data('saved-id',data._id);
+            
+            console.log($(obj).data('saved-id'));
+            
             console.log("Trigger: wb-save-done");
             $(obj).trigger("wb-save-done", {
                 params: params,
@@ -755,6 +763,31 @@ if (typeof $ === 'undefined') {
         });
     }
 
+    wbapp.furl = function(str) {
+      str = str.replace(/[^а-яА-Яa-zA-Z0-9_-]{1,}/gm, "_");
+      str = str.replace(/[__]{1,}/gm, "_");
+      str = wbapp.transilt(str);
+      return str;
+    }
+
+    wbapp.transilt = function(word){
+        let answer = "";
+        let a = {};
+        let i;
+        a["Ё"]="YO";a["Й"]="I";a["Ц"]="TS";a["У"]="U";a["К"]="K";a["Е"]="E";a["Н"]="N";a["Г"]="G";a["Ш"]="SH";a["Щ"]="SCH";a["З"]="Z";a["Х"]="H";a["Ъ"]="'";
+        a["ё"]="yo";a["й"]="i";a["ц"]="ts";a["у"]="u";a["к"]="k";a["е"]="e";a["н"]="n";a["г"]="g";a["ш"]="sh";a["щ"]="sch";a["з"]="z";a["х"]="h";a["ъ"]="'";
+        a["Ф"]="F";a["Ы"]="I";a["В"]="V";a["А"]="a";a["П"]="P";a["Р"]="R";a["О"]="O";a["Л"]="L";a["Д"]="D";a["Ж"]="ZH";a["Э"]="E";
+        a["ф"]="f";a["ы"]="i";a["в"]="v";a["а"]="a";a["п"]="p";a["р"]="r";a["о"]="o";a["л"]="l";a["д"]="d";a["ж"]="zh";a["э"]="e";
+        a["Я"]="Ya";a["Ч"]="CH";a["С"]="S";a["М"]="M";a["И"]="I";a["Т"]="T";a["Ь"]="'";a["Б"]="B";a["Ю"]="YU";
+        a["я"]="ya";a["ч"]="ch";a["с"]="s";a["м"]="m";a["и"]="i";a["т"]="t";a["ь"]="'";a["б"]="b";a["ю"]="yu";
+
+        for (i = 0; i < word.length; ++i){
+
+            answer += a[word[i]] === undefined ? word[i] : a[word[i]];
+        }
+        return answer;
+    }
+    
 
     var array_column = function (list, column, indice) {
         var result, key;
@@ -941,12 +974,19 @@ if (typeof $ === 'undefined') {
             }
         });
 
-        var check = $(form).find('input[name][type=checkbox],input[name][type=radio]');
+        var check = $(form).find('input[name][type=checkbox]');
         // fix unchecked values
         $.each(check, function () {
             data[this.name] = "";
             if (this.checked) data[this.name] = "on";
         });
+        
+        var check = $(form).find('input[name][type=radio]');
+        // fix unchecked values
+        $.each(check, function () {
+            if (this.checked) data[this.name] = $(this).attr('value');
+        });
+        
         $(form).find("form [wb-tmp-name], .wb-unsaved [wb-tmp-name], .wb-tree-item [wb-tmp-name]").each(function () {
             $(this).attr("name", $(this).attr("wb-tmp-name"));
             $(this).removeAttr("wb-tmp-name");

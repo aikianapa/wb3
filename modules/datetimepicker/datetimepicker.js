@@ -13,6 +13,7 @@ $(document).on("datatimepicker-js",function() {
             $(input).removeAttr("wb-params");
             var lang = params.lang;
             if (params.lang == undefined && wbapp._session.lang !== undefined) lang = wbapp._session.lang;
+            if (params.type !== undefined) $(picker).attr('type',params.type);
             var options = {
               autoclose: true,
               todayBtn: true,

@@ -28,7 +28,7 @@ class tagModule {
     } else {
       $dom->html("<div class='alert alert-secondary'><i class='ri-error-warning-line'></i> Module &laquo;{$module}&raquo; not found</div>");
     }
-    $dom->unwrap("wb-module");
+    if ($dom->is('wb-module')) $dom->unwrap('wb-module');
   }
 }
 ?>

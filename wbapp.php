@@ -476,11 +476,16 @@ class wbDom extends DomQuery
                         if ($value > "") $inp->find("[value='{$value}']")->attr("selected", true);
                     }
                 } elseif ($inp->tagName == "input") {
-                    $inp->attr("value", $value);
-                    if ($inp->attr("type") == "checkbox") {
-                        if ( $value == "on" OR $value == "true"  OR $value == "1")  {
-                            $inp->attr("checked", true);
-                            $inp->removeAttr("value");
+                    
+                    if ($inp->attr("type") == "radio") {
+                        if ($inp->attr("value") == $value) $inp->attr('checked','checked');
+                    } else {
+                        $inp->attr("value", $value);
+                        if ($inp->attr("type") == "checkbox") {
+                            if ( $value == "on" OR $value == "true"  OR $value == "1")  {
+                                $inp->attr("checked", true);
+                                $inp->removeAttr("value");
+                            }
                         }
                     }
                 }
