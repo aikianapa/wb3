@@ -177,7 +177,7 @@ if (typeof $ === 'undefined') {
             })
             eval(`data.${key} = value`);
             localStorage.setItem(list[0], json_encode(data));
-            $(document).trigger("bind", key, value);
+            $(document).trigger("bind", {key:key, data:value});
             console.log("Trigger: bind [" + key + "]");
             $(document).trigger("bind-" + key, value);
             console.log("Trigger: bind-" + key);
@@ -486,6 +486,7 @@ if (typeof $ === 'undefined') {
             var tid
             if (tid == undefined) tid = $(this).parent().attr("id");
             if (tid == undefined && $(this).is("template[id]")) tid = $(this).attr("id");
+            if (tid == undefined && $(this).is("[data-target]")) tid = $(this).attr("data-target");
             if (tid == undefined) {
                 $(this).attr("id", "fe_" + wbapp.newId());
                 var tid = $(this).attr("id");
@@ -563,7 +564,7 @@ if (typeof $ === 'undefined') {
         }
 
         $(document).on("bind-" + params.bind, function (e, data) {
-            //        console.log(params.bind,tid,data);
+            console.log("Trigger: bind-" + params.bind ,tid,data);
             wbapp.bind[params.bind][tid].set(data);
         })
     }

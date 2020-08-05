@@ -77,6 +77,9 @@ class ctrlThumbnails
             $file=urldecode($_ENV['path_app'].'/'.$_GET['src']);
         }
 
+        if (!is_file($file)) {
+            $file = $app->vars('_env.path_engine').'/uploads/__system/image.svg';
+        }
         if (is_file($file)) {
             list($width, $height, $type) = $size = getimagesize($file);
             $ext = pathinfo($file, PATHINFO_EXTENSION);
@@ -118,12 +121,6 @@ class ctrlThumbnails
                 $image=file_get_contents($destination);
             }
             
-            header('Content-Type: '.$mime);
-            echo $image;
-        } else {
-            $file = $app->vars('_env.path_engine').'/uploads/__system/image.svg';
-            $image=file_get_contents($file);
-            $mime = wbMime($file);
             header('Content-Type: '.$mime);
             echo $image;
         }
