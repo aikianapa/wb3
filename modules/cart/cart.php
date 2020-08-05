@@ -15,6 +15,9 @@ class modCart {
       } else if (isset($dom->params->remove)) {
           $dom->addClass('mod-cart-remove');
       } else if (isset($dom->params->add)) {
+          if ($dom->params("ajax") > "") {
+              $dom->attr("data-ajax",$dom->params("ajax"));
+          }
           $dom->addClass('mod-cart-add');
       }
       //$dom->remove();

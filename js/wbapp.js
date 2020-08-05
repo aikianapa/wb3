@@ -129,7 +129,8 @@ if (typeof $ === 'undefined') {
             // get data
             let list = key.split(".");
             var res;
-            data = json_decode(localStorage.getItem(list[0]));
+            data = localStorage.getItem(list[0]);
+            if (data !== null) data = json_decode(data);
             if (list.length) {
                 key = getKey(list);
                 try {

@@ -22,35 +22,52 @@ $(document).delegate('.mod-cart-remove','tab click',function(){
     wbapp.storage(mod_cart_bind+'.list',list);
 });
 
-$(document).delegate('.mod-cart-add','tab click',function(e){
+$(document).delegate('.mod-cart-add','tab click', async function(e){
     e.preventDefault();
     let form = $(this).closest('form');
-    if (form == undefined) {
+    let ajax = $(this).attr('data-ajax');
+    let cart = [];
+        console.log(ajax);
+    if (form == undefined && ajax == undefined) {
         wbapp.toast("Ошибка","Нет формы для добавления");
         return;
-    }
-    let cart = $(form).serializeJson();
-    if (cart.id == undefined) {
-        wbapp.toast("Ошибка","Требуется id записи");
-        return;
-    }
-    let list = wbapp.storage(mod_cart_bind+'.list');
-    let res = false;
-    list.forEach(function(key,index,item) {
-        console.log(item);
-                console.log(item.id,cart.id);
-        if (item.id == undefined) {
-            //list.splice(index, 1);
-        } else if (item.id == cart.id) {
-                list[key] = cart;
-                res = true;
+    } else if (form !== undefined) {
+        cart = $(form).serializeJson();
+        if (cart.id == undefined && ajax == undefined) {
+            wbapp.toast("Ошибка","Требуется id записи");
+            return;
         }
-    });
-    if (!res) {
-        list.push(cart);
+        
     }
-    console.log(list);
-    wbapp.storage(mod_cart_bind+'.list',list);
+    if (ajax !== undefined) {
+        var data = await wbapp.getSync(ajax);
+        cart = array_merge(data,cart);
+    }
+    
+    console.log(cart);
+    
+    var updateList = function(cart) {
+        let list = wbapp.storage(mod_cart_bind+'.list');
+        let res = false;
+        if (list == undefined) list = [];
+        list.forEach(function(item,index) {
+                    console.log(item.id,cart.id);
+            if (index == undefined) {
+                //list.splice(index, 1);
+            } else if (item.id == cart.id) {
+                    list[index] = cart;
+                    res = true;
+            }
+        });
+        if (!res) {
+            list.push(cart);
+        }
+        console.log(list);
+        wbapp.storage(mod_cart_bind+'.list',list);        
+    }
+    
+    
+
 });
 
 
