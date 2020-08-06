@@ -41,7 +41,6 @@ class modCart {
           }
       }
       $inner = $app->fromString($dom->inner());
-      $inner->fetch();
       $inner->addClass('mod-cart-item');
       $dom->after('<template data-target="'.$cid.'">{{#'.$dom->params->list.': index, key}}'."\n".$inner->outer()."\n".'{{/'.$dom->params->list.'}}</template>');
       $dom->after('<script type="wbapp" removable>wbapp.loadScripts(["/engine/modules/cart/cart.js"],"cart-mod-js");</script>');
