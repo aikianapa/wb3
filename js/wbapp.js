@@ -308,7 +308,7 @@ if (typeof $ === 'undefined') {
     }
 
     wbapp.parseAttr = function (queryString = null) {
-        if (queryString == null) queryString = $(this).attr("data-wb");
+        if (queryString == null) queryString = $(this).attr("wb-data");
         queryString = str_replace("'", '"', queryString);
         var params = {};
         if (wbapp.checkJson(queryString)) {
@@ -322,7 +322,7 @@ if (typeof $ === 'undefined') {
                 params[temp[0]] = temp[1];
             }
         }
-        $(this).data("wb-params", params);
+        $(this).data("wb-data", params);
         return params;
     }
 

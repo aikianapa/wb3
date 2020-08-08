@@ -7,7 +7,7 @@ class modCart {
 
   public function init(&$dom) {
       $app = &$dom->app;
-      
+      $dom->after('<script type="wbapp" removable>wbapp.loadScripts(["/engine/modules/cart/cart.js"],"cart-mod-js");</script>');
       if (!$dom->params) $dom->params = ['list'=>'list'];
       if (isset($dom->params->list)) {
             $dom->params->list = 'list';
@@ -17,6 +17,9 @@ class modCart {
       } else if (isset($dom->params->add)) {
           if ($dom->params("ajax") > "") {
               $dom->attr("data-ajax",$dom->params("ajax"));
+          }
+          if ($dom->params("data") > "") {
+              $dom->attr("mod-cart-data",json_encode($dom->params("data")));
           }
           $dom->addClass('mod-cart-add');
       }
@@ -43,7 +46,6 @@ class modCart {
       $inner = $app->fromString($dom->inner());
       $inner->addClass('mod-cart-item');
       $dom->after('<template data-target="'.$cid.'">{{#'.$dom->params->list.': index, key}}'."\n".$inner->outer()."\n".'{{/'.$dom->params->list.'}}</template>');
-      $dom->after('<script type="wbapp" removable>wbapp.loadScripts(["/engine/modules/cart/cart.js"],"cart-mod-js");</script>');
       if ($dom->tagName == 'wb-module') $dom->remove();
   }
   

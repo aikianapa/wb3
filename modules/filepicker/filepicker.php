@@ -35,7 +35,12 @@ class modFilepicker
               ->after("<input type='hidden' name='upload_ext' value='{$dom->params->ext}'>");
         }
         $out->fetch();
-        $dom->html($out);
+        if ($dom->tagName == 'input' ) {
+            $dom->after($out);
+            $dom->remove();
+        } else {
+            $dom->html($out);
+        }
     }
 }
 

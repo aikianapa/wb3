@@ -28,7 +28,15 @@ final class wbRouter {
     private static $names = array();
     public static $requestedUrl = '';
 
+    public function init() {
+        $route_e = $_ENV['path_engine'].'/router.ini';
+        if (is_file($route_e)) { $this->addRouteFile($route_e);}
 
+        $route_a = $_ENV['path_app'].'/router.ini';
+        if (is_file($route_a)) { $this->addRouteFile($route_a);}
+    }
+    
+    
     // Добавить маршрут
     public static function addRoute($route, $destination=null) {
         if ($destination != null && !is_array($route)) {
