@@ -120,10 +120,10 @@ class tagPagination {
                 $target = &$dom;
             }
 
-            if ( $dom->params->more == '' and ( $dom->params->pos == 'top' or $dom->params->pos == 'both' ) ) {
+            if ( $dom->params("more") == '' and ( $dom->params("pos") == 'top' or $dom->params("pos") == 'both' ) ) {
                 $target->before( $pag );
             }
-            if ( $dom->params->pos !== 'top' ) {
+            if ( $dom->params("pos") !== 'top' ) {
                 $target->after( $pag );
             }
         }
