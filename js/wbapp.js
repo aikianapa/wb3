@@ -13,7 +13,7 @@ if (typeof $ === 'undefined') {
     }
 
     wbapp.eventsInit = function () {
-        $(document).delegate("[data-ajax]", "tap click", function (e, tid) {
+        $(document).delegate("[data-ajax]", "click", function (e, tid) {
             if (!$(this).is("input,select")) {
                 e.preventDefault();
                 let params = wbapp.parseAttr($(this).attr("data-ajax"));
@@ -37,7 +37,7 @@ if (typeof $ === 'undefined') {
         })
 
 
-        $(document).delegate(".pagination .page-link", "tap click", function (e) {
+        $(document).delegate(".pagination .page-link", "click", function (e) {
             if ($(this).is('[disabled]') || $(this).parents('[disabled]').length) return false;
             e.preventDefault();
             let paginator = $(this).closest(".pagination");
@@ -69,7 +69,7 @@ if (typeof $ === 'undefined') {
             }
         })
 
-        $(document).delegate("input[type=checkbox]", "tap click", function () {
+        $(document).delegate("input[type=checkbox]", "click", function () {
             if ($(this).prop("checked") == false) {
                 $(this).removeAttr("checked");
             } else {
@@ -82,7 +82,7 @@ if (typeof $ === 'undefined') {
 
     wbapp.ajaxAuto = function () {
         $(document).find("[data-ajax][auto]").each(function () {
-            $(this).trigger("tap click");
+            $(this).trigger("click");
             $(this).removeAttr("auto");
         })
     }
@@ -502,7 +502,7 @@ if (typeof $ === 'undefined') {
                     html: $(this).html(),
                     params: params
                 });
-                $(this).trigger("tap click", tid);
+                $(this).trigger("click", tid);
             } else {
                 wbapp.tpl(tid, {
                     html: $(this).html(),
@@ -628,7 +628,7 @@ if (typeof $ === 'undefined') {
             }
         });
 
-        $(document).delegate(".modal [data-dismiss]", "tap click", function (event) {
+        $(document).delegate(".modal [data-dismiss]", "click", function (event) {
             var zndx = $(this).attr("data-dismiss");
             var modal = $(document).find(".modal[data-zndx='" + $(this).attr("data-dismiss") + "']");
             modal.modal("hide");
