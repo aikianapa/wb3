@@ -363,7 +363,7 @@ if (typeof $ === 'undefined') {
                 wbapp.lazyload();
                 wbapp.ajaxAuto();
                 console.log("Trigger: ajax-done");
-                params['data'] = data;
+                if (data.result == undefined) params['data'] = data;
                 if (params.form !== undefined) {
                     $(params.form).trigger("ajax-done", params);
                 } else {
