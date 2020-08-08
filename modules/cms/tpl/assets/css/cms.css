@@ -2,6 +2,9 @@
 body .content-body {
   overflow-x: hidden;
 }
+body .chat-content {
+  overflow: auto;
+}
 body aside {
   transition-duration: 0.4s;
 }
