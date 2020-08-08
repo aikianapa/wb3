@@ -15,6 +15,9 @@ body aside .aside-logo {
   white-space: nowrap;
   overflow: hidden;
 }
+body aside .aside-body {
+  height: 100vh;
+}
 body aside .nav-link {
   text-transform: none;
   font-weight: normal;

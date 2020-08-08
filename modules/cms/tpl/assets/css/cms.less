@@ -1,86 +1,77 @@
 body {
-
     .content {
         overflow: hidden;
     }
-    
-  .content-body {
-    overflow-x: hidden;
-  }
-    
+    .content-body {
+        overflow-x: hidden;
+    }
     .chat-wrapper {
         overflow: auto;
     }
 
-  aside {
-    transition-duration: .4s;
-    .aside-logo {
-      white-space: nowrap;
-      overflow: hidden;
-    }
-      .nav-link {
-        text-transform: none;
-        font-weight: normal;
-      }
-
-@media (max-width: 991px) {
-  &:not(.aside-show) {
-    .aside-logo {
-        margin-right:21px;
-    }
-  }
-}
-
-@media (min-width: 992px) {
-    .aside-logo {
-      margin-right:10px;
-    }
-}
-    .aside-menu-link {
-      display: flex;
-    }
-
-    .burger-menu {
-      display: none;
-    }
-
-    .nav-aside {
-      [class^="ri-"],
-      [class*=" ri-"] {
-        font-size: 16px;
-      }
-
-      ul {
-        padding-left: 15px;
-        font-size: 12px;
-        li {
-          list-style: none;
-        }
-      }
-    }
-
-    &.minimize {
-      ul {
-        padding-left: 0;
-      }
-    }
-  }
-
-  &.chat-content-show {
     aside {
-      @media (max-width: 992px) {
-        .burger-menu {
-          display: flex!important;
+        transition-duration: .4s;
+        .aside-logo {
+            white-space: nowrap;
+            overflow: hidden;
         }
-
+        .aside-body {
+            height: 100vh;
+        }
+        .nav-link {
+            text-transform: none;
+            font-weight: normal;
+        }
+        @media (max-width: 991px) {
+            &:not(.aside-show) {
+                .aside-logo {
+                    margin-right: 21px;
+                }
+            }
+        }
+        @media (min-width: 992px) {
+            .aside-logo {
+                margin-right: 10px;
+            }
+        }
         .aside-menu-link {
-          display: none!important;
+            display: flex;
         }
-      }
+        .burger-menu {
+            display: none;
+        }
+        .nav-aside {
+            [class^="ri-"],
+            [class*=" ri-"] {
+                font-size: 16px;
+            }
+            ul {
+                padding-left: 15px;
+                font-size: 12px;
+                li {
+                    list-style: none;
+                }
+            }
+        }
+        &.minimize {
+            ul {
+                padding-left: 0;
+            }
+        }
     }
-  }
+    &.chat-content-show {
+        aside {
+            @media (max-width: 992px) {
+                .burger-menu {
+                    display: flex!important;
+                }
+                .aside-menu-link {
+                    display: none!important;
+                }
+            }
+        }
+    }
 }
-
 .cursor-pointer {
-  cursor: pointer;
+    cursor: pointer;
 }
