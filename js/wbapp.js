@@ -82,7 +82,7 @@ if (typeof $ === 'undefined') {
 
     wbapp.ajaxAuto = function () {
         $(document).find("[data-ajax][auto]").each(function () {
-            $(this).trigger("click");
+            $(this).trigger("tap click");
             $(this).removeAttr("auto");
         })
     }
@@ -502,7 +502,7 @@ if (typeof $ === 'undefined') {
                     html: $(this).html(),
                     params: params
                 });
-                $(this).trigger("click", tid);
+                $(this).trigger("tap click", tid);
             } else {
                 wbapp.tpl(tid, {
                     html: $(this).html(),
@@ -628,7 +628,7 @@ if (typeof $ === 'undefined') {
             }
         });
 
-        $(document).delegate(".modal [data-dismiss]", "click", function (event) {
+        $(document).delegate(".modal [data-dismiss]", "tap click", function (event) {
             var zndx = $(this).attr("data-dismiss");
             var modal = $(document).find(".modal[data-zndx='" + $(this).attr("data-dismiss") + "']");
             modal.modal("hide");

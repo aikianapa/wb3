@@ -2021,7 +2021,7 @@ function wbItemFilter($item, $filter)
             if ($fld == '$or') {
                 $result = false;
                 foreach($expr as $key => $orFilter) {
-                    if (wbItemFilter($item, [$key => $orFilter]) == true) $result = true;
+                    if (wbItemFilter($item, $orFilter) == true) $result = true;
                 }
             } else if ($fld == '$and') {
                 $result = true;
