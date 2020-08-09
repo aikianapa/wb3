@@ -2,7 +2,7 @@
 <wb-include wb="{'src':'/engine/modules/cms/tpl/wrapper.inc.php'}"/>
 <meta http-equiv="refresh" content="5; url=/cms/login/" wb-disallow="admin">
 
-<div prepend="body">
+<wb-jq wb-prepend="body">
   <div class="app-chat" wb-disallow="admin">
     <div class="container">
       <div class="alert alert-outline alert-danger d-flex align-items-center t-100" role="alert">
@@ -112,7 +112,7 @@
   <script type="wbapp">
     wbapp.loadScripts(["{{_var.base}}./assets/js/cms.js"]);
   </script>
-</div>
+</wb-jq>
 <wb-lang>
 [en]
 forms = Forms

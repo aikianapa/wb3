@@ -27,7 +27,9 @@ class tagJq {
         if ( $that->params( 'html' ) ) {
             $that->parent()->find( $that->params( 'html' ) )->html($inner->inner());
         } else if ( $that->params( 'append' ) ) {
-            $that->parent()->find( $that->params( 'appendto' ) )->appendto($that->inner());
+            $that->parent()->find( $that->params( 'append' ) )->append($inner);
+        } else if ( $that->params( 'prepend' ) ) {
+            $that->parent()->find( $that->params( 'prepend' ) )->prepend($inner);
         } else if ( $that->params( 'after' ) ) {
             $that->parent()->find( $that->params( 'after' ) )->after($that->inner());
         } else if ( $that->params( 'before' ) ) {
