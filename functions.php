@@ -1133,7 +1133,7 @@ function wbTreeFindBranchById($Item, $id)
     $res = false;
     if (is_array($Item)) {
         foreach ($Item as $item) {
-            if ($item['id'] === $id) {
+            if (isset($item['id']) AND $item['id'] === $id) {
                 return $item;
             }
             if (isset($item['children']) AND (array)$item['children'] === $item['children']) {
@@ -1257,11 +1257,11 @@ function wb_json_encode($Item=[])
 function wbJsonFromFile($file) {
     // https://github.com/halaxa/json-machine
     try {
-        return \JsonMachine\JsonMachine::fromFile($file);    
+        return \JsonMachine\JsonMachine::fromFile($file);
     } catch(Exception $e) {
         return [];
     }
-    
+
 }
 
 
@@ -1502,11 +1502,11 @@ function wb_file_get_contents($file)
 
 
 function modLoginSignin($user) {
-    
+
 }
 
 function modLoginSignup($user) {
-    
+
 }
 
 function wbTrigger($type, $name, $trigger, $args = [], $data = null)
@@ -2955,7 +2955,7 @@ function wbListTpl()
         $str = wbTranslit($str);
         $str = str_replace(' ','_',$str);
         return $str;
-        
+
     }
 
     function is_email($email)

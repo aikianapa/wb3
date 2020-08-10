@@ -27,7 +27,10 @@ function tagTree( &$dom, $Item = null ) {
     isset( $dom->params->field ) ? $field = $dom->params->field : $field = null;
 
     if ( $table && !isset( $form ) ) $form = $dom->params->form = $table;
-    if ( $form > '' AND $item > '' ) $Item = $dom->app->itemRead( $form, $item );
+    if ( $form > '' AND $item > '' ) {
+        $Item = $dom->app->itemRead( $form, $item );
+        if (!$field) $field = 'tree';
+    }
 
     $srcData = $Item;
 
