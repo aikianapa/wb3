@@ -1,4 +1,3 @@
-<form>
   <div class="formgroup row">
           <label class="form-control-label col-sm-4">{{_lang.resizeTo}}</label>
           <div class="col-sm-8">
@@ -20,7 +19,6 @@
               </div>
           </div>
         </div>
-</form>
 
 <wb-lang>
 [en]

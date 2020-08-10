@@ -3,6 +3,7 @@ use Adbar\Dot;
 
 class ctrlApi {
   function __construct($app) {
+      set_time_limit(10);
       header('Content-Type: charset=utf-8');
       header('Content-Type: application/json');
       $mode = $app->route->mode;
@@ -34,7 +35,7 @@ class ctrlApi {
             echo json_encode(['error'=>true,'msg'=>'Invalid API key']);
             die;
         }
-        
+
         $attachments=[];
         if (!isset($_POST["_subject"])) {
             $_POST["_subject"]=$_ENV['sysmsg']["mail_from_site"];
@@ -86,7 +87,7 @@ class ctrlApi {
         if (isset($_POST["_callback"]) and is_callable($_POST["_callback"])) {
             return @$_POST["_callback"]($result);
         }
-        echo $result; 
+        echo $result;
   }
 
   function prepQuery($query) {

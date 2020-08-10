@@ -306,9 +306,12 @@ function wbMail(
         $sent=array($sent);
     }
 
-        require_once __DIR__.'/lib/phpmailer/PHPMailerAutoload.php';
-        //$sett=$_ENV["settings"]["phmail"];
-        $sett = ['smtp'=>'','host'=>$app->vars('_route.hostname')];
+        require_once __DIR__.'/modules/phpmailer/phpmailer/PHPMailerAutoload.php';
+        if ($app->vars('_sett.modules.phpmailer.smtp') == 'on') {
+            $sett = $app->vars('_sett.modules.phpmailer');
+        } else {
+            $sett = ['smtp'=>'','host'=>$app->vars('_route.hostname')];
+        }
         $mail = new PHPMailer;
         try {
         /*
@@ -331,12 +334,13 @@ function wbMail(
         } else {
             $mail->isSendmail();
         }
+        $mail->Timeout  =   20;
         $mail->setFrom($from[0], $from[1]);
         $mail->addReplyTo($from[0], $from[1]);
         $mail->isHTML(true);
         $mail->Subject = $subject;
-        foreach ($sent as $s) {
-            if (!isset($s[1])) $s[1] = $s[0];
+        foreach ($sent as &$s) {
+            if (!isset($s[1]) OR $s[1] == '') $s[1] = $s[0];
             $mail->addAddress($s[0], $s[1]);
         }
         //Read an HTML message body from an external file, convert referenced images to embedded,
@@ -365,6 +369,7 @@ function wbMail(
         }
         //send the message, check for errors
             $res = $mail->send();
+            $mail->SmtpClose();
             if ($res) {
 				return ['error'=>false];
 			} else {
