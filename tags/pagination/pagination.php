@@ -11,7 +11,7 @@ class tagPagination {
         ini_set( 'memory_limit', '1024M' );
         $pages = ceil( $dom->params->count/$dom->params->size );
         $page = $dom->params->page;
-        
+
         if ( !$page ) $page = 1;
 
         $dom->pages = $pages;
@@ -20,7 +20,7 @@ class tagPagination {
             if ($dom->parent()->attr('id') == '') $dom->parent()->attr('id','fe_'.md5($dom->outer()));
         }
         $tplId = $dom->parent()->attr('id');
-        
+
         $foreach = (object)[];
         $foreach->_route = $dom->app->vars( '_route' );
         $foreach->_params = (array)$dom->params;
@@ -73,12 +73,12 @@ class tagPagination {
                     'data'=>"{$tplId}-{$pn}"
                 );
             }
-            
+
             if (!isset($dom->params->more)) {
                 $dom->params->more = '';
             }
             $more = explode( ':', $dom->params->more );
-            
+
             $pag->item = $pagination ;
             $pag->setAttributes();
             $pag->fetch();
@@ -86,20 +86,20 @@ class tagPagination {
             $pag->find( 'ul' )->attr( 'data-tpl','#'.$tplId);
 
             if (intval($page) < intval($pages)) {
-                $pag->find('[data-page=next] .page-link')->attr('data-page', $page + 1);    
+                $pag->find('[data-page=next] .page-link')->attr('data-page', $page + 1);
             } else {
                 $pag->find('[data-page=next]')->attr('disabled',true);
             }
-            
+
             if (intval($page) > 1) {
-                $pag->find('[data-page=prev] .page-link')->attr('data-page', $page - 1);    
+                $pag->find('[data-page=prev] .page-link')->attr('data-page', $page - 1);
             } else {
                 $pag->find('[data-page=prev]')->attr('disabled',true);
             }
 
-            
+
             $pag->find(".page-link[data-page={$page}]")->parent('.page-item')->addClass('active');
-            
+
             if ( $more[0] > '' ) {
                 $pag->find( "[data-page='next']" )->remove();
                 $pag->find( "[data-page='prev']" )->remove();
@@ -149,7 +149,7 @@ class tagPagination {
     function html() {
         return $this->pag->html();
     }
-    
+
     function _tagPaginationArr( $c, $m ) {
         $current = $c;
         $last = $m;

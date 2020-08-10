@@ -15,12 +15,12 @@ class tagForeach {
         $srvpag = false;
         if (!isset($dom->role)) return $dom;
         if (!$dom->app) $dom->app = new wbApp();
-      
+
         $empty = $dom->find("wb-empty")[0];
         $dom->find("wb-empty")->remove();
         $tpl = $dom->html();
         $dom->html("");
-      
+
         $dom->attr("id") > "" ? $tid = $dom->attr("id") : $tid = "fe_".$dom->app->newId();
         $list = $parent = $dom->item;
         $options = [];
@@ -113,7 +113,7 @@ class tagForeach {
         if ($dom->params("rand") == "true") shuffle($list);
         $dom->attr("data-ajax") == "" ? $render = false : $render = true;
         if (!$render) $tpl = "<wb>{$tpl}</wb>";
-      
+
         foreach((array)$list as $key => $val) {
             $value = $val;
             $val = (object)$val;
@@ -137,22 +137,30 @@ class tagForeach {
             $idx++;
             $ndx++;
         }
-      
-        if ($render > "") {
+
+        if ($render == "client") {
             $dom->append("<template id = \"{$tid}\" data-ajax=\"".$dom->attr("data-ajax")."\">\n{{#each result}}\n".$tpl."\n{{/each}}</template>\n");
             $dom->find("template[id=\"{$tid}\"] .pagination")->attr("data-tpl",$tid);
         } else if ($dom->params("size") > "") {
+                $size = $dom->params("size");
+                $dom->parent()->attr("data-pagination",json_encode([
+                  'count'=>$count,
+                  'pages'=>$pages,
+                  'page'=>$page,
+                  'size'=>$size
+                ]));
+                $dom->parent()->attr("data-pages",$pages);
+                $dom->parent()->attr("data-page",$pages);
                 $dom->params->count = $count;
                 $dom->params->tpl = $dom->parent()->attr('id');
                 $dom->params->page = $page;
                 $pag = $dom->tagPagination($dom);
                 $html = $dom->html();
-
-                if ($dom->params->pos == '') $html .= "\n".$pag->outer();    
+                if ($dom->params->pos == '') $html .= "\n".$pag->outer();
                 if ($dom->params->pos == 'bottom') $html .= "\n".$pag->outer();
                 if ($dom->params->pos == 'top') $html = $pag->outer()."\n".$html;
                 if ($dom->params->pos == 'both') $html = $pag->outer()."\n".$html."\n".$pag->outer();
-            
+
                 if ($srvpag) {
                     $res = [
                         'html' => $html,
@@ -161,7 +169,7 @@ class tagForeach {
                     ];
                     header('Content-Type: charset=utf-8');
                     header('Content-Type: application/json');
-                    echo json_encode($res); 
+                    echo json_encode($res);
                     die;
                 }
         }
