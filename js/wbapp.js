@@ -203,7 +203,6 @@ if (typeof $ === 'undefined') {
         let that = this;
         let data, form, result;
         let method = "POST";
-        console.log(params);
         if (params.form !== undefined) {
             form = $(params.form);
         } else {
@@ -277,7 +276,7 @@ if (typeof $ === 'undefined') {
             if (params.update) wbapp.storageUpdate(params.update, data);
             if (data._id !== undefined) $(obj).data('saved-id',data._id);
 
-            console.log($(obj).data('saved-id'));
+            //console.log($(obj).data('saved-id'));
 
             console.log("Trigger: wb-save-done");
             $(obj).trigger("wb-save-done", {
@@ -360,7 +359,7 @@ if (typeof $ === 'undefined') {
                 if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
                 if (params.render !== undefined && params.render == 'client') wbapp.renderTemplate(params, data);
                 if (params._event !== undefined && $(params._event.target).parent().is(":input")) {
-                    $inp = $(params._event.target).parent();
+                    // $inp = $(params._event.target).parent();
                     // тут нужна обработка значений на клиенте
                 }
                 if (params.render == 'client') {
@@ -574,6 +573,7 @@ if (typeof $ === 'undefined') {
             $(pagination).find(`[data-page="${page}"]`).parent(".page-item").addClass("active");
         }
 
+        $(document).off("bind-" + params.bind);
         $(document).on("bind-" + params.bind, function (e, data) {
             console.log("Trigger: bind-" + params.bind ,tid,data);
             wbapp.bind[params.bind][tid].set(data);
@@ -597,7 +597,9 @@ if (typeof $ === 'undefined') {
 
     wbapp.modalsInit = function () {
         var zndx = $(document).data("modal-zindex");
-        if (zndx == undefined) $(document).data("modal-zindex", 2000);
+        if (document.modalZndx == undefined) {
+            document.modalZndx = 2000;
+        }
 
         $(document).delegate(".modal-header", "dblclick", function (event) {
             var that = $(event.target);
@@ -618,19 +620,14 @@ if (typeof $ === 'undefined') {
                     handle: '.modal-header'
                 });
 
-            var zndx = $(document).data("modal-zindex");
-            if (zndx == undefined) {
-                var zndx = 4000;
-            } else {
-                zndx += 10;
-            }
+            var zndx = document.modalZndx + 10;
             if (!$(this).closest().is("body")) {
                 if ($(this).data("parent") == undefined) $(this).data("parent", $(this).closest());
                 $(this).appendTo("body");
             }
             $(this).data("zndx", zndx).css("z-index", zndx).attr("data-zndx", zndx);
             $(that).find("[data-dismiss]").attr("data-dismiss", zndx);
-            $(document).data("modal-zindex", zndx);
+
             if ($(that).attr("data-backdrop") !== undefined && $(that).attr("data-backdrop") !== "false") {
                 setTimeout(function () {
                     $(".modal-backdrop:not([id])").css("z-index", (zndx - 5)).attr("id", "modalBackDrop" + (zndx - 5));
@@ -648,7 +645,7 @@ if (typeof $ === 'undefined') {
             var that = $(event.target);
             var zndx = $(that).attr("data-zndx");
             $("#modalBackDrop" + (zndx - 5) + ".modal-backdrop").remove();
-            $(document).data("modal-zindex", zndx - 10);
+            var zndx = document.modalZndx - 10;
         });
         $(document).delegate(".modal", "hidden.bs.modal", function (event) {
             var that = $(event.target);

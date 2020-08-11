@@ -1,5 +1,6 @@
 <?php
 use Nahid\JsonQ\Jsonq;
+use Adbar\Dot;
 
 class jsonDrv
 {
@@ -11,11 +12,12 @@ class jsonDrv
     public function itemRead($form = null, $id = null)
     {
         $file = $this->tableFile($form);
-        if (!isset($_SESSION["lang"])) $_SESSION["lang"] = "en";
-        if (isset($_ENV['cache'][md5($file.$_SESSION["lang"])][$id])) {
-            $item = $_ENV['cache'][md5($file.$_SESSION["lang"])][$id];
+        if (!isset($_SESSION['lang'])) $_SESSION['lang'] = 'en';
+        $cid = md5($file.$_SESSION['lang']);
+        if (isset($_ENV['cache'][$cid][$id])) {
+            $item = $_ENV['cache'][$cid][$id];
         } else {
-            $list = $this->itemList($form, ["orm"=>"where('id','{$id}')"])["list"];
+            $list = $this->itemList($form, ['orm'=>"where('id','{$id}')"])['list'];
             if (isset($list[$id])) {
                 $item = $list[$id];
             } else if (isset($list[0])) {
@@ -81,9 +83,9 @@ class jsonDrv
     {
         $file = $this->tablePath($form);
         $res = null;
-
-        if (!isset($_ENV['cache'][md5($file.$_SESSION["lang"])])) {
-            $_ENV['cache'][md5($file.$_SESSION["lang"])] = array();
+        $cid = md5($file.$_SESSION['lang']);
+        if (!isset($_ENV['cache'][$cid])) {
+            $_ENV['cache'][$cid] = array();
         }
         if (!isset($item['id']) or '_new' == $item['id'] or $item['id'] == "") {
             $item['id'] = $item['_id'] = wbNewId();
@@ -91,7 +93,7 @@ class jsonDrv
             $item['_id'] = $item['id'];
         }
         $item = wbItemInit($form, $item);
-        $_ENV['cache'][md5($file.$_SESSION["lang"])][$item['id']] = $item;
+        $_ENV['cache'][$cid][$item['id']] = $item;
 
         $res = $item;
         if ($flush == true) {
@@ -131,11 +133,12 @@ class jsonDrv
 
     public function itemList($form = 'pages', $options = [])
     {
-        if (isset($options["page"])) {
-            $page = intval($options["page"]);
-            $size = intval($options["size"]);
-            $params["limit"] = $size;
-            $params["skip"] = $page - 1;
+        if (isset($options['size'])) {
+            if (!isset($options['page'])) $options['page'] = 1;
+            $page = intval($options['page']);
+            $size = intval($options['size']);
+            $params['limit'] = $size;
+            $params['skip'] = $page - 1;
         } else {
             $page = 1;
         }
@@ -146,7 +149,7 @@ class jsonDrv
         if (isset($options->sort)) {
             foreach((array)$options->sort as $key=> $fld) {
                 if (!((array)$fld === $fld)) {
-                    $fld = explode(":",$fld);
+                    $fld = explode(':',$fld);
                     if (!isset($fld[1])) {
                         $fld[1] = 1;
                     } else if (in_array(strtolower($fld[1]),['a','asc','1'])) {
@@ -218,31 +221,36 @@ class jsonDrv
                 wbError('func', __FUNCTION__, 1001, func_get_args());
                 return [];
             }
-        
+
             try {
                 $json = new Jsonq($file);}
             catch(Exception $err) {
               $json = new Jsonq();
               $json = $json->collect([]);
             }
-            $json->empty("");
-            $list = $json->where("_removed", "neq", "on");
+            $json->empty('');
+            $list = $json->where('_removed', 'neq', 'on');
             $list = $list->get();
-        
+
 //        }
 
+        $dot = new Dot();
         $iter = new ArrayIterator((array)$list);
         $list = [];
         $flag = true;
         foreach($iter as $key => $item) {
+            $dot->setReference($item);
             if (isset($options->filter)) $flag = wbItemFilter($item,$options->filter);
             if (!$flag) {unset($list[$key]); } else {
-              if (isset($item["id"]) AND !isset($item["_id"])) $item["_id"] = $item["id"];
-              $item["_table"] = $item["_form"] = $form;
-              if (isset($options->return)) {
-                  $tmp = [];
-                  foreach((array)$options->return as $fld) {
-                      if (isset($item[$fld])) $tmp[$fld] = $item["fld"];
+              if (isset($item['id']) AND !isset($item['_id'])) $item['_id'] = $item['id'];
+              $item['_table'] = $item['_form'] = $form;
+              if (isset($options->projection)) {
+                  $tmp = [
+                      '_id'=>$item['_id'],
+                  ];
+                  foreach($options->projection as $fld => $v) {
+                      $v = $dot->get($fld);
+                      if (isset($v)) $tmp[$fld] = $v;
                   }
                   $item = $tmp;
               }
@@ -256,9 +264,12 @@ class jsonDrv
             $json = new Jsonq();
             $list = $json->collect($list);
             foreach($params['sort'] as $fld => $order) $list->sortBy($fld,$order);
-            $list = $list->get();
+            $iter = new ArrayIterator($list->get());
+            $list = [];
+            foreach($iter as $item) {
+                $list[$item['_id']] = $item;
+            }
         }
-
         $count = count($list);
         if (!isset($size)) $size = $count;
         if ($size > 0 && $size < $count ) {
@@ -266,8 +277,8 @@ class jsonDrv
           if (isset($chunk[$page -1])) {$chunk = $chunk[$page -1];} else {$chunk = [];}
           $list = [];
           foreach($chunk as $item) {
-              $item['_id'] = $item['id'];
-              $list[$item['id']] = $item;
+//              $item['_id'] = $item['id'];
+              $list[$item['_id']] = $item;
           }
 
 
@@ -280,8 +291,9 @@ class jsonDrv
         // Сброс кэша в общий файл
         $res = false;
         $file = $this->tablePath($form);
-        if (is_file($file) and isset($_ENV['cache'][md5($file.$_SESSION["lang"])])) {
-            $cache = $_ENV['cache'][md5($file.$_SESSION["lang"])];
+        $cid = md5($file.$_SESSION['lang']);
+        if (is_file($file) and isset($_ENV['cache'][$cid])) {
+            $cache = $_ENV['cache'][$cid];
             $fp = fopen($file, 'rb');
             flock($fp, LOCK_SH);
             $data = file_get_contents($file);
@@ -309,7 +321,7 @@ class jsonDrv
             } else {
                 $res = null;
             }
-            unset($_ENV['cache'][md5($file.$_SESSION['lang'])]);
+            unset($_ENV['cache'][$cid]);
         }
         return $res;
     }
@@ -317,11 +329,11 @@ class jsonDrv
     public function tableFile($form = 'pages', $engine = false)
     {
         $create = false;
-        if (strpos($form, ":")) {
-            $form=explode(":", $form);
-            if ($form[1]=="engine" or $form[1]=="e") {
+        if (strpos($form, ':')) {
+            $form=explode(':', $form);
+            if ($form[1]=='engine' or $form[1]=='e') {
                 $engine=true;
-            } elseif ($form[1]=="create" or $form[1]=="c") {
+            } elseif ($form[1]=='create' or $form[1]=='c') {
                 $create = true;
             }
             $form=$form[1];

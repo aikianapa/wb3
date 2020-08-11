@@ -5,7 +5,7 @@ use DQ\DomQuery;
 
 class wbDom extends DomQuery
 {
-    
+
     public function __call($name, $arguments) {
         if (method_exists($this->getFirstElmNode(), $name)) {
             return \call_user_func_array(array($this->getFirstElmNode(), $name), $arguments);
@@ -32,9 +32,9 @@ class wbDom extends DomQuery
 
         throw new \Exception('Unknown call '.$name);
     }
-    
-    
-    
+
+
+
     public function outer()
     {
         return $this->getouterHtml();
@@ -45,7 +45,7 @@ class wbDom extends DomQuery
         if ($html == null) return $this->getinnerHtml();
             $esc = "wb";
             if ($this->head) $esc = "head";
-            
+
             $html = "<{$esc}>{$html}</{$esc}>"; // magick
             $this->html($html);         // magick
             $this->children("{$esc}")->unwrap("{$esc}"); // magick
@@ -87,7 +87,7 @@ class wbDom extends DomQuery
         return $this;
     }
 
-    
+
     public function rootError()
     {
         if ($this->is(':root')) {
@@ -120,13 +120,13 @@ class wbDom extends DomQuery
         $fields->setReference($this->item);
         return $fields->get($fld);
     }
-    
+
     public function setField($fld, $data = []) {
         $fields = new Dot();
         $fields->setReference($this->item);
         return $fields->set($fld,$data);
     }
-    
+
     public function where($Item=null)
     {
         $res = true;
@@ -476,7 +476,7 @@ class wbDom extends DomQuery
                         if ($value > "") $inp->find("[value='{$value}']")->attr("selected", true);
                     }
                 } elseif ($inp->tagName == "input") {
-                    
+
                     if ($inp->attr("type") == "radio") {
                         if ($inp->attr("value") == $value) $inp->attr('checked','checked');
                     } else {
@@ -498,7 +498,12 @@ class wbDom extends DomQuery
         if (strpos($this, "}}")) {
             $render = new wbRender($this);
             $html = $render->exec();
-            $this->inner($html);
+            if ($this->tagName == 'title') {
+                $this->text($html);
+            } else {
+                $this->inner($html);
+            }
+
         }
         foreach ($this->find("template") as $t) {
             $t->inner(str_replace("_}_}_", "}}", $t->inner()));
@@ -583,7 +588,7 @@ class wbApp
         $this->route = wbArrayToObj($route);
         return $this->route;
     }
-    
+
     public function getField($item,$fld) {
         $fields = new Dot();
         $fields->setReference($item);
@@ -716,7 +721,7 @@ class wbApp
         $mult->fetch();
         return $mult;
     }
-    
+
     public function fieldBuild_image()
     {
         $img = $this->tpl;

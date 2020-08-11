@@ -2040,6 +2040,10 @@ function wbItemFilter($item, $filter)
                 foreach ($expr as $cond => $val) {
                     $field = $fields->get($fld);
                     if ((array)$field === $field) $field = wbJsonEncode($field);
+                    if (is_numeric($field) && is_numeric($val)) {
+                        $field = $field * 1;
+                        $val = $val * 1;
+                    }
                     switch($cond) {
                         case '$ne':
                             if ($field == $val) $result = false;
@@ -2051,16 +2055,16 @@ function wbItemFilter($item, $filter)
                             if (!preg_match('/'.$val.'/ui', $field)) $result = false;
                             break;
                         case '$gte':
-                            if (!($val >= $field)) $result = false;
+                            if (!($field >= $val)) $result = false;
                             break;
                         case '$lte':
-                            if (!($val <= $field)) $result = false;
+                            if (!($field <= $val)) $result = false;
                             break;
                         case '$gt':
-                            if (!($val > $field)) $result = false;
+                            if (!($field > $val)) $result = false;
                             break;
                         case '$lt':
-                            if (!($val < $field)) $result = false;
+                            if (!($field < $val)) $result = false;
                             break;
                         case '$nin':
                             if (in_array($field,$val)) $result = false;
