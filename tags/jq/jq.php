@@ -18,22 +18,30 @@ class tagJq {
         $tag = str_replace( '&amp;gt;', '>', $tag );
         $tag = str_replace( '&gt;&lt;/wb-jq&gt;', '/>', $tag );
         if ( $tag == '' ) return;
-        
-            $inner = $app->fromString('<html>'.$that->inner().'</html>');
-            $inner->copy($that);
-            $inner->fetch();
-        
-        
+        if ($that->params('render') == 'client') {
+          $wb = $that->find("wb-snippet,wb-include");
+          foreach($wb as $inc) {
+              $inc->copy($that);
+              $inc->attr('wb-render','client');
+              $inc->fetchParams();
+              $inc->fetchNode();
+          }
+          $inner = &$that;
+        } else {
+          $inner = $app->fromString('<html>'.$that->inner().'</html>');
+          $inner->copy($that);
+          $inner->fetch();
+        }
         if ( $that->params( 'html' ) ) {
-            $that->parent()->find( $that->params( 'html' ) )->html($inner->inner());
+            $that->parents('html')->find( $that->params( 'html' ) )->html($inner->inner());
         } else if ( $that->params( 'append' ) ) {
-            $that->parent()->find( $that->params( 'append' ) )->append($inner);
+            $that->parents('html')->find( $that->params( 'append' ) )->append($inner->inner());
         } else if ( $that->params( 'prepend' ) ) {
-            $that->parent()->find( $that->params( 'prepend' ) )->prepend($inner);
+            $that->parents('html')->find( $that->params( 'prepend' ) )->prepend($inner->inner());
         } else if ( $that->params( 'after' ) ) {
-            $that->parent()->find( $that->params( 'after' ) )->after($that->inner());
+            $that->parents('html')->find( $that->params( 'after' ) )->after($inner->inner());
         } else if ( $that->params( 'before' ) ) {
-            $that->parent()->find( $that->params( 'before' ) )->before($that->inner());
+            $that->parents('html')->find( $that->params( 'before' ) )->before($inner->inner());
         } else {
             $jq = $that->params->wb;
             $jq = explode( ';', $jq );

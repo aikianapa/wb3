@@ -35,7 +35,7 @@
 
 
 <div class="list-group m-2" id="{{_form}}List">
-  <wb-foreach data-ajax="{'url':'/ajax/form/{{_form}}/list/','bind':'cms.list.{{_form}}','render':'client'}">
+  <wb-foreach data-ajax="{'url':'/ajax/form/{{_form}}/list/','bind':'cms.list.{{_form}}','render':'client','size':'{{_sett.page_size}}'}">
     <div class="list-group-item d-flex align-items-center">
       <div>
         <a href="javascript:" data-ajax="{'url':'/cms/ajax/form/{{_form}}/edit/{{_id}}','html':'.{{_form}}-edit-modal'}"
@@ -70,6 +70,9 @@
       </div>
     </div>
   </wb-foreach>
+  <wb-jq wb="{'append':'#{{_form}}List template','render':'client'}" >
+    <wb-snippet wb-name="pagination"/>
+  </wb-jq>
 </div>
 <div class="{{_form}}-edit-modal">
 

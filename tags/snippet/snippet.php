@@ -20,7 +20,7 @@ class tagSnippet {
       }
       $dom->inner($snip);
       $dom->unwrap("wb-snippet");
-      $dom->fetch();
+      if ($dom->params('render') !== 'client') $dom->fetch();
   }
 }
 ?>

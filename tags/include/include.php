@@ -30,7 +30,7 @@ class tagInclude {
         } else {
           $inner = $dom->app->fromString("<wb>".$dom->html().$inc->outer()."</wb>");
           $inner->copy($inc);
-          $inner->fetch();
+          if ($dom->params('render') !== 'client') $inner->fetch();
           $dom->before($inner->children("wb")->inner());
         }
     }

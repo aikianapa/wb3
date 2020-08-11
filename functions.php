@@ -80,6 +80,7 @@ function wbInitEnviroment()
     $_ENV['intext_width'] = 320;
     $_ENV['intext_height'] = 240;
     $_ENV['page_size'] = 12;
+
     $_ENV['data'] = new stdClass(); // for store some data
 
     $_ENV['forms'] = wbListForms(false);
@@ -95,8 +96,8 @@ function wbInitEnviroment()
 
 function wbInitSettings(&$app)
 {
-    if (!$app->vars("_sess.events")) {
-        $app->vars("_sess.events", []);
+    if (!$app->vars('_sess.events')) {
+        $app->vars('_sess.events', []);
     } // массив для передачи событий в браузер во время вызова wbapp.alive()
     if (isset($_COOKIE['user'])) {
         $_SESSION['user'] = $app->ItemRead("users", $_COOKIE['user']);
@@ -125,13 +126,13 @@ function wbInitSettings(&$app)
     $_ENV['settings'] = &$settings;
     if (isset($_ENV['settings']['driver'])) $app->settings->driver = $_ENV['settings']['driver'];
 
-    if ($_SERVER["REQUEST_URI"]=="/engine/") {
-        unset($_ENV["lang"]);
+    if ($_SERVER['REQUEST_URI']=='/engine/') {
+        unset($_ENV['lang']);
     } else {
-        isset($settings["lang"]) ? $_ENV["lang"] = $settings["lang"] : $_ENV["lang"] = "ru";
+        isset($settings['lang']) ? $_ENV['lang'] = $settings['lang'] : $_ENV['lang'] = 'ru';
     }
-    //    $_ENV["locales"]=wbListLocales($app);
-    $_ENV["settings"]["locale"]=substr($_ENV["lang"], 0, 2);
+    //    $_ENV['locales']=wbListLocales($app);
+    $_ENV['settings']['locale']=substr($_ENV['lang'], 0, 2);
 
     if (isset($_ENV['settings']['path_tpl']) and $_ENV['settings']['path_tpl'] > '') {
         $_ENV['base']=$_ENV['settings']['path_tpl'];
@@ -149,9 +150,13 @@ function wbInitSettings(&$app)
     if (isset($_ENV['settings']['intext_height']) and $_ENV['settings']['intext_height'] > '0') {
         $_ENV['intext_height'] = $_ENV['settings']['intext_height'];
     }
-    if (isset($_ENV['settings']['page_size']) and is_numeric($_ENV['settings']['page_size'])) {
-        $_ENV['page_size'] = $_ENV['settings']['page_size'];
+
+    if (isset($settings['page_size']) AND $settings['page_size'] > '') {
+        $_ENV['page_size'] = $settings['page_size'];
+    } else {
+        $settings['page_size'] =  $_ENV['page_size'];
     }
+
     if (isset($_ENV['settings']['base']) and $_ENV['settings']['base'] > "") {
         $_ENV['base'] = $_ENV['settings']['base'];
         $_ENV['path_tpl'] = str_replace("//", "/", $_ENV['path_app']."/".$_ENV['base']);
@@ -162,15 +167,15 @@ function wbInitSettings(&$app)
     $_ENV['settings']['max_upload_size'] = wbMaxUplSize();
     $_ENV['sysmsg'] = wbGetSysMsg();
     $_ENV['settings']['sysmsg'] = &$_ENV['sysmsg']; // для доступа из JS
-    $_ENV['settings']['user'] = $_SESSION["user"];
+    $_ENV['settings']['user'] = $_SESSION['user'];
     if (isset($_ENV['settings']['user']['password'])) unset($_ENV['settings']['user']['password']);
-    $app->vars("_sett", $_ENV["settings"]);
-    if (in_array($app->vars("_route.controller"),["thumbnails","file"])) {
-          if ($app->vars("_sett.user")) {
-              $app->vars("_sett.user.group", wbItemRead("users", $app->vars("_sett.user.role")));
+    $app->vars('_sett', $_ENV['settings']);
+    if (in_array($app->vars('_route.controller'),['thumbnails','file'])) {
+          if ($app->vars('_sett.user')) {
+              $app->vars('_sett.user.group', wbItemRead('users', $app->vars('_sett.user.role')));
           }
-          if (!$app->vars("_cookie.events")) {
-              setcookie("events", base64_encode(json_encode([])), time()+3600, "/");
+          if (!$app->vars('_cookie.events')) {
+              setcookie('events', base64_encode(json_encode([])), time()+3600, '/');
           } // срок действия час
     }
 }

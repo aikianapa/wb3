@@ -98,16 +98,12 @@ class wbDom extends DomQuery
         }
     }
 
-    public function parents($tag = ":root")
+    public function parents($tag = "html")
     {
         $res = false;
         if (isset($this->parent)) {
-            echo $this->tagName;
-            echo " | ";
-            echo $this->parent->tagName;
-            echo "<br />";
             if ($this->parent->tagName == $tag) {
-                return true;
+                $res = $this->parent;
             } else {
                 $res = $this->parent->parents($tag);
             }

@@ -5,6 +5,7 @@ class ctrlAjax {
     header('Content-Type: application/json');
       include_once($_ENV['path_engine'].'/attrs/save/ajax.php');
       include_once($_ENV['path_engine'].'/attrs/tree/ajax.php');
+      $app->initSettings($app);
       if (is_file($_ENV['path_app'].'/ajax.php')) {
           include_once($_ENV['path_app'].'/ajax.php');
           $this->ajax = new wbAjax($app);
@@ -116,11 +117,16 @@ class ctrlAjax {
   }
 
   function getsess() {
-    echo json_encode($_SESSION);
+    $app = $this->app;
+    echo json_encode($app->vars('_sess'));
   }
 
   function getsett() {
-    echo json_encode($_ENV['settings']);
+    $app = $this->app;
+    $sett = $app->vars('_sett');
+    unset($sett['cmsmenu']);
+    unset($sett['api_key']);
+    echo json_encode($sett);
   }
 }
 ?>
