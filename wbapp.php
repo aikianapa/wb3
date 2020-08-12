@@ -2,6 +2,7 @@
 use Nahid\JsonQ\Jsonq;
 use Adbar\Dot;
 use DQ\DomQuery;
+//use Spatie\Async\Pool;
 
 class wbDom extends DomQuery
 {
@@ -32,8 +33,6 @@ class wbDom extends DomQuery
 
         throw new \Exception('Unknown call '.$name);
     }
-
-
 
     public function outer()
     {
@@ -575,6 +574,37 @@ class wbApp
             eval('$res = $func('.implode(",", $par).');');
             return $res;
         }
+    }
+
+    public function getCacheId() {
+        $uri = $this->route->uri;
+        $lang = $this->vars('_sett.lang');
+        return md5($uri.'_'.$lang);
+    }
+
+    public function setCache($out = '') {
+      if (!isset($_GET['update']) AND (count($_GET) OR count($_POST))) return;
+      $cid = $this->getCacheId();
+      $sub = substr($cid,0,4);
+      $dir = $this->vars('_env.dbac').'/'.$sub;
+      $name = $dir.'/'.$cid.'.html';
+      if (!strpos( ' '.$out, '<!DOCTYPE html>' ) ) $out = '<!DOCTYPE html>'.$out;
+      if (!is_dir($dir)) {
+          mkdir($dir,0777,true);
+      }
+      file_put_contents($name,$out,LOCK_EX);
+    }
+
+    public function getCache() {
+      if (((!count($_POST) AND isset($_GET['update']) AND count($_GET) == 1) OR (count($_POST) AND count($_GET)))) return null;
+      $cid = $this->getCacheId();
+      $sub = substr($cid,0,4);
+      $dir = $this->vars('_env.dbac').'/'.$sub;
+      $name = $dir.'/'.$cid.'.html';
+      if (is_file($name)) {
+          return file_get_contents($name);
+      }
+      return null;
     }
 
     public function route()

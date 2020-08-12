@@ -1,5 +1,4 @@
 <?php
-
 class ctrlForm {
     function __construct( $app ) {
         $this->app = $app;
@@ -18,28 +17,34 @@ class ctrlForm {
 
     function show() {
         $app = &$this->app;
-        if ( isset( $this->route->form ) ) {
-            $dom = $app->getForm( $this->route->form, $this->route->mode );
-        }
-        if ( isset( $this->route->item ) ) {
-            $table = $this->route->form;
-            if ( isset( $this->route->table ) ) $table = $this->route->table;
-            $item = $app->db->itemRead( $table, $this->route->item );
-            if ( isset( $item['template'] ) AND $item['template'] > '' AND $item['active'] == 'on' ) {
-                $dom = $app->getTpl( $item['template'] );
-            } else if ( isset( $this->route->tpl ) ) {
-                $dom = $app->getTpl( $this->route->tpl );
-            } else {
-                header( 'HTTP/1.1 404 Not Found' );
-                $dom = $app->getTpl( '404.php' );
-                if ( !$dom ) $dom = $app->fromString( "<html><head><meta name='viewport' content='width=device-width; initial-scale=1.0; user-scalable=no'></head><center><img src='/engine/modules/cms/tpl/assets/img/virus.svg' width='200'><h3>[404] Page not found</h3></center></html>" );
+        $cache = $app->getCache();
+        if (!$cache) {
+            if ( isset( $this->route->form ) ) {
+                $dom = $app->getForm( $this->route->form, $this->route->mode );
             }
-            if ( $dom ) $dom->item = $item;
+            if ( isset( $this->route->item ) ) {
+                $table = $this->route->form;
+                if ( isset( $this->route->table ) ) $table = $this->route->table;
+                $item = $app->db->itemRead( $table, $this->route->item );
+                if ( isset( $item['template'] ) AND $item['template'] > '' AND $item['active'] == 'on' ) {
+                    $dom = $app->getTpl( $item['template'] );
+                } else if ( isset( $this->route->tpl ) ) {
+                    $dom = $app->getTpl( $this->route->tpl );
+                } else {
+                    header( 'HTTP/1.1 404 Not Found' );
+                    $dom = $app->getTpl( '404.php' );
+                    if ( !$dom ) $dom = $app->fromString( "<html><head><meta name='viewport' content='width=device-width; initial-scale=1.0; user-scalable=no'></head><center><img src='/engine/modules/cms/tpl/assets/img/virus.svg' width='200'><h3>[404] Page not found</h3></center></html>" );
+                }
+                if ( $dom ) $dom->item = $item;
+            }
+            $dom->fetch();
+            $out = $dom->outer();
+            if ( !strpos( ' '.$out, '<!DOCTYPE html>' ) ) $out = '<!DOCTYPE html>'.$out;
+            echo $out;
+            $app->setCache($out);
+        } else {
+          echo $cache;
         }
-        $dom->fetch();
-        $out = $dom->outer();
-        if ( !strpos( ' '.$out, '<!DOCTYPE html>' ) ) $out = '<!DOCTYPE html>'.$out;
-        echo $out;
         die;
     }
 
