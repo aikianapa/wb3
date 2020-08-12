@@ -602,6 +602,18 @@ class wbApp
       $dir = $this->vars('_env.dbac').'/'.$sub;
       $name = $dir.'/'.$cid.'.html';
       if (is_file($name)) {
+          if ((time() - filectime($name)) > $this->vars('_sett.cache')) {
+
+            // Делаем асинхронный запрос с обновлением кэша
+
+            $fp = stream_socket_client("tcp://{$this->route->hostname}:{$this->route->port}", $errno, $errstr, 30);
+            if (!$fp) {
+                echo "$errstr ($errno)<br />\n";
+            } else {
+                fwrite($fp, "GET {$this->route->uri}?update HTTP/1.0\r\nHost: {$this->route->hostname} \r\nAccept: */*\r\n\r\n");
+                fclose($fp);
+            }
+          }
           return file_get_contents($name);
       }
       return null;

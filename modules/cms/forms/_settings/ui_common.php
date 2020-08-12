@@ -25,6 +25,13 @@
         <input type="number" class="form-control" name="page_size" min="1" max="500" step="1" placeholder="Размер страниц по-умолчанию">
       </div>
     </div>
+
+    <div class="form-group row">
+      <label class="col-sm-3 form-control-label">Время жизни кэша</label>
+      <div class="col-sm-9">
+        <input type="number" class="form-control" name="cache" min="0" step="1" placeholder="Время жизни кэша">
+      </div>
+    </div>
 <hr />
     <div class="row">
       <div class="col-sm-5">

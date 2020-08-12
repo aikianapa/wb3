@@ -170,6 +170,7 @@ function wbInitSettings(&$app)
     $_ENV['settings']['user'] = $_SESSION['user'];
     if (isset($_ENV['settings']['user']['password'])) unset($_ENV['settings']['user']['password']);
     $app->vars('_sett', $_ENV['settings']);
+    if (!($app->vars('_sett.cache') > "")) $app->vars('_sett.cache',1);
     if (in_array($app->vars('_route.controller'),['thumbnails','file'])) {
           if ($app->vars('_sett.user')) {
               $app->vars('_sett.user.group', wbItemRead('users', $app->vars('_sett.user.role')));
