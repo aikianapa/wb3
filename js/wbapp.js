@@ -300,13 +300,21 @@ if (typeof $ === 'undefined') {
     wbapp.wbappScripts = function () {
         var done = [];
         $(document).find("script[type=wbapp]").each(function () {
-            var script = $(this).text();
-            var hash = md5(script);
-            if (!in_array(hash, done)) {
-                eval(script);
-                done.push(hash);
+            if ($(this).is('[src]')) {
+                let src = $(this).attr('src');
+                console.log(src);
+                $(this).attr('src','');
+                $(this).attr('type','text/javascript');
+                $(this).attr('src',src);
+            } else {
+              var script = $(this).text();
+              var hash = md5(script);
+              if (!in_array(hash, done)) {
+                  eval(script);
+                  done.push(hash);
+              }
+              if ($(this).attr("visible") == undefined) $(this).remove();
             }
-            if ($(this).attr("visible") == undefined) $(this).remove();
         });
     }
 
