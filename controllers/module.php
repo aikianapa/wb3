@@ -19,9 +19,8 @@ class ctrlModule {
         } else {
             header( "HTTP/1.1 404 Not Found" );
             echo "Error 404";
-        }          
+        }
       }
-
       die;
   }
 
@@ -32,10 +31,10 @@ class ctrlModule {
         die;
       }
   }
-    
+
   function settings() {
       $app = $this->app;
-      $modules = $app->listModules(); 
+      $modules = $app->listModules();
       $module = $modules[$app->route->module];
       $tpl = $app->fromFile($app->vars('_env.path_engine').'/modules/cms/forms/_settings/ui_mods.php');
       $tpl = $app->fromString($tpl->find('#modSettingsWrapper')->inner());

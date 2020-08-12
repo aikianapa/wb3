@@ -1,20 +1,26 @@
 <?php
 use Adbar\Dot;
 use Nahid\JsonQ\Jsonq;
-class tagForeach {
-  public function __construct($dom) {
-      return $this->foreach($dom);
-  }
+class tagForeach
+{
+    public function __construct($dom)
+    {
+        return $this->foreach($dom);
+    }
 
-  public function foreach($dom) {
+    public function foreach($dom)
+    {
         $app = &$dom->app;
-        if ($dom->is(":root")) $dom->rootError();
+        if ($dom->is(":root")) { $dom->rootError();
+        }
         $idx = 0;
         $ndx = 1;
         $page = $pages = 1;
         $srvpag = false;
-        if (!isset($dom->role)) return $dom;
-        if (!$dom->app) $dom->app = new wbApp();
+        if (!isset($dom->role)) { return $dom;
+        }
+        if (!$dom->app) { $dom->app = new wbApp();
+        }
 
         $empty = $dom->find("wb-empty")[0];
         $dom->find("wb-empty")->remove();
@@ -25,13 +31,17 @@ class tagForeach {
         $list = $parent = $dom->item;
         $options = [];
         $dom->params("table") > "" ? $table = $dom->params->table : $table = "";
-        isset( $dom->params->field ) ? $field = $dom->params->field : $field = null;
-        if ($dom->params("orm") > "") $options["orm"] = $dom->params->orm;
-        if ($dom->params("item") > "") $options["item"] = $dom->params->item;
-        if ($dom->params("filter") > "") $options["filter"] = $dom->params->filter;
-        if ($dom->params("where") > "") $options["where"] = $dom->params->where;
+        isset($dom->params->field) ? $field = $dom->params->field : $field = null;
+        if ($dom->params("orm") > "") { $options["orm"] = $dom->params->orm;
+        }
+        if ($dom->params("item") > "") { $options["item"] = $dom->params->item;
+        }
+        if ($dom->params("filter") > "") { $options["filter"] = $dom->params->filter;
+        }
+        if ($dom->params("where") > "") { $options["where"] = $dom->params->where;
+        }
         if ($dom->params("render") == "client" && $dom->params("table") > "") {
-            $dom->attr("data-ajax",'{"url":"/ajax/'.$dom->params("table").'/list/"}');
+            $dom->attr("data-ajax", '{"url":"/ajax/'.$dom->params("table").'/list/"}');
             unset($table);
         }
         if ($dom->params("return") > "") {
@@ -42,30 +52,33 @@ class tagForeach {
         }
         $dom->options = $options;
         if ($table > "" AND $dom->params("call") == "") {
-          $res = wbItemList($table,$options);
-          $list = $res["list"];
-          $count = $res["count"];
+            $res = wbItemList($table, $options);
+            $list = $res["list"];
+            $count = $res["count"];
         } else if ($table > "" AND $dom->params("call") > "") {
-          $list = [];
-          $formClass = $app->formClass($table);
-          $method = $dom->params("call");
-          if (method_exists($formClass,$method)) $list = $formClass->$method($dom);
-          $count = count($list);
+            $list = [];
+            $formClass = $app->formClass($table);
+            $method = $dom->params("call");
+            if (method_exists($formClass, $method)) { $list = $formClass->$method($dom);
+            }
+            $count = count($list);
         } else if ($table == "" AND $dom->params("call") > "") {
             $list = (array)wbEval($dom->params("call"));
         }
 
         if ($dom->params("from")) {
-            if (isset($list[$dom->params->from])) {$list = $list[$dom->params->from];} else {$list = $dom->getField($dom->params->from);}
+            if (isset($list[$dom->params->from])) {$list = $list[$dom->params->from];
+            } else {$list = $dom->getField($dom->params->from);
+            }
             if (isset($options["sort"]) AND (array)$options["sort"] === $options["sort"]) {
                 foreach((array)$options["sort"] as $key=> $fld) {
                     if (!((array)$fld === $fld)) {
-                        $fld = explode(":",$fld);
+                        $fld = explode(":", $fld);
                         if (!isset($fld[1])) {
                             $fld[1] = 1;
-                        } else if (in_array(strtolower($fld[1]),['a','asc','1'])) {
+                        } else if (in_array(strtolower($fld[1]), ['a','asc','1'])) {
                             $fld[1] = '';
-                        } else if (in_array(strtolower($fld[1]),['d','desc','-1'])) {
+                        } else if (in_array(strtolower($fld[1]), ['d','desc','-1'])) {
                             $fld[1] = 'desc';
                         }
                         $params['sort'][$fld[0]] = $fld[1];
@@ -77,7 +90,8 @@ class tagForeach {
                 $json = new Jsonq();
                 $json = $json->collect($list);
                 if (count($params['sort'])) {
-                    foreach($params['sort'] as $fld => $order) $json->sortBy($fld,$order);
+                    foreach($params['sort'] as $fld => $order) { $json->sortBy($fld, $order);
+                    }
                 }
                 $list = $json->get();
             }
@@ -85,34 +99,39 @@ class tagForeach {
 
         if ($dom->params("size") > "") {
             $dom->params("page") ? $page = $dom->params->page : $page = 1;
-            if ($dom->parent()->attr('id') == '') $dom->parent()->attr('id','fe_'.md5($dom->outer()));
+            if ($dom->parent()->attr('id') == '') { $dom->parent()->attr('id', 'fe_'.md5($dom->outer()));
+            }
             if ($app->vars('_post._route') AND $app->vars('_post._params') AND $app->vars('_post._tid') == '#'.$dom->parent()->attr('id')) {
                 $page = $app->vars('_post._params.page');
                 $srvpag = true;
             }
-            $list = array_chunk($list,$dom->params->size);
+            $list = array_chunk($list, $dom->params->size);
             $dom->params->pages = $pages = ceil($count / $dom->params->size);
-            if ($page > $pages OR $page<=0) $list = [];
-            if ($pages >= 1 && isset($list[$page -1])) $list = $list[$page -1];
+            if ($page > $pages OR $page<=0) { $list = [];
+            }
+            if ($pages >= 1 && isset($list[$page -1])) { $list = $list[$page -1];
+            }
             $ndx = ($page -1) * $dom->params("size") +1;
         }
         if ($dom->params("count") > "") {
             $item = $list;
             $list = [];
             $count = intval($dom->params->count);
-//            if (count($item)) {
-//                for ( $i=0; $i<$count; $i++ ) {
-//                    foreach($item as $line) $list[] = $line;
-//                }
-//            } else {
-                for ( $i=0; $i<$count; $i++ ) {
-                    $list[] = ["_id"=>$i];
-                }
-//            }
+            //            if (count($item)) {
+            //                for ( $i=0; $i<$count; $i++ ) {
+            //                    foreach($item as $line) $list[] = $line;
+            //                }
+            //            } else {
+            for ( $i=0; $i<$count; $i++ ) {
+                $list[] = ["_id"=>$i];
+            }
+            //            }
         }
-        if ($dom->params("rand") == "true") shuffle($list);
+        if ($dom->params("rand") == "true") { shuffle($list);
+        }
         $dom->attr("data-ajax") == "" ? $render = false : $render = true;
-        if (!$render) $tpl = "<wb>{$tpl}</wb>";
+        if (!$render) { $tpl = "<wb>{$tpl}</wb>";
+        }
 
         foreach((array)$list as $key => $val) {
             $value = $val;
@@ -123,8 +142,10 @@ class tagForeach {
             $val->_pages = $pages;
             $val->_val = $value;
             $val->_parent = &$parent;
-            if (!isset($val->_id)) isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
-            if ($table > "") $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], (array)$val);
+            if (!isset($val->_id)) { isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
+            }
+            if ($table > "") { $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], (array)$val);
+            }
             if ($render > "") {
                 $list[$key] = (array)$val;
             } else {
@@ -140,45 +161,54 @@ class tagForeach {
 
         if ($render == "client") {
             $dom->append("<template id = \"{$tid}\" data-ajax=\"".$dom->attr("data-ajax")."\">\n{{#each result}}\n".$tpl."\n{{/each}}</template>\n");
-            $dom->find("template[id=\"{$tid}\"] .pagination")->attr("data-tpl",$tid);
+            $dom->find("template[id=\"{$tid}\"] .pagination")->attr("data-tpl", $tid);
         } else if ($dom->params("size") > "") {
-                $size = $dom->params("size");
-                $dom->parent()->attr("data-pagination",json_encode([
-                  'count'=>$count,
-                  'pages'=>$pages,
-                  'page'=>$page,
-                  'size'=>$size
-                ]));
-                $dom->parent()->attr("data-pages",$pages);
-                $dom->parent()->attr("data-page",$pages);
-                $dom->params->count = $count;
-                $dom->params->tpl = $dom->parent()->attr('id');
-                $dom->params->page = $page;
-                $pag = $dom->tagPagination($dom);
-                $html = $dom->html();
-                if ($dom->params->pos == '') $html .= "\n".$pag->outer();
-                if ($dom->params->pos == 'bottom') $html .= "\n".$pag->outer();
-                if ($dom->params->pos == 'top') $html = $pag->outer()."\n".$html;
-                if ($dom->params->pos == 'both') $html = $pag->outer()."\n".$html."\n".$pag->outer();
+            $size = $dom->params("size");
+            $dom->parent()->attr(
+                "data-pagination", json_encode(
+                    [
+                    'count'=>$count,
+                    'pages'=>$pages,
+                    'page'=>$page,
+                    'size'=>$size
+                        ]
+                )
+            );
+            $dom->parent()->attr("data-pages", $pages);
+            $dom->parent()->attr("data-page", $pages);
+            $dom->params->count = $count;
+            $dom->params->tpl = $dom->parent()->attr('id');
+            $dom->params->page = $page;
+            $pag = $dom->tagPagination($dom);
+            $html = $dom->html();
+            if (!$dom->params('pos')) { $dom->params->pos = 'bottom';
+            }
+            if ($dom->params->pos == 'bottom') { $html .= "\n".$pag->outer();
+            }
+            if ($dom->params->pos == 'top') { $html = $pag->outer()."\n".$html;
+            }
+            if ($dom->params->pos == 'both') { $html = $pag->outer()."\n".$html."\n".$pag->outer();
+            }
 
-                if ($srvpag) {
-                    $res = [
-                        'html' => $html,
-                        'route' => $app->route,
-                        'params' => $dom->params
-                    ];
-                    header('Content-Type: charset=utf-8');
-                    header('Content-Type: application/json');
-                    echo json_encode($res);
-                    die;
-                }
+            if ($srvpag) {
+                $res = [
+                    'html' => $html,
+                    'route' => $app->route,
+                    'params' => $dom->params
+                ];
+                header('Content-Type: charset=utf-8');
+                header('Content-Type: application/json');
+                echo json_encode($res);
+                die;
+            }
         }
-        if (!count((array)$list) OR $dom->html() == "") $dom->inner($empty->inner());
+        if (!count((array)$list) OR $dom->html() == "") { $dom->inner($empty->inner());
+        }
 
             $dom->before($dom->html());
             $dom->remove();
 
 
-  }
+    }
 }
 ?>
