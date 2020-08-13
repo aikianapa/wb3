@@ -547,6 +547,7 @@ if (typeof $ === 'undefined') {
 
     wbapp.renderTemplate = function (params, data = {}) {
         var tid;
+				var newbind = false;
         if (params._tid !== undefined) tid = params._tid;
         if (params.target !== undefined) tid = params.target;
 
@@ -561,7 +562,10 @@ if (typeof $ === 'undefined') {
 
         if (wbapp.template[tid] == undefined) return;
 
-        if (wbapp.bind[params.bind] == undefined) wbapp.bind[params.bind] = {};
+        if (wbapp.bind[params.bind] == undefined) {
+						wbapp.bind[params.bind] = {};
+						newbind = true;
+				}
         wbapp.storage(params.bind, data);
 
         wbapp.bind[params.bind][tid] = new Ractive({
@@ -581,11 +585,16 @@ if (typeof $ === 'undefined') {
             $(pagination).find(`[data-page="${page}"]`).parent(".page-item").addClass("active");
         }
 
-        $(document).off("bind-" + params.bind);
-        $(document).on("bind-" + params.bind, function (e, data) {
-            console.log("Trigger: bind-" + params.bind ,tid,data);
-            wbapp.bind[params.bind][tid].set(data);
-        })
+        if (newbind) {
+		        $(document).on("bind-" + params.bind, function (e, data) {
+								$(wbapp.bind[params.bind]).each(function(i, ractive){
+										let tid = Object.keys( ractive )[0];
+										//console.log("Trigger: bind-" + params.bind ,tid, data);
+										console.log("Trigger: bind-" + params.bind);
+			            	wbapp.bind[params.bind][tid].set(data);
+								})
+		        })
+				}
     }
 
     wbapp.newId = function (separator, prefix) {
