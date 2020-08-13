@@ -16,6 +16,7 @@ class modCms {
     $app = $this->app;
     $cms = $app->fromFile(__DIR__."/tpl/cms_ui.php",true);
     $cms->fetch();
+		if (is_callable('modCmsBeforeShow')) modCmsBeforeShow($cms);
     return $cms;
   }
 
