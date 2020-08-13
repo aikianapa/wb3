@@ -2020,11 +2020,19 @@ function wbQuery($sql)
 
 function wbItemFilter($item, $filter)
 {
+	//print_r($filter);
     $fields = new Dot();
     $fields->setReference($item);
     $result = true;
     foreach ((array)$filter as $fld => $expr) {
         if ((array)$expr !== $expr) {
+					if (is_bool($fields->get($fld)) AND !is_bool($expr)) {
+							if ($expr == 'true') {
+									$expr = true;
+							} else if ($expr == 'false') {
+									$expr = false;
+							}
+					}
             if ($fields->get($fld) !== $expr) {
                 $result = false;
             }
@@ -2061,22 +2069,22 @@ function wbItemFilter($item, $filter)
                             if (!preg_match('/'.$val.'/ui', $field)) $result = false;
                             break;
                         case '$gte':
-                            if (!($field >= $val)) $result = false;
+                            if ($field >= $val) {$result;} else $result = false;
                             break;
                         case '$lte':
-                            if (!($field <= $val)) $result = false;
+														if ($field <= $val) {$result;} else $result = false;
                             break;
                         case '$gt':
-                            if (!($field > $val)) $result = false;
+														if ($field > $val) {$result;} else $result = false;
                             break;
                         case '$lt':
-                            if (!($field < $val)) $result = false;
+														if ($field < $val) {$result;} else $result = false;
                             break;
                         case '$nin':
-                            if (in_array($field,$val)) $result = false;
+                            if (!in_array($field,$val)) {$result;} else {$result = false;}
                             break;
                         case '$in':
-                            if (!in_array($field,$val)) $result = false;
+                            if (in_array($field,$val)) {$result;} else {$result = false;}
                             break;
                     }
 

@@ -134,13 +134,13 @@ class ctrlApi {
             switch (substr($key,-1)) {
                 default:
                     $query[$key] = ['$in' => $val];
+										break;
                 case '!':
                     unset($query[$key]);
                     $query[substr($key,0,strlen($key) -1)] =  ['$nin'=> $val];
                     break;
             }
         } else {
-
               switch (substr($key,-1)) {
                 case '<': // меньше (<)
                       $query[substr($key,0,strlen($key) -1)] = ['$lte'=>$val];
