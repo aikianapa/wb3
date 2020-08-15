@@ -179,6 +179,20 @@ function wbInitSettings(&$app)
               setcookie('events', base64_encode(json_encode([])), time()+3600, '/');
           } // срок действия час
     }
+		$app->vars("_sess.token",$app->getToken());
+}
+
+function wbGetToken() {
+	$app = &$_ENV['app'];
+	$apikey = $app->vars('_sett.api_key');
+	$role = $app->vars('_sess.user.role');
+	$allow = explode(',',$app->vars('_sett.api_allow'));
+	$disallow = explode(',',$app->vars('_sett.api_disallow'));
+	$flag = true;
+	if (!in_array($role,$allow)) $flag = false;
+	if (in_array($role,$disallow)) $flag = false;
+	if (!$flag) $role = microtime();
+	return md5(session_id().$apikey.$role);
 }
 
 function wbMaxUplSize()

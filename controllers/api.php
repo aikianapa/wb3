@@ -6,13 +6,16 @@ class ctrlApi {
       set_time_limit(10);
       header('Content-Type: charset=utf-8');
       header('Content-Type: application/json');
-      $mode = $app->route->mode;
+			$this->app = &$app;
+      $mode = $this->mode = $app->route->mode;
+      //print_r($app->route);
       if (method_exists($this,$mode)) {
           $this->$mode($app);
       }
   }
 
   function query($app) {
+			if (!$this->apikey()) return;
       $table = $app->route->table;
       $options = $this->prepQuery($app->route->query);
       if (isset($app->route->item)) {
@@ -29,13 +32,51 @@ class ctrlApi {
       }
   }
 
+		function token() {
+				$this->method = ['post','get'];
+				$app = &$this->app;
+				echo json_encode([
+					'token' => $app->vars("_sess.token")
+				]);
+		}
+
+		function auth() {
+				$this->method = ['post','get'];
+		}
+
+
+		function apikey() {
+				$app = &$this->app;
+				$mode = &$this->mode;
+				$token = $app->vars("_sess.token");
+				$access = true;
+				$local = false;
+
+				if ($app->vars('_sett.api_key_'.$mode) == 'on') $access = false;
+
+				if (!$access && $token !== $app->vars('_req.__token') ) {
+						echo json_encode(['error'=>true,'msg'=>'Access denied']);
+						die;
+				}
+
+
+				if ($app->vars('_req.__apikey')) {
+						unset($_REQUEST['__apikey']);
+						unset($_POST['__apikey']);
+						unset($_GET['__apikey']);
+						unset($app->route->query->__apikey);
+				}
+				if ($app->vars('_req.__token')) {
+						unset($_REQUEST['__token']);
+						unset($_POST['__token']);
+						unset($_GET['__token']);
+						unset($app->route->query->__token);
+				}
+				return true;
+		}
 
     function mail($app) {
-        if ($app->vars('_sett.api_key_mail') == 'on' && $app->vars('_sett.api_key') !== $app->vars('_post._token') ) {
-            echo json_encode(['error'=>true,'msg'=>'Invalid API key']);
-            die;
-        }
-
+				if (!$this->apikey()) return;
         $attachments=[];
         if (!isset($_POST["_subject"])) {
             $_POST["_subject"]=$_ENV['sysmsg']["mail_from_site"];
