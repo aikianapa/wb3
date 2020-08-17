@@ -3,7 +3,12 @@
 class ctrlModule {
   function __construct($app) {
       $this->app = $app;
-      $module = $app->route->module;
+			if (!isset($app->route->module)) {
+					echo 'Error! Please, add module clause to router.<br \>Example: /cms/ajax/form/(:any)/(:any) => /module/<u>module:cms</u>/mode:ajax/form:$1/action:$2 ';
+					die;
+			}
+
+			$module = $app->route->module;
       $mode = $app->route->mode;
       if ($mode == '_settings') {
           $this->settings();

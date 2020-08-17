@@ -70,8 +70,8 @@
         </div>
 
         <ul class="nav nav-aside" wb-tree="{'table':'_settings','item':'settings','field':'cmsmenu','branch':'aside','parent':'false'}">
-              <li class="nav-label mg-t-25" wb-if=' "{{_lvl}}" == "1" '>
-                {{data.label}}
+              <li class="mg-t-25" wb-if=' "{{_lvl}}" == "1" '>
+                <span class="nav-label">{{data.label}}</span>
               </li>
               <li class="nav-item" wb-if=' "{{_lvl}}" == "2" '>
                 <a href="#" data-ajax="{{data.ajax}}" class="nav-link"><i class="{{data.icon}}"></i>&nbsp;&nbsp;

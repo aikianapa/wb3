@@ -246,7 +246,6 @@ function wbGetSysMsg()
     }
 
 function wbFormClass($form = null) {
-  require_once($_ENV["path_engine"]."/modules/cms/cms_formsclass.php");
   $app = $_ENV["app"];
   if ($form == null) $form = $app->vars("_route.form");
   if (is_file($app->vars("_env.path_app")."/forms/{$form}/_class.php")) {
@@ -2054,16 +2053,19 @@ function wbItemFilter($item, $filter)
             if ($fld == '$or') {
                 $result = false;
                 foreach($expr as $key => $orFilter) {
-                    if (wbItemFilter($item, $orFilter) == true) $result = true;
+                    if (wbItemFilter($item, $expr) == true) $result = true;
                 }
             } else if ($fld == '$and') {
                 $result = true;
                 foreach($expr as $andFilter) {
-                    if (wbItemFilter($item, $andFilter) == false) {
+                    if (wbItemFilter($item, $expr) == false) {
                       $result = false;
                       break;
                     }
                 }
+						} else if (in_array($fld,['$gte','$lte','$gt','$lt','='])) {
+								$fldname = array_key_first($expr);
+								$result = wbItemFilter($item, [$fldname=>[$fld => $expr[$fldname]]]);
             } else {
                 foreach ($expr as $cond => $val) {
                     $field = $fields->get($fld);
@@ -2293,6 +2295,15 @@ function wbRouterRead($file = null)
         if (is_file($_ENV['path_app'].'/router.ini')) {
             $route = array_merge(wbRouterRead($_ENV['path_app'].'/router.ini'), $route);
         }
+
+				$rese = glob($_ENV['path_engine'].'/modules/*/router.ini');
+				$resa = glob($_ENV['path_app'].'/modules/*/router.ini');
+				$res = array_merge($rese, $resa);
+				foreach ($res as $i => $r) {
+						$route = array_merge(wbRouterRead($r), $route);
+				}
+
+
     } else {
         if (is_file($file)) {
             $route = array();
