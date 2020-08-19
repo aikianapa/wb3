@@ -731,7 +731,7 @@ class wbApp
         if ((array)$dict == $dict) $dict = wbArrayToObj($dict);
         if ($dict->name == "") return "";
         $this->dict = $dict;
-        $this->item = $data["data"];
+        isset($data["data"]) ? $this->item = $data["data"] : $this->item = [];
         $this->data = $data;
         $this->tpl = $this->getForm('snippets', $dict->type);
         if (!is_object($this->tpl)) {

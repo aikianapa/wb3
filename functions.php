@@ -1830,59 +1830,6 @@ function wbGetItemImg($Item = null, $idx = 0, $noimg = '', $imgfld = 'images', $
     return urldecode($image);
 }
 
-function wbImagesToText($Item, $fld = 'text', $imgs = 'images')
-{
-    if (isset($Item[$imgs])) {
-        $image = wbGetItemImg($Item, 0, 0, $imgs);
-        $image = substr($image, strlen($_ENV['path_app']));
-        $Item['_image'] = $image;
-        if (!isset($Item[$fld])) {
-            $Item[$fld]="";
-        }
-        if (isset($Item['intext_position']) and $Item['intext_position']['pos'] > '') {
-            if ('' == $Item['intext_position']['width']) {
-                $width = $_ENV['intext_width'];
-            } else {
-                $width = $Item['intext_position']['width'];
-            }
-            if ('' == $Item['intext_position']['height']) {
-                $height = $_ENV['intext_height'];
-            } else {
-                $height = $Item['intext_position']['height'];
-            }
-            $img = "
-                   <a href='{$image}' data-fancybox='gallery' class='wb-intext'>
-                                                        <img data-wb-role='thumbnail' data-wb-size='{$width};{$height};src' src='{$image}' style='float:{$Item['intext_position']['pos']};' data-wb-hide='wb'>
-                                                                </a>
-                                                                ";
-            $Item[$fld] = $img.$Item[$fld];
-        }
-        if (isset($Item['images_position']) and isset($Item['images_position']['pos']) and $Item['images_position']['pos'] > '') {
-            $gal = wbGetForm('common', 'gallery');
-            $gal->wbSetData($Item);
-            if ($image > '' and $Item['intext_position']['pos'] > '') {
-                if ($gal->find("a[href='{$image}'][idx]")->length) {
-                    $gal->find("a[href='{$image}']")->remove();
-                } else {
-                    $gal->find("a[href='{$image}']")->parents('[idx]')->remove();
-                }
-            }
-            if (!$gal->find('a')->length) {
-                $gal->find('.wb-gallery')->remove();
-            }
-            if ('top' == $Item['images_position']['pos']) {
-                $Item[$fld] = $gal->outerHtml().$Item[$fld];
-            } elseif ('bottom' == $Item['images_position']['pos']) {
-                $Item[$fld] = $Item[$fld].$gal->outerHtml();
-            }
-            unset($gal);
-        }
-    }
-
-    return $Item;
-}
-
-
 function wbListFiles($dir)
 {
     $list = array();
@@ -2115,7 +2062,6 @@ function wbItemFilter($item, $filter)
     return $result;
 }
 
-
 function wbWhereItem($item, $where = null)
 {
     if (null == $where) {
@@ -2293,17 +2239,15 @@ function wbRouterRead($file = null)
         $file = $_ENV['path_engine'].'/router.ini';
         $route = wbRouterRead($file);
         if (is_file($_ENV['path_app'].'/router.ini')) {
-            $route = array_merge(wbRouterRead($_ENV['path_app'].'/router.ini'), $route);
+            $route = array_merge(wbRouterRead($_ENV['path_app'].'/router.ini'),$route);
         }
 
 				$rese = glob($_ENV['path_engine'].'/modules/*/router.ini');
 				$resa = glob($_ENV['path_app'].'/modules/*/router.ini');
 				$res = array_merge($rese, $resa);
 				foreach ($res as $i => $r) {
-						$route = array_merge(wbRouterRead($r), $route);
+						$route = array_merge(wbRouterRead($r),$route);
 				}
-
-
     } else {
         if (is_file($file)) {
             $route = array();

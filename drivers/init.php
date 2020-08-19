@@ -51,9 +51,6 @@ function wbItemRead($form = null, $id = null)
         }
         else {
           $item["_form"] = $item["_table"] = $form;
-          if (isset($item['images']) && isset($_ENV["route"]["mode"]) && $_ENV["route"]["mode"]!=="edit") {
-              $item = wbImagesToText($item);
-          }
         }
         $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
     } else {

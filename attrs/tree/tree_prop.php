@@ -1,16 +1,19 @@
+<html>
 <template type="lang">
     <form data-title="{{_lang.locales}}: " action="javascript:void(0);">
-        <div class="form-group row">
-            <div class="col-12" data-wb="role=multiinput" name="labels">
+        <div class="form-group">
+            <wb-multiinput name="labels">
                 <div class="col-sm-5">
-                <select class="form-control" placeholder="{{_lang.lang}}" name="id" data-wb="role=foreach&from=_env.locales">
+                <select class="form-control" placeholder="{{_lang.lang}}" name="id">
+										<wb-foreach wb="from={{_env.locales}}">
                     <option value="{{id}}">{{_locale}}</option>
+										</wb-foreach>
                 </select>
                 </div>
                 <div class="col-sm-7">
                 <input class="form-control" placeholder="{{_lang.name}}" type="text" name="name">
                 </div>
-            </div>
+            </wb-multiinput>
         </div>
     </form>
 </template>
@@ -49,7 +52,7 @@
 
 <template type="multiinput">
     <form data-title="{{_lang.multiinput}}: " action="javascript:void(0);">
-		<div data-wb="role=dict" name="multiflds"></div>
+			<wb-dict name="multiflds" />
     </form>
 </template>
 
@@ -58,7 +61,7 @@
         <div class="form-group row">
             <label class="col-sm-3 form-control-label">{{_lang.unwrap}}</label>
             <div class="col-sm-9">
-                <input data-wb="role=include&snippet=switch" name="unwrap">
+                <wb-module wb="module=switch" name="unwrap" />
             </div>
         </div>
 
@@ -81,7 +84,7 @@
 
 
 
-<script type="text/locale">
+<wb-lang>
 [en]
         label	= "Label"
         name    = "Field name"
@@ -122,4 +125,5 @@
         multiinput = "Мультиполе"
         enum    = "Перечисление"
         unwrap  = "В колонку"
-</script>
+</wb-lang>
+</html>

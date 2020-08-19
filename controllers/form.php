@@ -26,14 +26,20 @@ class ctrlForm {
                 $table = $this->route->form;
                 if ( isset( $this->route->table ) ) $table = $this->route->table;
                 $item = $app->db->itemRead( $table, $this->route->item );
+								$item = wbTrigger( 'form', __FUNCTION__, 'beforeItemShow', [$table], $item );
                 if ( isset( $item['template'] ) AND $item['template'] > '' AND $item['active'] == 'on' ) {
                     $dom = $app->getTpl( $item['template'] );
                 } else if ( isset( $this->route->tpl ) ) {
                     $dom = $app->getTpl( $this->route->tpl );
                 } else {
-                    header( 'HTTP/1.1 404 Not Found' );
-                    $dom = $app->getTpl( '404.php' );
-                    if ( !$dom ) $dom = $app->fromString( "<html><head><meta name='viewport' content='width=device-width; initial-scale=1.0; user-scalable=no'></head><center><img src='/engine/modules/cms/tpl/assets/img/virus.svg' width='200'><h3>[404] Page not found</h3></center></html>" );
+										// последняя попытка
+										$this->route->tpl = $table.'-show.php';
+										$dom = $app->getTpl( $this->route->tpl );
+										if (!$dom) {
+												header( 'HTTP/1.1 404 Not Found' );
+		                    $dom = $app->getTpl( '404.php' );
+		                    if ( !$dom ) $dom = $app->fromString( "<html><head><meta name='viewport' content='width=device-width; initial-scale=1.0; user-scalable=no'></head><center><img src='/engine/modules/cms/tpl/assets/img/virus.svg' width='200'><h3>[404] Page not found</h3></center></html>" );
+										}
                 }
                 if ( $dom ) $dom->item = $item;
             }

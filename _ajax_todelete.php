@@ -281,7 +281,7 @@ function ajax__remove()
 function ajax__getform()
 {
     $app = new wbApp();
-    $out = $app->getForm($_ENV["route"]["params"][0], $_ENV["route"]["params"][1])->outerHtml();
+    $out = $app->getForm($_ENV["route"]["params"][0], $_ENV["route"]["params"][1])->outer();
     return json_encode(["content"=>$out]);
 }
 

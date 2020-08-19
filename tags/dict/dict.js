@@ -2,38 +2,40 @@ $(document).on("dict-js",function(){
    $(".wb-dict").each(function () {
         if ($(this).data("wb-dict") == undefined) {
             $(this).undelegate(".wb-tree-dict-prop-btn");
-            $(this).delegate(".wb-tree-dict-prop-btn","click",function(){
-                var modal = wbapp.getModal();
+            $(this).delegate(".wb-tree-dict-prop-btn","click", function(){
+                var modal = $(wbapp.tpl('wb.modal').html);
                 var title = $(this).next("input").val();
-                var type = $(this).parents(".wb-multiinput-row").find("[data-wb-field=type]").val();
-                var prop = $(this).parents(".wb-multiinput-row").find("[data-wb-field=prop]");
-                $(modal).attr("id",wbapp.newId());
-                console.log($(modal));
-                $(modal).modal({"backdrop":"static"}).modal("show")
-                    .on("hidden.bs.modal",function(){
-                        var data = $(modal).find(".modal-body form").serializeJson();
-                        $(prop).jsonVal(data);  
-                        $(modal).remove();
-                    })
-                    .on("shown.bs.modal",function(){
-                        $(this).runScripts();
-                    });
-                var res = wbapp.postWait("/ajax/tree_getform/prop/", {"dict":$(prop).jsonVal(),"type":type});
+                var type = $(this).parents(".wb-multiinput-row").find("[wb-name=type]").val();
+                var prop = $(this).parents(".wb-multiinput-row").find("[wb-name=prop]");
+
+                var res = wbapp.postSync("/ajax/tree/form/prop/", {"dict":$(prop).jsonVal(),"type":type});
+								$(modal).attr("id",wbapp.newId());
                 $(modal).find(".modal-body").html(res.content);
                 $(modal).find(".modal-dialog").addClass("modal-xl");
                 if ($(modal).find(".modal-body form",0).attr("data-title") !== undefined) {
                     title = $(modal).find("form",0).attr("data-title") + title;
                 }
                 $(modal).find(".modal-title").html(title);
+								$(modal).modal("show")
+                    .on("hidden.bs.modal",function(){
+                        var data = $(modal).find(".modal-body form").serializeJson();
+												console.log(data);
+                        $(prop).jsonVal(data);
+                        $(modal).remove();
+                    })
+                    .on("shown.bs.modal",function(){
+												wbapp.tplInit();
+                        $(this).runScripts();
+                    });
             });
-            
+
             $(this).undelegate(".wb-tree-dict-lang-btn");
             $(this).delegate(".wb-tree-dict-lang-btn","click",function(){
-                var modal = wbapp.getModal();
+                var modal = wbapp.tpl('wb.modal').html;
                 var title = $(this).next("input").val();
                 var lang = $(this).next("input").next("textarea");
                 $(modal).attr("id",wbapp.newId());
-                $(modal).modal({"backdrop":"static"}).modal("show")
+                $(modal).modal("show")
                     .on("hidden.bs.modal",function(){
                         var data = $(modal).find(".modal-body form").serializeJson();
                         $(lang).jsonVal(data);
@@ -42,14 +44,14 @@ $(document).on("dict-js",function(){
                     .on("shown.bs.modal",function(){
                         $(this).runScripts();
                     });
-                var res = wbapp.postWait("/ajax/tree_getform/lang/", {"dict":$(lang).jsonVal()});
+                var res = wbapp.postSync("/ajax/tree/form/lang/", {"dict":$(lang).jsonVal(),"type":"lang"});
                 $(modal).find(".modal-body").html(res.content);
                 if ($(modal).find(".modal-body form",0).attr("data-title") !== undefined) {
                     title = $(modal).find("form",0).attr("data-title") + title;
                 }
                 $(modal).find(".modal-title").html(title);
             });
-            
+
             $(this).data("wb-dict", true);
         }
    });

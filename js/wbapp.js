@@ -490,17 +490,23 @@ if (typeof $ === 'undefined') {
         return data;
     }
 
-    wbapp.tplInit = function () {
+    wbapp.tplInit = async function () {
         if (!wbapp.template) wbapp.template = {};
         if (wbapp.template['wb.toast'] == undefined) {
-            wbapp.getForm("snippets", "toast").then(function (res) {
-                wbapp.tpl('wb.toast', {
-                    html: res.result,
-                    params: {}
-                });
+            var res = wbapp.getForm("snippets", "toast");
+            wbapp.tpl('wb.toast', {
+                html: res.result,
+                params: {}
             });
         }
-        $(document).find("template").each(function () {
+				if (wbapp.template['wb.modal'] == undefined) {
+            var res = wbapp.getForm("snippets", "modal");
+            wbapp.tpl('wb.modal', {
+                html: res.result,
+                params: {}
+            });
+        }
+        $(document).find("template").each(async function () {
             var tid
             if (tid == undefined) tid = $(this).parent().attr("id");
             if (tid == undefined && $(this).is("template[id]")) tid = $(this).attr("id");
@@ -531,10 +537,9 @@ if (typeof $ === 'undefined') {
         wbapp.wbappScripts();
     }
 
-    wbapp.getForm = async function (form, mode, data = {}) {
-        return await wbapp.postSync(`/ajax/getform/${form}/${mode}`, data).then(function (res) {
-            return res
-        });
+    wbapp.getForm = function (form, mode, data = {}) {
+        var res = wbapp.postSync(`/ajax/getform/${form}/${mode}`, data);
+				return res;
     }
 
     wbapp.tpl = function (tid, data = null) {
@@ -638,6 +643,7 @@ if (typeof $ === 'undefined') {
                 });
 
             var zndx = document.modalZndx + 10;
+						document.modalZndx = zndx;
             if (!$(this).closest().is("body")) {
                 if ($(this).data("parent") == undefined) $(this).data("parent", $(this).closest());
                 $(this).appendTo("body");
@@ -653,6 +659,7 @@ if (typeof $ === 'undefined') {
         });
 
         $(document).delegate(".modal [data-dismiss]", "click", function (event) {
+						event.preventDefault();
             var zndx = $(this).attr("data-dismiss");
             var modal = $(document).find(".modal[data-zndx='" + $(this).attr("data-dismiss") + "']");
             modal.modal("hide");
@@ -663,6 +670,7 @@ if (typeof $ === 'undefined') {
             var zndx = $(that).attr("data-zndx");
             $("#modalBackDrop" + (zndx - 5) + ".modal-backdrop").remove();
             var zndx = document.modalZndx - 10;
+						document.modalZndx = zndx;
         });
         $(document).delegate(".modal", "hidden.bs.modal", function (event) {
             var that = $(event.target);
@@ -687,20 +695,71 @@ if (typeof $ === 'undefined') {
         });
     }
 
+		wbapp.getModal = function(id = null) {
+		  var modal = $(document).data("wbapp-modal");
+		  if (modal == undefined) {
+		    var modal = wbapp.postSync("/ajax/getform/snippets/modal/");
+		    modal = $("<div>" + modal.content + "</div>").find(".modal").clone();
+		    $(document).data("wbapp-modal", modal);
+		  }
+			var zndx = document.modalZndx + 10;
+			document.modalZndx = zndx;
+		  if (id !== null) $(modal).attr("id", id);
+		  if (zndx !== undefined) $(modal).data("zndx", zndx).attr("style", "z-index:" + zndx);
+		  return $(modal).clone();
+		}
+
+		wbapp.ajaxSync = function(ajaxObjs, fn) {
+		  if (!ajaxObjs) return;
+		  var data = [];
+		  var ajaxCount = ajaxObjs.length;
+
+		  if (fn == undefined) {
+		    var fn = function(data) {
+		      return data;
+		    }
+		  }
+
+		  for (var i = 0; i < ajaxCount; i++) { //append logic to invoke callback function once all the ajax calls are completed, in success handler.
+		    $.ajax(ajaxObjs[i]).done(function(res) {
+		      ajaxCount--;
+		      if (ajaxObjs.length > 0) {
+		        data.push(res);
+		      } else {
+		        data = res;
+		      }
+		    }).fail(function() {
+		      ajaxCount--;
+		      if (ajaxObjs.length > 0) {
+		        data.push(false);
+		      } else {
+		        data = false;
+		      }
+		    }); //make ajax call
+		  };
+		  while (ajaxCount > 0) {
+		    // wait all done
+		  }
+		  return fn(data);
+		}
+
+
     wbapp.getSync = async function (url, data = {}) {
-        var result;
-        await $.get(url, data).then(function (value) {
-            result = value
-        })
-        return result
+			return wbapp.ajaxSync([{
+				url: url,
+				type: 'GET',
+				async: false,
+				data: data
+			}])[0];
     }
 
-    wbapp.postSync = async function (url, data = {}) {
-        var result;
-        await $.post(url, data).then(function (value) {
-            result = value
-        })
-        return result;
+    wbapp.postSync = function (url, data = {}) {
+        return wbapp.ajaxSync([{
+					url: url,
+					type: 'POST',
+					async: false,
+					data: data
+				}])[0];
     }
 
     wbapp.session = async function () {

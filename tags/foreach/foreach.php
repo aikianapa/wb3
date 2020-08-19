@@ -38,6 +38,8 @@ class tagForeach
         }
         if ($dom->params("filter") > "") { $options["filter"] = $dom->params->filter;
         }
+				if ($dom->params("limit") > "") { $options["limit"] = $dom->params->limit;
+				}
         if ($dom->params("where") > "") { $options["where"] = $dom->params->where;
         }
         if ($dom->params("render") == "client" && $dom->params("table") > "") {

@@ -13,7 +13,7 @@ $.fn.wbTreeInit = function() {
             $(this).find("button[data-action=collapse]").trigger("click");
             $(this).removeAttr("data-expand");
         });
-        $(this).delegate(".wb-tree-line","click",async function(){
+        $(this).delegate(".wb-tree-line","click", function(){
             //wbapp.loading();
             var line = $(this).getLine();
             var item = $(this).getItem();
@@ -25,9 +25,10 @@ $.fn.wbTreeInit = function() {
             var lnid = $(line).attr("data-id");
             var childata = data.children;
             delete data.children;
-            var res = await wbapp.postSync("/ajax/tree/form/", {"data":data,"dict":dict});
+            var res = wbapp.postSync("/ajax/tree/form/", {"data":data,"dict":dict});
             var modal = res.content;
             $(modal).modal({"backdrop":"static"}).modal("show").runScripts();
+						wbapp.tplInit();
             var mid = $(modal).attr("id");
             var modal = $("#"+mid);
             // Procedure after edit branch data //
@@ -35,21 +36,21 @@ $.fn.wbTreeInit = function() {
                 storeData();
             });
             $(modal).undelegate(".modal-header a.nav-link",'click');
-            $(modal).delegate(".modal-header a.nav-link",'click', async function () {
+            $(modal).delegate(".modal-header a.nav-link",'click', function () {
+							storeData(false);
                 var postdict = $(tree).getData(false);
                 var postdata = $(tree).getData(path);
                 delete postdata.children;
                 if ($(this).hasClass("data")) {
-                   var res = await wbapp.postSync("/ajax/tree/form/data/", {"data":postdata,"dict":postdict});
+                   var res = wbapp.postSync("/ajax/tree/form/data/", {"data":postdata,"dict":postdict});
                    $(modal).find(".treeData form").html(res.content).runScripts();
                    $(modal).find(".treeData form :input",0).trigger("change");
                    wbapp.tplInit();
                 } else if ($(this).hasClass("dict")) {
-                   var res = await wbapp.postSync("/ajax/tree/form/dict/", {"data":postdata,"dict":postdict});
+                   var res = wbapp.postSync("/ajax/tree/form/dict/", {"data":postdata,"dict":postdict});
                    $(modal).find(".treeDict form").html(res.content).runScripts();
                    $(modal).find(".treeDict form").dictEvents(tree);
                    wbapp.tplInit();
-                   storeData(false);
                 }
             });
 

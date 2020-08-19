@@ -24,8 +24,8 @@ class wbAjaxTree
 
     function form() {
         $app = $this->app;
-        if ($app->vars->get("_route.params.0") == "prop") return tagTreeProp();
-        if ($app->vars->get("_route.params.0") == "lang") return tagTreeProp("lang");
+        if ($app->vars->get("_route.params.1") == "prop") return $this->tagTreeProp();
+        if ($app->vars->get("_route.params.1") == "lang") return $this->tagTreeProp("lang");
 
         if ($app->vars("_route.params.1") == "dict") {
             $dict = $app->fromFile(__DIR__ . "/tree_dict.php");
@@ -48,6 +48,34 @@ class wbAjaxTree
         die;
     }
 
+		function tagTreeProp( $type = null ) {
+		    $app = $this->app;
+		    $out = $app->fromFile( __DIR__ . '/tree_prop.php' );
+				$lang = $out->find('wb-lang');
+				$lang->copy($out);
+				$lang->fetchNode();
+				isset($_POST['dict']) ? $dict = $_POST['dict'] : $dict = [];
+
+		    if ( $type == null ) {
+		        $com = $app->fromString( $out->find( '[type=common]' )->html(), true );
+		        $com->fetch($dict);
+		    }
+				isset($_POST['type']) ? $type = $_POST['type'] : $type = null;
+		    if ($out->find( "template[type='{$type}']")->length ) {
+		        $outtype = $app->fromString($out->find( "[type={$type}]" )->inner());
+						$outtype->copy($out);
+						$outtype->fetch($dict);
+						$out = $outtype;
+		        if ( isset( $com ) ) $out->find( 'form' )->append( $com->find( 'form' )->html() );
+		    } else {
+		        $out = $com;
+		    }
+		    $out->fetch( $dict );
+		    echo wb_json_encode( ['content'=>$out->outer()] );
+				die;
+		}
+
+
     function tagTreeForm($dict=[],$data=[]) {
         $app = $this->app;
         $fldset = $app->fromFile(__DIR__ . "/tree_fldset.php");
@@ -65,6 +93,9 @@ class wbAjaxTree
         }
         return $out;
     }
+
+
+
 
 }
 
