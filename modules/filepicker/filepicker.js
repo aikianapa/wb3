@@ -23,7 +23,7 @@ $(document).on("filepicker-init", function() {
       var width = size*1;
       var height = size*1;
 
-      $(document).find(selector).each(async function(){
+      $(document).find(selector).each(function(){
             let $filepicker = $(this);
             let $listview = $(this).find(".listview");
             let input = $filepicker.find(".filepicker-data");
@@ -32,7 +32,7 @@ $(document).on("filepicker-init", function() {
             let field = "images";
             var path = $filepicker.find("[name=upload_url]").val();
 
-            $filepicker.prop("done",true);
+            $filepicker.attr("done",true);
 
             var getparams = function() {
               let params = {};
