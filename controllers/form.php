@@ -35,14 +35,11 @@ class ctrlForm {
 										// последняя попытка
 										$this->route->tpl = $table.'-show.php';
 										$dom = $app->getTpl( $this->route->tpl );
-										if (!$dom) {
-												header( 'HTTP/1.1 404 Not Found' );
-		                    $dom = $app->getTpl( '404.php' );
-		                    if ( !$dom ) $dom = $app->fromString( "<html><head><meta name='viewport' content='width=device-width; initial-scale=1.0; user-scalable=no'></head><center><img src='/engine/modules/cms/tpl/assets/img/virus.svg' width='200'><h3>[404] Page not found</h3></center></html>" );
-										}
+										if (!$dom) $dom = $this->get404();
                 }
                 if ( $dom ) $dom->item = $item;
             }
+						if (!$dom) $dom = $this->get404();
             $dom->fetch();
             $out = $dom->outer();
             if ( !strpos( ' '.$out, '<!DOCTYPE html>' ) ) $out = '<!DOCTYPE html>'.$out;
@@ -53,6 +50,14 @@ class ctrlForm {
         }
         die;
     }
+
+		function get404() {
+				$app = &$this->app;
+				header( 'HTTP/1.1 404 Not Found' );
+				$dom = $app->getTpl( '404.php' );
+				if ( !$dom ) $dom = $app->fromString( "<html><head><meta name='viewport' content='width=device-width; initial-scale=1.0; user-scalable=no'></head><center><img src='/engine/modules/cms/tpl/assets/img/virus.svg' width='200'><h3>[404] Page not found</h3></center></html>" );
+				return $dom;
+		}
 
     function ajax() {
         $app = $this->app;

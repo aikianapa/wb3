@@ -1865,7 +1865,7 @@ function wbFileRemove($file)
     return $res;
 }
 
-function wbPutContents($dir, $contents)
+function wbPutContents($dir, $contents, $flag = null)
 {
     $parts = explode('/', $dir);
     $file = array_pop($parts);
@@ -1878,7 +1878,7 @@ function wbPutContents($dir, $contents)
     }
     umask($u);
 
-    return file_put_contents("$dir/$file", $contents);
+    return file_put_contents("$dir/$file", $contents, $flag);
 }
 
 function wbRecurseDelete($src)

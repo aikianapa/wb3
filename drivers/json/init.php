@@ -44,7 +44,7 @@ class jsonDrv
         $file = $this->tablePath($form, $engine);
         if (!is_file($file)) {
             $json = wbJsonEncode(null);
-            $res = file_put_contents($file, $json, LOCK_EX);
+            $res = wbPutContents($file, $json, LOCK_EX);
             if ($res) {
                 @chmod($file, 0766);
             }
