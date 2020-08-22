@@ -9,7 +9,7 @@ if (typeof $ === 'undefined') {
     wbapp.bind = {};
 
     wbapp.lazyload = function () {
-        $("img[data-src]").lazyload();
+        $("[data-src]").lazyload();
     }
 
     wbapp.eventsInit = function () {
