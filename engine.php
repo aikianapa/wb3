@@ -10,5 +10,4 @@ if (!isset($_SESSION["lang"])) $_SESSION["lang"] = "ru";
 require_once __DIR__."/functions.php";
 $app = new wbApp();
 session_write_close();
-die;
 ?>

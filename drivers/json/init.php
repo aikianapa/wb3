@@ -165,7 +165,7 @@ class jsonDrv
             }
         }
 
-/*
+
         if (isset($options->orm)) {
             $orm = $options->orm;
             $tmp = explode("->", $orm);
@@ -215,7 +215,7 @@ class jsonDrv
                 $list = $list->get();
             }
         } else {
-*/
+
             $file = $this->tableFile($form);
             if (!is_file($file)) {
                 wbError('func', __FUNCTION__, 1001, func_get_args());
@@ -232,7 +232,7 @@ class jsonDrv
             $list = $json->where('_removed', 'neq', 'on');
             $list = $list->get();
 
-//        }
+        }
 
         $dot = new Dot();
         $iter = new ArrayIterator((array)$list);
@@ -257,7 +257,7 @@ class jsonDrv
               $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
               $list[$item["_id"]] = $item;
             }
-            if (isset($options->limit) && count($list) == $options->limit) break;
+            if (!isset($options->sort) && isset($options->limit) && count($list) == $options->limit) break;
         }
 
         if (count($params['sort'])) {
@@ -270,6 +270,11 @@ class jsonDrv
                 $list[$item['_id']] = $item;
             }
         }
+				if (isset($options->limit) && count($list)) {
+						$list = array_chunk($list,$options->limit);
+						$list = $list[0];
+				}
+
         $count = count($list);
         if (!isset($size)) $size = $count;
         if ($size > 0 && $size < $count ) {
