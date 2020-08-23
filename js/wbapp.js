@@ -685,7 +685,7 @@ if (typeof $ === 'undefined') {
             console.log("Trigger: wb-ajax-done");
             if (wbapp !== undefined) {
                 wbapp.tplInit();
-                wbapp.watcherInit();
+//                wbapp.watcherInit();
                 wbapp.wbappScripts();
                 wbapp.pluginsInit();
                 wbapp.lazyload();

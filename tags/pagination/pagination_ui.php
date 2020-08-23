@@ -1,4 +1,4 @@
-<nav class="col-12">
+<nav class="col-xs-12 col-12">
 <ul class="pagination justify-content-center mb-40">
     <li class="page-item" data-page="prev">
         <a href="#prev" class="page-link" href tabindex="-1">&laquo;</a>
@@ -9,7 +9,7 @@
             <a class="page-link" href="#{{page}}" data-page='{{page}}'>{{page}}</a>
         </li>
     </wb-foreach>
-    
+
     <li class="page-item" data-page="next">
         <a href="#next" class="page-link" href tabindex="-1">&raquo;</a>
     </li>

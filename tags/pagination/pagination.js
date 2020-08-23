@@ -62,8 +62,9 @@ $(document).one("pagination-js", function() {
     $(result).find("script[type='text/locale'],template").remove();
     result = $(result).html();
     $("body").removeClass("cursor-wait");
-    wbapp.watcher[tpl].page(result);
+//    wbapp.watcher[tpl].page(result);
 //    window.location.hash = "page-" + idx + "-" + pagenum;
+console.log(213412341234);
     $(document).find(".pagination#ajax-"+tpl).html(pager);
     $("body").removeClass("cursor-wait");
     console.log("Trigger: pagination-done");
