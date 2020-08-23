@@ -83,15 +83,26 @@ class ctrlThumbnails
         if (is_file($file)) {
             list($width, $height, $type) = $size = getimagesize($file);
             $ext = pathinfo($file, PATHINFO_EXTENSION);
-            $mime = wbMime($file);
             if ($ext == 'svg') {
                 $image = file_get_contents($file);
                 $image = str_replace('<svg ','<svg width="'.$app->vars('_route.w').'" height="'.$app->vars('_route.h').'" ',$image);
             } else {
-                $cachefile=md5($file.'_'.$app->vars('_route.w').'_'.$app->vars('_route.h').'_'.$app->vars('_get.zc')).'.'.$ext;
+								if ($ext == 'jpg') $ext = 'webp';
+								switch($ext) {
+									case 'jpg':
+										$options = ['jpeg_quality'=>85];
+										break;
+									case 'png':
+										$options = ['png_compression_level'=>8];
+										break;
+									case 'webp':
+										$options = ['webp_quality' => 85];
+										break;
+									default: $options = [];
+								}
+                $cachefile=md5($file.'_'.$app->vars('_route.w').'_'.$app->vars('_route.h').'_'.$app->vars('_get.zc').'_'.json_encode($options)).'.'.$ext;
                 $cachedir=$app->vars('_env.path_app').'/uploads/_cache/'.substr($cachefile, 0, 2);
                 $destination = $cachedir.'/'.$cachefile;
-
                 if (!is_dir($cachedir)) {
                     mkdir($cachedir, 0755, true);
                 }
@@ -109,7 +120,7 @@ class ctrlThumbnails
                         $mode    = Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
                     } else { $mode    = Imagine\Image\ImageInterface::THUMBNAIL_INSET;}
 
-                    $imagine->open(realpath($file))->thumbnail($size, $mode)->save($destination);
+                    $imagine->open(realpath($file))->thumbnail($size, $mode)->save($destination,$options);
                     $image=file_get_contents($destination);
     /*
                     if (in_array($ext, ['jpg','jpeg'])) {
@@ -117,54 +128,12 @@ class ctrlThumbnails
                         WebPConvert::convert($destination, $destination.'.webp', $options);
                     }
     */
-                }                 
+                }
                 $image=file_get_contents($destination);
             }
-            
+						$mime = wbMime($destination);
             header('Content-Type: '.$mime);
             echo $image;
         }
-    }
-
-    public function thumbnail_view_gd($imgSrc, $thumbnail_width, $thumbnail_height)
-    { //$imgSrc is a FILE - Returns an image resource.
-        //getting the image dimensions
-        list($width_orig, $height_orig, $type) = getimagesize($imgSrc);
-        // Image is PNG:
-        if ($type == IMAGETYPE_PNG) {
-            $myImage = imagecreatefrompng(realpath($imgSrc));
-        }
-
-        // Image is JPEG:
-        elseif ($type == IMAGETYPE_JPEG) {
-            $myImage = imagecreatefromjpeg(realpath($imgSrc));
-        }
-        // Image is GIF:
-        elseif ($type == IMAGETYPE_GIF) {
-            $myImage = imagecreatefromgif(realpath($imgSrc));
-        }
-
-        $ratio_orig = $width_orig/$height_orig;
-
-        if ($thumbnail_width/$thumbnail_height > $ratio_orig) {
-            $new_height = $thumbnail_width/$ratio_orig;
-            $new_width = $thumbnail_width;
-        } else {
-            $new_width = $thumbnail_height*$ratio_orig;
-            $new_height = $thumbnail_height;
-        }
-
-        $x_mid = $new_width/2;  //horizontal middle
-    $y_mid = $new_height/2; //vertical middle
-
-    $process = imagecreatetruecolor(round($new_width), round($new_height));
-
-        imagecopyresampled($process, $myImage, 0, 0, 0, 0, $new_width, $new_height, $width_orig, $height_orig);
-        $thumb = imagecreatetruecolor($thumbnail_width, $thumbnail_height);
-        imagecopyresampled($thumb, $process, 0, 0, ($x_mid-($thumbnail_width/2)), ($y_mid-($thumbnail_height/2)), $thumbnail_width, $thumbnail_height, $thumbnail_width, $thumbnail_height);
-
-        imagedestroy($process);
-        imagedestroy($myImage);
-        return $thumb;
     }
 }
