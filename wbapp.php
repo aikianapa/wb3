@@ -602,7 +602,7 @@ class wbApp
     }
 
     public function getCache() {
-      if (((!count($_POST) AND isset($_GET['update']) AND count($_GET) == 1) OR (count($_POST) AND count($_GET)))) return null;
+      if (((!count($_POST) AND isset($_GET['update']) AND count($_GET) == 1) OR count($_POST) OR count($_GET))) return null;
       $cid = $this->getCacheId();
       $sub = substr($cid,0,4);
       $dir = $this->vars('_env.dbac').'/'.$sub;
