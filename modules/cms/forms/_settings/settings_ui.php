@@ -30,7 +30,7 @@
               {{_lang.modules}}
             </a>
           </span>
-         
+
           <span class="nav-item">
             <a class="nav-link" href="#" data-ajax="{'url':'/cms/settings/ui_prop/','html':'#editSettingsForm'}">
               {{_lang.properties}}
@@ -42,7 +42,13 @@
               {{_lang.api}}
             </a>
           </span>
-       
+
+					<span class="nav-item">
+            <a class="nav-link" href="#" data-ajax="{'url':'/cms/settings/ui_seo/','html':'#editSettingsForm'}">
+              {{_lang.seo}}
+            </a>
+          </span>
+
         </nav>
       </div>
     </div>
@@ -65,6 +71,7 @@ properties = Properties
 menu = Menu
 api = API settings
 modules = Modules
+seo = SEO settings
 [ru]
 settings = Настройки
 common = Основные
@@ -73,6 +80,7 @@ properties = Свойства
 menu = Меню
 api = Настройки API
 modules = Модули
+seo = Настройки SEO
 </wb-lang>
 
 </html>

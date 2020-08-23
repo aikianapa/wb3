@@ -448,6 +448,12 @@ class wbDom extends DomQuery
         $this->item["_var"] = &$_ENV["variables"];
     }
 
+		public function setSeo() {
+				if ((!isset($this->item['header']) OR $this->item['header'] == '') && $this->find('title')->length && $this->find('title')->text() == '') {
+						$this->find('title')->text($this->app->vars('_sett.header'));
+				}
+		}
+
     public function setValues()
     {
         if ($this->strict) return;

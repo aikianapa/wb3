@@ -41,7 +41,7 @@ class ctrlForm {
             }
 						if (!$dom) $dom = $this->get404();
             $dom->fetch();
-						$this->getSeo($dom);
+						$dom->setSeo();
             $out = $dom->outer();
             if ( !strpos( ' '.$out, '<!DOCTYPE html>' ) ) $out = '<!DOCTYPE html>'.$out;
             echo $out;
@@ -51,12 +51,6 @@ class ctrlForm {
         }
         die;
     }
-
-		function getSeo(&$dom) {
-				if ((!isset($dom->item['header']) OR $dom->item['header'] == '') && $dom->find('title')->length && $dom->find('title')->text() == '') {
-						$dom->find('title')->text($dom->app->vars('_sett.header'));
-				}
-		}
 
 		function get404() {
 				$app = &$this->app;

@@ -1,4 +1,11 @@
 <div class="form-group row">
+    <label class="col-sm-3 form-control-label">{{_lang.active}}</label>
+    <div class="col-sm-9">
+        <input wb="{'module':'switch'}" name="seo" placeholder="{{_lang.active}}"> </div>
+</div>
+
+
+<div class="form-group row">
     <label class="col-sm-3 form-control-label">{{_lang.title}}</label>
     <div class="col-sm-9">
         <input type="text" class="form-control" name="title" placeholder="{{_lang.title}}"> </div>
@@ -68,6 +75,7 @@
 
 <wb-lang>
 [en]
+active					= "Active"
 title           = "Title"
 descr           = "META Description"
 keywords        = "META Keywords"
@@ -76,9 +84,10 @@ body_inc        = "Append to BODY"
 local_on        = "Turn On local append"
 glob_off        = "Turn Off global append"
 [ru]
+active					= "Активировать"
 title           = "Заголовок (title)"
-descr           = "META Описание"
-keywords        = "META Ключевые слова"
+descr           = "META Description"
+keywords        = "META Keywords"
 head_inc        = "Вставка в HEAD"
 body_inc        = "Вставка в BODY"
 local_on        = "Включить локальную вставку"
