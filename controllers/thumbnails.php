@@ -83,9 +83,11 @@ class ctrlThumbnails
         if (is_file($file)) {
             list($width, $height, $type) = $size = getimagesize($file);
             $ext = pathinfo($file, PATHINFO_EXTENSION);
+						 $options = [];
             if ($ext == 'svg') {
                 $image = file_get_contents($file);
                 $image = str_replace('<svg ','<svg width="'.$app->vars('_route.w').'" height="'.$app->vars('_route.h').'" ',$image);
+								$destination = $file;
             } else {
 								if ($ext == 'jpg') $ext = 'webp';
 								switch($ext) {
@@ -98,7 +100,6 @@ class ctrlThumbnails
 									case 'webp':
 										$options = ['webp_quality' => 85];
 										break;
-									default: $options = [];
 								}
                 $cachefile=md5($file.'_'.$app->vars('_route.w').'_'.$app->vars('_route.h').'_'.$app->vars('_get.zc').'_'.json_encode($options)).'.'.$ext;
                 $cachedir=$app->vars('_env.path_app').'/uploads/_cache/'.substr($cachefile, 0, 2);
