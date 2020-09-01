@@ -611,7 +611,6 @@ class wbApp
           if ((time() - filectime($name)) > $this->vars('_sett.cache')) {
 
             // Делаем асинхронный запрос с обновлением кэша
-
             $fp = stream_socket_client("tcp://{$this->route->hostname}:{$this->route->port}", $errno, $errstr, 30);
             if (!$fp) {
                 echo "$errstr ($errno)<br />\n";
