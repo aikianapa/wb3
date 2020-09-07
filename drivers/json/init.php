@@ -239,6 +239,7 @@ class jsonDrv
         $list = [];
         $flag = true;
         foreach($iter as $key => $item) {
+            $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
             $dot->setReference($item);
             if (isset($options->filter)) $flag = wbItemFilter($item,$options->filter);
             if (!$flag) {unset($list[$key]); } else {
@@ -254,7 +255,6 @@ class jsonDrv
                   }
                   $item = $tmp;
               }
-              $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
               $list[$item["_id"]] = $item;
             }
             if (!isset($options->sort) && isset($options->limit) && count($list) == $options->limit) break;
