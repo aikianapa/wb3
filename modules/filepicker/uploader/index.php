@@ -12,7 +12,12 @@ use Hazzard\Config\Repository as Config;
 
 $app = new wbApp();
 
-$uploader = new Uploader($config = new Config, new ImageManager(array('driver' => 'imagick')));
+if (class_exists('Imagick')) {
+    $uploader = new Uploader($config = new Config, new ImageManager(array('driver' => 'imagick')));
+} else {
+    $uploader = new Uploader($config = new Config, new ImageManager(array('driver' => 'gd')));
+}
+
 $handler = new Handler($uploader);
 
 // Configuration
