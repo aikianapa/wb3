@@ -555,8 +555,8 @@
     },
     {
         "name": "symfony/polyfill-mbstring",
-        "version": "v1.18.0",
-        "version_normalized": "1.18.0.0",
+        "version": "v1.18.1",
+        "version_normalized": "1.18.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-mbstring.git",
@@ -616,12 +616,26 @@
             "polyfill",
             "portable",
             "shim"
+        ],
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
         ]
     },
     {
         "name": "symfony/polyfill-php72",
-        "version": "v1.18.0",
-        "version_normalized": "1.18.0.0",
+        "version": "v1.18.1",
+        "version_normalized": "1.18.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-php72.git",
@@ -677,6 +691,20 @@
             "polyfill",
             "portable",
             "shim"
+        ],
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
         ]
     },
     {
@@ -763,17 +791,17 @@
     },
     {
         "name": "symfony/var-dumper",
-        "version": "v4.4.10",
-        "version_normalized": "4.4.10.0",
+        "version": "v4.4.14",
+        "version_normalized": "4.4.14.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/var-dumper.git",
-            "reference": "56b3aa5eab0ac6720dcd559fd1d590ce301594ac"
+            "reference": "0dc22bdf9d1197467bb04d505355180b6f20bcca"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/var-dumper/zipball/56b3aa5eab0ac6720dcd559fd1d590ce301594ac",
-            "reference": "56b3aa5eab0ac6720dcd559fd1d590ce301594ac",
+            "url": "https://api.github.com/repos/symfony/var-dumper/zipball/0dc22bdf9d1197467bb04d505355180b6f20bcca",
+            "reference": "0dc22bdf9d1197467bb04d505355180b6f20bcca",
             "shasum": ""
         },
         "require": {
@@ -797,7 +825,7 @@
             "ext-intl": "To show region name in time zone dump",
             "symfony/console": "To use the ServerDumpCommand and/or the bin/var-dump-server script"
         },
-        "time": "2020-05-30T20:06:45+00:00",
+        "time": "2020-09-18T08:35:10+00:00",
         "bin": [
             "Resources/bin/var-dump-server"
         ],
@@ -838,6 +866,20 @@
         "keywords": [
             "debug",
             "dump"
+        ],
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
         ]
     },
     {
@@ -846,12 +888,12 @@
         "version_normalized": "5.8.38.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/tightenco/collect.git",
+            "url": "https://github.com/tighten/collect.git",
             "reference": "c93a7039e6207ad533a09109838fe80933fcc72c"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/tightenco/collect/zipball/c93a7039e6207ad533a09109838fe80933fcc72c",
+            "url": "https://api.github.com/repos/tighten/collect/zipball/c93a7039e6207ad533a09109838fe80933fcc72c",
             "reference": "c93a7039e6207ad533a09109838fe80933fcc72c",
             "shasum": ""
         },

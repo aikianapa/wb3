@@ -173,7 +173,7 @@ function wbInitSettings(&$app)
     if (!($app->vars('_sett.cache') > "")) $app->vars('_sett.cache',1);
     if (in_array($app->vars('_route.controller'),['thumbnails','file'])) {
           if ($app->vars('_sett.user')) {
-              $app->vars('_sett.user.group', wbItemRead('users', $app->vars('_sett.user.role')));
+              $app->vars('_sett.user.group', $app->ItemRead('users', $app->vars('_sett.user.role')));
           }
           if (!$app->vars('_cookie.events')) {
               setcookie('events', base64_encode(json_encode([])), time()+3600, '/');
@@ -247,6 +247,7 @@ function wbGetSysMsg()
 
 function wbFormClass($form = null) {
   $app = $_ENV["app"];
+
   if ($form == null) $form = $app->vars("_route.form");
   if (is_file($app->vars("_env.path_app")."/forms/{$form}/_class.php")) {
       require_once($app->vars("_env.path_app")."/forms/{$form}/_class.php");
@@ -1499,9 +1500,13 @@ function wbItemInit($table, $item = null)
     $item['id'] = $item['_id'];
 
     $item['_table'] = $item['_form'] = $table;
-
-    $tmp = wbItemRead($item["_form"], $item["_id"]);
-    if ((!$tmp or !isset($tmp['_created']) or '' == $tmp['_created']) and !isset($item["_created"])) {
+    
+    if (in_array('wbItemRead',wbCallStack()) OR in_array('wbItemList',wbCallStack())) {
+        $tmp = null;
+    } else {
+        $tmp = wbItemRead($item["_form"], $item["_id"]);
+    }
+    if ((!$tmp or !isset($tmp['_created']) or '' == $tmp['_created']) or !isset($item["_created"])) {
         $item['_created'] = date('Y-m-d H:i:s');
     }
     if ((!$tmp or !isset($tmp['_creator']) or '' == $tmp['_creator']) and !isset($item["_creator"])) {
@@ -1511,6 +1516,10 @@ function wbItemInit($table, $item = null)
     $item['_lastdate'] = date('Y-m-d H:i:s');
     $item['_lastuser'] = $app->vars("_sess.user.id");
     return $item;
+}
+
+function wbCallStack() {
+    return array_column(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),'function');
 }
 
 function wb_file_get_contents($file)
@@ -1980,7 +1989,7 @@ function wbQuery($sql)
 
 function wbItemFilter($item, $filter)
 {
-	//print_r($filter);
+    //print_r($filter);
     $fields = new Dot();
     $fields->setReference($item);
     $result = true;
@@ -1993,7 +2002,7 @@ function wbItemFilter($item, $filter)
 									$expr = false;
 							}
 					}
-            if ($fields->get($fld) !== $expr) {
+            if ($fields->get($fld).'' !== $expr) {
                 $result = false;
             }
         } else {
@@ -2334,7 +2343,11 @@ function wbPasswordCheck($str, $pass)
 
 function wbPasswordMake($str)
 {
-    return md5($str);
+    if (is_callable('passwordMake')) {
+        return passwordMake($str);
+    } else {
+        return md5($str);
+    }
 }
 
 function wbRouterGet($requestedUrl = null)

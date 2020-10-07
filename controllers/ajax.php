@@ -52,13 +52,15 @@ class ctrlAjax {
           }
           return json_encode(['login'=>false,'error'=>false,'redirect'=>$url,'user'=>[],'role'=>[]]);
       }
-      if (!in_array($fld,['email','phone','login'])) return json_encode(['login'=>false,'error'=>'Unknown']);
+
+      if (!in_array($fld,['email','phone','login']) OR !isset($post->login)) return json_encode(['login'=>false,'error'=>'Unknown']);
 
       $user = $app->itemList('users',['filter'=> [$fld => $post->login ], 'limit'=>1 ]);
       if (intval($user['count']) > 0) $user = array_shift($user['list']);
           else return json_encode(['login'=>false,'error'=>'Unknown']);
       $user = (object)$user;
-      if ($user->password == md5($post->password)) {
+
+      if (isset($post->password) AND isset($user->password) AND $app->passwordCheck($post->password, $user->password)) {
           $role = (object)$app->itemRead('users',$user->role);
           $url = '/cms';
           if (!isset($role->active) OR $role->active !== 'on' OR $user->active !== 'on') return json_encode(['login'=>false,'error'=>'Account is not active']);

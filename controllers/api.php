@@ -52,13 +52,17 @@ class ctrlApi {
 				$access = true;
 				$local = false;
 
-				if ($app->vars('_sett.api_key_'.$mode) == 'on') $access = false;
-
-				if (!$access && $token !== $app->vars('_req.__token') ) {
+                if ($app->vars('_sett.api_key_'.$mode) == 'on') $access = false;
+                
+                if ($access && $token !== $app->vars('_req.__token') ) {
 						echo json_encode(['error'=>true,'msg'=>'Access denied']);
 						die;
 				}
 
+                if (!$access && $app->vars('_sett.api_key') !== $app->vars('_req.__apikey') ) {
+                    echo json_encode(['error'=>true,'msg'=>'Access denied']);
+                    die;
+                }
 
 				if ($app->vars('_req.__apikey')) {
 						unset($_REQUEST['__apikey']);

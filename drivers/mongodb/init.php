@@ -111,8 +111,6 @@ class mongodbDrv
         }
 
         $filter = $this->filterPrepare($filter);
-        $count = $this->db->$form->count($filter);
-        if (!isset($size)) $size = $count;
 
         $find = $this->db->$form->find($filter, $params);
         $list = [];
@@ -125,6 +123,8 @@ class mongodbDrv
             $doc = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $doc);
             $list[$doc['_id']] = $doc;
         }
+        $count = count($list);
+        if (!isset($size)) $size = $count;
         return ["list"=>$list,"count"=>$count,"page"=>$page,"size"=>$size];
     }
 
