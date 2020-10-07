@@ -35,7 +35,7 @@
                 {{#if avatar.0.img}}
                 <img data-src="/thumbc/48x48/src/{{avatar.0.img}}" class="rounded-circle" alt="">
                 {{else}}
-                <img data-src="/thumbc/48x48/src/engine/modules/cms/tpl/assets/img/human.png" class="rounded-circle" alt="">
+                <img data-src="/engine/modules/cms/tpl/assets/img/user.svg" class="rounded-circle" style='width:48px' alt="">
                 {{/if}}
               </a>
               <div class="aside-alert-link">
@@ -70,10 +70,10 @@
         </div>
 
         <ul class="nav nav-aside" wb-tree="{'table':'_settings','item':'settings','field':'cmsmenu','branch':'aside','parent':'false'}">
-              <li class="mg-t-25" wb-if=' "{{_lvl}}" == "1" '>
+              <li class="mg-t-25" wb-if=' "{{_lvl}}" == "1" AND "{{active}}" == "on"'>
                 <span class="nav-label">{{data.label}}</span>
               </li>
-              <li class="nav-item" wb-if=' "{{_lvl}}" == "2" '>
+              <li class="nav-item" wb-if=' "{{_lvl}}" == "2" AND "{{active}}" == "on" '>
                 <a href="#" data-ajax="{{data.ajax}}" class="nav-link"><i class="{{data.icon}}"></i>&nbsp;&nbsp;
                   <span>{{data.label}}</span>
                 </a>

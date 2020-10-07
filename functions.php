@@ -99,7 +99,7 @@ function wbInitSettings(&$app)
     if (!$app->vars('_sess.events')) {
         $app->vars('_sess.events', []);
     } // массив для передачи событий в браузер во время вызова wbapp.alive()
-    if (isset($_COOKIE['user'])) {
+    if (isset($_COOKIE['user']) && !isset($_SESSION['user'])) {
         $_SESSION['user'] = $app->ItemRead("users", $_COOKIE['user']);
     }
     if (!isset($_SESSION['user'])) {
