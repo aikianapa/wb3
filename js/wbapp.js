@@ -179,7 +179,6 @@ if (typeof $ === 'undefined') {
                         key += k
                     }
                 }
-
                 try {
                     eval(`branch = data.${key}`);
                     if (i + 1 < last && typeof branch !== "object") eval(`data.${key} = {}`);

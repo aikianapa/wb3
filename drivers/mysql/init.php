@@ -58,8 +58,6 @@ class mysqlDrv
 
     public function ItemOconv(&$item) {
         $form = $item['_form'];
-
-        if (isset($this->keys->$form) AND isset($item[$this->keys->$form])) $item['_id'] = $item['id'] = $item[$this->keys->$form];
         if (!isset($item['_json'])) {
             $json = [];
         } else {
@@ -68,6 +66,7 @@ class mysqlDrv
         if (!$json) $json = [];
         $item['_json'] = $json;
         $item = array_merge($json,$item);
+        if (isset($this->keys->$form) AND isset($item[$this->keys->$form])) $item['_id'] = $item['id'] = $item[$this->keys->$form];
     }
 
     public function ItemRead($form = 'pages', $id = null)
@@ -85,7 +84,6 @@ class mysqlDrv
     }
 
     public function ItemRemove($form = 'pages', $id = null, $flush = null) {
-
         if (!$form) return null;
         if (!$id) return null;
         $this->GetProp($form);
@@ -98,7 +96,7 @@ class mysqlDrv
         } else {
             $item = $this->itemRead($form,$id);
             if ($item) {
-                $this->db->where('id', $id);
+                $this->db->where($this->keys->$form, $id);
                 if ($this->db->delete($form)) {
                     $res = $item;
                 } else {
@@ -110,8 +108,58 @@ class mysqlDrv
     }
 
     public function ItemSave($form, $item = null, $flush = true) {
-        print_r($item);
+        $this->GetProp($form);
+        $item = $this->app->ItemInit($form, $item);
+        $id = $item['_id'];
+        $check = $this->checkExists($form,$id);
+        if ($check) {
+            $json = $this->ItemJsonData($form,$id);
+        } else {
+            $json = [];
+            $item[$this->keys->$form] = $id;
+        }
 
+        $fields = array_column($this->fields->$form,'name');
+        foreach($item as $fld => $val) {
+            if (!in_array($fld,$fields) AND !in_array($fld,['id','_id'])) {
+                $json[$fld] = $val;
+                unset($item[$fld]);
+            }
+        }
+        if (!in_array('id',$fields)) unset($item['id']);
+        $item['_json'] = $this->app->jsonEncode($json);
+        if ($check) {
+            $this->db->where($this->keys->$form, $id);
+            $this->db->update($form, $item);
+        } else {
+            $id = $this->db->insert($form, $item);
+        }
+
+        if ($this->db->count) {
+            $item['id'] = $item['_id'] = $id;
+            $item['_json'] = $json;
+            return $item;
+        } else {
+            return null;
+        }
+
+    }
+
+    public function checkExists($form,$id) {
+        $this->db->where($this->keys->$form,$id);
+        $this->db->getOne ($form,$this->keys->$form);
+        return $this->db->count;
+    }
+
+    public function ItemJsonData($form,$id) {
+        $this->db->where($this->keys->$form,$id);
+        $json = $this->db->getOne ($form, '_json');
+        if (!isset($json['_json']) OR $json['_json'] == '' OR !$json['_json']) {
+            $json = [];
+        } else {
+            $json = json_decode($json['_json'],true);
+        }
+        return $json;
     }
 
     public function ItemList($form = 'pages', $options = [])
@@ -131,14 +179,15 @@ class mysqlDrv
         $list = [];
         $iter = new ArrayIterator($find);
         foreach ($iter as $doc) {
-            if (!isset($doc['_id'])) $doc['_id'] = $doc[$this->keys->$form];
-
+            //if (!isset($doc['_id'])) $doc['_id'] = $doc[$this->keys->$form];
+            if (isset($this->keys->$form) AND isset($doc[$this->keys->$form])) $doc['_id'] = $doc['id'] = $doc[$this->keys->$form];
             $doc = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $doc);
             $res = true;
             if (isset($options['filter'])) {
                 $res = wbItemFilter($doc, $options['filter']);
-            } 
-            if ($res) $list[''.$doc['_id'].''] = $doc;
+            }
+            $doc = $this->app->ItemInit($form, $doc);
+            if ($res) $list[] = $doc;
         }
         if (count($params['sort'])) {
             $json = new Jsonq();
@@ -146,13 +195,8 @@ class mysqlDrv
             foreach ($params['sort'] as $fld => $order) {
                 $list->sortBy($fld, $order);
             }
-
-            $iter = new ArrayIterator($list->get());
-            $list = [];
-            foreach ($iter as $item) {
-                $list[$item['_id']] = $item;
-            }
         }
+
         if (isset($options->limit) && count($list)) {
             $list = array_chunk($list, $options->limit);
             $list = $list[0];
@@ -169,6 +213,15 @@ class mysqlDrv
             $list = $chunk;
 
         }
+
+        $iter = new ArrayIterator($list);
+        $list = [];
+        foreach ($iter as $item) {
+            $list[''.$item['_id']] = $item;
+        }
+
+
+
         return ["list" => $list, "count" => $count, "page" => $page, "size" => $size];
         
     }
@@ -180,7 +233,7 @@ class mysqlDrv
         $table = $this->dbname . '.' . $form;
 
         if (!in_array('_id',$names)) {
-            $this->db->rawQuery("ALTER TABLE {$table} ADD COLUMN `_id` VARCHAR(45) NOT NULL, ADD UNIQUE INDEX `_id_UNIQUE` (`_id` ASC) ;");
+            $this->db->rawQuery("ALTER TABLE {$table} ADD COLUMN `_id` VARCHAR(45), ADD UNIQUE INDEX `_id_UNIQUE` (`_id` ASC) ;");
             $check = true;
         }
 
