@@ -2002,7 +2002,7 @@ function wbItemFilter($item, $filter)
 									$expr = false;
 							}
 					}
-            if ($fields->get($fld).'' !== $expr) {
+            if ($fields->get($fld).'' !== ''.$expr) {
                 $result = false;
             }
         } else {
