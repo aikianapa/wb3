@@ -35,7 +35,7 @@
                 {{#if avatar.0.img}}
                 <img data-src="/thumbc/48x48/src/{{avatar.0.img}}" class="rounded-circle" alt="">
                 {{else}}
-                <img data-src="/engine/modules/cms/tpl/assets/img/user.svg" class="rounded-circle" style='width:48px' alt="">
+                <img data-src="/engine/modules/cms/tpl/assets/img/user.svg" class="rounded-circle" alt="">
                 {{/if}}
               </a>
               <div class="aside-alert-link">

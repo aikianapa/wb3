@@ -78,7 +78,12 @@ class tagForeach
             $list = (array) wbEval($dom->params("call"));
         }
 
-        if ($dom->params("from")) {
+        if ($dom->params('json')) {
+            $list['json'] = json_decode(str_replace("'",'"',$dom->params("json")),true);
+            $dom->params->from = 'json';
+        }
+
+        if ($dom->params('from')) {
             if (isset($list[$dom->params->from])) {
                 $list = $list[$dom->params->from];
             } else {

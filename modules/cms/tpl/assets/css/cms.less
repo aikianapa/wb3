@@ -46,6 +46,16 @@ body {
             text-transform: none;
             font-weight: normal;
         }
+
+        #userProfileMenu {
+            .avatar {
+                img {
+                    width: 48px;
+                    height: 48px;
+                }
+            }
+        }
+
         @media (max-width: 991px) {
             &:not(.aside-show) {
                 .aside-logo {
@@ -81,6 +91,16 @@ body {
             ul {
                 padding-left: 0;
             }
+
+            #userProfileMenu {
+                .avatar {
+                    img {
+                        width: 30px;
+                        height: 30px;
+                    }
+                }
+            }
+
         }
     }
     &.chat-content-show {
@@ -95,6 +115,12 @@ body {
             }
         }
     }
+
+    .input-group .input-group-append > .form-control {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
 }
 .cursor-pointer {
     cursor: pointer;

@@ -7,15 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Twitter -->
-    <meta name="twitter:site" content="@themepixels">
-    <meta name="twitter:creator" content="@themepixels">
+    <meta name="twitter:site" content="@webbasic">
+    <meta name="twitter:creator" content="@webbasic">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="WebBasic">
     <meta name="twitter:description" content="Web Basic - Pandorum varsion">
     <meta name="twitter:image" content="http://themepixels.me/dashforge/img/dashforge-social.png">
 
     <!-- Facebook -->
-    <meta property="og:url" content="http://themepixels.me/dashforge">
+    <meta property="og:url" content="http://digiport.ru">
     <meta property="og:title" content="WebBasic">
     <meta property="og:description" content="Web Basic - Pandorum varsion">
 

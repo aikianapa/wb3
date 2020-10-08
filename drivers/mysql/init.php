@@ -181,14 +181,15 @@ class mysqlDrv
         foreach ($iter as $doc) {
             //if (!isset($doc['_id'])) $doc['_id'] = $doc[$this->keys->$form];
             if (isset($this->keys->$form) AND isset($doc[$this->keys->$form])) $doc['_id'] = $doc['id'] = $doc[$this->keys->$form];
+            $doc = $this->app->ItemInit($form, $doc);
             $doc = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $doc);
             $res = true;
             if (isset($options['filter'])) {
                 $res = wbItemFilter($doc, $options['filter']);
             }
-            $doc = $this->app->ItemInit($form, $doc);
             if ($res) $list[] = $doc;
         }
+        
         if (count($params['sort'])) {
             $json = new Jsonq();
             $list = $json->collect($list);
