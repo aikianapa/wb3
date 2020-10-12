@@ -418,9 +418,11 @@ function wbCheckWorkspace()
 
 function wbPagination($c, $m, $dots = '...')
 {
+    ($c == '') ? $c = 1 : $c = intval($c);
     $current = $c;
     $last = $m;
     $delta = 4;
+
     $left = $current - $delta;
     $right = $current + $delta + 1;
     $range = array();
@@ -448,10 +450,10 @@ function wbPagination($c, $m, $dots = '...')
     $range = [];
     $flag = false;
     $i=0;
-    if ($c == 1) {
-        $range[$i] = ["label"=>"prev","page"=>""];
+    if ($current == 1) {
+        $range[$i] = ["label"=>"prev","page"=>$m];
     } else {
-        $range[$i] = ["label"=>"prev","page"=>$c-1];
+        $range[$i] = ["label"=>"prev","page"=>$current-1];
     }
     foreach ($rangeWithDots as $key => $page) {
         $i++;
@@ -467,7 +469,7 @@ function wbPagination($c, $m, $dots = '...')
         }
     }
     $i++;
-    $c == $m ? $range[$i] = ["label"=>"next","page"=>""] : $range[$i] = ["label"=>"next","page"=>$c+1];
+    $c == $m ? $range[$i] = ["label"=>"next","page"=>1] : $range[$i] = ["label"=>"next","page"=>$c+1];
     return $range;
 }
 

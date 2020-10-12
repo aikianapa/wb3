@@ -8,6 +8,11 @@ if (typeof $ === 'undefined') {
 
     wbapp.bind = {};
 
+    wbapp.ui = {
+        spinner_sm : '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>',
+        spinner_sm_grow : '<span class="spinner-grow spinner-grow-sm" role="status"></span>'
+    };
+
     wbapp.lazyload = function () {
         $("[data-src]:not([src])").lazyload();
     }
@@ -21,11 +26,11 @@ if (typeof $ === 'undefined') {
                     // ajax string only
                     params.url = $(this).attr("data-ajax");
                     if ($(this).parents('form').length) {
-                        let id = wbapp.newId('_','ax');
+                        let id = wbapp.newId('_', 'ax');
                         if ($(this).parents('form').attr('id') == undefined) {
-                            $(this).parents('form').attr('id',id);
+                            $(this).parents('form').attr('id', id);
                         }
-                        params.form = 'form#'+$(this).parents('form').attr('id');
+                        params.form = 'form#' + $(this).parents('form').attr('id');
                     }
                 }
                 params._event = e;
@@ -55,6 +60,10 @@ if (typeof $ === 'undefined') {
             let tid = $(paginator).data("tpl");
             let params = wbapp.template[tid].params;
             let page = $(this).attr("data-page");
+            let that = this;
+            let inner = $(that).html();
+            $(that).html(wbapp.ui.spinner_sm);
+
             if (params._route) {
                 params.url = params._route.url;
                 params._params.page = page;
@@ -62,7 +71,9 @@ if (typeof $ === 'undefined') {
                 params.page = page;
             }
             params._tid = tid;
-            wbapp.ajax(params);
+            wbapp.ajax(params, function(){
+                $(that).html(inner);
+            });
         });
 
         $(document).delegate("input[type=search][data-ajax]", "keyup", function () {
@@ -188,7 +199,7 @@ if (typeof $ === 'undefined') {
             })
             eval(`data.${key} = value`);
             localStorage.setItem(list[0], json_encode(data));
-            $(document).trigger("bind", {key:key, data:value});
+            $(document).trigger("bind", { key: key, data: value });
             console.log("Trigger: bind [" + key + "]");
             $(document).trigger("bind-" + key, value);
             console.log("Trigger: bind-" + key);
@@ -273,7 +284,7 @@ if (typeof $ === 'undefined') {
             if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
             if (params.bind) wbapp.storage(params.bind, data);
             if (params.update) wbapp.storageUpdate(params.update, data);
-            if (data._id !== undefined) $(obj).data('saved-id',data._id);
+            if (data._id !== undefined) $(obj).data('saved-id', data._id);
 
             //console.log($(obj).data('saved-id'));
 
@@ -302,17 +313,17 @@ if (typeof $ === 'undefined') {
             if ($(this).is('[src]')) {
                 let src = $(this).attr('src');
                 console.log(src);
-                $(this).attr('src','');
-                $(this).attr('type','text/javascript');
-                $(this).attr('src',src);
+                $(this).attr('src', '');
+                $(this).attr('type', 'text/javascript');
+                $(this).attr('src', src);
             } else {
-              var script = $(this).text();
-              var hash = md5(script);
-              if (!in_array(hash, done)) {
-                  eval(script);
-                  done.push(hash);
-              }
-              if ($(this).attr("visible") == undefined) $(this).remove();
+                var script = $(this).text();
+                var hash = md5(script);
+                if (!in_array(hash, done)) {
+                    eval(script);
+                    done.push(hash);
+                }
+                if ($(this).attr("visible") == undefined) $(this).remove();
             }
         });
     }
@@ -343,7 +354,7 @@ if (typeof $ === 'undefined') {
         return params;
     }
 
-    wbapp.ajax = async function (params) {
+    wbapp.ajax = async function (params,func = null) {
         if (!params.url && !params.tpl && !params.target) return;
         if (params.url !== undefined) {
             if (params.form !== undefined) {
@@ -353,7 +364,8 @@ if (typeof $ === 'undefined') {
             delete opts._event;
             $.post(params.url, opts, function (data) {
                 if (count(data) == 2 && data.error !== undefined && data.callback !== undefined) {
-                    eval(data.callback);
+                    eval(data.callback + '(params,data)');
+                    if (func !== null) return func(params,data);
                 }
                 if (params.html) eval(`$(document).find('${params.html}').html(data);`);
                 if (params.append) eval(`$(document).find('${params.append}').append(data);`);
@@ -388,6 +400,7 @@ if (typeof $ === 'undefined') {
                 }
                 let showmod = $(document).find(".modal.show:not(:visible)");
                 if (showmod.length) showmod.removeClass("show").modal('show');
+                if (func !== null) return func(params,data);
             });
         } else if (params.target !== undefined) {
             var target = wbapp.template[params.target];
@@ -412,7 +425,7 @@ if (typeof $ === 'undefined') {
                     }
                     if (target.params.page !== undefined) delete target.params.page
                 });
-                wbapp.ajax(target.params);
+                wbapp.ajax(target.params,func);
             }
         }
     }
@@ -423,13 +436,13 @@ if (typeof $ === 'undefined') {
             if (data._removed !== undefined && data._removed == true) {
                 try {
                     delete store.result[data._id]
-                } catch (err) {}
+                } catch (err) { }
             } else if (data._renamed !== undefined && data._renamed == true) {
                 /// rename
             } else {
                 try {
                     store.result[data._id] = data
-                } catch (err) {}
+                } catch (err) { }
             }
             wbapp.storage(key, store);
         } else {
@@ -448,11 +461,11 @@ if (typeof $ === 'undefined') {
         if (params.target) options.target = params.target;
         if (params.delay) options.delay = params.delay;
         if (params.bgcolor) {
-            $tpl.addClass('bd-'+params.bgcolor);
-            $tpl.find('.toast-header').addClass('bg-'+params.bgcolor);
+            $tpl.addClass('bd-' + params.bgcolor);
+            $tpl.find('.toast-header').addClass('bg-' + params.bgcolor);
         }
         if (params.txcolor) {
-            $tpl.find('.toast-header h6').addClass('tx-'+params.txcolor).removeClass('tx-inverse');
+            $tpl.find('.toast-header h6').addClass('tx-' + params.txcolor).removeClass('tx-inverse');
         }
         $tpl.attr('data-delay', options.delay);
         let toast = Ractive({
@@ -498,7 +511,7 @@ if (typeof $ === 'undefined') {
                 params: {}
             });
         }
-				if (wbapp.template['wb.modal'] == undefined) {
+        if (wbapp.template['wb.modal'] == undefined) {
             var res = wbapp.getForm("snippets", "modal");
             wbapp.tpl('wb.modal', {
                 html: res.result,
@@ -538,7 +551,7 @@ if (typeof $ === 'undefined') {
 
     wbapp.getForm = function (form, mode, data = {}) {
         var res = wbapp.postSync(`/ajax/getform/${form}/${mode}`, data);
-				return res;
+        return res;
     }
 
     wbapp.tpl = function (tid, data = null) {
@@ -551,7 +564,7 @@ if (typeof $ === 'undefined') {
 
     wbapp.renderTemplate = function (params, data = {}) {
         var tid;
-				var newbind = false;
+        var newbind = false;
         if (params._tid !== undefined) tid = params._tid;
         if (params.target !== undefined) tid = params.target;
 
@@ -567,9 +580,9 @@ if (typeof $ === 'undefined') {
         if (wbapp.template[tid] == undefined) return;
 
         if (wbapp.bind[params.bind] == undefined) {
-						wbapp.bind[params.bind] = {};
-						newbind = true;
-				}
+            wbapp.bind[params.bind] = {};
+            newbind = true;
+        }
         wbapp.storage(params.bind, data);
 
         wbapp.bind[params.bind][tid] = new Ractive({
@@ -590,15 +603,15 @@ if (typeof $ === 'undefined') {
         }
 
         if (newbind) {
-		        $(document).on("bind-" + params.bind, function (e, data) {
-								$(wbapp.bind[params.bind]).each(function(i, ractive){
-										let tid = Object.keys( ractive )[0];
-										//console.log("Trigger: bind-" + params.bind ,tid, data);
-										console.log("Trigger: bind-" + params.bind);
-			            	wbapp.bind[params.bind][tid].set(data);
-								})
-		        })
-				}
+            $(document).on("bind-" + params.bind, function (e, data) {
+                $(wbapp.bind[params.bind]).each(function (i, ractive) {
+                    let tid = Object.keys(ractive)[0];
+//                    console.log("Trigger: bind-" + params.bind ,tid, data);
+//                    console.log("Trigger: bind-" + params.bind);
+//                    wbapp.bind[params.bind][tid].set(data);
+                })
+            })
+        }
     }
 
     wbapp.newId = function (separator, prefix) {
@@ -642,7 +655,7 @@ if (typeof $ === 'undefined') {
                 });
 
             var zndx = document.modalZndx + 10;
-						document.modalZndx = zndx;
+            document.modalZndx = zndx;
             if (!$(this).closest().is("body")) {
                 if ($(this).data("parent") == undefined) $(this).data("parent", $(this).closest());
                 $(this).appendTo("body");
@@ -658,7 +671,7 @@ if (typeof $ === 'undefined') {
         });
 
         $(document).delegate(".modal [data-dismiss]", "click", function (event) {
-						event.preventDefault();
+            event.preventDefault();
             var zndx = $(this).attr("data-dismiss");
             var modal = $(document).find(".modal[data-zndx='" + $(this).attr("data-dismiss") + "']");
             modal.modal("hide");
@@ -669,7 +682,7 @@ if (typeof $ === 'undefined') {
             var zndx = $(that).attr("data-zndx");
             $("#modalBackDrop" + (zndx - 5) + ".modal-backdrop").remove();
             var zndx = document.modalZndx - 10;
-						document.modalZndx = zndx;
+            document.modalZndx = zndx;
         });
         $(document).delegate(".modal", "hidden.bs.modal", function (event) {
             var that = $(event.target);
@@ -684,7 +697,7 @@ if (typeof $ === 'undefined') {
             console.log("Trigger: wb-ajax-done");
             if (wbapp !== undefined) {
                 wbapp.tplInit();
-//                wbapp.watcherInit();
+                //                wbapp.watcherInit();
                 wbapp.wbappScripts();
                 wbapp.pluginsInit();
                 wbapp.lazyload();
@@ -694,71 +707,71 @@ if (typeof $ === 'undefined') {
         });
     }
 
-		wbapp.getModal = function(id = null) {
-		  var modal = $(document).data("wbapp-modal");
-		  if (modal == undefined) {
-		    var modal = wbapp.postSync("/ajax/getform/snippets/modal/");
-		    modal = $("<div>" + modal.content + "</div>").find(".modal").clone();
-		    $(document).data("wbapp-modal", modal);
-		  }
-			var zndx = document.modalZndx + 10;
-			document.modalZndx = zndx;
-		  if (id !== null) $(modal).attr("id", id);
-		  if (zndx !== undefined) $(modal).data("zndx", zndx).attr("style", "z-index:" + zndx);
-		  return $(modal).clone();
-		}
+    wbapp.getModal = function (id = null) {
+        var modal = $(document).data("wbapp-modal");
+        if (modal == undefined) {
+            var modal = wbapp.postSync("/ajax/getform/snippets/modal/");
+            modal = $("<div>" + modal.content + "</div>").find(".modal").clone();
+            $(document).data("wbapp-modal", modal);
+        }
+        var zndx = document.modalZndx + 10;
+        document.modalZndx = zndx;
+        if (id !== null) $(modal).attr("id", id);
+        if (zndx !== undefined) $(modal).data("zndx", zndx).attr("style", "z-index:" + zndx);
+        return $(modal).clone();
+    }
 
-		wbapp.ajaxSync = function(ajaxObjs, fn) {
-		  if (!ajaxObjs) return;
-		  var data = [];
-		  var ajaxCount = ajaxObjs.length;
+    wbapp.ajaxSync = function (ajaxObjs, fn) {
+        if (!ajaxObjs) return;
+        var data = [];
+        var ajaxCount = ajaxObjs.length;
 
-		  if (fn == undefined) {
-		    var fn = function(data) {
-		      return data;
-		    }
-		  }
+        if (fn == undefined) {
+            var fn = function (data) {
+                return data;
+            }
+        }
 
-		  for (var i = 0; i < ajaxCount; i++) { //append logic to invoke callback function once all the ajax calls are completed, in success handler.
-		    $.ajax(ajaxObjs[i]).done(function(res) {
-		      ajaxCount--;
-		      if (ajaxObjs.length > 0) {
-		        data.push(res);
-		      } else {
-		        data = res;
-		      }
-		    }).fail(function() {
-		      ajaxCount--;
-		      if (ajaxObjs.length > 0) {
-		        data.push(false);
-		      } else {
-		        data = false;
-		      }
-		    }); //make ajax call
-		  };
-		  while (ajaxCount > 0) {
-		    // wait all done
-		  }
-		  return fn(data);
-		}
+        for (var i = 0; i < ajaxCount; i++) { //append logic to invoke callback function once all the ajax calls are completed, in success handler.
+            $.ajax(ajaxObjs[i]).done(function (res) {
+                ajaxCount--;
+                if (ajaxObjs.length > 0) {
+                    data.push(res);
+                } else {
+                    data = res;
+                }
+            }).fail(function () {
+                ajaxCount--;
+                if (ajaxObjs.length > 0) {
+                    data.push(false);
+                } else {
+                    data = false;
+                }
+            }); //make ajax call
+        };
+        while (ajaxCount > 0) {
+            // wait all done
+        }
+        return fn(data);
+    }
 
 
     wbapp.getSync = async function (url, data = {}) {
-			return wbapp.ajaxSync([{
-				url: url,
-				type: 'GET',
-				async: false,
-				data: data
-			}])[0];
+        return wbapp.ajaxSync([{
+            url: url,
+            type: 'GET',
+            async: false,
+            data: data
+        }])[0];
     }
 
     wbapp.postSync = function (url, data = {}) {
         return wbapp.ajaxSync([{
-					url: url,
-					type: 'POST',
-					async: false,
-					data: data
-				}])[0];
+            url: url,
+            type: 'POST',
+            async: false,
+            data: data
+        }])[0];
     }
 
     wbapp.session = async function () {
@@ -847,25 +860,25 @@ if (typeof $ === 'undefined') {
         });
     }
 
-    wbapp.furl = function(str) {
-      str = str.replace(/[^а-яА-Яa-zA-Z0-9_-]{1,}/gm, "_");
-      str = str.replace(/[__]{1,}/gm, "_");
-      str = wbapp.transilt(str);
-      return str;
+    wbapp.furl = function (str) {
+        str = str.replace(/[^а-яА-Яa-zA-Z0-9_-]{1,}/gm, "_");
+        str = str.replace(/[__]{1,}/gm, "_");
+        str = wbapp.transilt(str);
+        return str;
     }
 
-    wbapp.transilt = function(word){
+    wbapp.transilt = function (word) {
         let answer = "";
         let a = {};
         let i;
-        a["Ё"]="YO";a["Й"]="I";a["Ц"]="TS";a["У"]="U";a["К"]="K";a["Е"]="E";a["Н"]="N";a["Г"]="G";a["Ш"]="SH";a["Щ"]="SCH";a["З"]="Z";a["Х"]="H";a["Ъ"]="'";
-        a["ё"]="yo";a["й"]="i";a["ц"]="ts";a["у"]="u";a["к"]="k";a["е"]="e";a["н"]="n";a["г"]="g";a["ш"]="sh";a["щ"]="sch";a["з"]="z";a["х"]="h";a["ъ"]="'";
-        a["Ф"]="F";a["Ы"]="I";a["В"]="V";a["А"]="a";a["П"]="P";a["Р"]="R";a["О"]="O";a["Л"]="L";a["Д"]="D";a["Ж"]="ZH";a["Э"]="E";
-        a["ф"]="f";a["ы"]="i";a["в"]="v";a["а"]="a";a["п"]="p";a["р"]="r";a["о"]="o";a["л"]="l";a["д"]="d";a["ж"]="zh";a["э"]="e";
-        a["Я"]="Ya";a["Ч"]="CH";a["С"]="S";a["М"]="M";a["И"]="I";a["Т"]="T";a["Ь"]="'";a["Б"]="B";a["Ю"]="YU";
-        a["я"]="ya";a["ч"]="ch";a["с"]="s";a["м"]="m";a["и"]="i";a["т"]="t";a["ь"]="'";a["б"]="b";a["ю"]="yu";
+        a["Ё"] = "YO"; a["Й"] = "I"; a["Ц"] = "TS"; a["У"] = "U"; a["К"] = "K"; a["Е"] = "E"; a["Н"] = "N"; a["Г"] = "G"; a["Ш"] = "SH"; a["Щ"] = "SCH"; a["З"] = "Z"; a["Х"] = "H"; a["Ъ"] = "'";
+        a["ё"] = "yo"; a["й"] = "i"; a["ц"] = "ts"; a["у"] = "u"; a["к"] = "k"; a["е"] = "e"; a["н"] = "n"; a["г"] = "g"; a["ш"] = "sh"; a["щ"] = "sch"; a["з"] = "z"; a["х"] = "h"; a["ъ"] = "'";
+        a["Ф"] = "F"; a["Ы"] = "I"; a["В"] = "V"; a["А"] = "a"; a["П"] = "P"; a["Р"] = "R"; a["О"] = "O"; a["Л"] = "L"; a["Д"] = "D"; a["Ж"] = "ZH"; a["Э"] = "E";
+        a["ф"] = "f"; a["ы"] = "i"; a["в"] = "v"; a["а"] = "a"; a["п"] = "p"; a["р"] = "r"; a["о"] = "o"; a["л"] = "l"; a["д"] = "d"; a["ж"] = "zh"; a["э"] = "e";
+        a["Я"] = "Ya"; a["Ч"] = "CH"; a["С"] = "S"; a["М"] = "M"; a["И"] = "I"; a["Т"] = "T"; a["Ь"] = "'"; a["Б"] = "B"; a["Ю"] = "YU";
+        a["я"] = "ya"; a["ч"] = "ch"; a["с"] = "s"; a["м"] = "m"; a["и"] = "i"; a["т"] = "t"; a["ь"] = "'"; a["б"] = "b"; a["ю"] = "yu";
 
-        for (i = 0; i < word.length; ++i){
+        for (i = 0; i < word.length; ++i) {
 
             answer += a[word[i]] === undefined ? word[i] : a[word[i]];
         }
@@ -1104,13 +1117,13 @@ if (typeof $ === 'undefined') {
     setTimeout(function () {
         if (typeof str_replace == 'undefined') {
             wbapp.loadScripts([
-            `/engine/js/php.js`
-            ,`/engine/js/jquery-migrate.min.js`
-            ,`/engine/js/jquery.tap.js`
-            , `/engine/js/jquery-ui.min.js`
-            , `/engine/js/ractive.js`
-            , `/engine/js/lazyload.js`
-          ], "wbapp-go");
+                `/engine/js/php.js`
+                , `/engine/js/jquery-migrate.min.js`
+                , `/engine/js/jquery.tap.js`
+                , `/engine/js/jquery-ui.min.js`
+                , `/engine/js/ractive.js`
+                , `/engine/js/lazyload.js`
+            ], "wbapp-go");
         } else {
             $(document).trigger("wbapp-go");
         }
