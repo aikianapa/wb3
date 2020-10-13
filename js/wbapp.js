@@ -608,7 +608,7 @@ if (typeof $ === 'undefined') {
                     let tid = Object.keys(ractive)[0];
 //                    console.log("Trigger: bind-" + params.bind ,tid, data);
 //                    console.log("Trigger: bind-" + params.bind);
-//                    wbapp.bind[params.bind][tid].set(data);
+                      wbapp.bind[params.bind][tid].set(data);
                 })
             })
         }
