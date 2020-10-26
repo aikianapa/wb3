@@ -42,7 +42,8 @@ class modCms {
   function logout() {
       if (isset($_SESSION["user"])) {
           $role = $this->app->itemRead("users",$_SESSION["user"]["role"]);
-          if ($role && $role["url_logout"] > "") {
+          if ($role) {
+            if (!isset($role["url_logout"]) OR $role["url_logout"] == '') $role["url_logout"] = '/';  
             header('Content-Type: charset=utf-8');
             header('Content-Type: application/json');
             unset($_SESSION["user"]);
