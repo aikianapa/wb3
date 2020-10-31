@@ -80,9 +80,9 @@ class mysqlDrv
         $this->GetProp($form);
         $item = null;
         if ($id !== null && $id !== "_new") {
-            $this->db->where('_id', $id);
+
+            $this->db->where($this->keys->$form, $id);
             $item = $this->db->getOne($form);
-            print_r($item);
             if ($item) {
                 $item = $this->app->objToArray($item);
             }
@@ -124,6 +124,9 @@ class mysqlDrv
     public function ItemSave($form, $item = null, $flush = true)
     {
         $this->GetProp($form);
+        if (isset($item[$this->keys->$form])) {
+            $item['_id'] = $item['id'] = $item[$this->keys->$form];
+        }
         $item = $this->app->ItemInit($form, $item);
         $id = $item['_id'];
         $check = $this->checkExists($form, $id);
@@ -141,6 +144,7 @@ class mysqlDrv
                 unset($item[$fld]);
             }
         }
+
         if (!in_array('id', $fields)) {
             unset($item['id']);
         }
@@ -149,7 +153,10 @@ class mysqlDrv
             $this->db->where($this->keys->$form, $id);
             $this->db->update($form, $item);
         } else {
-            $id = $this->db->insert($form, $item);
+            $newid = $this->db->insert($form, $item);
+            if (!isset($item[$this->keys->$form])) {
+                $id = $newid;
+            }
         }
 
         if ($this->db->count) {
