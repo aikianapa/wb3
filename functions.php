@@ -1128,7 +1128,7 @@ function wbInitDatabase()
     $_ENV['tables'] = wbTableList();
 }
 
-function wbTreeToArray($tree)
+function wbTreeToArray($tree, $data = false)
 {
     $assoc=array();
     if (!is_array($tree)) {
@@ -1136,19 +1136,25 @@ function wbTreeToArray($tree)
     }
     foreach ($tree as $i => $item) {
         if (isset($item["children"])  and is_array($item["children"]) and count($item["children"])) {
-            $item["children"]=wbTreeToArray($item["children"]);
+            $item["children"]=wbTreeToArray($item["children"],$data);
         }
         if (isset($item["id"])) {
             $key=$item["id"];
         } else {
             $key=$i;
         }
-        if (!is_array($item["children"]) or !count($item["children"])) {
+        if (isset($item["children"]) and (!is_array($item["children"]) or !count($item["children"]))) {
             $item["children"]="";
         }
-        if (!is_array($item["data"]) or !count($item["data"])) {
+        if (isset($item['data']) and (!is_array($item["data"]) or !count($item["data"]))) {
             $item["data"]="";
         }
+
+        if ($data == true AND $item["data"] === (array)$item["data"]) {
+            $item = array_merge($item, $item["data"]);
+            unset($item["data"]);
+        }
+
         $assoc[$key]=$item;
     }
     return $assoc;

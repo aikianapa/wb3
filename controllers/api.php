@@ -14,6 +14,15 @@ class ctrlApi {
       }
   }
 
+  function catalog($app) {
+	if (!$this->apikey()) return;
+    $table = 'catalogs';
+    $json = $app->itemRead($table, $app->route->item);
+    $json = wbTreeToArray($json['tree']['data'],true);
+    echo $app->jsonEncode($json);
+
+  }
+
   function query($app) {
 			if (!$this->apikey()) return;
       $table = $app->route->table;
@@ -52,13 +61,14 @@ class ctrlApi {
 				$access = true;
 				$local = false;
 
-                if ($app->vars('_sett.api_key_'.$mode) == 'on') $access = false;
-                
+                //if ($app->vars('_sett.api_key_'.$mode) == 'on') $access = false;
+                if ($app->vars('_sett.api_key_'.'query') == 'on') $access = false;
+/*               
                 if ($access && $token !== $app->vars('_req.__token') ) {
 						echo json_encode(['error'=>true,'msg'=>'Access denied']);
 						die;
-				}
-
+                }
+*/
                 if (!$access && $app->vars('_sett.api_key') !== $app->vars('_req.__apikey') ) {
                     echo json_encode(['error'=>true,'msg'=>'Access denied']);
                     die;
