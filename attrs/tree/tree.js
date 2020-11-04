@@ -183,6 +183,7 @@ $.fn.setData = function(newdata,path=false) {
 
     $(tree).children(".wb-tree-data").html(data);
     $(tree).val($(this).getData());
+    $(this).nestable('init');
     console.log("Trigger: wb-tree-change-data");
     $(this).trigger("wb-tree-change-data");
 }

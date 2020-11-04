@@ -43,6 +43,12 @@ $(document).on("wb-save-error", function (e, params) {
     }
 });
 
+$(document).delegate(".modal", "hidden.bs.modal", function (event) {
+    if ($('body').hasClass('app-chat') && $(document).find('.modal:visible').length) {
+        $('body').addClass('modal-open');
+    }
+});
+
 $(document).on("wb-save-done", function (e, params) {
     if ($(e.target).is("button.cms") && $(e.target).find(".spinner-border").length) {
         $(e.target).find(".spinner-border").remove();
