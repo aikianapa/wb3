@@ -237,6 +237,7 @@ $.fn.addItem = function(id,copy=false) {
     $(this).setData(newdata,parent);
 
     $(newitem).updateItem(line);
+    $(item).removeClass("dd-collapsed");
     $(item).after(newitem);
 }
 
