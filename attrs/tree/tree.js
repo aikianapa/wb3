@@ -183,7 +183,6 @@ $.fn.setData = function(newdata,path=false) {
 
     $(tree).children(".wb-tree-data").html(data);
     $(tree).val($(this).getData());
-    $(this).nestable('init');
     console.log("Trigger: wb-tree-change-data");
     $(this).trigger("wb-tree-change-data");
 }
@@ -200,10 +199,12 @@ $.fn.setDict = function(newdict,path=false) {
 }
 
 $.fn.updateItem = function(data) {
+    var tree = $(this).getTree();
     var item = this;
     $.post("/ajax/tree/update",data,function(data){
         $(item).children(":not(ol)").remove();
         $(item).prepend($(data.content).html());
+        $(tree).nestable('refresh');
     });
 }
 
