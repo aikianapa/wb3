@@ -1,4 +1,6 @@
 $(document).on("smartid-js", function() {
+    if ($(document).data('smartid-js') !== undefined) return;
+    $(document).data('smartid-js',true);
     $(".wb-smartid").each(function(){
         let smartid = this;
         $(smartid).on("keypress",function(event){

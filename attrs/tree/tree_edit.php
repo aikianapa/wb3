@@ -6,7 +6,7 @@
                     <li class="nav-item"><a class="nav-link active data" href="#treeData_{{_env.new_id}}" data-toggle="tab">{{_lang.data}}</a></li>
                     <li class="nav-item"><a class="nav-link dict" href="#treeDict_{{_env.new_id}}" data-toggle="tab">{{_lang.dict}}</a></li>
                 </ul>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">×</span> </button>
+                <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal" aria-label="Close"><i class="fa fa-close"></i> Закрыть </button>
             </div>
 
             <div class="modal-body">
@@ -14,7 +14,7 @@
                 <form class="form-horizontal" role="form">
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label">{{_lang.id}}</label>
-                        <div class="col-sm-9"><input type="text" class="form-control" name="id" placeholder="{{_lang.id}}" required></div>
+                        <div class="col-sm-9"><input type="text" wb-module="smartid" class="form-control" name="id" placeholder="{{_lang.id}}" required></div>
                     </div>
 
                     <div class="form-group row">
