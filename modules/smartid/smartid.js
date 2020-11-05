@@ -1,7 +1,7 @@
 $(document).on("smartid-js", function() {
-    if ($(document).data('smartid-js') !== undefined) return;
-    $(document).data('smartid-js',true);
     $(".wb-smartid").each(function(){
+        if ($(this).data('smartid-js') !== undefined) return;
+        $(this).data('smartid-js',true);
         let smartid = this;
         $(smartid).on("keypress",function(event){
             let char = String.fromCharCode(event.which);
