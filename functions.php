@@ -2719,8 +2719,44 @@ function wbListFormsFull()
     return $list;
 }
 
-function wbArraySort($array = array(), $args = array('votes' => 'd'))
+function wbArrayKeyId(&$array) {
+    // присваивает ключ массива по _id или id
+    if (isset($array[0]) && isset($array[0]['_id'])) {
+        @array_combine(array_column($array, '_id'), $array);
+    } else if (isset($array[0]) && isset($array[0]['id'])) {
+        @array_combine(array_column($array, '_id'), $array);
+    }
+}
+
+
+
+function wbArraySort($array = array(), $args = array('votes' => 'a'))
 {
+    $json = new Jsonq();
+    $json->collect($array);
+
+    if (is_string($args) && $args > '') {
+        $args = wbArrayAttr($args);
+        $param = array();
+        foreach ($args as $ds) {
+            $tmp = explode(':', $ds);
+            if (isset($tmp[1])  AND ($tmp[1] == 'd' OR $tmp[1] == 'desc')) {
+                $tmp[1] = 'desc';
+            } else {
+                $tmp[1] = '';
+            }
+            $param[$tmp[0]] = $tmp[1];
+        }
+    }
+
+    foreach ($param as $k => $s) {
+        $json->sortBy($k, $s);
+    }
+    $array = $json->get();
+    wbArrayKeyId($array);
+    return $array;
+
+    /* 
     // если передан атрибут, то предварительно готовим массив параметров
     if (is_string($args) && $args > '') {
         $args = wbArrayAttr($args);
@@ -2761,7 +2797,7 @@ function wbArraySort($array = array(), $args = array('votes' => 'd'))
 
         return $res;
     });
-
+    */
     return $array;
 }
 
