@@ -23,6 +23,7 @@ class tagData {
     } else if (!$dom->params("field")) {
         $dom->item = [];
     }
+
     if (isset($dom->item["_table"])) $dom->item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$dom->item["_table"]], $dom->item);
     if ($dom->params("field")) {
         $data = new Dot();
@@ -39,8 +40,8 @@ class tagData {
 
     $dom->item['_parent'] = $save;
     $dom->fetch();
-    $dom->unwrap("wb-data");
-    $dom->item = $save;
+    $dom->before($dom->inner());
+    $dom->remove();
     return $dom;
   }
 }
