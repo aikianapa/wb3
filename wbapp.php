@@ -494,9 +494,9 @@ class wbDom extends DomQuery
             }
         }
         foreach ($this->find("template") as $t) {
-            $t->inner(str_replace("}}", "_}_}_", $t->inner()));
+            $t->inner(str_replace("{{", "_{_{_", $t->inner()));
         }
-        if (strpos($this, "}}")) {
+        if (strpos($this, "{{")) {
             $render = new wbRender($this);
             $html = $render->exec();
             if ($this->tagName == 'title') {
@@ -507,7 +507,7 @@ class wbDom extends DomQuery
 
         }
         foreach ($this->find("template") as $t) {
-            $t->inner(str_replace("_}_}_", "}}", $t->inner()));
+            $t->inner(str_replace("_{_{_", "{{", $t->inner()));
         }
         return $this;
     }
