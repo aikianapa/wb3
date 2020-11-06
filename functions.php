@@ -2719,13 +2719,14 @@ function wbListFormsFull()
     return $list;
 }
 
-function wbArrayKeyId(&$array) {
+function wbArrayKeyId($array) {
     // присваивает ключ массива по _id или id
     if (isset($array[0]) && isset($array[0]['_id'])) {
         @array_combine(array_column($array, '_id'), $array);
     } else if (isset($array[0]) && isset($array[0]['id'])) {
         @array_combine(array_column($array, '_id'), $array);
     }
+    return $array;
 }
 
 
@@ -2740,20 +2741,24 @@ function wbArraySort($array = array(), $args = array('votes' => 'a'))
         $param = array();
         foreach ($args as $ds) {
             $tmp = explode(':', $ds);
-            if (isset($tmp[1])  AND ($tmp[1] == 'd' OR $tmp[1] == 'desc')) {
-                $tmp[1] = 'desc';
-            } else {
+            if (!isset($tmp[1])) {
                 $tmp[1] = '';
             }
             $param[$tmp[0]] = $tmp[1];
         }
+    } else {
+        $param = $args;
     }
 
     foreach ($param as $k => $s) {
+        if ($s == 'd' OR $s == 'desc') {
+            $s = 'desc';
+        } else {
+            $s = '';
+        }
         $json->sortBy($k, $s);
     }
-    $array = $json->get();
-    wbArrayKeyId($array);
+    wbArrayKeyId($json->get());
     return $array;
 
     /* 
