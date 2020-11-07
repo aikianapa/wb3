@@ -33,6 +33,11 @@ body aside .nav-link {
   text-transform: none;
   font-weight: normal;
 }
+
+[contenteditable] blockquote {
+  font-family: monospace;
+}
+
 @media (max-width: 991px) {
   body aside:not(.aside-show) .aside-logo {
     margin-right: 21px;
