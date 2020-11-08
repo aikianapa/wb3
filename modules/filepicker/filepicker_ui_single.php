@@ -10,7 +10,7 @@
       <input type="hidden" name="prevent_img" class="wb-unsaved">
     </div>
 
-    <button type="button" class="btn btn-primary camera-show">
+    <button type="button" class="btn btn-primary camera-show" wb-if='"{{_route.scheme}}" == "https"'>
       <i class="fa fa-camera"></i><span class="d-none d-md-inline"> {{_lang.camera}}</span>
     </button>
   </div>

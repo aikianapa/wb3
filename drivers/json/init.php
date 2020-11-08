@@ -15,12 +15,14 @@ class jsonDrv
         if (!isset($_SESSION['lang'])) {
             $_SESSION['lang'] = 'en';
         }
-
         $cid = md5($file . $_SESSION['lang']);
         if (isset($_ENV['cache'][$cid][$id])) {
             $item = $_ENV['cache'][$cid][$id];
         } else {
-            $list = $this->itemList($form, ['orm' => "where('id','{$id}')"])['list'];
+            $list = $this->itemList($form, ['orm' => "where('id','{$id}')"]);
+            if (isset($list['list'])) {
+                $list = $list['list'];
+            }
             if (isset($list[$id])) {
                 $item = $list[$id];
             } else if (isset($list[0])) {
@@ -198,7 +200,7 @@ class jsonDrv
             } elseif (is_string($form)) {
                 $file = $this->tableFile($form);
                 if (!is_file($file)) {
-                    wbError('func', __FUNCTION__, 1001, func_get_args());
+                    wbError('func', __FUNCTION__, 1001, $form);
                     return array();
                 }
                 try { $json = new Jsonq($file);} catch (Exception $err) {
@@ -367,7 +369,7 @@ class jsonDrv
             $form = $form[1];
         }
         $file = $this->tablePath($form, $engine);
-        if (!is_file($file) and ($form > '' or $create == true)) {
+        if (!is_file($file) and $create == true) {
             $this->TableCreate($form);
         }
         if (!is_file($file)) {

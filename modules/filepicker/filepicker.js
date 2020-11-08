@@ -233,7 +233,8 @@ $(document).on("filepicker-init", function() {
                 var fp = $filepicker.filePicker();
 
 
-                $filepicker.delegate("a.delete","click",function(){
+                $filepicker.delegate("a.delete","click",function(e){
+                    e.preventDefault();
                     var card = $(this).closest(".card");
                     var file = $(card).find("img").attr("data-src");
                     if (file == "") {
@@ -259,7 +260,8 @@ $(document).on("filepicker-init", function() {
                     return false;
                 });
 
-                $filepicker.delegate("a.crop","click",function(){
+                $filepicker.delegate("a.crop","click",function(e){
+                    e.preventDefault();
                     var card = $(this).closest(".card");
                     var file = $(card).find("img").attr("data-src");
                     $filepicker.find("[name=prevent_img]").val(getimg(file));
@@ -267,6 +269,13 @@ $(document).on("filepicker-init", function() {
                     fp.plugins.crop.show(file);
                     return false;
                 });
+
+                $filepicker.delegate('.card','click',function(e){
+                    e.preventDefault();
+                    $(inpfile).trigger('click');
+                });
+
+
 
                 $listview.delegate("img","load",function(){
                   $(this).removeAttr("loading")
