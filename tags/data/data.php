@@ -18,7 +18,7 @@ class tagData {
        if (!count($dom->item["list"])) {
           $dom->item = [];
        } else {
-          $dom->item = $fruit = array_shift($dom->item["list"]);
+          $dom->item = array_shift($dom->item["list"]);
        }
     } else if (!$dom->params("field")) {
         $dom->item = [];

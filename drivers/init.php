@@ -48,23 +48,32 @@ function wbItemRead($form = null, $id = null)
         return null;
     }
     wbTrigger('form', __FUNCTION__, 'beforeItemRead', func_get_args(), array());
-    $db = wbSetDb($form);
-    if (substr($form, 0, 1) == '_') {
-        $db = $_ENV["app"]->_db;
-    }
-    $item = $db->itemRead($form, $id);
-    if (null !== $item) {
-        if (isset($item['_removed']) && 'remove' == $item['_removed']) {
-            $item = null;
-            $item = wbTrigger('form', __FUNCTION__, 'emptyItemRead', func_get_args(), $item);
-        // если стоит флаг удаления, то возвращаем null
-        } else {
-            $item["_form"] = $item["_table"] = $form;
-        }
-        $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
-    } else {
-        $item = wbTrigger('form', __FUNCTION__, 'emptyItemRead', func_get_args(), $item);
-    }
+            if (!isset($_SESSION['lang'])) {
+                $_SESSION['lang'] = 'en';
+            }
+            $cid = md5($form . $_SESSION['lang']);
+            if (isset($_ENV['cache'][$cid][$id])) {
+                $item = $_ENV['cache'][$cid][$id];
+            } else {
+                $db = wbSetDb($form);
+                if (substr($form, 0, 1) == '_') {
+                    $db = $_ENV["app"]->_db;
+                }
+                $item = $db->itemRead($form, $id);
+                if (null !== $item) {
+                    if (isset($item['_removed']) && 'remove' == $item['_removed']) {
+                        $item = null;
+                        $item = wbTrigger('form', __FUNCTION__, 'emptyItemRead', func_get_args(), $item);
+                    // если стоит флаг удаления, то возвращаем null
+                    } else {
+                        $item["_form"] = $item["_table"] = $form;
+                    }
+                    $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
+                    $_ENV['cache'][$cid][$id] = $item;
+                } else {
+                    $item = wbTrigger('form', __FUNCTION__, 'emptyItemRead', func_get_args(), $item);
+                }
+            }
     return $item;
 }
 

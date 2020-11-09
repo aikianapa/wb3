@@ -150,7 +150,6 @@ class ctrlApi {
     $options = [];
     if (isset($query['__options'])) {
       $opt = $query['__options'];
-
   		$list = explode(';',$opt);
 		  foreach($list as $key => $item) {
   			  $item = explode('=',$list[$key]);
@@ -178,7 +177,7 @@ class ctrlApi {
   				  if (is_numeric($item[1])) $item[1] = $item[1] * 1;
   			  }
   			  $options[$item[0]] = $item[1];
-  		  }
+            }
         unset($query['__options']);
     }
 

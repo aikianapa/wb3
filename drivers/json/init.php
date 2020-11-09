@@ -11,14 +11,6 @@ class jsonDrv
 
     public function itemRead($form = null, $id = null)
     {
-        $file = $this->tableFile($form);
-        if (!isset($_SESSION['lang'])) {
-            $_SESSION['lang'] = 'en';
-        }
-        $cid = md5($file . $_SESSION['lang']);
-        if (isset($_ENV['cache'][$cid][$id])) {
-            $item = $_ENV['cache'][$cid][$id];
-        } else {
             $list = $this->itemList($form, ['orm' => "where('id','{$id}')"]);
             if (isset($list['list'])) {
                 $list = $list['list'];
@@ -31,7 +23,6 @@ class jsonDrv
                 wbError('func', __FUNCTION__, 1006, func_get_args());
                 $item = null;
             }
-        }
         return $item;
     }
 

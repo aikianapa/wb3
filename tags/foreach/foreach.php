@@ -78,6 +78,21 @@ class tagForeach
             $list = (array) wbEval($dom->params("call"));
         }
 
+        if ($dom->params('ajax')) {
+            $ajax = $dom->params('ajax');
+            $url = parse_url($ajax);
+            if (!isset($url['scheme'])) {
+                if ($app->vars('_sett.api_key_query') == 'on' AND !isset($url['__apikey'])) {
+                    strpos($ajax,'?') ? $ajax .= '&' : $ajax .= '?';
+                    $ajax .= '__apikey='.$app->vars('_sett.api_key');
+                }
+                $ajax = $app->vars('_route.host').$ajax;
+            }
+
+            $list = json_decode(str_replace("'", '"', wbAuthGetContents($ajax)), true);
+            $count = count($list);
+        }
+
         if ($dom->params('json')) {
             $list['json'] = json_decode(str_replace("'",'"',$dom->params("json")),true);
             $dom->params->from = 'json';

@@ -1,6 +1,7 @@
 <?php
 
 require 'vendor/autoload.php';
+use Nahid\JsonQ\Jsonq;
 
 class mysqlDrv
 {
@@ -80,7 +81,6 @@ class mysqlDrv
         $this->GetProp($form);
         $item = null;
         if ($id !== null && $id !== "_new") {
-
             $this->db->where($this->keys->$form, $id);
             $item = $this->db->getOne($form);
             if ($item) {
@@ -202,9 +202,36 @@ class mysqlDrv
         } else {
             $page = 1;
         }
+
         $params['sort'] = [];
+        $options = (object) $options;
+
+        if (isset($options->sort)) {
+
+            // нужно проверять чтобы сортировка работала и а функциях и в api
+            foreach ((array) $options->sort as $key => $fld) {
+                if (!is_array($fld) AND !is_string($key)) {
+                    $fld = explode(':', $fld);
+                    if (!isset($fld[1])) {
+                        $fld[1] = '';
+                    } elseif (in_array(strtolower($fld[1]), ['a', 'asc', '1'])) {
+                        $fld[1] = '';
+                    } elseif (in_array(strtolower($fld[1]), ['d', 'desc', '-1'])) {
+                        $fld[1] = 'desc';
+                    }
+                    $params['sort'][$fld[0]] = $fld[1];
+                } else {
+                    if ($fld == '-1') {
+                        $fld = 'desc';
+                    }
+                    $params['sort'][$key] = $fld;
+                }
+            }
+        }
+
         $list = [];
         $iter = new ArrayIterator($find);
+
         foreach ($iter as $doc) {
             //if (!isset($doc['_id'])) $doc['_id'] = $doc[$this->keys->$form];
             if (isset($this->keys->$form) and isset($doc[$this->keys->$form])) {
@@ -213,8 +240,8 @@ class mysqlDrv
             $doc = $this->app->ItemInit($form, $doc);
             $doc = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $doc);
             $res = true;
-            if (isset($options['filter'])) {
-                $res = wbItemFilter($doc, $options['filter']);
+            if (isset($options->filter)) {
+                $res = wbItemFilter($doc, (array)$options->filter);
             }
             if ($res) {
                 $list[] = $doc;
@@ -227,6 +254,7 @@ class mysqlDrv
             foreach ($params['sort'] as $fld => $order) {
                 $list->sortBy($fld, $order);
             }
+            $list = $list->get();
         }
 
         if (isset($options->limit) && count($list)) {
@@ -253,6 +281,16 @@ class mysqlDrv
         $list = [];
         foreach ($iter as $item) {
             $list[''.$item['_id']] = $item;
+        }
+
+        if (count($params['sort']) AND ($size > 0 && $size < $count)) {
+            // ещё раз сортируем - требуется оптимизировать алгоритм построения списка
+            $json = new Jsonq();
+            $list = $json->collect($list);
+            foreach ($params['sort'] as $fld => $order) {
+                $list->sortBy($fld, $order);
+            }
+            $list = $list->get();
         }
 
 
