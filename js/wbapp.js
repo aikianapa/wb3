@@ -432,7 +432,7 @@ if (typeof $ === 'undefined') {
 
     wbapp.storageUpdate = function (key, data) {
         var store = wbapp.storage(key);
-        if (store._id == undefined && store.result !== undefined && data !== null && data._id !== undefined) {
+        if (store !== undefined && store._id == undefined && store.result !== undefined && data !== null && data._id !== undefined) {
             if (data._removed !== undefined && data._removed == true) {
                 try {
                     delete store.result[data._id]
