@@ -22,7 +22,7 @@ class tagInclude {
       }
       $inc = $dom->app->getForm($form,$mode,$dom->params("engine"));
     }
-    if (isset($inc)) {
+    if (isset($inc) AND is_object($inc)) {
         if (!isset($dom->item['header'])) {$dom->item['header'] = $dom->app->vars('_sett.header');}
         $inc->copy($dom);
         if ($dom->head()) {
@@ -33,6 +33,8 @@ class tagInclude {
           if ($dom->params('render') !== 'client') $inner->fetch();
           $dom->before($inner->children("wb")->inner());
         }
+    } else {
+        $dom->before('<div>'.$inc." {$form}->{$mode} </div>");
     }
     $dom->remove();
   }

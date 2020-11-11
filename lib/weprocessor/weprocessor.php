@@ -112,7 +112,9 @@ class WEProcessor {
 					if ((array)$ctx === $ctx AND isset($ctx["_global"]) AND $ctx["_global"]==false ) {
 						$res = $ctx[$res];
 					} else {
-						$res = $_ENV["locale"][$res];
+						if ((array)$_ENV["locale"] === $_ENV["locale"] AND isset($_ENV["locale"][$res])) {
+							$res = $_ENV["locale"][$res];
+						}
 					}
 					break;
 				}

@@ -1,3 +1,4 @@
+@material_icon_size: 21px;
 body {
     overflow: hidden;
     .content {
@@ -18,8 +19,21 @@ body {
         }
     }
 
-    .input-group-text.material-icons {
-        font-size:21px;
+    .input-group-text {
+        &.material-icons {
+            font-size:@material_icon_size;
+        }
+        .material-icons {
+            font-size: @material_icon_size;
+        }
+        &.material-icons-outlined {
+            font-size: @material_icon_size;
+        }
+
+        .material-icons-outlined {
+            font-size: @material_icon_size;
+        }
+
     }
 
     .modal {

@@ -25,7 +25,7 @@
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label">{{_lang.active}}</label>
                         <div class="col-sm-9">
-                            <label class="switch"><input type="checkbox" name="active"><span></span></label>
+                            <label class="switch"><input wb-module="switch" name="active"><span></span></label>
                         </div>
                     </div>
                 </form>
