@@ -9,17 +9,32 @@ class wbAjaxTree
     }
 
     function tree() {
-        $app = $this->app;
+        $app = &$this->app;
         $mode = $app->vars("_route.params.0");
         if (method_exists($this,$mode)) $this->$mode();
         die;
     }
 
     function update() {
-        $app = $this->app;
+        $app = &$this->app;
         $tpl=$app->fromFile(__DIR__ ."/tree_ui.php",false);
         $tpl->fetch($_POST);
         echo wb_json_encode(["content"=>$tpl->html()]);
+    }
+
+    function change() {
+        $app = &$this->app;
+        $dir = $app->vars('_env.dbac').'/tmp';
+        $cache = json_decode(file_get_contents($dir.'/'.$_POST['cache']), true);
+        if (is_array($cache) AND isset($cache['tpl'])) {
+            $app->vars('_route', $cache['route']);
+            $_ENV['locale'] = $cache['locale'];
+            $_SESSION = $cache['session'];
+            $tpl = str_replace('%value%', $_POST['value'], $cache['tpl']);
+            $tpl = $app->fromString($tpl);
+            $tpl->fetch($cache['item']);
+            echo wb_json_encode(["content"=>$tpl->outer()]);
+        }
     }
 
     function form() {

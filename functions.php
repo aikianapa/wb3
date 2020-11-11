@@ -1870,7 +1870,7 @@ function wbListFiles($dir)
 function wbFileRemove($file)
 {
     $res = false;
-    if (is_file($file) and wbRole('admin')) {
+    if (is_file($file)) {
         unlink($file);
         if (is_file($file)) {
             $res = false;

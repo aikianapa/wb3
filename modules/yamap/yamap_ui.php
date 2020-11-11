@@ -1,5 +1,6 @@
+<html>
 <div class="yamap">
-  <div class="yamap_editor form-group" data-wb="role=multiinput" name="yamap">
+  <wb-multiinput class="yamap_editor" name="yamap">
       <div class="col-sm-5">
         <div class="input-group input-group-sm">
           <input type="text" class="form-control finder" name="address" placeholder="Адрес">
@@ -10,7 +11,9 @@
       </div>
       <div class="col-sm-4"><input class="form-control form-control-sm" name="title"  placeholder="Описание"></div>
       <div class="col-sm-3"><input class="form-control form-control-sm" name="geopos" placeholder="Геопозиция" readonly></div>
-  </div>
+      <input type='hidden' name='zoom'>
+      <input type='hidden' name='center'>
+  </wb-multiinput>
   <div class="yamap_canvas"></div>
 </div>
 <script type="wbapp">
@@ -22,3 +25,4 @@
       transition-duration: 0.3s;
   }
 </style>
+</html>

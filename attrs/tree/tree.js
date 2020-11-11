@@ -4,6 +4,13 @@ function wb_tree() {
         "/engine/lib/fonts/materialicons/materialicons.css"]);
     wbapp.loadScripts(["/engine/lib/js/nestable/nestable.min.js"],"nestable-js");
 
+$.fn.wbTreeChange = function (selector, cache) {
+    $.post("/ajax/tree/change/",{'cache':cache,'value':$(this).val()},function(data){
+        if (data.content) {
+            $(selector).replaceWith(data.content);
+        }
+    });
+}
 
 $.fn.wbTreeInit = function() {
         $(this).find(".wb-tree-line[data-id='']").each(function(){

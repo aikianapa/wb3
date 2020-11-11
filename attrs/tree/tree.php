@@ -98,9 +98,9 @@ function tagTree( &$dom, $Item = null ) {
 class tagTreeSelect {
     function stage() {
         $app = $this->dom->app;
+        $params = $this->dom->params;
         if ( $this->dom->is( 'select' ) ) {
             $app = &$this->dom->app;
-            $params = $this->dom->params;
             $this->tpl = $this->dom->html();
             $this->dom->html( '' );
             $this->lvl = 0;
@@ -126,12 +126,12 @@ class tagTreeSelect {
             } else if ( $params->branch > '' ) {
                 $this->tree = wbTreeFindBranch( $this->tree, $params->branch );
             }
-            if ( !isset( $params->rand ) ) $params->rand = false;
             if ( $this->dom->attr( 'placeholder' ) > '' ) {
-                $this->dom->prepend( '<option>'.$this->dom->attr( 'placeholder' ).'</option>' );
+                $this->dom->prepend( '<option value="">'.$this->dom->attr( 'placeholder' ).'</option>' );
             }
         }
         $flag = false;
+        if ( !isset( $params->rand ) ) $params->rand = false;
         if ( ( array )$this->tree === $this->tree ) {
             if ( $params->rand == true ) shuffle( $tree );
             foreach ( $this->tree as $i => $item ) {
@@ -189,6 +189,32 @@ class tagTreeSelect {
                 $this->idx++;
                 $this->lvl--;
             }
+
+            if ( isset($params->change ) ) {
+                $tpl = $this->dom->parents()->find($params->change);
+                $cache = [
+                    'tpl' => $tpl->outer(),
+                    'route' => $app->vars('_route'),
+                    'locale' => $this->dom->locale
+                ];
+                $fname = md5(wb_json_encode($cache));
+                $dir = $app->vars('_env.dbac').'/tmp';
+
+                $cache['session'] = $_SESSION;
+                $cache['item'] = $this->dom->item;
+                $cache = wb_json_encode($cache);
+
+
+                if (!is_dir($dir)) {
+                    mkdir($dir, 0766, true);
+                }
+                file_put_contents($dir.'/'.$fname, $cache);
+                $onchange = $this->dom->attr('onchange');
+                $onchange .= ';$(this).wbTreeChange("'.$params->change.'","'.$fname.'");';
+                $this->dom->attr('onchange', $onchange);
+
+            }
+
         }
         //  $this->dom->selectValues();
     }
