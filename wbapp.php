@@ -952,12 +952,8 @@ class wbApp
     public function getForm($form = null, $mode = null, $engine = null)
     {
         $_ENV['error'][__FUNCTION__] = '';
-        if (null == $form) {
-            $form = $this->vars->get("_route.form");
-        }
-        if (null == $mode) {
-            $mode = $this->vars->get("_route.mode");
-        }
+        null == $form ? $form = $this->vars->get("_route.form") : 0;
+        null == $mode ? $mode = $this->vars->get("_route.mode") : 0;
         $modename = $mode;
         if (strtolower(substr($modename, -4)) == ".ini") {
             $ini = true;
@@ -990,7 +986,7 @@ class wbApp
         if (!isset($out)) {
             $current = '';
             $flag = false;
-            $path = array("/forms/{$form}_{$modename}", "/forms/{$form}/{$form}_{$modename}", "/forms/{$form}/{$modename}");
+            $path = array("/modules/cms/forms/{$form}/{$modename}","/forms/{$form}_{$modename}", "/forms/{$form}/{$form}_{$modename}", "/forms/{$form}/{$modename}");
             foreach ($path as $form) {
                 if (false == $flag) {
                     if (is_file($_ENV['path_engine'].$form)) {

@@ -106,7 +106,7 @@ if (typeof $ === 'undefined') {
         $(document).find("[data-ajax][auto]").each(function () {
             $(this).trigger("click");
             $(this).removeAttr("auto");
-        })
+        });
     }
 
     wbapp.auth = function (form) {
@@ -608,7 +608,7 @@ if (typeof $ === 'undefined') {
                     let tid = Object.keys(ractive)[0];
 //                    console.log("Trigger: bind-" + params.bind ,tid, data);
 //                    console.log("Trigger: bind-" + params.bind);
-                      wbapp.bind[params.bind][tid].set(data);
+                      ractive[tid].update(data);
                 })
             })
         }

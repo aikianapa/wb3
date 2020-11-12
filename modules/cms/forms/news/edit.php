@@ -23,13 +23,12 @@
 
                         <div class="col-sm-4">
                             <div class="custom-control custom-radio d-inline mr-3">
-                              <input type="radio" id="customRadio1" name="type" value="article" class="custom-control-input" checked>
-                              <label class="custom-control-label" for="customRadio1">В статьи</label>
+                              <input type="radio" id="customRadio2" name="type" value="news" class="custom-control-input" checked>
+                              <label class="custom-control-label" for="customRadio2">{{_lang.news}}</label>
                             </div>
-
-                            <div class="custom-control custom-radio d-inline">
-                              <input type="radio" id="customRadio2" name="type" value="news" class="custom-control-input">
-                              <label class="custom-control-label" for="customRadio2">В новости</label>
+                            <div class="custom-control custom-radio d-inline mr-3">
+                              <input type="radio" id="customRadio1" name="type" value="article" class="custom-control-input">
+                              <label class="custom-control-label" for="customRadio1">{{_lang.article}}</label>
                             </div>
                         </div>
 
@@ -107,11 +106,15 @@ prop = Свойства
 seo = Оптимизация
 header = Заголовок
 images = Изображения
+news = Новость
+article = Статья
 [en]
 main = Main
 prop = Properties
 seo = SEO
 header = Header
 images = Images
+news = News
+article = Article
 </wb-lang>
 </html>

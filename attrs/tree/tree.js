@@ -396,6 +396,10 @@ function convPath(path) {
                 }
             });
         });
+
+    $(document).find('[onchange*="wbTreeChange"]').each(function () {
+        $(this).trigger('change');
+    });
 }
 
 $(document).on("tree-js", function () {

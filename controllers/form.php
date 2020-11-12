@@ -83,19 +83,18 @@ class ctrlForm
         $app = $this->app;
         $form = $app->vars('_route.params.0');
         $mode = $app->vars('_route.params.1');
-        if ($mode == 'list' and $app->vars('_post.render') == 'client') {
+        if ($mode == 'list' AND $app->vars('_post.render') == 'client') {
+            $dom = $app->getForm($form, $mode);
+            $dom->fetch();
             $options = ( object )$_POST;
-            if (!isset($options->size)) {
-                $options->size = 500;
-            }
-            if (!isset($options->page)) {
-                $options->page = 1;
-            }
-            if (!isset($options->filter)) {
-                $options->filter = [];
-            }
+            !isset($options->size) ? $options->size = 500 : 0 ;
+            !isset($options->page) ? $options->page = 1 : 0;
+            !isset($options->filter) ? $options->filter = [] : 0;
             $list = $app->itemList($form, ( array )$options);
             foreach ($list['list'] as &$item) {
+                if (isset($_ENV['locale']) AND isset($_ENV['locale'][$_ENV['lang']])) {
+                    $item['_lang'] = &$_ENV['locale'][$_ENV['lang']];
+                }
                 $item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$form], $item);
             }
             $pages = ceil($list['count'] / $options->size);
