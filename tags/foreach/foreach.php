@@ -252,6 +252,11 @@ class tagForeach
             $dom->inner($empty->inner());
         }
 
+        if ($dom->parent()->is("select[placeholder]") && !$dom->find("option[value='']")->length) {
+            $dom->prepend("<option value=''>".$dom->parent()->attr('placeholder')."</option>");
+        }
+
+
         $dom->before($dom->html());
         $dom->remove();
     }

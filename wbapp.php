@@ -220,8 +220,7 @@ class wbDom extends DomQuery
 
     public function fetchFunc()
     {
-        if ($this->funca > "") {
-            $func = $this->funca;
+        foreach($this->funca as $func) {
             new $func($this);
         }
         if ($this->func > "") {
@@ -277,8 +276,10 @@ class wbDom extends DomQuery
         $this->setAttributes();
         $this->role = false;
         $this->func = false;
-        $this->funca = false;
+        $this->funca = [];
         $this->atrs = (object)[];
+        $this->params = (object)[];
+
         $params = [];
         if (substr($this->tagName, 0, 3) == "wb-") {
             $this->role = substr($this->tagName, 3);
@@ -286,16 +287,14 @@ class wbDom extends DomQuery
         $attrs = $this->attributes();
 
         if (count($attrs)) {
+            $prms = [];
             foreach ($attrs as $atname => $atval) {
                 if ($atname == "wb" or substr($atname, 0, 3) == "wb-") {
                     $name = $atname;
-                    if (!isset($params)) {
-                        $params = [];
-                    }
                     if ($name !== "wb") {
                         $name = substr($atname, 3);
                     }
-                    if (in_array($name, ["if","where"])) {
+                    if (in_array($name, ['if','where','change'])) {
                         $prms = [$name => $atval];
                         $this->atrs->$name = $atval;
                     } else {
@@ -309,11 +308,14 @@ class wbDom extends DomQuery
                             $prms = ["wb"=>$prms];
                         }
                     }
-                    $params = array_merge($params, $prms);
                 }
+                $params = array_merge($params, $prms);
+
             }
             $this->params = (object)$params;
         }
+        
+
         if (isset($this->params->module)) $this->role = "module";
         $this->fetchAllows();
         if ($this->role) {
@@ -331,13 +333,13 @@ class wbDom extends DomQuery
         foreach ($this->atrs as $attr => $value) {
             $func="attr".ucfirst($attr);
             if (!class_exists($func)) {
-                $file = $this->app->vars("_env.path_engine")."/attrs/{$name}/{$name}.php";
+                $file = $this->app->vars("_env.path_engine")."/attrs/{$attr}/{$attr}.php";
                 if (is_file($file)) {
                     require_once $file;
                 }
             }
             if (class_exists($func)) {
-                $this->funca = $func;
+                $this->funca[] = $func;
                 if (!$this->role) {
                     $this->role = "attr";
                 }

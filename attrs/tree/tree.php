@@ -14,6 +14,7 @@ class attrTree {
 
 function tagTree( &$dom, $Item = null ) {
     $dom->removeAttr( 'wb-tree' );
+    $save = $dom->params;
     if ( $Item == null ) $Item = $dom->item;
     if ( !( ( array )$Item === $Item ) ) $Item = array( $Item );
     if ( isset( $dom->params->tree ) ) $dom->params = ( object )$dom->params->tree;
@@ -26,7 +27,8 @@ function tagTree( &$dom, $Item = null ) {
     isset( $dom->params->type ) ? $type = $dom->params->type : $type = null;
     isset( $dom->params->field ) ? $field = $dom->params->field : $field = null;
 
-    if ( $table && !isset( $form ) ) $form = $dom->params->form = $table;
+    if ( $table && !$form ) $form = $dom->params->form = $table;
+    
     if ( $form > '' AND $item > '' ) {
         $Item = $dom->app->itemRead( $form, $item );
         if (!$field) $field = 'tree';
@@ -38,7 +40,7 @@ function tagTree( &$dom, $Item = null ) {
         $field = $name;
     }
     if ( $dom->is( 'select' ) AND !isset( $dom->params->form ) ) {
-        $field = 'tree';
+        if (!$field) $field = 'tree';
     }
     if ( $form == '' AND $item > '' ) {
         $Item = $dom->app->treeRead( $item );
@@ -93,6 +95,7 @@ function tagTree( &$dom, $Item = null ) {
     } else {
         tagTreeUl( $dom, $Item, null, $srcData );
     }
+    $dom->params = $save;
 }
 
 class tagTreeSelect {
@@ -189,34 +192,7 @@ class tagTreeSelect {
                 $this->idx++;
                 $this->lvl--;
             }
-
-            if ( isset($params->change ) ) {
-                $tpl = $this->dom->parents()->find($params->change);
-                $cache = [
-                    'tpl' => $tpl->outer(),
-                    'route' => $app->vars('_route'),
-                    'locale' => $this->dom->locale
-                ];
-                $fname = md5(wb_json_encode($cache));
-                $dir = $app->vars('_env.dbac').'/tmp';
-
-                $cache['session'] = $_SESSION;
-                $cache['item'] = $this->dom->item;
-                $cache = wb_json_encode($cache);
-
-
-                if (!is_dir($dir)) {
-                    mkdir($dir, 0766, true);
-                }
-                file_put_contents($dir.'/'.$fname, $cache);
-                $onchange = $this->dom->attr('onchange');
-                $onchange .= ';$(this).wbTreeChange("'.$params->change.'","'.$fname.'");';
-                $this->dom->attr('onchange', $onchange);
-
-            }
-
         }
-        //  $this->dom->selectValues();
     }
 
 }
@@ -226,12 +202,10 @@ function tagTreeInput( $dom, $data = array() ) {
     $tpl->params = $dom->params;
     tagTreeUl( $tpl, $data['data'] );
     $data = wbJsonEncode( $data );
-    $tpl->append( "
-        <textarea type='json' class='wb-tree-data wb-value' name='{$dom->params->name}'>{$data}</textarea>
-        <script type='wbapp'>
-        wbapp.loadScripts(['/engine/attrs/tree/tree.js','/engine/js/jquery-ui.min.js'],'tree-js');
-        </script>
-        " );
+    $tpl->append( "<textarea type='json' class='wb-tree-data wb-value' name='{$dom->params->name}'>{$data}</textarea>
+    <script type='wbapp'>
+        wbapp.loadScripts(['/engine/attrs/tree/tree.js','/engine/js/jquery-ui.min.js'],'wb-tree-js');
+    </script>");
     return $tpl;
 }
 

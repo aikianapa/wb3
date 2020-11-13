@@ -73,6 +73,23 @@ class ctrlAjax {
       }
   }
 
+
+    function change_fld()
+    {
+        $app = &$this->app;
+        $dir = $app->vars('_env.dbac').'/tmp';
+        $cache = json_decode(file_get_contents($dir.'/'.$_POST['cache']), true);
+        if (is_array($cache) and isset($cache['tpl'])) {
+            $app->vars('_route', $cache['route']);
+            $_ENV['locale'] = $cache['locale'];
+            $_SESSION = $cache['session'];
+            $tpl = str_replace('%value%', $_POST['value'], $cache['tpl']);
+            $tpl = $app->fromString($tpl);
+            $tpl->fetch($cache['item']);
+            echo wb_json_encode(["content"=>$tpl->outer()]);
+        }
+    }
+
   function form() {
       // передача вызова в контроллер form
       require_once(__DIR__.'/form.php');

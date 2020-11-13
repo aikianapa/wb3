@@ -22,21 +22,6 @@ class wbAjaxTree
         echo wb_json_encode(["content"=>$tpl->html()]);
     }
 
-    function change() {
-        $app = &$this->app;
-        $dir = $app->vars('_env.dbac').'/tmp';
-        $cache = json_decode(file_get_contents($dir.'/'.$_POST['cache']), true);
-        if (is_array($cache) AND isset($cache['tpl'])) {
-            $app->vars('_route', $cache['route']);
-            $_ENV['locale'] = $cache['locale'];
-            $_SESSION = $cache['session'];
-            $tpl = str_replace('%value%', $_POST['value'], $cache['tpl']);
-            $tpl = $app->fromString($tpl);
-            $tpl->fetch($cache['item']);
-            echo wb_json_encode(["content"=>$tpl->outer()]);
-        }
-    }
-
     function form() {
         $app = $this->app;
         if ($app->vars->get("_route.params.1") == "prop") return $this->tagTreeProp();
