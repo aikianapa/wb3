@@ -40,8 +40,9 @@ class tagData {
 
     $dom->item['_parent'] = $save;
     $dom->fetch();
-    $dom->before($dom->inner());
-    $dom->remove();
+    $dom->unwrap();
+//    $dom->before($dom->inner());
+//    $dom->remove();
     return $dom;
   }
 }

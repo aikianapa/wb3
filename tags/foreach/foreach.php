@@ -159,8 +159,8 @@ class tagForeach
             //                    foreach($item as $line) $list[] = $line;
             //                }
             //            } else {
-            for ($i = 0; $i < $count; $i++) {
-                $list[] = ["_id" => $i];
+            for ($i = 1; $i <= $count; $i++) {
+                $list[] = ["_id" => $i,"_value" => $i, "id" => $i];
             }
             //            }
         }

@@ -1,5 +1,11 @@
 $.fn.wbAttrChange = function (selector, cache) {
-    $.post("/ajax/change_fld/", { 'cache': cache, 'value': $(this).val() }, function (data) {
+    let data = {};
+    if ($(this).is('select')) {
+        let opt = $(this).find('option[value="'+$(this).val()+'"]');
+        data = $(opt).data();
+    }
+    data.value = $(this).val();
+    $.post("/ajax/change_fld/", { 'cache': cache, 'data': data }, function (data) {
         if (data.content) {
             $(selector).html($(data.content).html());
             if ($(selector).is('[onchange *= "wbAttrChange"]')) {
