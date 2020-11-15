@@ -124,7 +124,9 @@ class tagPagination
                 $style = $pag->find('ul')->attr('style');
                 $pag->find('ul')->attr('style', $style.';display:none;');
             }
-            if ($dom->is('tbody') ) {
+
+            
+            if ($dom->is('table, tbody') OR $dom->parent()->is('table, tbody') ) {
                 $target = $dom->closest('table');
             } else {
                 $target = &$dom;

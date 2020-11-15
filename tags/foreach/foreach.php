@@ -223,24 +223,14 @@ class tagForeach
             $dom->params->page = $page;
             $pag = $dom->tagPagination($dom);
             $html = $dom->html();
-            if (!$dom->params('pos')) {
-                $dom->params->pos = 'bottom';
-            }
-            if ($dom->params->pos == 'bottom') {
-                $html .= "\n" . $pag->outer();
-            }
-            if ($dom->params->pos == 'top') {
-                $html = $pag->outer() . "\n" . $html;
-            }
-            if ($dom->params->pos == 'both') {
-                $html = $pag->outer() . "\n" . $html . "\n" . $pag->outer();
-            }
 
             if ($srvpag) {
                 $res = [
                     'html' => $html,
                     'route' => $app->route,
                     'params' => $dom->params,
+                    'pag' => $pag->outer(),
+                    'pos' => $dom->params->pos
                 ];
                 header('Content-Type: charset=utf-8');
                 header('Content-Type: application/json');
@@ -255,7 +245,6 @@ class tagForeach
         if ($dom->parent()->is("select[placeholder]") && !$dom->find("option[value='']")->length) {
             $dom->prepend("<option value=''>".$dom->parent()->attr('placeholder')."</option>");
         }
-
 
         $dom->before($dom->html());
         $dom->remove();

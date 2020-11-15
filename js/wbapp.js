@@ -9,8 +9,8 @@ if (typeof $ === 'undefined') {
     wbapp.bind = {};
 
     wbapp.ui = {
-        spinner_sm : '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>',
-        spinner_sm_grow : '<span class="spinner-grow spinner-grow-sm" role="status"></span>'
+        spinner_sm: '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>',
+        spinner_sm_grow: '<span class="spinner-grow spinner-grow-sm" role="status"></span>'
     };
 
     wbapp.lazyload = function () {
@@ -62,6 +62,7 @@ if (typeof $ === 'undefined') {
             let page = $(this).attr("data-page");
             let that = this;
             let inner = $(that).html();
+            $(paginator).find('.page-link, .page-item').removeClass('active');
             $(that).html(wbapp.ui.spinner_sm);
 
             if (params._route) {
@@ -71,9 +72,7 @@ if (typeof $ === 'undefined') {
                 params.page = page;
             }
             params._tid = tid;
-            wbapp.ajax(params, function(){
-                $(that).html(inner);
-            });
+            wbapp.ajax(params);
         });
 
         $(document).delegate("input[type=search][data-ajax]", "keyup", function () {
@@ -280,14 +279,27 @@ if (typeof $ === 'undefined') {
                     eval(params.data + ' = update;');
                 }
             }
-            console.log(params)
+
             if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
-            if (params.bind) wbapp.storage(params.bind, data);
-            if (params.update) wbapp.storageUpdate(params.update, data);
+
+            
+            $.each(wbapp.template, function (i, tpl) {
+                if (tpl.params && tpl.params && tpl.params.bind && tpl.params.render && tpl.params.render == 'client') {
+                    // client-side update
+                    if (tpl.params.bind && (tpl.params.bind == params.bind || tpl.params.bind == params.update) ) {
+                        if (params.bind) wbapp.storage(params.bind, data);
+                        if (params.update) wbapp.storageUpdate(params.update, data);
+                    }
+                } else if (tpl.params && tpl.params._params && tpl.params._params.bind == params.update) {
+                    // server-side update
+                    wbapp.ajax(tpl.params, function (data) {
+                        let inner = $(data.data).find(tpl.params.target).html();
+                        $(tpl.params.target).html(inner);
+                    });
+                }
+            })
+
             if (data._id !== undefined) $(obj).data('saved-id', data._id);
-
-            //console.log($(obj).data('saved-id'));
-
             console.log("Trigger: wb-save-done");
             $(obj).trigger("wb-save-done", {
                 params: params,
@@ -354,7 +366,7 @@ if (typeof $ === 'undefined') {
         return params;
     }
 
-    wbapp.ajax = async function (params,func = null) {
+    wbapp.ajax = async function (params, func = null) {
         if (!params.url && !params.tpl && !params.target) return;
         if (params.url !== undefined) {
             if (params.form !== undefined) {
@@ -365,12 +377,13 @@ if (typeof $ === 'undefined') {
             $.post(params.url, opts, function (data) {
                 if (count(data) == 2 && data.error !== undefined && data.callback !== undefined) {
                     eval(data.callback + '(params,data)');
-                    if (func !== null) return func(params,data);
+                    if (func !== null) return func(params, data);
                 }
-                if (params.html) eval(`$(document).find('${params.html}').html(data);`);
-                if (params.append) eval(`$(document).find('${params.append}').append(data);`);
-                if (params.prepend) eval(`$(document).find('${params.prepend}').prepend(data);`);
-                if (params.replace) eval(`$(document).find('${params.replace}').replaceWith(data);`);
+
+                if (params.html) $(document).find(params.html).html(data);
+                if (params.append) $(document).find(params.append).append(data);
+                if (params.prepend) $(document).find(params.prepend).prepend(data);
+                if (params.replace) $(document).find(params.replace).replaceWith(data);
                 //if (params.form) wbapp.formByObj(params.form,data);
                 if (params.bind) wbapp.storage(params.bind, data);
                 if (params.update && typeof data == "object") wbapp.storageUpdate(params.update, data);
@@ -385,7 +398,43 @@ if (typeof $ === 'undefined') {
                     let res = $(data).find(params.target).html();
                     $(document).find(params.target).html(res);
                 } else if (params.render == undefined || params.render == 'server') {
+
                     $(document).find(params.target).html(data.html);
+                    let pagert = params.tagert;
+                    if ($(document).find(params.target).find(':first-child').is('tr')) {
+                        pagert = $(document).find(params.target).closest('table');
+                    }
+
+                    if (data.pos == 'top') {
+                        $(pagert).prev('nav').remove();
+                        $(pagert).before(data.pag);
+                    } 
+                    if (data.pos == 'bottom') {
+                        $(pagert).next('nav').remove();
+                        $(pagert).after(data.pag);
+                    }
+                    if (data.pos == 'both') {
+                        $(pagert).next('nav').remove();
+                        $(pagert).prev('nav').remove();
+                        $(pagert).after(data.pag);
+                        $(pagert).before(data.pag);
+                    }
+
+
+
+                    if ($(params.target).is('tbody')) {
+                            var top = $(params.target);
+
+                        if ($(top).find('nav:first-child .pagination').length) {
+                            console.log(1111);
+                            if ($(top).prev('nav').length) $(top).prev('nav').html($(params.target).find('nav:first-child .pagination'));
+                        }
+                        if ($(top).find('nav .pagination').length) {
+                            console.log(435123452345);
+                            if ($(top).next('nav').length) $(top).next('nav').html($(params.target).find('nav:last-child .pagination'));
+                        }
+                    }
+
                 }
                 if (params.callback !== undefined) eval(params.callback + '(params,data)');
                 wbapp.tplInit();
@@ -400,7 +449,7 @@ if (typeof $ === 'undefined') {
                 }
                 let showmod = $(document).find(".modal.show:not(:visible)");
                 if (showmod.length) showmod.removeClass("show").modal('show');
-                if (func !== null) return func(params,data);
+                if (func !== null) return func(params, data);
             });
         } else if (params.target !== undefined) {
             var target = wbapp.template[params.target];
@@ -425,7 +474,7 @@ if (typeof $ === 'undefined') {
                     }
                     if (target.params.page !== undefined) delete target.params.page
                 });
-                wbapp.ajax(target.params,func);
+                wbapp.ajax(target.params, func);
             }
         }
     }
@@ -606,9 +655,10 @@ if (typeof $ === 'undefined') {
             $(document).on("bind-" + params.bind, function (e, data) {
                 $(wbapp.bind[params.bind]).each(function (i, ractive) {
                     let tid = Object.keys(ractive)[0];
-//                    console.log("Trigger: bind-" + params.bind ,tid, data);
-//                    console.log("Trigger: bind-" + params.bind);
-                      ractive[tid].update(data);
+                    //                    console.log("Trigger: bind-" + params.bind ,tid, data);
+                    //                    console.log("Trigger: bind-" + params.bind);
+                    wbapp.bind[params.bind][tid].set(data);
+                    ractive[tid].update(data);
                 })
             })
         }
