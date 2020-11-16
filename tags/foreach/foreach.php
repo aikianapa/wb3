@@ -30,12 +30,17 @@ class tagForeach
         $dom->find("wb-empty")->remove();
         $tpl = $dom->html();
         $dom->html("");
-
+        $dom->parent()->attr("id") > "" ? $pid = $dom->parent()->attr("id") : $pid = "fp_" . $dom->app->newId();
         $dom->attr("id") > "" ? $tid = $dom->attr("id") : $tid = "fe_" . $dom->app->newId();
         $list = $parent = $dom->item;
         $options = [];
         $dom->params("table") > "" ? $table = $dom->params->table : $table = "";
         isset($dom->params->field) ? $field = $dom->params->field : $field = null;
+
+        if ($app->vars('_post.filter') > '' && $app->vars('_post.target') == '#'.$pid) {
+            $options["filter"] = $app->vars('_post.filter');
+        }
+
         if ($dom->params("orm") > "") {
             $options["orm"] = $dom->params->orm;
         }
@@ -154,15 +159,9 @@ class tagForeach
             $item = $list;
             $list = [];
             $count = intval($dom->params->count);
-            //            if (count($item)) {
-            //                for ( $i=0; $i<$count; $i++ ) {
-            //                    foreach($item as $line) $list[] = $line;
-            //                }
-            //            } else {
             for ($i = 1; $i <= $count; $i++) {
                 $list[] = ["_id" => $i,"_value" => $i, "id" => $i];
             }
-            //            }
         }
         if ($dom->params("rand") == "true") {
             shuffle($list);
@@ -223,6 +222,8 @@ class tagForeach
             $dom->params->page = $page;
             $pag = $dom->tagPagination($dom);
             $html = $dom->html();
+            
+            isset($dom->params->pos) ? $pos = $dom->params->pos : $pos = 'bottom';
 
             if ($srvpag) {
                 $res = [
@@ -230,7 +231,7 @@ class tagForeach
                     'route' => $app->route,
                     'params' => $dom->params,
                     'pag' => $pag->outer(),
-                    'pos' => $dom->params->pos
+                    'pos' => $pos
                 ];
                 header('Content-Type: charset=utf-8');
                 header('Content-Type: application/json');

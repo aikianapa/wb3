@@ -7,7 +7,11 @@ $.fn.wbAttrChange = function (selector, cache) {
     data.value = $(this).val();
     $.post("/ajax/change_fld/", { 'cache': cache, 'data': data }, function (data) {
         if (data.content) {
-            $(selector).html($(data.content).html());
+            $(selector).html('');
+            if ($(selector).is('select[placeholder]') && !$(data.content).find("option[value='']").length) {
+                $(selector).prepend('<option value="">'+$(selector).attr('placeholder')+'</option>');
+            }
+            $(selector).append($(data.content).html());
             if ($(selector).is('[onchange *= "wbAttrChange"]')) {
                 $(selector).trigger('change');
             }
@@ -17,7 +21,10 @@ $.fn.wbAttrChange = function (selector, cache) {
 
 function wb_change() {
         $(document).find('[onchange*="wbAttrChange"]').each(function () {
-            $(this).trigger('change');
+            if (this.wb_change_init == undefined) {
+                this.wb_change_init = true;
+                $(this).trigger('change');
+            }
         });
 }
 

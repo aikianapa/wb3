@@ -380,6 +380,7 @@ if (typeof $ === 'undefined') {
                     if (func !== null) return func(params, data);
                 }
 
+                if (params.target) $(document).find(params.target).html($(data).find(params.target).html());
                 if (params.html) $(document).find(params.html).html(data);
                 if (params.append) $(document).find(params.append).append(data);
                 if (params.prepend) $(document).find(params.prepend).prepend(data);
@@ -420,21 +421,15 @@ if (typeof $ === 'undefined') {
                         $(pagert).before(data.pag);
                     }
 
-
-
                     if ($(params.target).is('tbody')) {
                             var top = $(params.target);
-
                         if ($(top).find('nav:first-child .pagination').length) {
-                            console.log(1111);
                             if ($(top).prev('nav').length) $(top).prev('nav').html($(params.target).find('nav:first-child .pagination'));
                         }
                         if ($(top).find('nav .pagination').length) {
-                            console.log(435123452345);
-                            if ($(top).next('nav').length) $(top).next('nav').html($(params.target).find('nav:last-child .pagination'));
+                             if ($(top).next('nav').length) $(top).next('nav').html($(params.target).find('nav:last-child .pagination'));
                         }
-                    }
-
+                    } 
                 }
                 if (params.callback !== undefined) eval(params.callback + '(params,data)');
                 wbapp.tplInit();
@@ -471,6 +466,9 @@ if (typeof $ === 'undefined') {
                         $.each(val, function (k, v) {
                             target.params.filter[k] = v;
                         })
+                    }
+                    if (key == 'filter') {
+                        target.params.filter = v;
                     }
                     if (target.params.page !== undefined) delete target.params.page
                 });

@@ -15,6 +15,12 @@ class attrChange
         $app = &$dom->app;
         $dom->removeAttr('wb-change');
 
+
+        parse_str($params->change, $ini);
+        if (isset($ini['filter']) && isset($ini['target'])) {
+            return $this->filter($dom, $ini);
+        }
+
         try {
             if (is_object($dom->parents())) {
                 $tpl = $dom->parents()->find($params->change);
@@ -38,7 +44,6 @@ class attrChange
         $cache['item'] = $dom->item;
         $cache = wb_json_encode($cache);
 
-
         if (!is_dir($dir)) {
             mkdir($dir, 0766, true);
         }
@@ -51,5 +56,21 @@ class attrChange
         wbapp.loadScripts(['/engine/attrs/change/change.js'],'wb-change-js');
         </script>
         ");
+    }
+
+    public function filter(&$dom, $ini) {
+        $onclick = $dom->attr('onclick');
+        if (isset($ini['clear']) && !in_array($ini['clear'],['false','0'])) {
+            $onclick .= ';$(this).wbFilterChange("'.$ini['filter'].'","'.$ini['target'].'","clear");';
+        } else {
+            $onclick .= ';$(this).wbFilterChange("'.$ini['filter'].'","'.$ini['target'].'");';
+        }
+        $dom->attr('onclick', $onclick);
+        $dom->append("
+        <script type='wbapp'>
+        wbapp.loadScripts(['/engine/attrs/change/filter.js'],'wb-change-filter-js');
+        </script>
+        ");
+
     }
 }
