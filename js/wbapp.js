@@ -467,9 +467,6 @@ if (typeof $ === 'undefined') {
                             target.params.filter[k] = v;
                         })
                     }
-                    if (key == 'filter') {
-                        target.params.filter = v;
-                    }
                     if (target.params.page !== undefined) delete target.params.page
                 });
                 wbapp.ajax(target.params, func);
