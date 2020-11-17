@@ -2733,36 +2733,7 @@ function wbArrayKeyId($array) {
 
 function wbArraySort($array = array(), $args = array('votes' => 'a'))
 {
-    $json = new Jsonq();
-    $json->collect($array);
-
-    if (is_string($args) && $args > '') {
-        $args = wbArrayAttr($args);
-        $param = array();
-        foreach ($args as $ds) {
-            $tmp = explode(':', $ds);
-            if (!isset($tmp[1])) {
-                $tmp[1] = '';
-            }
-            $param[$tmp[0]] = $tmp[1];
-        }
-    } else {
-        $param = $args;
-    }
-
-    foreach ($param as $k => $s) {
-        if ($s == 'd' OR $s == 'desc') {
-            $s = 'desc';
-        } else {
-            $s = '';
-        }
-        $json->sortBy($k, $s);
-    }
-
-    wbArrayKeyId($json->get());
-    return $array;
-
-    /* 
+    // через jsonq не всегда работает, поэтому такой вариант !!!!
     // если передан атрибут, то предварительно готовим массив параметров
     if (is_string($args) && $args > '') {
         $args = wbArrayAttr($args);
@@ -2803,7 +2774,7 @@ function wbArraySort($array = array(), $args = array('votes' => 'a'))
 
         return $res;
     });
-    */
+    
     return $array;
 }
 

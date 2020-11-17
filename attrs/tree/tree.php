@@ -140,7 +140,6 @@ class tagTreeSelect {
                         foreach($this->tree[0]['children'] as $branch ) {
                             if (isset($branch['children'])) $tmp = array_merge($tmp,$branch['children']);
                         }
-                        $tmp = wbArraySort($tmp, 'name');
                         $this->tree[0]['children'] = $tmp;
                     }
                 } else {
@@ -148,6 +147,11 @@ class tagTreeSelect {
                 }
                 
             }
+
+            if (isset($params->sort)) {
+                $this->tree[0]['children'] = wbArraySort($this->tree[0]['children'], $params->sort);
+            }
+
             if ( $this->dom->attr( 'placeholder' ) > '' ) {
                 $this->dom->prepend( '<option value="">'.$this->dom->attr( 'placeholder' ).'</option>' );
             }
