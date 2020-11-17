@@ -37,6 +37,8 @@ class tagForeach
         $dom->params("table") > "" ? $table = $dom->params->table : $table = "";
         isset($dom->params->field) ? $field = $dom->params->field : $field = null;
 
+        $dom->filterStrict();
+
         if ($app->vars('_post.filter') > '' && $app->vars('_post.target') == '#'.$pid) {
             $options["filter"] = $app->vars('_post.filter');
         }

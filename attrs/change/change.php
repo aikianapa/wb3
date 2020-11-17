@@ -21,35 +21,49 @@ class attrChange
             return $this->filter($dom, $ini);
         }
 
-        try {
-            if (is_object($dom->parents())) {
-                $tpl = $dom->parents()->find($params->change);
-            } else {
-                $tpl = $dom->find($params->change);
-            }
-        } catch (\Throwable $th) {
-            echo "<p class='alert alert-danger'>Wrong wb-change selector: {$params->change}<br>in: {$app->vars('_route.uri')}</p>";
-            die;
-        }
 
-        $cache = [
+        $chlist = explode(',', $params->change);
+        $sl = [];
+        $fn = [];
+        foreach ($chlist as $selector) {
+            $selector = trim($selector);
+            $selector = str_replace("'", '"', $selector);
+            try {
+                if (is_object($dom->parents())) {
+                    $tpl = $dom->parents()->find($selector);
+                } else {
+                    $tpl = $dom->find($params->change);
+                }
+            } catch (\Throwable $th) {
+                echo "<p class='alert alert-danger'>Wrong wb-change selector: {$selector}<br>in: {$app->vars('_route.uri')}</p>";
+                die;
+            }
+
+            $cache = [
                     'tpl' => $tpl->outer(),
                     'route' => $app->vars('_route'),
                     'locale' => $dom->locale
                 ];
-        $fname = md5(wb_json_encode($cache));
-        $dir = $app->vars('_env.dbac').'/tmp';
+            $fname = md5(wb_json_encode($cache));
+            $dir = $app->vars('_env.dbac').'/tmp';
 
-        $cache['session'] = $_SESSION;
-        $cache['item'] = $dom->item;
-        $cache = wb_json_encode($cache);
+            $cache['session'] = $_SESSION;
+            $cache['item'] = $dom->item;
+            $cache = wb_json_encode($cache);
 
-        if (!is_dir($dir)) {
-            mkdir($dir, 0766, true);
+            if (!is_dir($dir)) {
+                mkdir($dir, 0766, true);
+            }
+            file_put_contents($dir.'/'.$fname, $cache);
+            $sl[] = "'".$selector."'";
+            $fn[] = "'".$fname."'";
         }
-        file_put_contents($dir.'/'.$fname, $cache);
+
+        $sl = implode(',', $sl);
+        $fn = implode(',', $fn);
+
         $onchange = $dom->attr('onchange');
-        $onchange .= ';$(this).wbAttrChange("'.$params->change.'","'.$fname.'");';
+        $onchange .= ';$(this).wbAttrChange(['.$sl.'],['.$fn.']);';
         $dom->attr('onchange', $onchange);
         $dom->append("
         <script type='wbapp'>
@@ -58,9 +72,10 @@ class attrChange
         ");
     }
 
-    public function filter(&$dom, $ini) {
+    public function filter(&$dom, $ini)
+    {
         $onclick = $dom->attr('onclick');
-        if (isset($ini['clear']) && !in_array($ini['clear'],['false','0'])) {
+        if (isset($ini['clear']) && !in_array($ini['clear'], ['false','0'])) {
             $onclick .= ';$(this).wbFilterChange("'.$ini['filter'].'","'.$ini['target'].'","clear");';
         } else {
             $onclick .= ';$(this).wbFilterChange("'.$ini['filter'].'","'.$ini['target'].'");';
@@ -71,6 +86,5 @@ class attrChange
         wbapp.loadScripts(['/engine/attrs/change/filter.js'],'wb-change-filter-js');
         </script>
         ");
-
     }
 }

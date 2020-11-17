@@ -231,6 +231,19 @@ class wbDom extends DomQuery
         return $this;
     }
 
+    public function filterStrict() {
+        if ($this->params('filter') > '' AND $this->params('strict') == 'false') {
+            $tmpfl = (array)$this->params('filter');
+            foreach ($tmpfl as $key => $val) {
+                $val = preg_replace('/^\%(.*)\%$/', "", $val);
+                if ($val == '' or $val == null) {
+                    unset($tmpfl[$key]);
+                }
+            }
+            $this->params->filter = $tmpfl;
+        }
+    }
+
     public function fetchStrict()
     {
         if ($this->tagName == "template" or $this->closest("template")->length) {

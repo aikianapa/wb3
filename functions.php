@@ -1166,7 +1166,7 @@ function wbTreeFindBranchById($Item, $id)
     $res = false;
     if (is_array($Item)) {
         foreach ($Item as $item) {
-            if (isset($item['id']) AND $item['id'] === $id) {
+            if ($id == '' OR (isset($item['id']) AND $item['id'] === $id)) {
                 return $item;
             }
             if (isset($item['children']) AND (array)$item['children'] === $item['children']) {
@@ -2758,6 +2758,7 @@ function wbArraySort($array = array(), $args = array('votes' => 'a'))
         }
         $json->sortBy($k, $s);
     }
+
     wbArrayKeyId($json->get());
     return $array;
 
