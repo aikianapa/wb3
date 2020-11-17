@@ -625,17 +625,18 @@ if (typeof $ === 'undefined') {
 
         if (wbapp.bind[params.bind] == undefined) {
             wbapp.bind[params.bind] = {};
-            newbind = true;
+            newbind = tid;
         }
-        wbapp.storage(params.bind, data);
 
         wbapp.bind[params.bind][tid] = new Ractive({
             target: tid,
             template: wbapp.template[tid].html,
             data: () => {
-                return wbapp.storage(params.bind)
+                return data
             }
         })
+        wbapp.storage(params.bind, data);
+        
         wbapp.template[tid].params = params;
         var pagination = $(tid).find(".pagination");
         if (pagination) {
@@ -647,16 +648,16 @@ if (typeof $ === 'undefined') {
         }
 
         if (newbind) {
+            wbapp.bind[params.bind][tid].set(data);
             $(document).on("bind-" + params.bind, function (e, data) {
-                $(wbapp.bind[params.bind]).each(function (i, ractive) {
-                    let tid = Object.keys(ractive)[0];
-                    //                    console.log("Trigger: bind-" + params.bind ,tid, data);
-                    //                    console.log("Trigger: bind-" + params.bind);
+                try {
                     wbapp.bind[params.bind][tid].set(data);
-                    ractive[tid].update(data);
-                })
+                } catch (error) {
+                    wbapp.bind[params.bind][tid].update(data);
+                }
+                
             })
-        }
+        }        
     }
 
     wbapp.newId = function (separator, prefix) {
