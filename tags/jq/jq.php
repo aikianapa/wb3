@@ -1,6 +1,8 @@
 <?php
 use Adbar\Dot;
 
+// <wb-jq wb="$dom->find('.pagination')->addClass('mt-40')" /> //
+
 class tagJq {
     public function __construct( &$dom ) {
         return $this->jq( $dom );

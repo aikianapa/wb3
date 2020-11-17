@@ -401,11 +401,12 @@ if (typeof $ === 'undefined') {
                 } else if (params.render == undefined || params.render == 'server') {
 
                     $(document).find(params.target).html(data.html);
-                    let pagert = params.tagert;
-                    if ($(document).find(params.target).find(':first-child').is('tr')) {
-                        pagert = $(document).find(params.target).closest('table');
-                    }
 
+                    if ($(document).find(params.target).children(':first-child').is('tr')) {
+                        var pagert = $(document).find(params.target).closest('table');
+                    } else {
+                        var pagert = params.target;
+                    }
                     if (data.pos == 'top') {
                         $(pagert).prev('nav').remove();
                         $(pagert).before(data.pag);
