@@ -1,12 +1,17 @@
 @import url("/engine/lib/fonts/open-sans/stylesheet.css");
 @material_icon_size: 21px;
+@round: 0.25rem;
 body {
+    overflow: hidden;
 
     * {
         font-family: 'Open Sans';
     }
 
-    overflow: hidden;
+    .rounded {
+        border-radius: @round;
+    }
+    
     .content {
         overflow: hidden;
     }
