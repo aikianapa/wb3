@@ -9,5 +9,5 @@ $.fn.wbFilterChange = function (filter, target, flag = null) {
         if (val == '') delete filter[key];
     });
     
-    wbapp.ajax({ 'target': target, '_tid': target, 'filter_add': filter});
+    wbapp.ajax({ 'target': target, '_tid': target, 'filter': filter});
 }

@@ -44,10 +44,11 @@ class tagForeach
        
         $dom->filterStrict();
 
+        $options['filter'] = [];
+
+
         if ($app->vars('_post.filter') > '' && $app->vars('_post.target') == '#'.$pid) {
             $options["filter"] = $app->vars('_post.filter');
-        } else if (isset($dom->params->filter) && is_array($dom->params->filter)) {
-            $options["filter"] = $dom->params->filter;
         }
 
         if ($dom->params("orm") > "") {
@@ -57,7 +58,7 @@ class tagForeach
             $options["item"] = $dom->params->item;
         }
         if ($dom->params("filter") > "") {
-            $options["filter"] = $dom->params->filter;
+            $options["filter"] = array_merge($options["filter"], $dom->params->filter);
         }
         if ($dom->params("limit") > "") {
             $options["limit"] = $dom->params->limit;

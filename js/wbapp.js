@@ -59,6 +59,7 @@ if (typeof $ === 'undefined') {
             let paginator = $(this).closest(".pagination");
             let tid = $(paginator).data("tpl");
             let params = wbapp.template[tid].params;
+            console.log(tid,params);
             let page = $(this).attr("data-page");
             let that = this;
             let inner = $(that).html();
@@ -399,8 +400,9 @@ if (typeof $ === 'undefined') {
                     let res = $(data).find(params.target).html();
                     $(document).find(params.target).html(res);
                 } else if (params.render == undefined || params.render == 'server') {
-
+                    
                     $(document).find(params.target).html(data.html);
+                    $(document).find(params.target).children('template').remove();
 
                     if ($(document).find(params.target).children(':first-child').is('tr')) {
                         var pagert = $(document).find(params.target).closest('table');
@@ -448,29 +450,32 @@ if (typeof $ === 'undefined') {
                 if (func !== null) return func(params, data);
             });
         } else if (params.target !== undefined) {
-            var target = wbapp.template[params.target];
+            var target = wbapp.template[params.target].params;
             if (!target) {
                 console.log("Template not found: " + params.target);
                 return;
             } else {
-                if (target.params.filter == undefined) target.params.filter = {};
+                if (target.filter == undefined) target.filter = {};
                 $.each(params, function (key, val) {
                     if (key == 'filter') {
                         if (val == 'clear') {
-                            target.params.filter = {};
+                            target.filter = {};
                         } else {
-                            target.params.filter = val;
+                            target.filter = val;
                         }
                     }
-                    if (key == 'filter_remove' && target.params.filter[val] !== undefined) delete target.params.filter[val];
+                    if (key == 'filter_remove' && target.filter[val] !== undefined) delete target.filter[val];
                     if (key == 'filter_add') {
                         $.each(val, function (k, v) {
-                            target.params.filter[k] = v;
+                            target.filter[k] = v;
                         })
                     }
-                    if (target.params.page !== undefined) delete target.params.page
                 });
-                wbapp.ajax(target.params, func);
+                if (target._params.page !== undefined) target._params.page = 1
+                if (target._params.pages !== undefined) delete target._params.pages
+                if (target._params.count !== undefined) delete target._params.count
+                target._tid = params.target; // чтобы срабатывал вариант ответа с json
+                wbapp.ajax(target, func);
             }
         }
     }
