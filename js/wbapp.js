@@ -430,7 +430,7 @@ if (typeof $ === 'undefined') {
                         if ($(top).find('nav .pagination').length) {
                              if ($(top).next('nav').length) $(top).next('nav').html($(params.target).find('nav:last-child .pagination'));
                         }
-                    } 
+                    }
                 }
                 if (params.callback !== undefined) eval(params.callback + '(params,data)');
                 wbapp.tplInit();

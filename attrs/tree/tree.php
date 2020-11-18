@@ -108,12 +108,13 @@ class tagTreeSelect {
         if ( $this->dom->is( 'select' ) ) {
             $app = &$this->dom->app;
             $this->tpl = $this->dom->html();
+            $this->opt = $this->dom->find('option',0)->clone();
             $this->dom->html( '' );
             $this->lvl = 0;
             $this->idx = 0;
             $this->limit = -1;
             $this->level = -1;
-
+            $this->placeholder = $this->dom->attr('placeholder');
             if ( !isset( $params->parent ) ) $params->parent = 'true';
             if ( $params->parent == 'true' ) $this->parent = true;
             if ( $params->parent == 'false' ) $this->parent = false;
@@ -150,10 +151,6 @@ class tagTreeSelect {
 
             if (isset($params->sort)) {
                 $this->tree[0]['children'] = wbArraySort($this->tree[0]['children'], $params->sort);
-            }
-
-            if ( $this->dom->attr( 'placeholder' ) > '' ) {
-                $this->dom->prepend( '<option value="">'.$this->dom->attr( 'placeholder' ).'</option>' );
             }
         }
         $flag = false;
@@ -216,6 +213,19 @@ class tagTreeSelect {
                 $this->lvl--;
             }
         }
+            if ($this->dom->is('select[placeholder]')) {
+                if ($this->opt) {
+                    $this->opt->attr('value', '');
+                    $this->opt->inner($this->placeholder);
+                    $this->opt->setAttributes([]);
+                    $this->dom->prepend($this->opt->outer());
+                } else {
+                    $this->dom->prepend('<option value="">'.$this->dom->attr('placeholder').'</option>');
+                }
+            }
+
+
+
     }
 
 }

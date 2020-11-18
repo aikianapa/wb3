@@ -23,6 +23,11 @@ class ctrlForm
         $app = &$this->app;
         $cache = $app->getCache();
         $item = [];
+        if ('#'.$app->vars('_post._params.tpl') == $app->vars('_post.target') AND $app->vars('_post.filter') > '') {
+            // признак фильрации в темплейте
+            $this->target = $app->vars('_post.target');
+        }
+
         if (!$cache) {
             if (isset($this->route->form)) {
                 $dom = $app->getForm($this->route->form, $this->route->mode);
@@ -55,7 +60,13 @@ class ctrlForm
             }
             $dom->fetch();
             $dom->setSeo();
-            $out = $dom->outer();
+            if (isset($this->target)) {
+                $out = $dom->find($this->target)[0]->outer();
+                $out = '<div>'.$out.'</div>';
+            } else {
+                $out = $dom->outer();
+            }
+            
             if (!strpos(' '.$out, '<!DOCTYPE html>')) {
                 $out = '<!DOCTYPE html>'.$out;
             }

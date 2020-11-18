@@ -88,7 +88,13 @@ class ctrlAjax {
                 $tpl = str_replace("%{$fld}%", $val, $tpl);
             }
             $tpl = $app->fromString($tpl);
+            $opt = $tpl->find("option:first");
             $tpl->fetch($cache['item']);
+            if ($tpl->is("select[placeholder]") AND !$tpl->find('option[value=""]')->length) {
+                $opt->attr('value', '');
+                $opt->html($tpl->attr('placeholder'));
+                $tpl->prepend($opt);
+            }
             echo wb_json_encode(["content"=>$tpl->outer()]);
         }
     }

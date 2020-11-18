@@ -1,6 +1,8 @@
 $.fn.wbAttrChange = function (sl, fn) {
     let that = this;
     $.each(sl,function(i,selector){
+        $(selector).trigger('wb-change-start');
+        console.log('Trigger: wb-change-start ' + selector );
         var cache = fn[i];
         var data = {};
         if ($(that).is('select')) {
@@ -10,15 +12,14 @@ $.fn.wbAttrChange = function (sl, fn) {
         data.value = $(that).val();
         $.post("/ajax/change_fld/", { 'cache': cache, 'data': data }, function (data) {
             if (data.content) {
-                $(selector).html('');
-                if ($(selector).is('select[placeholder]') && !$(data.content).find("option[value='']").length) {
-                    $(selector).prepend('<option value="">' + $(selector).attr('placeholder') + '</option>');
-                }
-                $(selector).append($(data.content).html());
+                let old = $(selector).html();
+                $(selector).html($(data.content).html());
                 if ($(selector).is('[onchange *= "wbAttrChange"]')) {
                     $(selector).trigger('change');
                 }
             }
+            console.log('Trigger: wb-change-done '+selector);
+            $(selector).trigger('wb-change-done');
         });
 
     });

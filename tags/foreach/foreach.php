@@ -28,6 +28,11 @@ class tagForeach
 
         $empty = $dom->find("wb-empty")[0];
         $dom->find("wb-empty")->remove();
+        if ($dom->parent()->is("select[placeholder]")) {
+            $this->opt = $dom->find('option', 0)->clone();
+            $this->placeholder = $dom->parent()->attr("placeholder");
+        }
+
         $tpl = $dom->html();
         $dom->html("");
         $dom->parent()->attr("id") > "" ? $pid = $dom->parent()->attr("id") : $pid = "fp_" . $dom->app->newId();
@@ -36,11 +41,13 @@ class tagForeach
         $options = [];
         $dom->params("table") > "" ? $table = $dom->params->table : $table = "";
         isset($dom->params->field) ? $field = $dom->params->field : $field = null;
-
+       
         $dom->filterStrict();
 
         if ($app->vars('_post.filter') > '' && $app->vars('_post.target') == '#'.$pid) {
             $options["filter"] = $app->vars('_post.filter');
+        } else if (isset($dom->params->filter) && is_array($dom->params->filter)) {
+            $options["filter"] = $dom->params->filter;
         }
 
         if ($dom->params("orm") > "") {
@@ -245,9 +252,18 @@ class tagForeach
             $dom->inner($empty->inner());
         }
 
-        if ($dom->parent()->is("select[placeholder]") && !$dom->find("option[value='']")->length) {
-            $dom->prepend("<option value=''>".$dom->parent()->attr('placeholder')."</option>");
-        }
+
+            if (isset($this->placeholder)) {
+                if ($this->opt) {
+                    $this->opt->attr('value', '');
+                    $this->opt->inner($this->placeholder);
+                    $this->opt->setAttributes([]);
+                    $dom->prepend($this->opt->outer());
+                } else {
+                    $dom->prepend('<option value="">'.$this->placeholder.'</option>');
+                }
+            }
+
 
         $dom->before($dom->html());
         $dom->remove();

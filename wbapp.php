@@ -240,6 +240,7 @@ class wbDom extends DomQuery
                     unset($tmpfl[$key]);
                 }
             }
+
             $this->params->filter = $tmpfl;
         }
     }
@@ -1146,7 +1147,7 @@ class wbRender extends WEProcessor
         $this->inner = $dom->inner();
         $this->parser = new parse_engine(new weparser($this));
         $this->context = $dom->item;
-        $vars = $dom->app->vars;
+        isset($dom->app->vars) ? $vars = $dom->app->vars : $vars = [];
         $vars = (array)$vars;
         $this->vars->setReference($vars);
     }
