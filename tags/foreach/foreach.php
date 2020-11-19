@@ -12,6 +12,7 @@ class tagForeach
     function foreach($dom)
     {
         $app = &$dom->app;
+        $this->app = &$app;
         if ($dom->is(":root")) {
             $dom->rootError();
         }
@@ -46,8 +47,8 @@ class tagForeach
 
         $options['filter'] = [];
 
-
         if ($app->vars('_post.filter') > '' && $app->vars('_post.target') == '#'.$pid) {
+            $this->filter_prepare();
             $options["filter"] = $app->vars('_post.filter');
         }
 
@@ -58,8 +59,9 @@ class tagForeach
             $options["item"] = $dom->params->item;
         }
         if ($dom->params("filter") > "") {
-            $options["filter"] = array_merge($options["filter"], $dom->params->filter);
+            $options["filter"] = array_merge($dom->params->filter, $options["filter"]);
         }
+
         if ($dom->params("limit") > "") {
             $options["limit"] = $dom->params->limit;
         }
@@ -231,6 +233,11 @@ class tagForeach
             $dom->params->tpl = $dom->parent()->attr('id');
             $dom->params->page = $page;
             $pag = $dom->tagPagination($dom);
+
+        if (!count((array)$list) or $dom->html() == "") {
+            $dom->inner($empty->inner());
+        }
+
             $html = $dom->html();
             
             isset($dom->params->pos) ? $pos = $dom->params->pos : $pos = 'bottom';
@@ -249,9 +256,7 @@ class tagForeach
                 die;
             }
         }
-        if (!count((array) $list) or $dom->html() == "") {
-            $dom->inner($empty->inner());
-        }
+
 
 
             if (isset($this->placeholder)) {
@@ -266,7 +271,37 @@ class tagForeach
             }
 
 
-        $dom->before($dom->html());
+        $dom->before($dom->inner());
         $dom->remove();
+    }
+
+    function filter_prepare() {
+        $filter = $this->app->vars('_post.filter');
+        if (!((array)$filter === $filter)) {
+            return;
+        }
+        foreach($filter as $fld => $val) {
+            if (substr($fld, -7) == '__range') {
+                $range = explode(';', $val);
+                unset($filter[$fld]);
+                $fld = substr($fld,0,-7);
+                if (!isset($range[1])) $range[1] = $range[0];
+                $filter[$fld] = ['$gte'=>$range[0] , '$lte'=>$range[1]];
+
+                //$filter[$fld.'_min'] = ['$gte'=>$range[0]];
+                //$filter[$fld.'_max'] = ['$lte'=>$range[1]];
+            } else if (substr($fld, -8) == '__minmax') {
+                $range = explode(';', $val);
+                unset($filter[$fld]);
+                $fld = substr($fld, 0, -8);
+                if (!isset($range[1])) {
+                    $range[1] = $range[0];
+                }
+                $filter[$fld.'_min'] = ['$gte'=>$range[0]];
+                $filter[$fld.'_max'] = ['$lte'=>$range[1]];
+            }
+        }
+        $_POST['filter'] = $filter;
+
     }
 }

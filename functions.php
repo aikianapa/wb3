@@ -294,7 +294,6 @@ function wbMime($path) {
     return $mime;
 }
 
-
 function wbMail(
     $from = null,
     $sent = null,
@@ -1997,7 +1996,10 @@ function wbQuery($sql)
 
 function wbItemFilter($item, $filter)
 {
-    //print_r($filter);
+    if (isset($item['_form'])) {
+        $item = wbTrigger('form', __FUNCTION__, 'beforeItemFilter', [$item['_form']] , $item);
+    }
+
     $fields = new Dot();
     $fields->setReference($item);
     $result = true;

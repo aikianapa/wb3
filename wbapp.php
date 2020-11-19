@@ -625,29 +625,48 @@ class wbApp
           mkdir($dir,0777,true);
       }
       file_put_contents($name,$out,LOCK_EX);
+      $lastModified=filemtime($name);
+      header("Last-Modified: ".gmdate("D, d M Y H:i:s", $lastModified)." GMT");
     }
 
     public function getCache() {
+        if (isset($_SERVER['HTTP_CACHE_CONTROL'])) {
+            parse_str($_SERVER['HTTP_CACHE_CONTROL'], $cc);
+            if (isset($cc['no-cache'])) return null;
+        }
       if (((!count($_POST) AND isset($_GET['update']) AND count($_GET) == 1) OR count($_POST) OR count($_GET))) return null;
       $cid = $this->getCacheId();
       $sub = substr($cid,0,4);
       $dir = $this->vars('_env.dbac').'/'.$sub;
       $name = $dir.'/'.$cid.'.html';
-      if (is_file($name)) {
-          if ((time() - filectime($name)) > $this->vars('_sett.cache')) {
 
+
+    
+    header("Cache-control: public");
+    header("Pragma: cache");
+    header("Expires: " . gmdate("D, d M Y H:i:s", time()+$this->vars('_sett.cache')) . " GMT");
+    header("Cache-Control: max-age=".$this->vars('_sett.cache'));
+
+    if (is_file($name)) {
+          if ((time() - filectime($name)) > $this->vars('_sett.cache')) {
             // Делаем асинхронный запрос с обновлением кэша
-            $fp = stream_socket_client("tcp://{$this->route->hostname}:{$this->route->port}", $errno, $errstr, 30);
-            if (!$fp) {
-                echo "$errstr ($errno)<br />\n";
-            } else {
-                fwrite($fp, "GET {$this->route->uri}?update HTTP/1.0\r\nHost: {$this->route->hostname} \r\nAccept: */*\r\n\r\n");
-                fclose($fp);
-            }
+            $this->shadow($this->route->uri);
           }
           return file_get_contents($name);
       }
       return null;
+    }
+
+
+    public function shadow($uri) {
+            // отправка url запроса без ожидания ответа
+            $fp = stream_socket_client("tcp://{$this->route->hostname}:{$this->route->port}", $errno, $errstr, 30);
+            if (!$fp) {
+                echo "$errstr ($errno)<br />\n";
+            } else {
+                fwrite($fp, "GET {$uri} HTTP/1.0\r\nHost: {$this->route->hostname} \r\nAccept: */*\r\n\r\n");
+                fclose($fp);
+            }
     }
 
     public function route()

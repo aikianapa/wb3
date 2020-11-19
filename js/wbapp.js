@@ -471,9 +471,9 @@ if (typeof $ === 'undefined') {
                         })
                     }
                 });
-                if (target._params.page !== undefined) target._params.page = 1
-                if (target._params.pages !== undefined) delete target._params.pages
-                if (target._params.count !== undefined) delete target._params.count
+                if (target._params && target._params.page !== undefined) target._params.page = 1
+                if (target._params && target._params.pages !== undefined) delete target._params.pages
+                if (target._params && target._params.count !== undefined) delete target._params.count
                 target._tid = params.target; // чтобы срабатывал вариант ответа с json
                 wbapp.ajax(target, func);
             }

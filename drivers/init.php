@@ -2,6 +2,9 @@
 
 function wbItemList($form = 'pages', $options=[])
 {
+    if (!is_array($options)) {
+        $options=json_decode($options, true);
+    }
     $db = wbSetDb($form);
     if (substr($form, 0, 1) == '_') {
         $db = $_ENV["app"]->_db;

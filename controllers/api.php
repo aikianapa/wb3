@@ -23,8 +23,15 @@ class ctrlApi {
 
   }
 
+  function call($app) {
+    if (!$this->apikey()) return;  
+    $class = $app->formClass($app->route->form);
+    $call = $app->route->call;
+    $class->$call();
+  }
+
   function query($app) {
-			if (!$this->apikey()) return;
+    	if (!$this->apikey()) return;
       $table = $app->route->table;
       $options = $this->prepQuery($app->route->query);
       if (isset($app->route->item)) {
