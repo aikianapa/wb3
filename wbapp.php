@@ -626,7 +626,6 @@ class wbApp
       }
       file_put_contents($name,$out,LOCK_EX);
       $lastModified=filemtime($name);
-      header("Last-Modified: ".gmdate("D, d M Y H:i:s", $lastModified)." GMT");
     }
 
     public function getCache() {
