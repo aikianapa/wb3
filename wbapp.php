@@ -663,6 +663,7 @@ class wbApp
             if (!$fp) {
                 echo "$errstr ($errno)<br />\n";
             } else {
+                strpos($uri, '?') ? $uri .= '&update' : $uri .= '?update';
                 fwrite($fp, "GET {$uri} HTTP/1.0\r\nHost: {$this->route->hostname} \r\nAccept: */*\r\n\r\n");
                 fclose($fp);
             }
