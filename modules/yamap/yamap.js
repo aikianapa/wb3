@@ -79,8 +79,9 @@ $(document).on("yandex-map-js", function () {
           }
         });
       } else {
-        if ($(this).find("[role=geopos]").length) {
-          $(this).find("[role=geopos]").each(function (i) {
+        if ($(this).find("geopos").length) {
+
+          $(this).find("geopos").each(function (i) {
             var point = {
               pos: yamap_pos($(this).attr("value")),
               content: $(this).html(),
