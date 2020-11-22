@@ -14,9 +14,10 @@ class modYamap
         if ($dom->tag() !== "input") {
             $out->find(".yamap_editor")->remove();
             if ($field > "") {
-                $out->find(".yamap_canvas")->html(json_encode($dom->item[$field]));
+                $out->find(".yamap_canvas")->inner(json_encode($dom->item[$field]));
             } else {
-                $out->find(".yamap_canvas")->html($dom->html());
+                $dom->setValues();
+                $out->find(".yamap_canvas")->inner($dom->html());
             }
         } else {
             if ($field > "") {
@@ -28,7 +29,7 @@ class modYamap
                 $out->find(".yamap")->attr($at, $val);
             }
 		}
-		$out->fetch($dom->item);
+        $out->fetch($dom->item);
 		$dom->after($out)->remove();
     }
 }
