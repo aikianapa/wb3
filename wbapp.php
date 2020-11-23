@@ -723,6 +723,10 @@ class wbApp
 
     public function controller()
     {
+
+        if (substr($this->mime($this->route->uri), 0, 6) == 'image/') {
+            $this->route->controller = 'thumbnails';
+        }
         if ($this->route->controller) {
             if (isset($this->route->file) && in_array($this->route->fileinfo->extension,["php","html"])) return;
             $path = "/controllers/{$this->route->controller}.php";

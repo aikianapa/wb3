@@ -15,6 +15,7 @@ class ctrlThumbnails
         $_POST = $app->vars('_post');
 
         $params=$app->vars('_route.params');
+
         if ($app->vars('_get')) {
             $app->vars('_get', []);
             $app->vars('_get.w', $app->vars('_route.w'));
@@ -25,8 +26,11 @@ class ctrlThumbnails
         } else {
             $re = '/[\/thumbc|thumb\/].*\/src\/(.*)/m';
             preg_match($re, $app->vars('_route.uri'), $matches, PREG_OFFSET_CAPTURE, 0);
-
-            $app->vars('_get.src', $matches[1][0]);
+            if (!count($matches)) {
+                $app->vars('_get.src', $app->vars('_route.uri'));
+            } else {
+                $app->vars('_get.src', $matches[1][0]);
+            }
         }
 
         if (strpos($app->vars('_get.src'), '?')) {
@@ -82,6 +86,13 @@ class ctrlThumbnails
         }
         if (is_file($file)) {
             list($width, $height, $type) = $size = getimagesize($file);
+            if ($app->vars('_route.w') == '') {
+                $app->vars('_route.w', $width);
+            }
+            if ($app->vars('_route.h') == '') {
+                $app->vars('_route.h', $height);
+            }
+
             $ext = pathinfo($file, PATHINFO_EXTENSION);
 						 $options = [];
             if ($ext == 'svg') {

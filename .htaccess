@@ -4,6 +4,20 @@ AddDefaultCharset UTF-8
 RewriteBase /
 RewriteEngine On
 
+RewriteRule ^app$ /app/ [L,QSA]
+
+RewriteCond %{REQUEST_URI} !\?
+RewriteCond %{REQUEST_URI} !\&
+RewriteCond %{REQUEST_URI} !\=
+RewriteCond %{REQUEST_URI} !\.
+RewriteCond %{REQUEST_URI} ![^\/]$
+RewriteCond %{REQUEST_URI} ![^\/ajax]\/
+RewriteRule ^(.*)\/$ /$1 [R=301,L]
+
+Redirect 301 /home /
+RewriteCond %{HTTP_HOST} ^www\.(.*)$
+RewriteRule ^(.*)$ http://%1/$1 [L,R=301]
+
 RewriteRule ^(.*)\.less$ index.php [L,QSA]
 
 RewriteCond %{REQUEST_FILENAME} !-f
