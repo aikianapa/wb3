@@ -233,7 +233,6 @@ class tagForeach
             $dom->params->tpl = $dom->parent()->attr('id');
             $dom->params->page = $page;
             $pag = $dom->tagPagination($dom);
-
         if (!count((array)$list) or $dom->html() == "") {
             $dom->inner($empty->inner());
         }
@@ -255,6 +254,8 @@ class tagForeach
                 echo json_encode($res);
                 die;
             }
+        } else if (!$dom->children()->length) {
+            $dom->inner($empty->inner());
         }
 
 

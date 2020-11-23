@@ -107,7 +107,7 @@ class tagTreeSelect {
 
         if ( $this->dom->is( 'select' ) ) {
             $app = &$this->dom->app;
-            $this->tpl = $this->dom->html();
+            $this->tpl = $this->dom->inner();
             $this->opt = $this->dom->find('option',0)->clone();
             $this->dom->html( '' );
             $this->lvl = 0;
@@ -277,7 +277,7 @@ function tagTreeUl( &$dom, $Item = array(), $param = null, $srcVal = array() ) {
         if ( isset( $rand ) AND $rand == 'true' ) {
             $rand = true;
         }
-        $tpl = $dom->html();
+        $tpl = $dom->inner();
         $tree = $Item;
     } else {
         foreach ( $param as $k =>$val ) $$k = $val;
@@ -316,7 +316,7 @@ function tagTreeUl( &$dom, $Item = array(), $param = null, $srcVal = array() ) {
                 if ( ( $limit == -1 OR $lvl <= $limit ) ) {
                     if ( $parent !== 1 ) {
                         $lvl--;
-                        $line->html( $child->inner() );
+                        $line->inner( $child->inner() );
                     } else {
                         if ( $children == 1 AND isset( $item['children'] ) ) {
                             $line->children( 'level' )->children()->append( "<{$tag}>".$child->inner()."</{$tag}>" );
@@ -348,7 +348,7 @@ function tagTreeForm( $dict = [], $data = [] ) {
         foreach ( $dict as $fld ) {
             $set = $fldset->clone();
             $set->fetch( $fld )->clearValues();
-            $set->find( 'label' )->html( $fld['label'] );
+            $set->find( 'label' )->inner( $fld['label'] );
             $set->find( 'div.col-12' )->append( $app->fieldBuild( $fld, $data['data'] ) );
             $out .= $set->outer().'\n';
             //$out .= wbFieldBuild( $fld, $data ).'\n';
