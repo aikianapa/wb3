@@ -771,7 +771,7 @@ if (typeof $ === 'undefined') {
                 //wbapp.pluginsInit();
                 wbapp.lazyload();
             }
-            $(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").modal("show");
+            if ($(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").length) $(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").modal("show");
             if ($.fn.tooltip) $('[data-toggle="tooltip"]').tooltip();
         });
     }
