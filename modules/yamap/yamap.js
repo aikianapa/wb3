@@ -10,6 +10,7 @@ $(document).on("yandex-map-js", function () {
   function yamap() {
 
     $.fn.yamap_autozoom = function () {
+      if ($(this).find('.yamap_canvas').data("props") == undefined) return;
       let map = $(this).find('.yamap_canvas').data("props").map;
       var multi = $(this).find('wb-multiinput');
       setTimeout(function () {

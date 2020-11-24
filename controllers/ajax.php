@@ -145,9 +145,90 @@ class ctrlAjax {
   }
 
   function getsess() {
-    $app = $this->app;
-    echo json_encode($app->vars('_sess'));
+    echo json_encode($this->app->vars('_sess'));
   }
+
+function mail() {
+    $app = &$this->app;
+    $attachments=[];
+    isset($_POST['formdata']) ? $formdata = $_POST['formdata'] : $formdata = [];
+    isset($_POST['formflds']) ? $formflds = $_POST['formflds'] : $formflds = [];
+
+    !isset($formdata["_subject"]) ? $formdata["_subject"]=$_ENV['sysmsg']["mail_from_site"] : null;
+    !isset($formdata["subject"]) ? $formdata["subject"]=$formdata["_subject"] : null;
+
+    $formdata["subject"] = mb_encode_mimeheader($formdata["subject"], "UTF-8");
+
+    if (isset($formdata["_tpl"])) {
+        $out = $app->getTpl($formdata["_tpl"]);
+    } elseif (isset($formdata["_form"])) {
+        $out = $app->getTpl($formdata["_form"]);
+    } elseif (isset($formdata["_message"])) {
+        $out = $app->fromString($formdata["_message"]);
+        $b64img = $out->find("img[src^='data:']");
+        foreach ($b64img as $b64) {
+            $attachments[] = $b64->attr("src");
+            $b64->remove();
+        }
+    } else {
+        $out = $app->getTpl("mail.php");
+    }
+    !isset($formdata["email"]) ? $formdata["email"]=$_ENV["route"]["mode"]."@".$_ENV["route"]["host"] : null;
+    !isset($formdata["name"]) ? $formdata["name"]="Site Mailer" : null;
+    !isset($formdata["_mailto"]) ? $mailto = $_ENV["settings"]["email"] : $mailto = $formdata["_mailto"];
+    $receivers = [];
+    $sendlist = explode(",", $mailto);
+    foreach ($sendlist as $tmp) {
+        $tmp = trim($tmp);
+        $receivers[] = "{$tmp};{$_ENV["settings"]["header"]}";
+    }
+    if (!$out) {
+        $out = "";
+        foreach ($formdata as $fld => $val) {
+            if (substr($fld, 0, 1) !== '_' AND $fld !== 'subject') {
+                isset($formflds[$fld]) ? $out.='<strong>'.$formflds[$fld].'</strong>' : $out.='<strong>'.$fld.'</strong>';
+                $out .= ' : '.$val."<br>\n";
+            }
+        }
+    } else {
+        $out->item = $formdata;
+        $out->fetch();
+        $out=$out->outer();
+    }
+        $res=wbMail("{$formdata["email"]};{$formdata["name"]}", $receivers, $formdata["subject"], $out, $attachments);
+        if (!$res) {
+            $result=json_encode(array("error"=>true,"msg"=>$_ENV['sysmsg']["mail_sent_error"].": ".$_ENV["error"]['wbMail']));
+        } else {
+            $result=json_encode(array("error"=>false,"msg"=>$_ENV['sysmsg']["mail_sent_success"]."!"));
+        }
+        if (isset($formdata["_callback"]) and is_callable($formdata["_callback"])) {
+            return @$formdata["_callback"]($result);
+        }
+    
+    return $result;
+
+}
+
+function onlineusers()
+{
+    clearstatcache();
+    $count = null;
+    if ($directory_handle = opendir(session_save_path())) {
+        $count = 0;
+        while (false !== ($file = readdir($directory_handle))) {
+            if ($file != '.' && $file != '..') {
+                if (time()- filemtime(session_save_path() . '' . $file) < 3 * 60) {
+                    $count++;
+                }
+            }
+        }
+        closedir($directory_handle);
+    }
+
+    header('Content-Type: application/json');
+    return json_encode(["count"=>$count]);
+}
+
 
   function getsett() {
     $app = $this->app;

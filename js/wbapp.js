@@ -18,7 +18,7 @@ if (typeof $ === 'undefined') {
     }
 
     wbapp.eventsInit = function () {
-        $(document).delegate("[data-ajax]", "click", function (e, tid) {
+        $(document).delegate("[data-ajax]:not(input,select)", "click", function (e, tid) {
             if (!$(this).is("input,select")) {
                 e.preventDefault();
                 let params = wbapp.parseAttr($(this).attr("data-ajax"));
@@ -31,6 +31,9 @@ if (typeof $ === 'undefined') {
                             $(this).parents('form').attr('id', id);
                         }
                         params.form = 'form#' + $(this).parents('form').attr('id');
+                        if (!$(params.form).verify()) {
+                            return false;
+                        }
                     }
                 }
                 params._event = e;
@@ -372,6 +375,20 @@ if (typeof $ === 'undefined') {
         if (params.url !== undefined) {
             if (params.form !== undefined) {
                 params.formdata = wbapp.objByForm(params.form);
+                params.formflds = {};
+                    $(params.form).find('[name][placeholder]').each(function(){
+                        if ($(this).attr('name')) {
+                            if ($(this).attr('data-label') > '') {
+                                params.formflds[$(this).attr('name')] = $(this).attr('data-label');
+                            } else if ($(this).closest('.form-group').find('label').length) {
+                                params.formflds[$(this).attr('name')] = $(this).closest('.form-group').find('label').text();
+                            } else if ($(this).prev("label").length) {
+                                params.formflds[$(this).attr('name')] = $(this).prev("label").text();
+                            } else if ($(this).attr('placeholder') > '') {
+                                params.formflds[$(this).attr('name')] = $(this).attr('placeholder');
+                            }
+                        }
+                    })
             }
             let opts = Object.assign({}, params);
             delete opts._event;
@@ -438,12 +455,12 @@ if (typeof $ === 'undefined') {
                 wbapp.tplInit();
                 wbapp.lazyload();
                 wbapp.ajaxAuto();
-                console.log("Trigger: ajax-done");
+                //console.log("Trigger: wb-ajax-done");
                 if (data.result == undefined) params['data'] = data;
                 if (params.form !== undefined) {
-                    $(params.form).trigger("ajax-done", params);
+                    $(params.form).trigger("wb-ajax-done", params);
                 } else {
-                    $(document).trigger("ajax-done", params);
+                    $(document).trigger("wb-ajax-done", params);
                 }
                 let showmod = $(document).find(".modal.show:not(:visible)");
                 if (showmod.length) showmod.removeClass("show").modal('show');
@@ -751,7 +768,7 @@ if (typeof $ === 'undefined') {
                 wbapp.tplInit();
                 //                wbapp.watcherInit();
                 wbapp.wbappScripts();
-                wbapp.pluginsInit();
+                //wbapp.pluginsInit();
                 wbapp.lazyload();
             }
             $(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").modal("show");
@@ -979,8 +996,7 @@ if (typeof $ === 'undefined') {
                 $(this).data("error", wbapp._settings.sysmsg.required + ucfirst(label));
                 console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                 $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
-            }
-            if ($(this).is(":not([disabled],[readonly],[min],[max],[maxlength],[type=checkbox]):visible")) {
+            } else if ($(this).is(":not([disabled],[readonly],[min],[max],[maxlength],[type=checkbox]):visible")) {
                 if ($(this).val() == "") {
                     res = false;
                     console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
