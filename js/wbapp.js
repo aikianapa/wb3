@@ -862,12 +862,12 @@ if (typeof $ === 'undefined') {
                     console.log("Script loaded: " + name);
                     wbapp.loadedScripts.push(name);
                     if (i >= scripts.length) {
-                        if (func !== null) return func(scripts);
                         if (trigger !== null) {
                             $(document).find("script#" + trigger + "-remove").remove();
                             console.log("Trigger: " + trigger);
                             $(document).trigger(trigger);
                         }
+                        if (func !== null) return func(scripts);
                     }
                 }
                 document.head.appendChild(script);

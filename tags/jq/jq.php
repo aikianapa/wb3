@@ -60,7 +60,6 @@ class tagJq {
                     $c->copy( $dom );
                     $c->fetch();
                 }
-
             } else {
                 echo 'Error: wb-jq command was start at $dom->';
                 echo '\n<br/>'. $tag;
