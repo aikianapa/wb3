@@ -9,7 +9,9 @@ $(document).on("yandex-map-js", function () {
   function yamap() {
 
     $.fn.yamap_autozoom = function (offset = 0) {
+      console.log("autozoom1");
       if ($(this).find('.yamap_canvas').data("props") == undefined) return;
+      console.log("autozoom2");
       let map = $(this).find('.yamap_canvas').data("props").map;
       var multi = $(this).find('wb-multiinput');
       setTimeout(function () {
@@ -37,22 +39,27 @@ $(document).on("yandex-map-js", function () {
       var cc = [];
       var canvas = this;
       var zoom = $(this).attr("zoom") * 1;
+      var autozoom = true;
 
       $(canvas).data("props", {});
       if (!$(yamap).find(".wb-multiinput-data").length) {
         if ($(yamap).find('geopos').length) {
           $(yamap).find('geopos').each(function (i) {
             try {
-              epoints.push(json_decode($(this).attr("data")));
+              var geo = json_decode($(this).attr("data"));
+              if ($(this).html().trim() > " ") {
+                geo.address = $(this).html();
+              }
             } catch (error) {
-              null;
+              var geo = null;
             }
+            if (geo) epoints.push(geo);
             $(this).remove();
           });
           epoints = json_encode(epoints);
         } else {
-          epoints = $(this).html();
-          $(this).html("");
+            epoints = $(this).html();
+            $(this).html("");
         }
 
       } else if ($(yamap).find(".yamap_editor").length) {
@@ -139,6 +146,7 @@ $(document).on("yandex-map-js", function () {
       }
       $(this).yamap_geo();
       $(this).css("opacity", 1);
+      if (autozoom) $(yamap).yamap_autozoom();
       if ($(yamap).attr('center') == '') {
           let center = map.getCenter();
           center = center.join(' ');
@@ -156,7 +164,9 @@ $(document).on("yandex-map-js", function () {
         balloonContentHeader: point.title,
         balloonContent: point.content,
         pos: point.pos
-      }, {
+      },
+      { balloonContentLayout: point.html },
+      {
         draggable: editor, // метку можно перемещать
       });
       if (point.geofld !== undefined) {
