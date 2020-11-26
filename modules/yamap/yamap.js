@@ -8,7 +8,7 @@ $(document).on("yandex-map-js", function () {
 
   function yamap() {
 
-    $.fn.yamap_autozoom = function () {
+    $.fn.yamap_autozoom = function (offset = 0) {
       if ($(this).find('.yamap_canvas').data("props") == undefined) return;
       let map = $(this).find('.yamap_canvas').data("props").map;
       var multi = $(this).find('wb-multiinput');
@@ -18,12 +18,12 @@ $(document).on("yandex-map-js", function () {
         if (bounds[0][0] == bounds[1][0] && bounds[0][1] == bounds[1][1]) return;
         map.setBounds(bounds, {
           checkZoomRange: true,
-          zoomMargin: 7
+          zoomMargin: 10
         });
         var state = map.action.getCurrentState();
-        map.setZoom(state.zoom);
+        map.setZoom(state.zoom + offset);
         map.setCenter(state.globalPixelCenter);
-        $(multi).find('[wb-name=zoom]').val(state.zoom);
+        $(multi).find('[wb-name=zoom]').val(state.zoom + offset);
         $(multi).find('[wb-name=center]').val(state.globalPixelCenter);
       }, 400);
     }
@@ -116,8 +116,8 @@ $(document).on("yandex-map-js", function () {
             title: $(this).attr("title")
           };
         }
-
       }
+
       var map = new ymaps.Map(mid, {
         center: cc,
         zoom: zoom,
@@ -139,6 +139,11 @@ $(document).on("yandex-map-js", function () {
       }
       $(this).yamap_geo();
       $(this).css("opacity", 1);
+      if ($(yamap).attr('center') == '') {
+          let center = map.getCenter();
+          center = center.join(' ');
+          $(yamap).attr('center', center);
+      }
     }
 
     $.fn.yamap_addPoint = function (point, zoom) {
@@ -255,8 +260,6 @@ $(document).on("yandex-map-js", function () {
 
         });
       });
-
-
     }
 
     function yamap_init() {
@@ -307,7 +310,6 @@ $(document).on("yandex-map-js", function () {
           $(yamap).yamap_autozoom();
         });
       });
-
     }
 
     yamap_init();
@@ -333,8 +335,10 @@ $(document).on("yandex-map-js", function () {
 
     $(document).on('wb-ajax-done', function (e, data) {
       if (data.module && data.module == 'yamap') {
-        $(document).find(data.target).removeClass('done');
+        let canvas = $(document).find(data.target).children('.yamap_canvas');
+        $(document).find(data.target).removeClass('done').children('.yamap_canvas').css('opacity',0);
         yamap_init();
+        $(document).find(data.target).yamap_autozoom();
       }
     });
 
