@@ -16,8 +16,13 @@ class modYamap
             if ($field > "") {
                 $out->find(".yamap_canvas")->inner(json_encode($dom->item[$field]));
             } else {
-                $dom->setValues();
-                $out->find(".yamap_canvas")->inner($dom->html());
+                if (!($dom->app->vars('_post._tid') > '' AND $dom->app->vars('_post._tid') == $dom->app->vars('_post.target') AND $dom->app->vars('_post.filter') > '') ) {
+                    $dom->params->tpl = 'true';
+                    $dom->addTpl();
+                    $dom->fetch();
+                }
+                $out->find(".yamap")->append($dom->html());
+                $out->find(".yamap")->append($dom->next('template'));
             }
         } else {
             if ($field > "") {
@@ -28,7 +33,8 @@ class modYamap
             if (substr($at, 0, 2) !== "wb" and substr($at, 0, 5) !== "class") {
                 $out->find(".yamap")->attr($at, $val);
             }
-		}
+        }
+
         $out->fetch($dom->item);
 		$dom->after($out)->remove();
     }

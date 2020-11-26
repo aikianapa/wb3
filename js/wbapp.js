@@ -417,8 +417,10 @@ if (typeof $ === 'undefined') {
                     let res = $(data).find(params.target).html();
                     $(document).find(params.target).html(res);
                 } else if (params.render == undefined || params.render == 'server') {
+                    if (data.html !== undefined) {
+                        $(document).find(params.target).html(data.html);
+                    } 
                     
-                    $(document).find(params.target).html(data.html);
                     $(document).find(params.target).children('template').remove();
 
                     if ($(document).find(params.target).children(':first-child').is('tr')) {
@@ -472,7 +474,9 @@ if (typeof $ === 'undefined') {
                 console.log("Template not found: " + params.target);
                 return;
             } else {
+                target.target = params.target;
                 if (target.filter == undefined) target.filter = {};
+                if (target._params == undefined) target._params = {};
                 $.each(params, function (key, val) {
                     if (key == 'filter') {
                         if (val == 'clear') {
@@ -488,10 +492,13 @@ if (typeof $ === 'undefined') {
                         })
                     }
                 });
+                
                 if (target._params && target._params.page !== undefined) target._params.page = 1
                 if (target._params && target._params.pages !== undefined) delete target._params.pages
                 if (target._params && target._params.count !== undefined) delete target._params.count
-                target._tid = params.target; // чтобы срабатывал вариант ответа с json
+                if (target.tpl !== undefined) target._params.tpl = target.tpl;
+                if (target._tid == undefined) target._tid = params.target; // чтобы срабатывал вариант ответа с json
+                if (target.url == undefined && target.route.uri !== undefined) target.url = target.route.uri;
                 wbapp.ajax(target, func);
             }
         }

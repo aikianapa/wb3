@@ -395,8 +395,6 @@ class wbDom extends DomQuery
         }
     }
 
-
-
     public function addTpl($real = true)
     {
         if (!$this->params("tpl")) {
@@ -404,9 +402,10 @@ class wbDom extends DomQuery
         }
         $this->params->route = $this->app->vars("_route");
         $params = json_encode($this->params);
-        $tplId = "tp_".md5($params);
+        ($this->attr("id") > '') ? $tplId = $this->attr("id") : $tplId = "tp_".md5($params);
+        $this->params->tpl = $tplId;
         if ($real) {
-            $tpl = $this->outerHtml();
+            $tpl = $this->outer();
             $this->after("
                   <template id='{$tplId}' data-params='{$params}'>
                       $tpl

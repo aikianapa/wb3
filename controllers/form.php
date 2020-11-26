@@ -23,20 +23,18 @@ class ctrlForm
         $app = &$this->app;
         $cache = $app->getCache();
         $item = [];
-        if ('#'.$app->vars('_post._params.tpl') == $app->vars('_post.target') AND $app->vars('_post.filter') > '') {
+        if ($app->vars('_post._tid') > '' AND $app->vars('_post._tid') == $app->vars('_post.target') AND $app->vars('_post.filter') > '') {
             // признак фильрации в темплейте
             $this->target = $app->vars('_post.target');
+            $cache = false;
         }
 
+
         if (!$cache) {
-            if (isset($this->route->form)) {
-                $dom = $app->getForm($this->route->form, $this->route->mode);
-            }
+            isset($this->route->form) ? $dom = $app->getForm($this->route->form, $this->route->mode) : null;
             if (isset($this->route->item)) {
                 $table = $this->route->form;
-                if (isset($this->route->table)) {
-                    $table = $this->route->table;
-                }
+                isset($this->route->table) ? $table = $this->route->table : null;
                 $item = $app->db->itemRead($table, $this->route->item);
                 $item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], $item);
                 if (isset($item['template']) and $item['template'] > '' and $item['active'] == 'on') {
@@ -47,13 +45,9 @@ class ctrlForm
                     // последняя попытка
                     $this->route->tpl = $table.'-show.php';
                     $dom = $app->getTpl($this->route->tpl);
-                    if (!$dom) {
-                        $dom = $this->get404();
-                    }
+                    !$dom ? $dom = $this->get404() : null;
                 }
-                if ($dom) {
-                    $dom->item = $item;
-                }
+                $dom ? $dom->item = $item : null;
             }
             if (!$dom or (isset($item['active']) and $item['active'] !== 'on')) {
                 $dom = $this->get404();
@@ -61,7 +55,7 @@ class ctrlForm
             $dom->fetch();
             $dom->setSeo();
             if (isset($this->target)) {
-                $out = $dom->find($this->target)[0]->outer();
+                $out = $dom->find($this->target)->outer();
                 $out = '<div>'.$out.'</div>';
             } else {
                 $out = $dom->outer();

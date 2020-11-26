@@ -4,7 +4,6 @@ $(document).on("yamap-js", function () {
   ], "yandex-map-js");
 });
 
-
 $(document).on("yandex-map-js", function () {
 
   function yamap() {
@@ -41,27 +40,44 @@ $(document).on("yandex-map-js", function () {
 
       $(canvas).data("props", {});
       if (!$(yamap).find(".wb-multiinput-data").length) {
-        epoints = $(this).html();
-        $(this).html("");
+        if ($(yamap).find('geopos').length) {
+          $(yamap).find('geopos').each(function (i) {
+            try {
+              epoints.push(json_decode($(this).attr("data")));
+            } catch (error) {
+              null;
+            }
+            $(this).remove();
+          });
+          epoints = json_encode(epoints);
+        } else {
+          epoints = $(this).html();
+          $(this).html("");
+        }
+
       } else if ($(yamap).find(".yamap_editor").length) {
         editor = true;
         epoints = $(yamap).find(".yamap_editor").find(".wb-multiinput-data").text();
       }
-      if (epoints > '') {
+      try {
         epoints = json_decode(epoints, true);
-        if (epoints[0].zoom !== undefined && epoints[0].zoom > 0 ) zoom = epoints[0].zoom;
-      } else {
+        if (epoints[0].zoom !== undefined && epoints[0].zoom > 0) zoom = epoints[0].zoom;
+      } catch (error) {
         epoints = [];
       }
 
       if ($(this).attr("geopos") > "") var ll = yamap_pos($(this).attr("geopos"));
       if ($(this).attr("center") > "") var cc = yamap_pos($(this).attr("center"));
 
-      if ($(this).attr("height") > "") $(this).height($(this).attr("height"));
       if ($(this).attr("width") > "") $(this).width($(this).attr("width"));
       if ($(this).attr("name") > "") $(this).find(".yamap_data").attr("name", $(this).attr("name"));
 
       var height = $(this).height();
+      if (height == 0) {
+        height = 300;
+        $(this).height(height);
+      }
+
       $(window).on("resize", function () {
         $(this).height = height;
       });
@@ -151,9 +167,9 @@ $(document).on("yandex-map-js", function () {
       clusterer.add(myPlacemark);
       map.geoObjects.add(clusterer);
       if (zoom > 0) {
-          map.setZoom(zoom);
+        map.setZoom(zoom);
       } else {
-          $(yamap).yamap_autozoom();
+        $(yamap).yamap_autozoom();
       }
     }
 
@@ -169,7 +185,7 @@ $(document).on("yandex-map-js", function () {
         // отлавливает событие изменения зума на карте
         if (e.get('newZoom') !== e.get('oldZoom')) {
           $(yamap).find("[wb-name=zoom]").val(e.get('newZoom')).trigger('change');
-          console.log('zoomchange ' + e.get('newZoom'))
+          //          console.log('zoomchange ' + e.get('newZoom'))
         }
       })
 
@@ -227,7 +243,7 @@ $(document).on("yandex-map-js", function () {
             title: title,
             geofld: geo
           };
-          $(canvas).yamap_addPoint(point,$(zoom).val());
+          $(canvas).yamap_addPoint(point, $(zoom).val());
           map.setCenter(pos);
           if (!($(zoom).val() > 0)) {
             $(yamap).yamap_autozoom();
@@ -243,68 +259,84 @@ $(document).on("yandex-map-js", function () {
 
     }
 
-    $(".yamap:not(.done)").each(function (i) {
-      var yamap = this;
-      var width = "100%";
-      var height = "300px";
-      var zoom = 10;
-      $(this).addClass("done");
-      if ($(this).attr("id") == undefined) {
-        $(this).attr("id", "ym-" + wbapp.newId());
-      }
-      if ($(this).attr('height') !== undefined) height = $(this).attr('height');
-      if ($(this).attr('width') !== undefined) width = $(this).attr('width');
-      if ($(this).attr("zoom") !== undefined) zoom = $(this).attr("zoom");
+    function yamap_init() {
 
-      if ($(this).find(".wb-multiinput-row [wb-name=zoom]").length && $(this).find(".wb-multiinput-row [wb-name=zoom]").val() > "0") {
-        zoom = $(this).find(".wb-multiinput-row [wb-name=zoom]").val();
-      }
+      $(".yamap:not(.done)").each(function (i) {
+        var yamap = this;
+        var width = "100%";
+        var zoom = 10;
 
-      var id = $(this).attr("id");
-      var editor = $(this).children(".yamap-editor");
-      var canvas = $(this).children(".yamap_canvas");
-      var mid = "c" + id;
-      $(canvas)
-        .attr("id", mid)
-        .css("height", height)
-        .width("width", width);
+        if ($(this).attr("height") > "") {
+          var height = $(this).attr("height");
+        } else {
+          var height = $(yamap).parent().height();
+        }
 
-      $(canvas).attr("zoom", zoom * 1);
-      if ($(this).attr("center") !== undefined) {
-        $(canvas).attr("center", $(this).attr("center"));
-        $(canvas).yamap_canvas();
-      } else {
-        ymaps.geolocation.get().then(function (res) {
-          $(canvas).attr("center", res.geoObjects["position"][0] + " " + res.geoObjects["position"][1]);
+        $(this).addClass("done");
+        if ($(this).attr("id") == undefined) {
+          $(this).attr("id", "ym-" + wbapp.newId());
+        }
+        if ($(this).attr('height') !== undefined) height = $(this).attr('height');
+        if ($(this).attr('width') !== undefined) width = $(this).attr('width');
+        if ($(this).attr("zoom") !== undefined) zoom = $(this).attr("zoom");
+
+        if ($(this).find(".wb-multiinput-row [wb-name=zoom]").length && $(this).find(".wb-multiinput-row [wb-name=zoom]").val() > "0") {
+          zoom = $(this).find(".wb-multiinput-row [wb-name=zoom]").val();
+        }
+
+        var id = $(this).attr("id");
+        var editor = $(this).children(".yamap-editor");
+        var canvas = $(this).children(".yamap_canvas");
+        var mid = "c" + id;
+        $(canvas)
+          .attr("id", mid)
+          .css("height", height)
+          .width("width", width);
+
+        $(canvas).attr("zoom", zoom * 1);
+        if ($(this).attr("center") !== undefined) {
+          $(canvas).attr("center", $(this).attr("center"));
           $(canvas).yamap_canvas();
-        });
-      }
-      $(yamap).on('yamap_visible',()=>{
+        } else {
+          ymaps.geolocation.get().then(function (res) {
+            $(canvas).attr("center", res.geoObjects["position"][0] + " " + res.geoObjects["position"][1]);
+            $(canvas).yamap_canvas();
+          });
+        }
+        $(yamap).on('yamap_visible', () => {
           $(yamap).yamap_autozoom();
+        });
       });
-    });
 
+    }
+
+    yamap_init();
 
     setInterval(() => {
       $(".yamap").each(function (i) {
         if (this.yamap_visible == undefined) this.yamap_visible = false;
-          if ($(this).is(":visible")) {
-            if (this.yamap_visible == false) {
-              this.yamap_visible = true;
-              console.log('Trigger: yamap_visible');
-              $(this).trigger('yamap_visible');
-            }
-          } else {
-            if (this.yamap_visible == true) {
+        if ($(this).is(":visible")) {
+          if (this.yamap_visible == false) {
+            this.yamap_visible = true;
+            console.log('Trigger: yamap_visible');
+            $(this).trigger('yamap_visible');
+          }
+        } else {
+          if (this.yamap_visible == true) {
             this.yamap_visible = false;
             console.log('Trigger: yamap_invisible');
             $(this).trigger('yamap_invisible');
-            }
           }
+        }
       });
-    },100);
+    }, 100);
 
-
+    $(document).on('wb-ajax-done', function (e, data) {
+      if (data.module && data.module == 'yamap') {
+        $(document).find(data.target).removeClass('done');
+        yamap_init();
+      }
+    });
 
 
     console.log("Trigger: yamap-plugin");
@@ -312,18 +344,18 @@ $(document).on("yandex-map-js", function () {
 
 
 
-function yamap_pos(ll) {
-  ll = trim(ll);
-  ll = str_replace(",", " ", ll);
-  ll = str_replace("  ", " ", ll);
-  var tmp = explode(" ", ll);
-  if (tmp.length == 2) {
-    return [tmp[0], tmp[1]];
-  } else {
-    return [];
-  }
-}
+    function yamap_pos(ll) {
+      ll = trim(ll);
+      ll = str_replace(",", " ", ll);
+      ll = str_replace("  ", " ", ll);
+      var tmp = explode(" ", ll);
+      if (tmp.length == 2) {
+        return [tmp[0], tmp[1]];
+      } else {
+        return [];
+      }
+    }
 
-}
-ymaps.ready(yamap);
+  }
+  ymaps.ready(yamap);
 });
