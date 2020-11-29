@@ -245,10 +245,24 @@ function wbGetSysMsg()
         $_ENV['driver'] = $drv;
     }
 
-function wbFormClass($form = null) {
-  $app = $_ENV["app"];
+function wbFormExist($form = null) {
+    $app = &$_ENV["app"];
+    ($form == null) ? $form = $app->vars("_route.form") : null;
+    $res = false;
+    if (is_dir($app->vars("_env.path_app")."/forms/{$form}")) {
+        $res = true;
+    } elseif (is_dir($app->vars("_env.path_engine")."/forms/{$form}")) {
+        $res = true;
+    } elseif (is_dir($app->vars("_env.path_engine")."/modules/cms/forms/{$form}")) {
+        $res = true;
+    }
+    return $res;
+}
 
-  if ($form == null) $form = $app->vars("_route.form");
+
+function wbFormClass($form = null) {
+  $app = &$_ENV["app"];
+  ($form == null) ? $form = $app->vars("_route.form") : null;
   if (is_file($app->vars("_env.path_app")."/forms/{$form}/_class.php")) {
       require_once($app->vars("_env.path_app")."/forms/{$form}/_class.php");
   } else if (is_file($app->vars("_env.path_engine")."/forms/{$form}/_class.php")) {
@@ -918,197 +932,6 @@ function wbFieldBuild($dict, $data = array(), $locale=array())
 }
 
 
-function wbFieldBuild1($param, $data = array(), $locale=array())
-{
-    $param=wbItemToArray($param);
-    $set = wbGetForm('common', 'tree_fldset');
-    $tpl = wbGetForm('snippets', $param['type']);
-    $opt=$param["prop"];
-    $lang=$param["lang"];
-    $options = '';
-    if (isset($opt['required']) and true == $opt['required']) {
-        $options .= ' required ';
-    }
-    if (isset($opt['readonly']) and true == $opt['readonly']) {
-        $options .= ' readonly ';
-    }
-    if (isset($opt['disabled']) and true == $opt['disabled']) {
-        $options .= ' disabled ';
-    }
-    $param['options'] = trim($options);
-    $label=$param['label'];
-    if (isset($lang["labels"]) and isset($lang["labels"][$_ENV["lang"]]) and $lang["labels"][$_ENV["lang"]]["name"]>"") {
-        $label=$param['label']=$lang["labels"][$_ENV["lang"]]["name"];
-    }
-
-    if ($param["name"]=="" and $paran["label"]=="") {
-        return ;
-    }
-    switch ($param['type']) {
-    case 'number':
-        if (isset($opt['min'])) {
-            $tpl->find('input')->attr('min', $opt['min']);
-        }
-        if (isset($opt['max'])) {
-            $tpl->find('input')->attr('max', $opt['max']);
-        }
-        if (isset($opt['step'])) {
-            $tpl->find('input')->attr('step', $opt['step']);
-        }
-        if (isset($opt['datalist'])) {
-            $param['listid'] = wbNewId();
-            $tpl->find('input')->attr('list', $param['listid']);
-            $tpl->find('datalist')->attr('data-wb-from', wbJsonEncode($opt['datalist']));
-            $tpl->find('datalist')->attr('data-wb-role', 'foreach');
-        } else {
-            $tpl->find('datalist')->remove();
-        }
-        break;
-    case 'enum':
-    $arr=array();
-    if ($param['value'] > '' and strpos(";", $param['value'])) {
-        $param['enum'] = array();
-        $arr = explode(';', $param['value']);
-    }
-    $param=wbItemToArray($param);
-    if (isset($param["prop"]["enum"])) {
-        $arr=explode(",", $param["prop"]["enum"]);
-    }
-        foreach ($arr as $i => $line) {
-            $line=ltrim(rtrim($line));
-            $param['enum'][$line] = array('id' => $line, 'name' => $line);
-        }
-        $tpl->wbSetData($param);
-    if (isset($data["type"])) {
-        // если имя поля и одна из пропертей совпадает, то нужно фиксить
-        $tpl->find("[name=type]")->attr("value", $data["type"]);
-    }
-        break;
-    case 'image':
-        if (isset($_POST['data-id']) and $_POST['_form']=="tree") {
-            $data["path"]="/uploads/{$_POST['_form']}/{$_POST['_item']}/{$_POST['data-id']}/";
-        } else {
-            $data["path"]="/uploads/{$data['_form']}/{$data['_item']}/";
-        }
-        $tpl->find('[data-wb-role=uploader]')->attr('data-wb-path', $data["path"]);
-        $tpl->wbSetValues($param);
-        $tpl->wbSetData($data);
-        break;
-    case 'gallery':
-        if (isset($_POST['data-id']) and $_POST['_form']=="tree") {
-            $data["path"]="/uploads/{$_POST['_form']}/{$_POST['_item']}/{$_POST['data-id']}/";
-        } else {
-            $data["path"]="/uploads/{$data['_form']}/{$data['_item']}/";
-        }
-        $tpl->find('[data-wb-role=uploader]')->attr('data-wb-path', $data["path"]);
-        $tpl->wbSetValues($param);
-        $tpl->wbSetData($data);
-        break;
-    case 'forms':
-        $env=$_ENV;
-        $get=$_GET;
-        $par=$param;
-        $param=wbItemToArray($param);
-        $form=$param["prop"]["form"];
-        $mode=$param["prop"]["mode"];
-        $_ENV["route"]["form"]=$param["_form"]=$_GET["form"]=$form;
-        $_ENV["route"]["mode"]=$param["_mode"]=$_GET["mode"]=$mode;
-        $tpl=wbGetForm($form, $mode);
-        if ($param["prop"]["selector"]>"") {
-            $tpl=$tpl->find($param["prop"]["selector"], 0)->clone();
-        }
-        $tpl->wbSetValues($param);
-        $tpl->wbSetData($data);
-        $tpl->find(".nav-tabs .nav-item:first-child")->addClass("active");
-        $_ENV=$env;
-        $_GET=$get;
-        $param=$par;
-        unset($env,$get,$par);
-        break;
-    case 'module':
-        if (!is_array($opt)) {
-            break;
-        }
-        foreach ($opt as $key => $val) {
-            $tpl->find("[data-wb-role]:first")->attr($key, $val);
-        }
-        $tpl->wbSetValues($param);
-        $tpl->wbSetData($data);
-        break;
-    case 'multiinput':
-        $tpl->wbSetValues($param);
-       $wrp=wbGetForm('common', 'multiinput_wrapper');
-        $field=$param["name"];
-        $flds = wbFromString('');
-        if (isset($param["prop"]["multiflds"])) {
-            $arr=$param["prop"]["multiflds"];
-            foreach ($arr as $i => $multi) {
-                if (!isset($multi["style"])) {
-                    $multi["style"]="";
-                }
-                if (!isset($multi["class"])) {
-                    $multi["class"]="";
-                }
-                $name = 'data'.$i;
-                if ($multi["name"] > "") {
-                    $name=$multi["name"];
-                }
-                $line = $wrp->clone();
-                $snip = wbGetForm('snippets', $multi['type']);
-                $line->find(":first")->attr("class", $multi["class"]);
-                $line->find(":first")->attr("style", $multi["style"]);
-                $line->find(":first")->append($snip);
-                $line->find('[name]')->attr('name', $name);
-                $line->wbSetValues($multi);
-                $line->find(".wb-value")->removeAttr("value");
-                $line->find(".wb-value")->removeClass("wb-value");
-                $line->find(".wb-attrs")->removeClass("wb-attrs");
-                $flds->append($line);
-            }
-        }
-        $tpl->find('[data-wb-role=multiinput]')->html($flds);
-    $tpl->wbSetData($data);
-        unset($flds);
-        break;
-    }
-    if (isset($param["style"]) and $param["style"]>"") {
-        // old
-        $style=$tpl->attr("style");
-        $tpl->find(":first")->attr("style", $style.$param["style"]);
-    }
-
-    if (isset($param["prop"]["class"])) {
-        $tpl->find(":first")->addClass($param["prop"]["class"]);
-    }
-    if (isset($param["prop"]["style"])) {
-        $tpl->find(":first")->attr("style", $param["prop"]["style"]);
-    }
-
-    $set->find('.form-group > label')->html($label);
-    $set->find('.form-group > div')->html($tpl->outerHtml());
-    $set->wbSetData($param);
-    $set->wbSetValues($data);
-    $out = $set->outerHtml();
-    /*
-    if ($param['type']=="forms") {
-        $out=wbFromString($out);
-        $inp=$out->find("[name]");
-        foreach($inp as $i) {
-            $name=$i->attr("name");
-            $spos=strpos($name,"[");
-            if ($spos) {
-                $name=$param['name']."[".substr($name,0,$spos)."]".substr($name,strpos($name,"]")+1);
-            } else {
-                $name=$param['name']."[".$name."]";
-            }
-            $i->attr("name",$name);
-        }
-        $out = $out->outerHtml();
-    }
-    */
-    return $out;
-}
-
 function wbInitDatabase()
 {
     wbTrigger('func', __FUNCTION__, 'before');
@@ -1353,138 +1176,6 @@ function wbJsonEncodeAlt($a=false)
     }
 }
 
-function wbCallDriver($func, $args=array())
-{
-    if (isset($_ENV["driver"]) and $_ENV["driver"]!=='default') {
-        $func=str_replace("wb", $_ENV["driver"], $func);
-        if (!is_callable($func)) {
-            return false;
-        }
-        $result=call_user_func_array($func, $args);
-        return [
-            "func"=>$func,
-            "result"=>$result
-        ];
-    } else {
-        return false;
-    }
-}
-
-
-
-function wbCacheCheck()
-{
-    exec("find {$_ENV["dbac"]} -type f -mmin +120 -exec rm -rf {} \; &"); // clean old chaches
-    $cache = array("check"=>false,"id"=>false,"path"=>false,"data"=>false,"save"=>false);
-    if (in_array($_ENV["cache_state"], ["update","false"])) {
-        $save = true;
-        if ($_ENV["cache_state"]=="false") {
-            $save = false;
-        }
-        $cacheId = wbGetCacheId();
-        $cacheFile = wbGetCacheId(true);
-        $cache = array("check"=>null,"id"=>$cacheId,"path"=>$cacheFile,"data"=>false,"save"=>$save);
-        return $cache;
-    }
-    if (isset($_ENV["settings"]["cache"]) and is_array($_ENV["settings"]["cache"])) {
-        foreach ($_ENV["settings"]["cache"] as $line) {
-            $c=wbAttrToArray($line["controller"]);
-            $f=wbAttrToArray($line["form"]);
-            $m=wbAttrToArray($line["mode"]);
-            if (
-                (in_array($_ENV["route"]["controller"], $c) or $c==array("*"))
-                and     (in_array($_ENV["route"]["form"], $f) or $f==array("*") or ($f==array() and !in_array("form", $c)))
-                and     (in_array($_ENV["route"]["mode"], $m) or $m==array("*") or ($m==array() and !in_array("form", $c)))
-                and     $line["active"] == "on"
-            ) {
-                $cacheId = wbGetCacheId();
-                $cacheFile = wbGetCacheId(true);
-                if (!is_file($cacheFile)) {
-                    $cache = array("check"=>null,"id"=>$cacheId,"path"=>$cacheFile,"data"=>false,"save"=>true);
-                } else {
-                    $lastmod = filemtime($cacheFile);
-                    $expired = $lastmod + $line["lifetime"]*1;
-                    if (time() > $expired) {
-                        $cache = array("check"=>null,"id"=>$cacheId,"path"=>$cacheFile,"data"=>false,"save"=>true);
-                    } else {
-                        $data = file_get_contents($cacheFile);
-                        $cache = array("check"=>true,"id"=>$cacheId,"path"=>$cacheFile,"data"=>$data,"save"=>false);
-                    }
-                }
-            }
-        }
-    }
-    return $cache;
-}
-
-function wbCacheEnvState()
-{
-    $_ENV["cache_state"]=null;
-    if (isset($_ENV["route"]["params"]) and $_ENV["route"]["params"]["wbcache"] and in_array($_ENV["route"]["params"]["wbcache"], ["update","false"])) {
-        if (isset($_ENV["route"]["params"]) and isset($_ENV["route"]["params"]["wbcache"])) {
-            $_ENV["cache_state"]=$_ENV["route"]["params"]["wbcache"];
-            if (strpos($_ENV["route"]["uri"], "?wbcache=".$_ENV["route"]["params"]["wbcache"]."&")) {
-                $_ENV["route"]["uri"]=str_replace("wbcache=".$_ENV["route"]["params"]["wbcache"]."&", "", $_ENV["route"]["uri"]);
-            } elseif (strpos($_ENV["route"]["uri"], "?wbcache=".$_ENV["route"]["params"]["wbcache"])) {
-                $_ENV["route"]["uri"]=str_replace("?wbcache=".$_ENV["route"]["params"]["wbcache"], "", $_ENV["route"]["uri"]);
-            } elseif (strpos($_ENV["route"]["uri"], "&wbcache=".$_ENV["route"]["params"]["wbcache"])) {
-                $_ENV["route"]["uri"]=str_replace("&wbcache=".$_ENV["route"]["params"]["wbcache"], "", $_ENV["route"]["uri"]);
-            }
-            unset($_ENV["route"]["params"]["wbcache"]);
-            if (isset($_ENV["route"]["params"]) and !count($_ENV["route"]["params"])) {
-                unset($_ENV["route"]["params"]);
-            }
-        }
-    }
-}
-
-function wbGetCacheId($file=false)
-{
-    // return Cache ID or Cache Filename
-    $cacheId = md5(json_encode($_ENV["route"]).$_ENV["lang"]);
-    if ($file==true) {
-        $cacheDir = substr(md5($cacheId), 0, 4);
-        $cacheFile = "{$_ENV["dbac"]}/{$cacheDir}/{$cacheId}.htm";
-        return $cacheFile;
-    } else {
-        return $cacheId;
-    }
-}
-
-function wbCacheName($table, $id = null)
-{
-    $tmp = explode($_ENV['dbe'], $table);
-    if (2 == count($tmp)) {
-        $dbc = $_ENV['dbec'];
-        $db = $_ENV['dbe'];
-    } else {
-        $dbc = $_ENV['dbac'];
-        $db = $_ENV['dba'];
-    }
-    $tname = str_replace($db.'/', '', $table);
-    if (!is_dir($db)) {
-        mkdir($db, 0766);
-    }
-    if (!is_dir($dbc)) {
-        mkdir($dbc, 0766);
-    }
-    if (!is_dir($dbc.'/'.$tname)) {
-        mkdir($dbc.'/'.$tname, 0766);
-    }
-    if (null == $id) {
-        $cache = $cache = $dbc.'/'.$tname;
-    } else {
-        $cache = $dbc.'/'.$tname.'/'.$id;
-    }
-
-    return $cache;
-}
-
-
-
-
-
-
 
 function wbSetChmod($ext = '.json')
 {
@@ -1661,12 +1352,13 @@ function wbError($type, $name, $error = '__return__error__', $args = null)
         }
         $_ENV["last_error"]=null;
     } else {
-        if (is_array($args) and isset($_ENV['errors'][$error])) {
-            foreach ($args as $key => $arg) {
-                if (is_array($arg)) {
+        if (isset($_ENV['errors'][$error])) {
+            $errname = $_ENV['errors'][$error];
+            foreach ((array)$args as $key => $arg) {
+                if ((array)$arg === $arg) {
                     $arg = implode(',', $arg);
                 }
-                $_ENV['errors'][$error] = str_replace('{{'.$key.'}}', $arg, $_ENV['errors'][$error]);
+                $errname = str_replace('{{'.$key.'}}', $arg, $error);
             }
         }
 
@@ -1674,7 +1366,7 @@ function wbError($type, $name, $error = '__return__error__', $args = null)
             $error = $_ENV['error'][$type][$name];
         } else {
             if (isset($_ENV['errors'])) {
-                $_ENV['error'][$type][$name] = array('errno' => $error, 'error' => $_ENV['errors'][$error]);
+                $_ENV['error'][$type][$name] = array('errno' => $error, 'error' => $errname);
             } else {
                 $_ENV['error'][$type][$name] = array('errno' => $error, 'error' => 'unknown error');
             }
@@ -1767,8 +1459,8 @@ function wbErrorList()
                           1009 => 'Flush data from cache table {{0}}',
                           1010 => 'Failed to create table {{0}}',
                           1010 => 'Create a table {{0}}',
-                          1011 => 'Template not found {{0}}',
-                          1012 => 'Form not found {{0}}',
+                          1011 => 'Template {{0}} not found',
+                          1012 => 'Form {{0}} not found',
                           1013 => 'PHP code not valid'
                       );
 }
@@ -1780,17 +1472,17 @@ function wbLog($type, $name, $error, $args)
     } else {
         $error = wbError($type, $name);
     }
-    if (is_array($args)) {
-        foreach ($args as $key => $arg) {
-            if (is_array($arg)) {
-                $arg = implode(',', $arg);
-            }
-            $error['error'] = str_replace('{{'.$key.'}}', $arg, $error['error']);
+    
+    foreach ((array)$args as $key => $arg) {
+        if ((array)$arg === $arg) {
+            $arg = implode(',', $arg);
         }
+        $error['error'] = str_replace('{{'.$key.'}}', $arg, $error['error']);
     }
-    if (isset($_ENV["settings"]["log"]) and $_ENV["settings"]["log"]=="on") {
-        error_log("{$type} {$name} [{$error['errno']}]: {$error['error']} [{$_SERVER['REQUEST_URI']}]");
-    }
+
+//    if (isset($_ENV["settings"]["log"]) and $_ENV["settings"]["log"]=="on") {
+        error_log("{$type} {$name} [{$error['errno']}]: {$error['error']} [{$_SERVER['REQUEST_URI']} from {$_SERVER['REMOTE_ADDR']}]");
+//    }
 }
 
 function wbNewId($separator = '', $prefix = '')
@@ -2985,6 +2677,28 @@ function wbListTpl()
         return $str;
 
     }
+
+    function wbUsageStat() {
+        $_ENV["cache_used"] ? $cache = 'Yes' : $cache = 'No';
+        $mem = memory_get_usage();
+        $mem = wbFormatBytes($mem, 2);
+        $sec = round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 3);
+        echo <<<STAT
+            <div>
+            Memory usage : {$mem}, Rendering: {$sec} sec, Cached: {$cache}
+            </div>    
+        STAT;
+    }
+
+
+    function wbFormatBytes($size, $precision = 2)
+{
+    $base = log($size, 1024);
+    $suffixes = array('', 'K', 'M', 'G', 'T');
+
+    return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
+}
+
 
     function is_email($email)
     {

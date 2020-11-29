@@ -2,33 +2,33 @@
 use Nahid\JsonQ\Jsonq;
 use Adbar\Dot;
 use DQ\DomQuery;
+
 //use Spatie\Async\Pool;
 
 class wbDom extends DomQuery
 {
-
-    public function __call($name, $arguments) {
+    public function __call($name, $arguments)
+    {
         if (method_exists($this->getFirstElmNode(), $name)) {
             return \call_user_func_array(array($this->getFirstElmNode(), $name), $arguments);
-        } else if (substr($name,0,3) == 'tag') {
-
-                $class = $name;
-                $fname = strtolower(substr($name,3));
-                $file_e = $this->app->vars("_env.path_engine")."/tags/{$fname}/{$fname}.php";
-                $file_a = $this->app->vars("_env.path_app")."/tags/{$fname}/{$fname}.php";
-                if (is_file($file_a)) {
-                    require_once $file_a;
-                    if (class_exists($class)) {
-                        return new $class($arguments[0]);
-                    }
-                } else if (is_file($file_e)) {
-                    require_once $file_e;
-                    if (class_exists($class)) {
-                        return new $class($arguments[0]);
-                    }
-                } else {
-                    unset($this->role);
+        } elseif (substr($name, 0, 3) == 'tag') {
+            $class = $name;
+            $fname = strtolower(substr($name, 3));
+            $file_e = $this->app->vars("_env.path_engine")."/tags/{$fname}/{$fname}.php";
+            $file_a = $this->app->vars("_env.path_app")."/tags/{$fname}/{$fname}.php";
+            if (is_file($file_a)) {
+                require_once $file_a;
+                if (class_exists($class)) {
+                    return new $class($arguments[0]);
                 }
+            } elseif (is_file($file_e)) {
+                require_once $file_e;
+                if (class_exists($class)) {
+                    return new $class($arguments[0]);
+                }
+            } else {
+                unset($this->role);
+            }
         }
 
         throw new \Exception('Unknown call '.$name);
@@ -41,15 +41,21 @@ class wbDom extends DomQuery
 
     public function inner($html=null)
     {
-        if ($html == null) return $this->getinnerHtml();
-            $esc = "wb";
-            if ($this->head) $esc = "head";
+        if ($html == null) {
+            return $this->getinnerHtml();
+        }
+        $esc = "wb";
+        if ($this->head) {
+            $esc = "head";
+        }
 
-            $html = "<{$esc}>{$html}</{$esc}>"; // magick
+        $html = "<{$esc}>{$html}</{$esc}>"; // magick
             $this->html($html);         // magick
             $this->children("{$esc}")->unwrap("{$esc}"); // magick
-            if ($html > "" and $this->html() == "") $this->text($html);
-            $this->find("{$esc}")->unwrap("{$esc}");
+            if ($html > "" and $this->html() == "") {
+                $this->text($html);
+            }
+        $this->find("{$esc}")->unwrap("{$esc}");
         return $this;
     }
 
@@ -73,13 +79,14 @@ class wbDom extends DomQuery
         $attrs = $this->attributes();
 
         foreach ($attrs as $attr => $value) {
-            if (substr($attr,0,3) !== 'wb-' && $attr !== 'wb')
-            if ($attr !== 'class' && $attr !== 'name') {
-                $dom->attr($attr, $value);
-            } else if ($attr == 'class') {
-                $dom->addClass($value);
-            } else if ($attr == 'name') {
-                $dom->attr('name',$value);
+            if (substr($attr, 0, 3) !== 'wb-' && $attr !== 'wb') {
+                if ($attr !== 'class' && $attr !== 'name') {
+                    $dom->attr($attr, $value);
+                } elseif ($attr == 'class') {
+                    $dom->addClass($value);
+                } elseif ($attr == 'name') {
+                    $dom->attr('name', $value);
+                }
             }
         }
 
@@ -110,16 +117,18 @@ class wbDom extends DomQuery
         return $res;
     }
 
-    public function getField($fld) {
+    public function getField($fld)
+    {
         $fields = new Dot();
         $fields->setReference($this->item);
         return $fields->get($fld);
     }
 
-    public function setField($fld, $data = []) {
+    public function setField($fld, $data = [])
+    {
         $fields = new Dot();
         $fields->setReference($this->item);
-        return $fields->set($fld,$data);
+        return $fields->set($fld, $data);
     }
 
     public function where($Item=null)
@@ -171,21 +180,33 @@ class wbDom extends DomQuery
 
     public function fetch($item = null)
     {
+        $tmp = $this->app->vars("_env.locale");
         $this->fetchStrict();
         $this->fetchLang();
-        if ($this->strict OR isset($this->fetched)) return;
-        if (!$this->app) $this->app = $_ENV["app"];
-        if ($item == null) $item = $this->item;
-        if ($this->tagName == "head") $this->head = $this;
+        if ($this->strict or isset($this->fetched)) {
+            return;
+        }
+        if (!$this->app) {
+            $this->app = $_ENV["app"];
+        }
+        if ($item == null) {
+            $item = $this->item;
+        }
+        if ($this->tagName == "head") {
+            $this->head = $this;
+        }
         $this->item = $item;
         $this->fetchParams();
-        if ($this->is(":root") and ($this->func or $this->funca)) $this->fetchFunc();
+        if ($this->is(":root") and ($this->func or $this->funca)) {
+            $this->fetchFunc();
+        }
         $childrens = $this->children();
         foreach ($childrens as $wb) {
             $wb->copy($this);
             $wb->fetchNode();
         }
         $this->setValues();
+        $this->app->vars("_env.locale",$tmp);
         return $this;
     }
 
@@ -220,7 +241,7 @@ class wbDom extends DomQuery
 
     public function fetchFunc()
     {
-        foreach($this->funca as $func) {
+        foreach ($this->funca as $func) {
             new $func($this);
         }
         if ($this->func > "") {
@@ -231,8 +252,9 @@ class wbDom extends DomQuery
         return $this;
     }
 
-    public function filterStrict() {
-        if ($this->params('filter') > '' AND $this->params('strict') == 'false') {
+    public function filterStrict()
+    {
+        if ($this->params('filter') > '' and $this->params('strict') == 'false') {
             $tmpfl = (array)$this->params('filter');
             foreach ($tmpfl as $key => $val) {
                 $val = preg_replace('/^\%(.*)\%$/', "", $val);
@@ -249,17 +271,6 @@ class wbDom extends DomQuery
     {
         if ($this->tagName == "template" or $this->closest("template")->length) {
             $this->strict = true;
-        }
-/*
-        if ($this->tagName == "template") {
-            // set locale for template
-            $tpl = $this->inner();
-            isset($_ENV["locales"][$_SESSION["lang"]]) ? $data = ["_lang" => $_ENV["locales"][$_SESSION["lang"]]] : $data = [];
-            $tpl = wbSetValuesStr($tpl, $data);
-            $this->inner($tpl);
-        }
-*/
-        if ($this->tagName == "template") {
             // set locale for template
             isset($_ENV["locales"][$_SESSION["lang"]]) ? $data = ["_lang" => $_ENV["locales"][$_SESSION["lang"]]] : $data = [];
             $this->setValues();
@@ -324,13 +335,14 @@ class wbDom extends DomQuery
                     }
                 }
                 $params = array_merge($params, $prms);
-
             }
             $this->params = (object)$params;
         }
         
 
-        if (isset($this->params->module)) $this->role = "module";
+        if (isset($this->params->module)) {
+            $this->role = "module";
+        }
         $this->fetchAllows();
         if ($this->role) {
             $func="tag".ucfirst($this->role);
@@ -463,26 +475,31 @@ class wbDom extends DomQuery
         $this->item["_var"] = &$_ENV["variables"];
     }
 
-		public function setSeo() {
-            isset($this->item['header']) ? $header = $this->item['header'] : $header = $this->app->vars('_sett.header');
-            $this->find('title')->text($header);
-            $seo = $this->app->ItemRead('_settings', 'seo');
-            if ($seo AND $seo['seo'] == 'on') {
-                    $this->find('title')->text($seo['title']);
-                    $this->find('meta[name="keywords"]')->attr('content', $seo['meta_keywords']);
-                    $this->find('meta[name="description"]')->attr('content', $seo['meta_description']);
-            }
-            if (isset($this->item['seo']) AND $this->item['seo'] == 'on') {
-                $this->find('title')->text($this->item['title']);
-                $this->find('meta[name="keywords"]')->attr('content', $this->item['meta_keywords']);
-                $this->find('meta[name="description"]')->attr('content', $this->item['meta_description']);
-            }
-		}
+    public function setSeo()
+    {
+        isset($this->item['header']) ? $header = $this->item['header'] : $header = $this->app->vars('_sett.header');
+        $this->find('title')->text($header);
+        $seo = $this->app->ItemRead('_settings', 'seo');
+        if ($seo and $seo['seo'] == 'on') {
+            $this->find('title')->text($seo['title']);
+            $this->find('meta[name="keywords"]')->attr('content', $seo['meta_keywords']);
+            $this->find('meta[name="description"]')->attr('content', $seo['meta_description']);
+        }
+        if (isset($this->item['seo']) and $this->item['seo'] == 'on') {
+            $this->find('title')->text($this->item['title']);
+            $this->find('meta[name="keywords"]')->attr('content', $this->item['meta_keywords']);
+            $this->find('meta[name="description"]')->attr('content', $this->item['meta_description']);
+        }
+    }
 
     public function setValues()
     {
-        if ($this->strict) return;
-        if (!isset($this->item)) $this->item = [];
+        if ($this->strict) {
+            return;
+        }
+        if (!isset($this->item)) {
+            $this->item = [];
+        }
         $fields = new Dot();
         $fields->setReference($this->item);
         $inputs = $this->find("[name]");
@@ -490,25 +507,32 @@ class wbDom extends DomQuery
             if (in_array($inp->tagName, ["input","textarea","select"]) && !$inp->hasAttr("done") && !$inp->closest("template")->length) {
                 $name = $inp->attr("name");
                 $value = $fields->get($name);
-                if ((array)$value === $value AND $inp->tagName !== "select") $value = wb_json_encode($value);
+                if ((array)$value === $value and $inp->tagName !== "select") {
+                    $value = wb_json_encode($value);
+                }
                 if ($inp->tagName == "textarea") {
                     $inp->text($value);
                 } elseif ($inp->tagName == "select") {
                     if ((array)$value === $value) {
                         foreach ($value as $val) {
-                            if ($val > "") $inp->find("[value='{$val}']")->attr("selected", true);
+                            if ($val > "") {
+                                $inp->find("[value='{$val}']")->attr("selected", true);
+                            }
                         }
                     } else {
-                        if ($value > "") $inp->find("[value='{$value}']")->attr("selected", true);
+                        if ($value > "") {
+                            $inp->find("[value='{$value}']")->attr("selected", true);
+                        }
                     }
                 } elseif ($inp->tagName == "input") {
-
                     if ($inp->attr("type") == "radio") {
-                        if ($inp->attr("value") == $value) $inp->attr('checked','checked');
+                        if ($inp->attr("value") == $value) {
+                            $inp->attr('checked', 'checked');
+                        }
                     } else {
                         $inp->attr("value", $value);
                         if ($inp->attr("type") == "checkbox") {
-                            if ( $value == "on" OR $value == "true"  OR $value == "1")  {
+                            if ($value == "on" or $value == "true"  or $value == "1") {
                                 $inp->attr("checked", true);
                                 $inp->removeAttr("value");
                             }
@@ -529,7 +553,6 @@ class wbDom extends DomQuery
             } else {
                 $this->inner($html);
             }
-
         }
         foreach ($this->find("template") as $t) {
             $t->inner(str_replace("_{_{_", "{{", $t->inner()));
@@ -607,65 +630,77 @@ class wbApp
         }
     }
 
-    public function getCacheId() {
+    public function getCacheId()
+    {
         $uri = $this->route->uri;
         $lang = $this->vars('_sett.lang');
         return md5($uri.'_'.$lang);
     }
 
-    public function setCache($out = '') {
-      if (!isset($_GET['update']) AND (count($_GET) OR count($_POST))) return;
-      $cid = $this->getCacheId();
-      $sub = substr($cid,0,4);
-      $dir = $this->vars('_env.dbac').'/'.$sub;
-      $name = $dir.'/'.$cid.'.html';
-      if (!strpos( ' '.$out, '<!DOCTYPE html>' ) ) $out = '<!DOCTYPE html>'.$out;
-      if (!is_dir($dir)) {
-          mkdir($dir,0777,true);
-      }
-      file_put_contents($name,$out,LOCK_EX);
-      $lastModified=filemtime($name);
+    public function setCache($out = '')
+    {
+        if (!isset($_GET['update']) and (count($_GET) or count($_POST))) {
+            return;
+        }
+        $cid = $this->getCacheId();
+        $sub = substr($cid, 0, 4);
+        $dir = $this->vars('_env.dbac').'/'.$sub;
+        $name = $dir.'/'.$cid.'.html';
+        if (!strpos(' '.$out, '<!DOCTYPE html>')) {
+            $out = '<!DOCTYPE html>'.$out;
+        }
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+        file_put_contents($name, $out, LOCK_EX);
+        $lastModified=filemtime($name);
     }
 
-    public function getCache() {
+    public function getCache()
+    {
         if (isset($_SERVER['HTTP_CACHE_CONTROL'])) {
             parse_str($_SERVER['HTTP_CACHE_CONTROL'], $cc);
-            if (isset($cc['no-cache'])) return null;
+            if (isset($cc['no-cache'])) {
+                return null;
+            }
         }
-      if (((!count($_POST) AND isset($_GET['update']) AND count($_GET) == 1) OR count($_POST) OR count($_GET))) return null;
-      $cid = $this->getCacheId();
-      $sub = substr($cid,0,4);
-      $dir = $this->vars('_env.dbac').'/'.$sub;
-      $name = $dir.'/'.$cid.'.html';
+        if (((!count($_POST) and isset($_GET['update']) and count($_GET) == 1) or count($_POST) or count($_GET))) {
+            return null;
+        }
+        $cid = $this->getCacheId();
+        $sub = substr($cid, 0, 4);
+        $dir = $this->vars('_env.dbac').'/'.$sub;
+        $name = $dir.'/'.$cid.'.html';
 
 
     
-    header("Cache-control: public");
-    header("Pragma: cache");
-    header("Expires: " . gmdate("D, d M Y H:i:s", time()+$this->vars('_sett.cache')) . " GMT");
-    header("Cache-Control: max-age=".$this->vars('_sett.cache'));
+        header("Cache-control: public");
+        header("Pragma: cache");
+        header("Expires: " . gmdate("D, d M Y H:i:s", time()+$this->vars('_sett.cache')) . " GMT");
+        header("Cache-Control: max-age=".$this->vars('_sett.cache'));
 
-    if (is_file($name)) {
-          if ((time() - filectime($name)) > $this->vars('_sett.cache')) {
-            // Делаем асинхронный запрос с обновлением кэша
-            $this->shadow($this->route->uri);
-          }
-          return file_get_contents($name);
-      }
-      return null;
+        if (is_file($name)) {
+            if ((time() - filectime($name)) > $this->vars('_sett.cache')) {
+                // Делаем асинхронный запрос с обновлением кэша
+                $this->shadow($this->route->uri);
+            }
+            return file_get_contents($name);
+        }
+        return null;
     }
 
 
-    public function shadow($uri) {
-            // отправка url запроса без ожидания ответа
-            $fp = stream_socket_client("tcp://{$this->route->hostname}:{$this->route->port}", $errno, $errstr, 30);
-            if (!$fp) {
-                echo "$errstr ($errno)<br />\n";
-            } else {
-                strpos($uri, '?') ? $uri .= '&update' : $uri .= '?update';
-                fwrite($fp, "GET {$uri} HTTP/1.0\r\nHost: {$this->route->hostname} \r\nAccept: */*\r\n\r\n");
-                fclose($fp);
-            }
+    public function shadow($uri)
+    {
+        // отправка url запроса без ожидания ответа
+        $fp = stream_socket_client("tcp://{$this->route->hostname}:{$this->route->port}", $errno, $errstr, 30);
+        if (!$fp) {
+            echo "$errstr ($errno)<br />\n";
+        } else {
+            strpos($uri, '?') ? $uri .= '&update' : $uri .= '?update';
+            fwrite($fp, "GET {$uri} HTTP/1.0\r\nHost: {$this->route->hostname} \r\nAccept: */*\r\n\r\n");
+            fclose($fp);
+        }
     }
 
     public function route()
@@ -676,7 +711,8 @@ class wbApp
         return $this->route;
     }
 
-    public function getField($item,$fld) {
+    public function getField($item, $fld)
+    {
         $fields = new Dot();
         $fields->setReference($item);
         return $fields->get($fld);
@@ -722,12 +758,13 @@ class wbApp
 
     public function controller()
     {
-
         if (substr($this->mime($this->route->uri), 0, 6) == 'image/') {
             $this->route->controller = 'thumbnails';
         }
         if ($this->route->controller) {
-            if (isset($this->route->file) && in_array($this->route->fileinfo->extension,["php","html"])) return;
+            if (isset($this->route->file) && in_array($this->route->fileinfo->extension, ["php","html"])) {
+                return;
+            }
             $path = "/controllers/{$this->route->controller}.php";
             if (is_file($this->route->path_app . $path)) {
                 require_once $this->route->path_app . $path;
@@ -781,8 +818,12 @@ class wbApp
 
     public function fieldBuild($dict=[], $data=[])
     {
-        if ((array)$dict == $dict) $dict = wbArrayToObj($dict);
-        if ($dict->name == "") return "";
+        if ((array)$dict == $dict) {
+            $dict = wbArrayToObj($dict);
+        }
+        if ($dict->name == "") {
+            return "";
+        }
         $this->dict = $dict;
         isset($data["data"]) ? $this->item = $data["data"] : $this->item = [];
         $this->data = $data;
@@ -800,7 +841,9 @@ class wbApp
             $this->tpl->find("[style]")->removeAttr("style");
         }
         $func = __FUNCTION__ . "_". $dict->type;
-        if (!method_exists($this, $func)) $func = __FUNCTION__ . "_". "common";
+        if (!method_exists($this, $func)) {
+            $func = __FUNCTION__ . "_". "common";
+        }
         return $this->$func();
     }
 

@@ -11,7 +11,8 @@ class tagLang {
       $lang = trim($dom->inner());
       $lang = str_replace('[',"\n[",$lang);
       $parent->locale = parse_ini_string($lang,true);
-      $app->vars("_env.locale", $parent->locale);
+      $locale = (array)$app->vars("_env.locale");
+      $app->vars("_env.locale", array_merge($locale,$parent->locale));
       $dom->remove();
   }
 

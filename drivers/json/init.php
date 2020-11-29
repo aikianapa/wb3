@@ -35,19 +35,26 @@ class jsonDrv
         return "{$db}/{$form}.json";
     }
 
-    public function tableCreate($form, $engine = false)
+    public function tableCreate($form)
     {
-        $file = $this->tablePath($form, $engine);
-        if (!is_file($file)) {
+        if (!$this->tableExist($form) AND $this->app->formExist()) {
+            $file = $this->tablePath($form);
             $json = wbJsonEncode(null);
             $res = wbPutContents($file, $json, LOCK_EX);
             if ($res) {
                 @chmod($file, 0766);
             }
         } else {
+            $res = false;
+            wbLog("func", __FUNCTION__, 1012, [$form]);
             wbError('func', __FUNCTION__, 1002, func_get_args());
         }
         return $res;
+    }
+
+    public function tableExist($form, $engine = false) {
+        $file = $this->tablePath($form, $engine);
+        return is_file($file);
     }
 
     public function tableRemove($form, $engine)
@@ -374,10 +381,8 @@ class jsonDrv
 
     public function tableList($engine = false)
     {
-        $db = $_ENV['dbe'];
-        if (false == $engine) {
-            $db = $_ENV['dba'];
-        }
+
+        (false == $engine) ? $db = $_ENV['dba'] : $db = $_ENV['dbe'];
         $list = wbListFiles($db);
         foreach ($list as $i => $form) {
             $tmp = explode('.', $form);

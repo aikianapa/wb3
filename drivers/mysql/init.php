@@ -129,7 +129,7 @@ class mysqlDrv
         }
         $item = $this->app->ItemInit($form, $item);
         $id = $item['_id'];
-        $check = $this->checkExists($form, $id);
+        $check = $this->itemExist($form, $id);
         if ($check) {
             $json = $this->ItemJsonData($form, $id);
         } else {
@@ -168,11 +168,22 @@ class mysqlDrv
         }
     }
 
-    public function checkExists($form, $id)
+    public function itemExist($form, $id)
     {
         $this->db->where($this->keys->$form, $id);
         $this->db->getOne($form, $this->keys->$form);
         return $this->db->count;
+    }
+
+    public function tableExist($form, $engine = false) {
+        $engine == false ? null : $form = '_'.$form;
+        return $this->db->rawQueryValue("SELECT count(*) FROM information_schema.TABLES WHERE TABLE_NAME = '{$form}' AND TABLE_SCHEMA in (SELECT DATABASE());");
+    }
+
+    public function tableCreate($form, $engine = false) {
+        $engine == false ? null : $form = '_'.$form;
+        $this->db->rawQueryValue("CREATE TABLE {$form}");
+        $this->fieldsList($form);
     }
 
     public function ItemJsonData($form, $id)

@@ -13,7 +13,7 @@ class ctrlForm
     {
         if (!is_callable(@$this->$mode)) {
             header('HTTP/1.1 404 Not Found');
-            echo 'Error 404';
+            echo  $this->get404();
             die;
         }
     }
@@ -29,13 +29,13 @@ class ctrlForm
             $cache = false;
         }
 
-
         if (!$cache) {
+            $_ENV["cache_used"] = false;
             isset($this->route->form) ? $dom = $app->getForm($this->route->form, $this->route->mode) : null;
             if (isset($this->route->item)) {
                 $table = $this->route->form;
                 isset($this->route->table) ? $table = $this->route->table : null;
-                $item = $app->db->itemRead($table, $this->route->item);
+                $item = $app->itemRead($table, $this->route->item);
                 $item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], $item);
                 if (isset($item['template']) and $item['template'] > '' and $item['active'] == 'on') {
                     $dom = $app->getTpl($item['template']);
@@ -67,8 +67,10 @@ class ctrlForm
             echo $out;
             $app->setCache($out);
         } else {
+            $_ENV["cache_used"] = true;
             echo $cache;
         }
+        if ($app->vars('_sett.showstats') == 'on') echo wbUsageStat();
         die;
     }
 

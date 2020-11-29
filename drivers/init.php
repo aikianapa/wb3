@@ -6,9 +6,7 @@ function wbItemList($form = 'pages', $options=[])
         $options=json_decode($options, true);
     }
     $db = wbSetDb($form);
-    if (substr($form, 0, 1) == '_') {
-        $db = $_ENV["app"]->_db;
-    }
+
     ini_set('max_execution_time', 900);
     ini_set('memory_limit', '1024M');
     return $db->ItemList($form, $options);
@@ -17,14 +15,16 @@ function wbItemList($form = 'pages', $options=[])
 function wbSetDb($form)
 {
     $app = &$_ENV["app"];
-    if (isset($app->settings->driver_tables[$form])) {
-        $driver = $app->settings->driver_tables[$form];
+
+    if (isset($app->drivers->$form)) {
+        return $app->drivers->$form;
     } else {
-        $driver = $app->settings->driver;
+        isset($app->drivers) ? null : $app->drivers = (object)[];
     }
-    if ($form == '_settings') {
-        $driver = 'json';
-    }
+
+    isset($app->settings->driver_tables[$form]) ? $driver = $app->settings->driver_tables[$form] : $driver = $app->settings->driver;
+ 
+    $form == '_settings' ? $driver = 'json' : null;
     $path = "/drivers/{$driver}/init.php";
     if (is_file($app->route->path_app . $path)) {
         include_once $app->route->path_app . $path;
@@ -34,7 +34,13 @@ function wbSetDb($form)
     $class = $driver."Drv";
     $app->db = new $class($app);
     $app->_db = new jsonDrv($app);
-    return $app->db;
+    $app->drivers->$form = &$app->db;
+    if (substr($form, 0, 1) == '_') {
+        return $app->_db;
+    } else {
+        $app->db->tableExist($form) ? null : $app->tableCreate($form);
+        return $app->db;
+    }
 }
 
 function wbTreeRead($name)
@@ -50,33 +56,30 @@ function wbItemRead($form = null, $id = null)
     if ($form == null or $id == null) {
         return null;
     }
+    $db = wbSetDb($form);
     wbTrigger('form', __FUNCTION__, 'beforeItemRead', func_get_args(), array());
-            if (!isset($_SESSION['lang'])) {
-                $_SESSION['lang'] = 'en';
-            }
-            $cid = md5($form . $_SESSION['lang']);
-            if (isset($_ENV['cache'][$cid][$id])) {
-                $item = $_ENV['cache'][$cid][$id];
+    if (!isset($_SESSION['lang'])) {
+        $_SESSION['lang'] = 'en';
+    }
+    $cid = md5($form . $_SESSION['lang']);
+    if (isset($_ENV['cache'][$cid][$id])) {
+        $item = $_ENV['cache'][$cid][$id];
+    } else {
+        $item = $db->itemRead($form, $id);
+        if (null !== $item) {
+            if (isset($item['_removed']) && 'remove' == $item['_removed']) {
+                $item = null;
+                $item = wbTrigger('form', __FUNCTION__, 'emptyItemRead', func_get_args(), $item);
+            // если стоит флаг удаления, то возвращаем null
             } else {
-                $db = wbSetDb($form);
-                if (substr($form, 0, 1) == '_') {
-                    $db = $_ENV["app"]->_db;
-                }
-                $item = $db->itemRead($form, $id);
-                if (null !== $item) {
-                    if (isset($item['_removed']) && 'remove' == $item['_removed']) {
-                        $item = null;
-                        $item = wbTrigger('form', __FUNCTION__, 'emptyItemRead', func_get_args(), $item);
-                    // если стоит флаг удаления, то возвращаем null
-                    } else {
-                        $item["_form"] = $item["_table"] = $form;
-                    }
-                    $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
-                    $_ENV['cache'][$cid][$id] = $item;
-                } else {
-                    $item = wbTrigger('form', __FUNCTION__, 'emptyItemRead', func_get_args(), $item);
-                }
+                $item["_form"] = $item["_table"] = $form;
             }
+            $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
+            $_ENV['cache'][$cid][$id] = $item;
+        } else {
+            $item = wbTrigger('form', __FUNCTION__, 'emptyItemRead', func_get_args(), $item);
+        }
+    }
     return $item;
 }
 
@@ -84,9 +87,6 @@ function wbItemRemove($form = null, $id = null, $flush = true)
 {
     $res = false;
     $db = wbSetDb($form);
-    if (substr($form, 0, 1) == '_') {
-        $db = $_ENV["app"]->_db;
-    }
     wbTrigger('form', __FUNCTION__, 'beforeItemRemove', func_get_args());
     $res = $db->itemRemove($form, $id, $flush);
     if ($res !== false) {
@@ -122,10 +122,8 @@ function wbItemSave($form, $item = null, $flush = true)
 {
     $item = wbItemInit($form, $item);
     $item = wbTrigger('form', __FUNCTION__, 'beforeItemSave', func_get_args(), $item);
+    
     $db = wbSetDb($form);
-    if (substr($form, 0, 1) == '_') {
-        $db = $_ENV["app"]->_db;
-    }
     $item = $db->itemSave($form, $item, $flush);
     if ($item) {
         // читаем всю запись, иначе возвращаются не все поля
@@ -153,9 +151,6 @@ function wbTableFlush($form)
     $res = false;
     wbTrigger('form', __FUNCTION__, 'beforeTableFlush', func_get_args(), $form);
     $db = wbSetDb($form);
-    if (substr($form, 0, 1) == '_') {
-        $db = $_ENV["app"]->_db;
-    }
     $res = $db->tableFlush($form);
     wbTrigger('form', __FUNCTION__, 'afterTableFlush', func_get_args(), $form);
     return $res;
@@ -166,13 +161,10 @@ function wbTableFlush($form)
 
 function wbTableCreate($form = 'pages', $engine = false)
 {
-    $drv=wbCallDriver(__FUNCTION__, func_get_args());
-    if ($drv !== false) {
-        $form = $drv["result"];
-    } else {
-        $form = jsonTableCreate($form, $engine);
-    }
-    return $form;
+
+    $db = wbSetDb($form);
+    wbTrigger('form', __FUNCTION__, 'beforeTableCreate', func_get_args(), array());
+    return $db->tableCreate($form, $engine);
 }
 
 function wbTableRemove($form = null, $engine = false)

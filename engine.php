@@ -5,6 +5,7 @@
     "gc_maxlifetime" => 84600,
     "cookie_lifetime" => 0
 ]);
+
 ini_set('display_errors', 1);
 if (!isset($_SESSION["lang"])) $_SESSION["lang"] = "ru";
 require_once __DIR__."/functions.php";
