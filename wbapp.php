@@ -176,37 +176,30 @@ class wbDom extends DomQuery
             return $this->head;
         }
         //$this->head->html($head);
+        if ($item == null) {
+            $item = $this->item;
+        }
     }
 
     public function fetch($item = null)
     {
-        $tmp = $this->app->vars("_env.locale");
+        $tmp = $this->app->vars('_env.locale');
         $this->fetchStrict();
         $this->fetchLang();
-        if ($this->strict or isset($this->fetched)) {
-            return;
-        }
-        if (!$this->app) {
-            $this->app = $_ENV["app"];
-        }
-        if ($item == null) {
-            $item = $this->item;
-        }
-        if ($this->tagName == "head") {
-            $this->head = $this;
-        }
+        if ($this->strict OR isset($this->fetched)) return;
+        if (!$this->app) $this->app = $_ENV["app"];
+        if ($item == null) $item = $this->item;
+        if ($this->tagName == "head") $this->head = $this;
         $this->item = $item;
         $this->fetchParams();
-        if ($this->is(":root") and ($this->func or $this->funca)) {
-            $this->fetchFunc();
-        }
+        if ($this->is(":root") and ($this->func or $this->funca)) $this->fetchFunc();
         $childrens = $this->children();
         foreach ($childrens as $wb) {
             $wb->copy($this);
             $wb->fetchNode();
         }
         $this->setValues();
-        $this->app->vars("_env.locale",$tmp);
+        $this->app->vars("_env.locale", $tmp);
         return $this;
     }
 
