@@ -2,22 +2,16 @@ DirectoryIndex index.php
 AddDefaultCharset UTF-8
 
 RewriteBase /
+Options +FollowSymLinks
 RewriteEngine On
 
-RewriteRule ^app$ /app/ [L,QSA]
+RewriteRule ^(.*)\.less$ index.php 
 
-RewriteCond %{REQUEST_URI} !\?
-RewriteCond %{REQUEST_URI} !\&
-RewriteCond %{REQUEST_URI} !\=
-RewriteCond %{REQUEST_URI} !\.
-RewriteCond %{REQUEST_URI} ![^\/]$
-RewriteCond %{REQUEST_URI} ![^\/ajax]\/
-RewriteRule ^(.*)\/$ /$1 [R=301,L]
-
-Redirect 301 /home /
 RewriteCond %{HTTP_HOST} ^www\.(.*)$
 RewriteRule ^(.*)$ http://%1/$1 [L,R=301]
+RewriteRule ^database(.*)$ index.php [R=404,L]
 
-RewriteRule ^(.*)\.less$ index.php [L,QSA]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 
 RewriteRule ^(.*)$ index.php [L,QSA]

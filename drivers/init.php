@@ -34,13 +34,17 @@ function wbSetDb($form)
     $class = $driver."Drv";
     $app->db = new $class($app);
     $app->_db = new jsonDrv($app);
-    $app->drivers->$form = &$app->db;
-    if (substr($form, 0, 1) == '_') {
-        return $app->_db;
-    } else {
-        $app->db->tableExist($form) ? null : $app->tableCreate($form);
-        return $app->db;
+
+    (substr($form, 0, 1) == '_') ? $app->drivers->$form = &$app->_db : $app->drivers->$form = &$app->db;
+
+    $loop=false;
+    foreach (debug_backtrace() as $func) {
+        'wbTableCreate'==$func["function"] ? $loop=true : null;
     }
+
+    !$app->drivers->$form->tableExist($form) && !$loop ? $app->tableCreate($form) : null;
+
+    return $app->drivers->$form;
 }
 
 function wbTreeRead($name)
@@ -122,7 +126,6 @@ function wbItemSave($form, $item = null, $flush = true)
 {
     $item = wbItemInit($form, $item);
     $item = wbTrigger('form', __FUNCTION__, 'beforeItemSave', func_get_args(), $item);
-    
     $db = wbSetDb($form);
     $item = $db->itemSave($form, $item, $flush);
     if ($item) {
@@ -161,7 +164,6 @@ function wbTableFlush($form)
 
 function wbTableCreate($form = 'pages', $engine = false)
 {
-
     $db = wbSetDb($form);
     wbTrigger('form', __FUNCTION__, 'beforeTableCreate', func_get_args(), array());
     return $db->tableCreate($form, $engine);

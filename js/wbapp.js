@@ -961,6 +961,15 @@ if (typeof $ === 'undefined') {
         return answer;
     }
 
+    wbapp.check_email = function(email) {
+        if (email.match(/^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/i)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+
 
     var array_column = function (list, column, indice) {
         var result, key;
@@ -1009,13 +1018,13 @@ if (typeof $ === 'undefined') {
                     console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                     $(form).trigger("wb-verify-false", [this]);
                 } else {
-                    if ($(this).attr("type") == "email" && !wb_check_email($(this).val())) {
+                    if ($(this).attr("type") == "email" && !wbapp.check_email($(this).val())) {
                         res = false;
                         $(this).data("error", wbapp._settings.sysmsg.email_correct);
                         console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                         $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
                     } else {
-                        console.log("trigger: wb-verify-true");
+                        console.log("trigger: wb-verify-true [" + $(this).attr("name") + "]");
                         $(form).trigger("wb-verify-true", [this]);
                     }
                 }

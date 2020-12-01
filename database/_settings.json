@@ -1,0 +1,154 @@
+{
+    "settings": {
+        "id": "settings",
+        "header": "",
+        "_id": "settings",
+        "_form": "_settings",
+        "_table": "_settings",
+        "_created": "2020-12-01 17:08:50",
+        "_creator": "admin",
+        "_lastdate": "2020-12-01 17:08:50",
+        "_lastuser": "admin",
+        "cmsmenu": {
+            "data": {
+                "aside": {
+                    "id": "aside",
+                    "name": "aside",
+                    "active": "on",
+                    "data": {
+                        "label": "",
+                        "icon": "",
+                        "ajax": ""
+                    },
+                    "children": {
+                        "forms": {
+                            "id": "forms",
+                            "name": "Формы",
+                            "active": "on",
+                            "data": {
+                                "label": "Формы",
+                                "icon": "",
+                                "ajax": ""
+                            },
+                            "open": "true",
+                            "children": {
+                                "users": {
+                                    "id": "users",
+                                    "name": "Пользователи",
+                                    "active": "on",
+                                    "data": {
+                                        "label": "Пользователи",
+                                        "icon": "ri-group-line",
+                                        "ajax": "{'url':'/cms/ajax/form/users/list','html':'.content-body'}"
+                                    }
+                                },
+                                "pages": {
+                                    "id": "pages",
+                                    "name": "Страницы",
+                                    "active": "on",
+                                    "data": {
+                                        "label": "Страницы",
+                                        "icon": "ri-pages-line",
+                                        "ajax": "{'url':'/cms/ajax/form/pages/list','html':'.content-body'}"
+                                    }
+                                },
+                                "catalogs": {
+                                    "id": "catalogs",
+                                    "name": "Справочники",
+                                    "active": "on",
+                                    "data": {
+                                        "label": "Справочники",
+                                        "icon": "ri-node-tree",
+                                        "ajax": "{'url':'/cms/ajax/form/catalogs/list','html':'.content-body'}"
+                                    }
+                                }
+                            }
+                        },
+                        "settings": {
+                            "id": "settings",
+                            "name": "Настройки",
+                            "active": "on",
+                            "data": {
+                                "label": "Настройки",
+                                "icon": "",
+                                "ajax": ""
+                            },
+                            "children": {
+                                "site": {
+                                    "id": "site",
+                                    "name": "Site",
+                                    "active": "on",
+                                    "data": {
+                                        "label": "Настройки",
+                                        "icon": "ri-settings-4-line",
+                                        "ajax": "{'url':'/cms/settings/settings_ui','html':'.content-body'}"
+                                    }
+                                }
+                            },
+                            "open": "true"
+                        }
+                    }
+                },
+                "top": {
+                    "id": "top",
+                    "name": "top",
+                    "active": "on",
+                    "children": {
+                        "settings": {
+                            "id": "settings",
+                            "name": "Настройки",
+                            "active": "on",
+                            "data": {
+                                "label": "Настройки",
+                                "icon": "ri-settings-5-line",
+                                "ajax": "{'url':'/cms/settings/settings_ui','html':'.content-body'}"
+                            }
+                        },
+                        "profile": {
+                            "id": "profile",
+                            "name": "Профиль",
+                            "active": "on",
+                            "data": {
+                                "label": "Профиль",
+                                "icon": "ri-user-settings-line",
+                                "ajax": "{'url':'/cms/ajax/form/users/profile','html':'.content-body'}"
+                            }
+                        },
+                        "exit": {
+                            "id": "exit",
+                            "name": "Выход",
+                            "active": "on",
+                            "data": {
+                                "label": "Выход",
+                                "icon": "ri-logout-box-r-line",
+                                "ajax": "{'url':'/cms/logout'}"
+                            }
+                        }
+                    },
+                    "open": true
+                }
+            },
+            "dict": [{
+                    "name": "label",
+                    "label": "Метка",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "name": "icon",
+                    "label": "Иконка",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "name": "ajax",
+                    "label": "Свойства Ajax",
+                    "type": "text",
+                    "value": ""
+                }
+            ]
+        }
+    }
+}
+
+

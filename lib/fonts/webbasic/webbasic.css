@@ -1,0 +1,7 @@
+/* font for logo */
+@font-face {
+  font-family: 'Webbasic';
+  font-style: normal;
+  font-weight: normal;
+  src: url('webbasic.woff') format('woff');
+}

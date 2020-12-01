@@ -58,9 +58,16 @@
         <div class="form-group row">
           <label class="col-sm-5 form-control-label">{{_lang.fontsize}} (px)</label>
           <div class="col-sm-7">
-            <input type="number" class="form-control" name="logofontsize" min="12" max="30" step="1" placeholder="{{_lang.fontsize}} (px)">
+            <input type="number" class="form-control" name="logofontsize" min="12" max="50" step="1" placeholder="{{_lang.fontsize}} (px)">
           </div>
         </div>
+        <div class="form-group row">
+          <label class="col-sm-5 form-control-label">{{_lang.slogan}}</label>
+          <div class="col-sm-7">
+            <input type="text" class="form-control" name="slogan" placeholder="{{_lang.slogan}}">
+          </div>
+        </div>
+
       </div>
       <div class="col-sm-5">
         <fieldset class="form-group">
@@ -86,6 +93,7 @@ fontsize = "Font size"
 logo = "Logo"
 brand1 = "Brand (part I)"
 brand2 = "Brand (part II)"
+slogan = Slogan
 sitename = "Site name"
 email = "Email"
 pagesize = "Page size (default)"
@@ -97,6 +105,7 @@ fontsize = "Размер шрифта"
 logo = "Логотип"
 brand1 = "Брэнд (I часть)"
 brand2 = "Брэнд (part II)"
+slogan = Слоган
 sitename = "Название сайта"
 email = "Эл.почта"
 pagesize = "Размер страниц (по-умолчанию)"

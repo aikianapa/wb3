@@ -183,11 +183,11 @@ class wbDom extends DomQuery
 
     public function fetch($item = null)
     {
+        if (!$this->app) $this->app = $_ENV["app"];
         $tmp = $this->app->vars('_env.locale');
         $this->fetchStrict();
         $this->fetchLang();
         if ($this->strict OR isset($this->fetched)) return;
-        if (!$this->app) $this->app = $_ENV["app"];
         if ($item == null) $item = $this->item;
         if ($this->tagName == "head") $this->head = $this;
         $this->item = $item;
@@ -1043,12 +1043,8 @@ class wbApp
 
         $loop=false;
         foreach (debug_backtrace() as $func) {
-            if ($aCall==$func["function"]) {
-                $loop=true;
-            }
-            if ($eCall==$func["function"]) {
-                $loop=true;
-            }
+            $aCall==$func["function"] ? $loop=true : null;
+            $eCall==$func["function"] ? $loop=true : null;
         }
 
         if (is_callable($aCall) and $loop == false) {

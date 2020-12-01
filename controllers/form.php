@@ -80,7 +80,7 @@ class ctrlForm
         header('HTTP/1.1 404 Not Found');
         $dom = $app->getTpl('404.php');
         if (!$dom) {
-            $dom = $app->fromString("<html><head><meta name='viewport' content='width=device-width; initial-scale=1.0; user-scalable=no'></head><center><img src='/engine/modules/cms/tpl/assets/img/virus.svg' width='200'><h3>[404] Page not found</h3></center></html>");
+            $dom = $app->fromString("<html><head><meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no'></head><center><img src='/engine/modules/cms/tpl/assets/img/virus.svg' width='200'><h3>[404] Page not found</h3></center></html>");
         }
         return $dom;
     }

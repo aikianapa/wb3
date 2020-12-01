@@ -14,12 +14,24 @@
 
     <aside class="aside aside-fixed">
       <div class="aside-header">
-        <a href="#" class="aside-logo">
-					<img data-src="/engine/modules/cms/tpl/assets/img/virus.svg" width="30" wb-if='"{{_sett.logo.0.img}}" == ""'>
-          <img data-src="{{_sett.logo.0.img}}" width="30" wb-if='"{{_sett.logo.0.img}}" > ""'>
-          <strong wb-if='"{{_sett.logo1}}" == ""'>Pan</strong><span wb-if='"{{_sett.logo2}}" == ""'>Demic</span>
-          <strong wb-if='"{{_sett.logo1}}" > ""'>{{_sett.logo1}}</strong><span wb-if='"{{_sett.logo2}}" > ""'>{{_sett.logo2}}</span>
-        </a>
+        <div class="aside-logo wblogo">
+          <wb-var wb-if='"{{_sett.logofontsize}}" == ""' fontsize="20" />
+          <wb-var wb-if='"{{_sett.logofontsize}}" > ""' fontsize="{{_sett.logofontsize}}"/>
+          <div class="tx-50 d-inline-block">
+            <img data-src="/engine/modules/cms/tpl/assets/img/virus.svg" width="40" wb-if='"{{_sett.logo.0.img}}" == ""'>
+            <img data-src="{{_sett.logo.0.img}}" width="40" wb-if='"{{_sett.logo.0.img}}" > ""'>
+          </div>
+          <div class="tx-20 d-inline-block" style="font-size:{{_var.fontsize}}px;">
+          <i class="text-dark" wb-if='"{{_sett.logo1}}" == ""'>Web</i>
+          <i class="text-primary" wb-if='"{{_sett.logo2}}" == ""'>Basic</i>
+          
+          <i class="text-dark" wb-if='"{{_sett.logo1}}" > ""'>{{_sett.logo1}}</i>
+          <i class="text-primary" wb-if='"{{_sett.logo2}}" > ""'>{{_sett.logo2}}</i>
+          <br>
+                                <i class="mr-5 tx-13 text-dark pt-2" wb-if='"{{_sett.slogan}}" > ""'>{{_sett.slogan}}</i>
+                                <i class="mr-5 tx-13 text-dark pt-2" wb-if='"{{_sett.slogan}}" == ""'>Pandemic edition</i>
+          </div>
+        </div>
         <a href="" class="aside-menu-link">
           <i data-feather="menu"></i>
           <i data-feather="x"></i>

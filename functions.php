@@ -128,11 +128,10 @@ function wbInitSettings(&$app)
 
     if ($_SERVER['REQUEST_URI']=='/engine/') {
         unset($_ENV['lang']);
-    } else {
-        isset($settings['lang']) ? $_ENV['lang'] = $settings['lang'] : $_ENV['lang'] = 'ru';
     }
-    //    $_ENV['locales']=wbListLocales($app);
-    $_ENV['settings']['locale']=substr($_ENV['lang'], 0, 2);
+
+    isset($settings['lang']) ? $_ENV['lang'] = $settings['lang'] : $_ENV['lang'] = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+    $_ENV['settings']['locale'] = substr($_ENV['lang'], 0, 2);
 
     if (isset($_ENV['settings']['path_tpl']) and $_ENV['settings']['path_tpl'] > '') {
         $_ENV['base']=$_ENV['settings']['path_tpl'];

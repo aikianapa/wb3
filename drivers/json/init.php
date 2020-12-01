@@ -95,7 +95,6 @@ class jsonDrv
         } else {
             $item['_id'] = $item['id'];
         }
-        $item = wbItemInit($form, $item);
         $_ENV['cache'][$cid][$item['id']] = $item;
 
         $res = $item;
