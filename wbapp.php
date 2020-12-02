@@ -689,6 +689,8 @@ class wbApp
         $fp = stream_socket_client("tcp://{$this->route->hostname}:{$this->route->port}", $errno, $errstr, 30);
         if (!$fp) {
             echo "$errstr ($errno)<br />\n";
+            wbLog("func", __FUNCTION__, $errno, $errstr);
+
         } else {
             strpos($uri, '?') ? $uri .= '&update' : $uri .= '?update';
             fwrite($fp, "GET {$uri} HTTP/1.0\r\nHost: {$this->route->hostname} \r\nAccept: */*\r\n\r\n");

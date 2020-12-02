@@ -102,7 +102,7 @@ $.fn.wbTreeInit = function() {
             $(item).children(".wb-tree-check").trigger("click");
             var path = $(this).getPath();
             var data = $(this).getData(path);
-            data["active"] = $(item).children(".wb-tree-check").prop("checked");
+            data["active"] = $(item).find(".wb-tree-check").prop("checked");
             if (data["active"] == true) {data["active"] = "on";} else {data["active"] = "";}
             $(this).setData(data,path);
         });

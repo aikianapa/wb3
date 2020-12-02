@@ -5,6 +5,6 @@
         <i class="wb-tree-add ri-add-circle-line"></i>
 
         <div class='wb-tree-line form-control' data-id="{{id}}">{{name}}</div>
-        <label class="wb-tree-switch"><input wb-module="switch" name="active"><span></span></label>
+        <label class="wb-tree-switch"><input wb-module="switch" class="wb-tree-check" name="active"><span></span></label>
     </li>
 </ol>

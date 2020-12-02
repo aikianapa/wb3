@@ -130,7 +130,9 @@ function wbInitSettings(&$app)
         unset($_ENV['lang']);
     }
 
-    isset($settings['lang']) ? $_ENV['lang'] = $settings['lang'] : $_ENV['lang'] = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+
+    isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'] : $lang = 'en';
+    isset($settings['lang']) ? $_ENV['lang'] = $settings['lang'] : $_ENV['lang'] = substr($lang, 0, 2);
     $_ENV['settings']['locale'] = substr($_ENV['lang'], 0, 2);
 
     if (isset($_ENV['settings']['path_tpl']) and $_ENV['settings']['path_tpl'] > '') {
