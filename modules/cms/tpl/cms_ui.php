@@ -28,8 +28,8 @@
           <i class="text-dark" wb-if='"{{_sett.logo1}}" > ""'>{{_sett.logo1}}</i>
           <i class="text-primary" wb-if='"{{_sett.logo2}}" > ""'>{{_sett.logo2}}</i>
           <br>
-                                <i class="mr-5 tx-13 text-dark pt-2" wb-if='"{{_sett.slogan}}" > ""'>{{_sett.slogan}}</i>
-                                <i class="mr-5 tx-13 text-dark pt-2" wb-if='"{{_sett.slogan}}" == ""'>Pandemic edition</i>
+                                <i class="tx-12 text-dark pt-2" wb-if='"{{_sett.slogan}}" > ""'><b>{{_sett.slogan}}</b></i>
+                                <i class="tx-12 text-dark pt-2" wb-if='"{{_sett.slogan}}" == ""'><b>Pandemic edition</b></i>
           </div>
         </div>
         <a href="" class="aside-menu-link">

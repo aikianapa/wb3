@@ -41,7 +41,7 @@ ol.wb-tree {
 
 .wb-tree .dd-item > button {
     position: absolute;
-    line-height: 36px;
+    line-height: 30px;
     height: auto;
 }
 
@@ -62,14 +62,15 @@ ol.wb-tree {
 }
 
 .wb-tree .dd-item > button::before {
-    content: "add_box";
-    font-family: 'Material Icons Outlined';
-    font-size: 16px;
+    content: "\EA0F";
+    font-family: remixicon !important;
+    font-weight: normal;
+    font-size: 18px;
     color: @color_blue;
 }
 
 .wb-tree .dd-item > button[data-action="collapse"]:before {
-    content: "indeterminate_check_box";
+    content: "\EB84";
 }
 
 .wb-tree .dd3-handle {
@@ -180,25 +181,8 @@ ol.wb-tree {
     position: absolute;
     width:0px;
     height:0px;
-    top:-7px;
-    right:113px;
+    top:6px;
+    right:104px;
 }
 
-.wb-tree-switch::before {
-    color: @color_gray;
-    font-size: 36px;
-    line-height: 40px;
-    font-family: 'Material Icons Outlined';
-}
 
-.wb-tree-check ~ .wb-tree-switch::before {
-    content: "toggle_off";
-    cursor: pointer;
-}
-
-.wb-tree-check:checked ~ .wb-tree-switch::before {
-    content: "toggle_on";
-    color: @color_blue;
-    cursor: pointer;
-
-}

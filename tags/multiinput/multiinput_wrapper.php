@@ -1,6 +1,6 @@
 <div class='row wb-multiinput-row'>
   {{inner}}
-  <i class='material-icons-outlined wb-multiinput-swp'>swap_vertical</i>
-  <i class='material-icons-outlined wb-multiinput-del'>remove_circle_outline</i>
-  <i class='material-icons-outlined wb-multiinput-add'>add_circle_outline</i>
+  <i class="wb-multiinput-swp ri-drag-move-line"></i>
+  <i class="wb-multiinput-del ri-indeterminate-circle-line"></i>
+  <i class="wb-multiinput-add ri-add-circle-line"></i>
 </div>
