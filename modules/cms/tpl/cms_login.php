@@ -34,7 +34,7 @@
                     <div class="form-group">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                <span class="input-group-text"><i class="ri-user-3-line"></i></span>
                             </div>
                             <input name="login" class="form-control" type="text" placeholder="Логин">
                         </div>
@@ -42,7 +42,7 @@
                     <div class="form-group">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="fa fa-unlock"></i></span>
+                                <span class="input-group-text"><i class="ri-lock-unlock-line"></i></span>
                             </div>
                             <input name="password" class="form-control" type="password" placeholder="Пароль">
                         </div>
@@ -51,7 +51,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onClick="wbapp.auth('#formLogin')">
-                    <i class="fa fa-sign-in"></i>&nbsp; Вход
+                    <i class="ri-login-box-line"></i>&nbsp; Вход
                 </button>
             </div>
         </div>

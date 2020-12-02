@@ -5,7 +5,7 @@
                 <div class="input-group">
                     <div class="input-group-prepend wb-tree-dict-prop-btn">
                         <span class="input-group-text text-blue">
-                            <i class='material-icons-outlined'>settings_applications</i>
+                            <i class="ri-settings-2-line"></i>
                         </span>
                     </div>
                     <input class="form-control" placeholder="{{_lang.name}}" type="text" name="name">
@@ -17,7 +17,7 @@
                 <div class="input-group">
                     <div class="input-group-prepend wb-tree-dict-lang-btn">
                         <span class="input-group-text text-blue">
-                            <i class='material-icons-outlined'>g_translate</i>
+                            <i class="ri-translate"></i>
                         </span>
                     </div>
                     <input class="form-control" placeholder="{{_lang.label}}" type="text" name="label">

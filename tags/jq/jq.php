@@ -45,24 +45,26 @@ class tagJq {
         } else if ( $that->params( 'before' ) ) {
             $that->parents('html')->find( $that->params( 'before' ) )->before($inner->inner());
         } else {
-            $jq = $that->params->wb;
-            $jq = explode( ';', $jq );
-            $jq = $jq[0].';';
-            if ( substr( $jq, 0, 6 ) == '$dom->' ) {
-                $dom = $that->parent;
-                try {
-                    @eval( $jq );
-                } catch( Exception $err ) {
-                    echo 'Unknown result in the tag: '. $tag;
+            $jqs = explode( ';', $that->params->wb );
+            $dom = &$that->parent;
+
+            foreach ((array)$jqs as $i => $jq) {
+                $jq = ltrim($jq);
+                if (substr($jq, 0, 6) == '$dom->') {
+                    try {
+                        @eval($jq.';');
+                    } catch (Exception $err) {
+                        echo 'Unknown result in the tag: '. $tag;
+                    }
+                    $ch = $dom->children();
+                    foreach ($ch as $c) {
+                        $c->copy($dom);
+                        $c->fetch();
+                    }
+                } else if ($jq > '') {
+                    echo 'Error: wb-jq command was start at $dom->';
+                    echo '\n<br/>'. $tag;
                 }
-                $ch = $dom->children();
-                foreach ( $ch as $c ) {
-                    $c->copy( $dom );
-                    $c->fetch();
-                }
-            } else {
-                echo 'Error: wb-jq command was start at $dom->';
-                echo '\n<br/>'. $tag;
             }
         }
         $that->remove();
