@@ -153,20 +153,22 @@ class jsonDrv
 
         if (isset($options->sort)) {
             foreach ((array) $options->sort as $key => $fld) {
-                if (!((array) $fld === $fld)) {
-                    $fld = explode(':', $fld);
-                    if (!isset($fld[1])) {
-                        $fld[1] = 1;
-                    } else if (in_array(strtolower($fld[1]), ['a', 'asc', '1'])) {
+                if (!((array)$fld === $fld)) {
+                    if (is_numeric($fld)) {
+                        $fld = [$key,$fld]; 
+                    } else {
+                        $fld = explode(':', $fld);
+                    }
+                    isset($fld[1]) ? $fld[1] = strtolower($fld[1]) : $fld[1] = 1;
+                    if (in_array($fld[1], ['a', 'asc', '1'])) {
                         $fld[1] = '';
-                    } else if (in_array(strtolower($fld[1]), ['d', 'desc', '-1'])) {
+                    } else if (in_array($fld[1], ['d', 'desc', '-1'])) {
                         $fld[1] = 'desc';
                     }
                     $params['sort'][$fld[0]] = $fld[1];
                 } else {
                     $params['sort'][$key] = $fld;
                 }
-
             }
         }
 
@@ -245,6 +247,9 @@ class jsonDrv
         $flag = true;
         foreach ($iter as $key => $item) {
             $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
+            if (isset($options->trigger)) {
+                $item = wbTrigger('form', __FUNCTION__, $options->trigger, func_get_args(), $item);
+            }
             $dot->setReference($item);
             if (isset($options->filter)) {
                 $flag = wbItemFilter($item, $options->filter);
@@ -308,7 +313,7 @@ class jsonDrv
 //              $item['_id'] = $item['id'];
                 $list[$item['_id']] = $item;
             }
-
+            // для api нужно сделать отдельную обработку опции size, для выдачи разбитого массива полностью
         }
         return ["list" => $list, "count" => $count, "page" => $page, "size" => $size];
     }

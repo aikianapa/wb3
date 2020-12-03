@@ -530,6 +530,15 @@ if (typeof $ === 'undefined') {
             target: 'body',
             delay: 3000,
         }
+
+        if (wbapp.template['wb.toast'] == undefined) {
+            var res = wbapp.getForm("snippets", "toast");
+            wbapp.tpl('wb.toast', {
+                html: res.result,
+                params: {}
+            });
+        }
+
         let $tpl = $(wbapp.tpl('wb.toast').html);
 
         if (params.target) options.target = params.target;
@@ -578,13 +587,6 @@ if (typeof $ === 'undefined') {
 
     wbapp.tplInit = async function () {
         if (!wbapp.template) wbapp.template = {};
-        if (wbapp.template['wb.toast'] == undefined) {
-            var res = wbapp.getForm("snippets", "toast");
-            wbapp.tpl('wb.toast', {
-                html: res.result,
-                params: {}
-            });
-        }
         if (wbapp.template['wb.modal'] == undefined) {
             var res = wbapp.getForm("snippets", "modal");
             wbapp.tpl('wb.modal', {

@@ -62,9 +62,8 @@ function wbItemRead($form = null, $id = null)
     }
     $db = wbSetDb($form);
     wbTrigger('form', __FUNCTION__, 'beforeItemRead', func_get_args(), array());
-    if (!isset($_SESSION['lang'])) {
-        $_SESSION['lang'] = 'en';
-    }
+    !isset($_SESSION['lang']) ? $_SESSION['lang'] = 'en' : null;
+
     $cid = md5($form . $_SESSION['lang']);
     if (isset($_ENV['cache'][$cid][$id])) {
         $item = $_ENV['cache'][$cid][$id];
@@ -93,9 +92,7 @@ function wbItemRemove($form = null, $id = null, $flush = true)
     $db = wbSetDb($form);
     wbTrigger('form', __FUNCTION__, 'beforeItemRemove', func_get_args());
     $res = $db->itemRemove($form, $id, $flush);
-    if ($res !== false) {
-        $res["_removed"] = true;
-    }
+    $res !== false ? $res["_removed"] = true : null;
     wbTrigger('form', __FUNCTION__, 'afterItemRemove', func_get_args(), $res);
     return $res;
 }

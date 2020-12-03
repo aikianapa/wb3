@@ -107,6 +107,7 @@ class tagForeach
             }
 
             $list = json_decode(str_replace("'", '"', wbAuthGetContents($ajax)), true);
+            !$list ? $list = [] : null;
             $count = count($list);
         }
 
