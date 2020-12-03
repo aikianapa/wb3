@@ -47,7 +47,10 @@ function tagTree( &$dom, $Item = null ) {
         $Item = $dom->app->treeRead( $item );
         $field = 'tree';
     }
-    if ( $from > '' ) $Item = $Item[$from];
+    if ($from > '') {
+        $dotitem = $dom->app->dot($Item);
+        $Item = $dotitem->get($from);
+    }
     if ( $field > '' ) {
         if ( !isset( $dom->params->name ) ) $dom->params->name = $field;
         if ( strpos( $field, '.' ) ) {
