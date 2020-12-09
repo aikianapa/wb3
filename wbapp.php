@@ -223,7 +223,7 @@ class wbDom extends DomQuery
 
     public function fetchLang()
     {
-        $langs = $this->children("wb-lang");
+        $langs = $this->find("wb-lang",0);
         if ($langs->length) {
             foreach ($langs as $wb) {
                 $wb->copy($this);

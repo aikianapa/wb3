@@ -12485,9 +12485,9 @@ textarea.parsley-success:focus {
     border-right-color: transparent; }
     .show-aside .aside-header .burger-menu {
       display: none; }
-  .show-aside .aside-menu-link svg:first-child {
+  .show-aside .aside-menu-link > :first-child {
     display: none; }
-  .show-aside .aside-menu-link svg:last-child {
+  .show-aside .aside-menu-link > :last-child {
     display: block; }
   .show-aside .aside-body {
     border-right-color: transparent; }
@@ -12634,12 +12634,13 @@ textarea.parsley-success:focus {
   color: #8392a5; }
   .aside-menu-link:hover, .aside-menu-link:focus {
     color: #1b2e4b; }
-  .aside-menu-link svg {
+  .aside-menu-link > :child {
     width: 18px;
     height: 18px;
+    font-size: 18px;
     stroke-width: 2.5px;
     margin-top: -3px; }
-    .aside-menu-link svg:last-child {
+    .aside-menu-link > :last-child {
       width: 20px;
       height: 20px;
       display: none;

@@ -1,7 +1,7 @@
 function wb_tree() {
     wbapp.loadStyles(["/engine/attrs/tree/tree.less",
         "/engine/lib/js/nestable/nestable.css",
-        "/engine/lib/fonts/materialicons/materialicons.css"]);
+        "/engine/lib/fonts/remixicons/remixicon.less"]);
     wbapp.loadScripts(["/engine/lib/js/nestable/nestable.min.js"],"nestable-js");
 
 $.fn.wbTreeInit = function() {

@@ -48,8 +48,7 @@
 			]);
 
 			wbapp.loadScripts([
-				 "{{_var.base}}./assets/lib/bootstrap/js/bootstrap.bundle.min.js"
-				,"{{_var.base}}./assets/lib/feather-icons/feather.min.js"
+				 "/engine/lib/bootstrap/js/bootstrap.bundle.min.js"
 				,"{{_var.base}}./assets/lib/perfect-scrollbar/perfect-scrollbar.min.js"
 				,"{{_var.base}}./assets/js/dashforge.js"
 				,"{{_var.base}}./assets/js/dashforge.aside.js"

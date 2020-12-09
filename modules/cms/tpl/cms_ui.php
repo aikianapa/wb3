@@ -14,7 +14,7 @@
 
     <aside class="aside aside-fixed">
       <div class="aside-header">
-        <div class="aside-logo wblogo">
+        <div class="aside-logo wblogo" data-ajax="{'url':'/cms/ajax/form/_settings/start','html':'.content-body'}" auto>
           <wb-var wb-if='"{{_sett.logofontsize}}" == ""' fontsize="20" />
           <wb-var wb-if='"{{_sett.logofontsize}}" > ""' fontsize="{{_sett.logofontsize}}"/>
           <div class="tx-50 d-inline-block">
@@ -33,8 +33,8 @@
           </div>
         </div>
         <a href="" class="aside-menu-link">
-          <i data-feather="menu"></i>
-          <i data-feather="x"></i>
+          <i class="ri-menu-line"></i>
+          <i class="ri-close-line"></i>
         </a>
         <a href="javascript:$('body').removeClass('chat-content-show');"  class="burger-menu"><i class="ri-arrow-left-line"></i></a>
       </div>
@@ -86,7 +86,9 @@
                 <span class="nav-label">{{data.label}}</span>
               </li>
               <li class="nav-item" wb-if=' "{{_lvl}}" == "2" AND "{{active}}" == "on" '>
-                <a href="#" data-ajax="{{data.ajax}}" class="nav-link"><i class="{{data.icon}}"></i>&nbsp;&nbsp;
+        <wb-var icon="{{data.icon}}" wb-if='"{{data.icon}}">""' />
+        <wb-var icon="ri-sticky-note-line" wb-if='"{{data.icon}}"==""' />
+                <a href="#" data-ajax="{{data.ajax}}" class="nav-link"><i class="{{_var.icon}}"></i>&nbsp;&nbsp;
                   <span>{{data.label}}</span>
                 </a>
               </li>
@@ -110,9 +112,6 @@
       <!-- content-header -->
       <div class="content-toasts pos-absolute t-10 r-10" style="z-index:5000;"></div>
       <div class="content-body pd-0">
-
-        <meta href="#" data-ajax="{'url':'/cms/ajax/form/places/list','html':'.content-body'}" auto >
-
       </div>
     </div>
   </div>

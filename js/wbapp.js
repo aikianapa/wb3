@@ -62,7 +62,7 @@ if (typeof $ === 'undefined') {
             let paginator = $(this).closest(".pagination");
             let tid = $(paginator).data("tpl");
             let params = wbapp.template[tid].params;
-            console.log(tid,params);
+
             let page = $(this).attr("data-page");
             let that = this;
             let inner = $(that).html();
@@ -257,7 +257,6 @@ if (typeof $ === 'undefined') {
                 });
                 wbapp.storage(tmpId + '.' + params.field, data);
                 data = wbapp.storage(tmpId);
-                console.log(data);
             }
             params.url = `/ajax/save/${params.table}`;
         }
@@ -277,7 +276,6 @@ if (typeof $ === 'undefined') {
                 eval('var checknew = (typeof ' + params.data + ');');
                 if (checknew == "undefined") {
                     eval(`dataname = str_replace("['` + data._id + `']","","` + params.data + `");`);
-                    console.log(dataname);
                     eval(dataname + '.push(update)');
                 } else {
                     eval(params.data + ' = update;');
@@ -525,6 +523,76 @@ if (typeof $ === 'undefined') {
     }
 
 
+    wbapp.loading = function() {
+
+    }
+
+    wbapp.unloading = function () {
+
+    }
+
+    wbapp.fetch = function (selector, data, ret) {
+        if (selector == undefined) {
+            var selector = "body";
+        }
+        if (data == undefined) {
+            var data = {};
+        }
+        if ($(selector).length) {
+            var tpl_id = $(selector).attr("data-wb-tpl");
+            if (tpl_id !== undefined) {
+                var html = urldecode($("#" + tpl_id).html());
+            } else {
+                if ($(selector).is("script")) {
+                    var html = $(selector).html();
+                } else {
+                    if ($(selector).length == 1) {
+                        var html = $(selector).outer();
+                    } else {
+                        var html = selector;
+                    }
+                }
+            }
+        } else {
+            var html = selector;
+        }
+        var form = "undefined";
+        var item = "undefined";
+        if (data.form !== undefined) {
+            form = data.form;
+        }
+        if (data.id !== undefined) {
+            item = data.id;
+        }
+        if (data._form !== undefined) {
+            form = data._form;
+        }
+        if (data._id !== undefined) {
+            item = data._id;
+        }
+        if (data._item !== undefined) {
+            item = data._item;
+        }
+
+        if (is_object(html)) { var tpl = $(html).outer(); } else { var tpl = html; }
+
+        var url = "/ajax/setdata/" + form + "/" + item;
+        var res = null;
+        var param = { tpl: tpl, data: data };
+        param = base64_encode(JSON.stringify(param));
+        wbapp.postSync(url, {
+            data: param
+        }, function (data) {
+            if (ret == undefined || ret == false) {
+                $(selector).after(data).remove();
+                res = true;
+            } else {
+                res = data;
+            }
+        });
+        return res;
+    }
+
     wbapp.toast = function (title, text, params = {}) {
         let options = {
             target: 'body',
@@ -736,7 +804,8 @@ if (typeof $ === 'undefined') {
             document.modalZndx = zndx;
             if (!$(this).closest().is("body")) {
                 if ($(this).data("parent") == undefined) $(this).data("parent", $(this).closest());
-                $(this).appendTo("body");
+                // нельзя переносить модальное окно, так как могут возникнуть проблемы с селектором!
+                //$(this).appendTo("body");
             }
             $(this).data("zndx", zndx).css("z-index", zndx).attr("data-zndx", zndx);
             $(that).find("[data-dismiss]").attr("data-dismiss", zndx);
@@ -775,7 +844,6 @@ if (typeof $ === 'undefined') {
             console.log("Trigger: wb-ajax-done");
             if (wbapp !== undefined) {
                 wbapp.tplInit();
-                //                wbapp.watcherInit();
                 wbapp.wbappScripts();
                 //wbapp.pluginsInit();
                 wbapp.lazyload();
@@ -1229,4 +1297,7 @@ if (typeof $ === 'undefined') {
         wbapp.settings();
         wbapp.lazyload();
     });
+    function is_object(val) { return val instanceof Object; }
+    function is_callable(t, n, o) { var e = "", r = {}, i = ""; if ("string" == typeof t) r = window, e = i = t; else { if (!(t instanceof Array && 2 === t.length && "object" == typeof t[0] && "string" == typeof t[1])) return !1; r = t[0], i = t[1], e = (r.constructor && r.constructor.name) + "::" + i } return !(!n && "function" != typeof r[i]) && (o && (window[o] = e), !0) }
+
 }

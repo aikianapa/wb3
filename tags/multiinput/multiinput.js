@@ -1,7 +1,7 @@
 function wb_multiinput_init() {
   if ($(document).data("wb-multiinput-row") == undefined) {
     wbapp.loadStyles(["/engine/tags/multiinput/multiinput.less",
-      "/engine/lib/fonts/materialicons/materialicons.css"
+      "/engine/lib/fonts/remixicons/remixicon.less"
     ]);
   }
   $.fn.events = function() {

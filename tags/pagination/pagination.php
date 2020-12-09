@@ -42,8 +42,8 @@ class tagPagination
             $dom->parent( 'table' )->find( 'thead' )->attr( 'data-wb', $tplId );
         }
         */
-        if ($pages > 0 or $dom->params->sort > '' ) {
-            $pag = $dom->app->fromFile(__DIR__ . '/pagination_ui.php');
+        $pag = $dom->app->fromFile(__DIR__ . '/pagination_ui.php');
+        if ($pages > 0 or $dom->params('sort') > '' ) {
             //$pag->wrapInner( '<div></div>' );
             $step = 1;
             $flag = floor($page/10);

@@ -11,22 +11,23 @@ class tagForeach
 
     function foreach($dom)
     {
-        $app = &$dom->app;
-        $this->app = &$app;
         if ($dom->is(":root")) {
             $dom->rootError();
         }
+        if (!isset($dom->role)) {
+            return $dom;
+        }
+
+        $app = &$dom->app;
+        $this->app = &$app;
+        $dom->parent()->attr("id") > "" ? $pid = $dom->parent()->attr("id") : $pid = "fp_" . $dom->app->newId();
+        $dom->parent()->attr("id". $pid);
+
         $idx = 0;
         $ndx = 1;
         $page = $pages = 1;
         $srvpag = false;
-        if (!isset($dom->role)) {
-            return $dom;
-        }
-        if (!$dom->app) {
-            $dom->app = new wbApp();
-        }
-
+        !$dom->app ? $dom->app = new wbApp() : null;
         $empty = $dom->find("wb-empty")[0];
         $dom->find("wb-empty")->remove();
         if ($dom->parent()->is("select[placeholder]")) {
@@ -36,7 +37,6 @@ class tagForeach
 
         $tpl = $dom->html();
         $dom->html("");
-        $dom->parent()->attr("id") > "" ? $pid = $dom->parent()->attr("id") : $pid = "fp_" . $dom->app->newId();
         $dom->attr("id") > "" ? $tid = $dom->attr("id") : $tid = "fe_" . $dom->app->newId();
         $list = $parent = $dom->item;
         $options = [];
@@ -149,7 +149,8 @@ class tagForeach
             }
         }
 
-        if ($dom->params("size") > "") {
+        if ($list && $dom->params("size") > "") {
+            $count = count($list);
             $dom->params("page") ? $page = $dom->params->page : $page = 1;
             if ($dom->parent()->attr('id') == '') {
                 $dom->parent()->attr('id', 'fe_' . md5($dom->outer()));
@@ -217,6 +218,7 @@ class tagForeach
             $dom->find("template[id=\"{$tid}\"] .pagination")->attr("data-tpl", $tid);
         } else if ($dom->params("size") > "") {
             $size = $dom->params("size");
+            !isset($count) ? $count = null : null;
             $dom->parent()->attr(
                 "data-pagination",
                 json_encode(
@@ -234,9 +236,9 @@ class tagForeach
             $dom->params->tpl = $dom->parent()->attr('id');
             $dom->params->page = $page;
             $pag = $dom->tagPagination($dom);
-        if (!count((array)$list) or $dom->html() == "") {
-            $dom->inner($empty->inner());
-        }
+            if (!count((array)$list) or $dom->html() == "") {
+                $dom->inner($empty->inner());
+            }
 
             $html = $dom->html();
             

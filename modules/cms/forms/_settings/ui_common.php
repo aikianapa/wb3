@@ -1,6 +1,6 @@
 <html>
 <nav class="nav navbar navbar-expand-md col">
-  <a class="navbar-brand tx-bold tx-spacing--2 order-1" href="javascript:">Основные настройки</a>
+  <a class="navbar-brand tx-bold tx-spacing--2 order-1" href="javascript:">{{_lang.header}}</a>
 </nav>
 
   <form class="m-3">
@@ -88,6 +88,7 @@
 
 <wb-lang>
 [en]
+header = "Common settings"
 save = "Save"
 fontsize = "Font size"
 logo = "Logo"
@@ -100,6 +101,7 @@ pagesize = "Page size (default)"
 cachelt = "Cache lifetime (sec.)"
 showstats = "Statistics at bottom"
 [ru]
+header = "Общие настройки"
 save = "Сохранить"
 fontsize = "Размер шрифта"
 logo = "Логотип"

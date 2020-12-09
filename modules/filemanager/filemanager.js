@@ -73,7 +73,7 @@
 
     $("#filemanager").off("checkbox");
     $("#filemanager").on("checkbox", function() {
-            var menu = $("#filemanager .content-left .nav");
+            var menu = $("#filemanager .filemgr-sidebar .nav");
             var count = $("#filemanager #list").find("tr:not(.back) [type=checkbox]:checked").length;
 
             if (count > 1) {
@@ -167,7 +167,7 @@
     function filemanagerBuffer() {
         $("#filemanager").undelegate("#list tr [type=checkbox]", "change");
         $("#filemanager").delegate("#list tr [type=checkbox]", "change", function() {
-            var menu = $("#filemanager .content-left .nav");
+            var menu = $("#filemanager .filemgr-sidebar .nav");
             var count = $("#filemanager #list").find("tr:not(.back) [type=checkbox]:checked").length;
             var type;
             $(menu).find(".nav-item.hidden").hide();
@@ -234,8 +234,8 @@
 
 
     function filemanagerSideMenu() {
-        $("#filemanager").undelegate(".content-left .nav a.nav-link", "click");
-        $("#filemanager").delegate(".content-left .nav a.nav-link", "click", function() {
+        $("#filemanager").undelegate(".filemgr-sidebar .nav a.nav-link", "click");
+        $("#filemanager").delegate(".filemgr-sidebar .nav a.nav-link", "click", function() {
             var check = $("#filemanager #list").find("tr:not(.back) [type=checkbox]:checked");
             var count = $(check).length;
             var href = $(this).attr("href");
@@ -390,10 +390,11 @@
             d.resolve();
             $("#filemanager").trigger("checkbox");
             if ($("#filemanager").data("buffer")!==undefined) {
-                $("#filemanager .content-left .allow-buffer").show();
+                $("#filemanager .filemgr-sidebar .allow-buffer").show();
             };
 //            wb_pagination();
             wbapp.unloading();
+            $(document).trigger('wb-ajax-done');
         });
         return d;
     }
@@ -413,11 +414,11 @@
         });
 
         if (res == false) {
-                var tab_id = wb_newid();
+                var tab_id = wbapp.newId();
                 fname = explode("/", file);
                 fname = fname[fname.length - 1];
                 tab = $($("#filemanagerTabs").data("tab"));
-                tab_cont = "<div>"+wb_setdata($("#filemanagerTabsContentTpl").html(),{id:tab_id,file:file},true)+"</div>";
+                tab_cont = "<div>"+wbapp.fetch($("#filemanagerTabsContentTpl").html(),{id:tab_id,file:file},true)+"</div>";
                 $(tab).find(".nav-link").prepend(fname).addClass("active");
                 $(tab).find(".nav-link").attr("href","#"+tab_id);
                 $(tab_cont).find(".tab-pane").attr("id",tab_id);
@@ -532,7 +533,7 @@
             if (!$("#filemanagerModalSrc:visible").length) {
                 $("#filemanagerModalSrc").modal("show");
             }
-            wb_ajax_loader_done();
+            $(document).trigger('wb-ajax-done');
         });
     }
 

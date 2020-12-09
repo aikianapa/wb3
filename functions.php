@@ -2198,9 +2198,8 @@ function wbChangeQuot($Tag)
 function wbRole($role, $userId = null)
 {
     $res = false;
-    if (!is_array($role)) {
-        $role = wbAttrToArray($role);
-    }
+    !is_array($role) ? $role = wbAttrToArray($role) : null;
+    !isset($_SESSION['user_role']) ? $_SESSION['user_role'] = '' : null;
     if (null == $userId) {
         $res = in_array($_SESSION['user_role'], $role, true);
     } else {
