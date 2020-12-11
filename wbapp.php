@@ -862,6 +862,17 @@ class wbApp
         return $img;
     }
 
+    public function fieldBuild_images()
+    {
+        $img = $this->tpl;
+        $img->item = $this->item;
+        $img->item['_name'] = $this->dict->name;
+        $img->item['_form'] = 'treedata';
+        $img->item['_item'] = $this->data['id'];
+        $img->fetch();
+        return $img;
+    }
+
     public function fieldBuild_forms()
     {
         $form = $this->tpl;

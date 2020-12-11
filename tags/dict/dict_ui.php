@@ -35,8 +35,9 @@
                 <option value="forms">forms</option>
                 <option value="editor">editor</option>
                 <option value="source">source</option>
-                <option value="gallery">gallery</option>
-                <option value="image">image</option>
+                <option value="image">single image</option>
+                <option value="images">multi images</option>
+                <!--option value="gallery">gallery</option-->
                 <option value="multiinput">multiinput</option>
                 <option value="switch">switch</option>
                 <option value="enum">enum</option>
