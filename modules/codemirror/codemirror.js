@@ -42,6 +42,7 @@ $(document).on("codemirror-js-addons", function() {
         theme: theme,
         lineNumbers: true,
         lineWrapping: true,
+        styleActiveLine: true,
         autoCloseTags: true,
         autoCloseBrackets: true,
         autoRefresh: true,
@@ -56,15 +57,19 @@ $(document).on("codemirror-js-addons", function() {
       editor.foldCode(CodeMirror.Pos(0, 0));
       editor.on("change", function() {
         $(that).html(htmlentities(editor.getValue()));
+        setTimeout(function () {
+          editor.refresh();
+        }, 300);
       });
       if ($(that).parents(".modal").length) {
         $('#'+$(that).parents(".modal").attr("id")).on('shown.bs.modal,shown.bs.tab', function () {
           setTimeout(function() {
               editor.refresh();
-          }, 200);
+          }, 300);
         });
       }
       $(that).data("wb-loaded", true);
+      $(that).data("editor", editor);
     }
   });
 });

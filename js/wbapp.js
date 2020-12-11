@@ -575,7 +575,7 @@ if (typeof $ === 'undefined') {
         }
 
         if (is_object(html)) { var tpl = $(html).outer(); } else { var tpl = html; }
-
+// контроллер не обслуживает данный запрос - устарело
         var url = "/ajax/setdata/" + form + "/" + item;
         var res = null;
         var param = { tpl: tpl, data: data };
@@ -594,9 +594,15 @@ if (typeof $ === 'undefined') {
     }
 
     wbapp.toast = function (title, text, params = {}) {
+        if ($(document).find('.content-toasts').length) {
+            var target = '.content-toasts';
+        } else {
+            var target = 'body';
+        }
+
         let options = {
-            target: 'body',
-            delay: 3000,
+            'target': target,
+            'delay': 3000,
         }
 
         if (wbapp.template['wb.toast'] == undefined) {
@@ -790,6 +796,7 @@ if (typeof $ === 'undefined') {
         $(document).delegate(".modal", "shown.bs.modal", function (event) {
             var that = $(event.target);
             if ($(that).is("[data-zndx]")) return;
+            if ($(that).find('.modal-content').css('position') == 'fixed') return;
             $(that).find('.modal-content')
                 //      .resizable({
                 //        minWidth: 300,
@@ -807,7 +814,7 @@ if (typeof $ === 'undefined') {
                 // нельзя переносить модальное окно, так как могут возникнуть проблемы с селектором!
                 //$(this).appendTo("body");
             }
-            $(this).data("zndx", zndx).css("z-index", zndx).attr("data-zndx", zndx);
+            $(that).data("zndx", zndx).css("z-index", zndx).attr("data-zndx", zndx);
             $(that).find("[data-dismiss]").attr("data-dismiss", zndx);
 
             if ($(that).attr("data-backdrop") !== undefined && $(that).attr("data-backdrop") !== "false") {
@@ -822,6 +829,7 @@ if (typeof $ === 'undefined') {
             var zndx = $(this).attr("data-dismiss");
             var modal = $(document).find(".modal[data-zndx='" + $(this).attr("data-dismiss") + "']");
             modal.modal("hide");
+            $("#modalBackDrop" + (zndx - 5) + ".modal-backdrop").remove();
         });
 
         $(document).delegate(".modal", "hide.bs.modal", function (event) {
@@ -902,7 +910,7 @@ if (typeof $ === 'undefined') {
     }
 
 
-    wbapp.getSync = async function (url, data = {}) {
+    wbapp.getSync = function (url, data = {}) {
         return wbapp.ajaxSync([{
             url: url,
             type: 'GET',

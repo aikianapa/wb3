@@ -24,7 +24,7 @@ class ctrlAjax {
           $this->ajax = new $class($this->app);
       }
 
-      if ($this->ajax) {
+      if (isset($this->ajax)) {
           echo $this->ajax->$mode();
       } else if (is_callable(@$this->$mode)) {
           echo $this->$mode();

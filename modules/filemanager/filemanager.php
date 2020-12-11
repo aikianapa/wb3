@@ -9,7 +9,6 @@ class modFilemanager
     {
         strtolower(get_class($obj)) == 'wbapp' ? $app = &$obj : $app = &$obj->app;
         $this->app = &$app;
-
         if (isset($app->route->mode) AND $app->route->mode !== 'init') {
             $mode = $app->route->mode;
             try {
@@ -153,17 +152,41 @@ class modFilemanager
     {
         if ($this->allow()) {
             $out = $this->app->getTpl("/engine/modules/filemanager/filemanager_ui.php", true);
-            $out->fetchLang();
-            $out = $out->find("#filemanagerModalDialog", 0);
+
             $action = $this->app->route->params[0];
-            $title = $out->find("meta[name=$action]")->attr("title");
+
+            $tpl = $out->find("template[name={$action}]");
+            
+            $out->find("#filemanagerModalDialog .modal-title")->inner($tpl->find('title')->inner());
+            $tpl->find('title')->remove();
+            $out->find("#filemanagerModalDialog .modal-body form")->inner($tpl->inner());
+            $out->find("#filemanagerModalDialog .modal-footer .btn-primary")->attr("data-action", $action);
+
+            $out->fetch();
+
+            $out = $out->find("#filemanagerModalDialog");
+            
+            if ($action=="paste") {
+                $this->action_paste($out);
+            } elseif ($action=="zip") {
+                $this->action_zip($out);
+            } else {
+                echo $out;
+            }
+
+            die;
+            // ======================================================
+
+            $title = $out->find("meta[name={$action}]")->attr("title");
             $content = $this->app->fromString(html_entity_decode($out->find("meta[name=$action]")->attr("content")));
-            $visible = $out->find("meta[name=$action]")->attr("visible");
-            $invisible = $out->find("meta[name=$action]")->attr("invisible");
+            $visible = $out->find("meta[name={$action}]")->attr("visible");
+            $invisible = $out->find("meta[name={$action}]")->attr("invisible");
             $fields = [];
-            foreach ($out->find("[name]:not(meta)") as $inp) {
+            
+
+            foreach ($out->find("#filemanagerModalDialog [name]:not(meta)") as $inp) {
                 $fld=$inp->attr("name");
-                $inp->setAttributes();
+                //$inp->setAttributes();
                 if ($inp->is("input") and isset($visible) and in_array($fld, wbAttrToArray($visible))) {
                     $inp->attr("type", "text");
                 }
@@ -172,11 +195,15 @@ class modFilemanager
                 }
                 $content->append($inp);
             }
-            $out->find(".modal-title")->html($title);
-            $out->find(".modal-body form")->html($content);
-            $out->children("meta,input")->remove();
-            $out->find(".modal-footer .btn-primary")->attr("data-action", $action);
+            echo $content; die;
+            $out->find("meta,input")->remove();
+
+            $out->find("#filemanagerModalDialog .modal-title")->inner($title);
+            $out->find("#filemanagerModalDialog .modal-body form")->inner($content);
+            $out->find("#filemanagerModalDialog .modal-footer .btn-primary")->attr("data-action", $action);
             $out->fetch();
+            $out = $out->find("#filemanagerModalDialog");
+
             if ($action=="paste") {
                 $this->action_paste($out);
             } elseif ($action=="zip") {
@@ -204,7 +231,7 @@ class modFilemanager
                 unlink($path."/".$zipname);
             }
             exec("cd {$path} && zip -o -D -r {$zipname} ".$src);
-            echo json_encode(array("res"=>$_POST["method"],"action"=>"reload_list"));
+            echo json_encode(array("res"=>$_POST["list"],"action"=>"reload_list"));
         }
         die;
     }
@@ -220,7 +247,7 @@ class modFilemanager
             foreach ($_POST["list"] as $zipname) {
                 exec("cd {$path} && unzip -q -o {$zipname} ");
             }
-            echo json_encode(array("res"=>$_POST["method"],"action"=>"reload_list"));
+            echo json_encode(array("res"=>$_POST["list"],"action"=>"reload_list"));
         }
         die;
     }
@@ -230,8 +257,8 @@ class modFilemanager
         $flag=true;
         if ($out!==null) {
             $_ENV["route"]["params"]["dir"]=$_POST["path"];
-            $cur=getdir(true);
-            $arr=array();
+            $cur = $this->getdir(true);
+            $arr = [];
             foreach ($cur["result"] as $item) {
                 if ($item["type"]!=="back") {
                     $arr[]=$item["name"]."::".$item["type"];
@@ -259,7 +286,7 @@ class modFilemanager
 
                 if ($_POST["method"]=="copy") {
                     if (file_exists($dst)) {
-                        $dst=copyname($dst);
+                        $dst=$this->copyname($dst);
                     }
                     wbRecurseCopy($src, $dst);
                 }
@@ -271,7 +298,7 @@ class modFilemanager
 
     public function copyname($name)
     {
-        // тут нужно не просто конкатенировать, а вставить перез расширением
+        // тут нужно не просто конкатенировать, а вставить с расширением
         for ($i=0 ; $i<100 ; $i++) {
             $name.="_copy";
             if (!file_exists($name)) {
@@ -286,7 +313,7 @@ class modFilemanager
         $_POST["list"]=json_decode($_POST["list"], true);
         foreach ($_POST["list"] as $i => $item) {
             $dst=$_ENV["path_app"].$_POST["path"]."/".$item["name"];
-            $engine=check_engine($dst); // если дирректория движка, то не даём удалять
+            $engine = $this->check_engine($dst); // если дирректория движка, то не даём удалять
             if (!$engine and is_dir($dst)) {
                 wbRecurseDelete($dst);
             }
@@ -294,7 +321,7 @@ class modFilemanager
                 wbFileRemove($dst);
             }
         }
-        echo json_encode(array("res"=>$_POST["method"],"action"=>"reload_list"));
+        echo json_encode(array("res"=>$_POST["list"],"action"=>"reload_list"));
         die;
     }
 
@@ -313,8 +340,8 @@ class modFilemanager
         if (!$this->allow()) {
             return json_encode(false);
         }
-
-        $call = "action_".$this->app->route->params[0];
+        $this->action = $this->app->route->params[0];
+        $call = "action_".$this->action;
         if (method_exists($this,$call)) {
             $res = $this->$call();
             if (is_array($res)) {
@@ -342,7 +369,7 @@ class modFilemanager
         $dir = $_ENV["path_app"].$_POST["path"];
         $newname=$_POST["newname"];
         $path=$dir."/".$newname;
-        if (!is_dir($path) and $newname>"") {
+        if (!is_file($path) AND !is_dir($path) and $newname>"") {
             $umask=umask(0);
             $res=mkdir($path, 0777, true);
             umask($umask);
@@ -368,7 +395,7 @@ class modFilemanager
         $dir=$_ENV["path_app"].$_POST["path"];
         $newname=$_POST["newname"];
         $path=$dir."/".$newname;
-        if (!is_file($path) and $newname>"") {
+        if (!is_file($path) AND !is_dir($path) and $newname>"") {
             $res=file_put_contents($path, "");
         }
         if (is_file($path)) {
@@ -479,7 +506,7 @@ class modFilemanager
 
     public function allow()
     {
-        return true;
+        //return true;
         return $this->app->role("admin");
     }
 }

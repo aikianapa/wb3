@@ -1,14 +1,14 @@
 /*!
- jodit - Jodit is awesome and usefully wysiwyg editor with filebrowser
- Author: Chupurnov <chupurnov@gmail.com> (https://xdsoft.net/)
- Version: v3.4.1
- Url: https://xdsoft.net/jodit/
- License(s): MIT
-*/
+ * jodit - Jodit is awesome and usefully wysiwyg editor with filebrowser
+ * Author: Chupurnov <chupurnov@gmail.com> (https://xdsoft.net/)
+ * Version: v3.4.29
+ * Url: https://xdsoft.net/jodit/
+ * License(s): MIT
+ */
 .jodit-wysiwyg{
   outline:0;
 }
-.jodit-wysiwyg::-moz-selection,.jodit-wysiwyg ::-moz-selection{
+.jodit-wysiwyg::-moz-selection, .jodit-wysiwyg ::-moz-selection{
   background:#b5d6fd;
   color:#4c4c4c;
 }
@@ -50,7 +50,7 @@
   color:#4c4c4c;
 }
 .jodit-form.jodit_error{
-  border-color:#f7d1d1;
+  border-color:#ff3b3b;
   box-shadow:inset 0 0 3px 0 hsla(0, 0%, 74.1%, .3);
 }
 @media (max-width:768px){
@@ -85,19 +85,16 @@
   margin-bottom:8px;
   text-align:left;
   white-space:nowrap;
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-align:center;
-      align-items:center;
+  align-items:center;
 }
 .jodit-form label:last-child{
   margin-bottom:0;
 }
 .jodit-form .jodit-form__center{
-  -ms-flex-pack:center;
-      justify-content:center;
+  justify-content:center;
 }
-.jodit-input{
+.jodit .jodit-input{
   font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size:14px;
@@ -114,7 +111,7 @@
   border-radius:0;
   background-color:#fff;
 }
-.jodit-select{
+.jodit .jodit-select{
   font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size:14px;
@@ -131,7 +128,7 @@
   border-radius:0;
   background-color:#fff;
 }
-.jodit-textarea{
+.jodit .jodit-textarea{
   font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size:14px;
@@ -148,19 +145,28 @@
   border-radius:0;
   background-color:#fff;
 }
-.jodit-input[disabled]{
+.jodit .jodit-input[disabled]{
   background-color:#f0f0f0;
   color:#dadada;
 }
-.jodit-select[disabled]{
+.jodit .jodit-select[disabled]{
   background-color:#f0f0f0;
   color:#dadada;
 }
-.jodit-textarea[disabled]{
+.jodit .jodit-textarea[disabled]{
   background-color:#f0f0f0;
   color:#dadada;
 }
-.jodit-input:focus{
+.jodit .jodit-input_has-error_true{
+  border-color:#ff3b3b;
+}
+.jodit .jodit-select_has-error_true{
+  border-color:#ff3b3b;
+}
+.jodit .jodit-textarea_has-error_true{
+  border-color:#ff3b3b;
+}
+.jodit .jodit-input:focus{
   border-color:#66afe9;
   outline:0;
 }
@@ -191,20 +197,15 @@
   min-width:180px;
 }
 .jodit-form__group{
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-direction:column;
-      flex-direction:column;
+  flex-direction:column;
   margin-bottom:8px;
 }
 .jodit-button{
   position:relative;
-  display:-ms-inline-flexbox;
   display:inline-flex;
-  -ms-flex-align:center;
-      align-items:center;
-  -ms-flex-pack:center;
-      justify-content:center;
+  align-items:center;
+  justify-content:center;
   -webkit-user-select:none;
      -moz-user-select:none;
       -ms-user-select:none;
@@ -237,12 +238,9 @@
 }
 .jodit-buttons{
   margin-bottom:8px;
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-wrap:nowrap;
-      flex-wrap:nowrap;
-  -ms-flex-pack:justify;
-      justify-content:space-between;
+  flex-wrap:nowrap;
+  justify-content:space-between;
 }
 .jodit-button .jodit_icon,.jodit-button svg,.jodit-dialog__header .jodit_icon,.jodit-dialog__header svg{
   width:16px;
@@ -251,19 +249,15 @@
   vertical-align:middle;
 }
 .jodit-button-group{
-  display:-ms-flexbox;
   display:flex;
 }
 .jodit-button-group input{
   display:none;
 }
 .jodit-button-group button{
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex:1;
-      flex:1;
-  -ms-flex-pack:center;
-      justify-content:center;
+  flex:1;
+  justify-content:center;
   text-align:center;
 }
 .jodit-button-group button+button{
@@ -316,23 +310,19 @@
   width:auto;
 }
 .jodit-grid{
-  display:-ms-flexbox;
   display:flex;
   width:100%;
 }
 .jodit-grid.jodit-grid_column{
-  -ms-flex-direction:column;
-      flex-direction:column;
+  flex-direction:column;
 }
 @media (max-width:480px){
   .jodit-grid.jodit-grid_xs-column{
-    -ms-flex-direction:column;
-        flex-direction:column;
+    flex-direction:column;
   }
 }
 .jodit-grid [class*=jodit_col-]{
-  -ms-flex:1 1 auto;
-      flex:1 1 auto;
+  flex:1 1 auto;
 }
 .jodit-grid .jodit_col-lg-5-5{
   width:100%;
@@ -448,6 +438,11 @@
     width:25%;
   }
 }
+@-webkit-keyframes rotate{
+  to{
+    transform:rotate(1turn);
+  }
+}
 @keyframes rotate{
   to{
     transform:rotate(1turn);
@@ -461,7 +456,8 @@
   display:inline-block;
   vertical-align:middle;
   will-change:transform;
-  animation:rotate 2s ease-out 0s infinite;
+  -webkit-animation:rotate 2s ease-out 0s infinite;
+          animation:rotate 2s ease-out 0s infinite;
 }
 .jodit-icon{
   width:14px;
@@ -471,6 +467,9 @@
   overflow:visible;
   background:50% no-repeat;
   background-size:contain;
+}
+.jodit-icon{
+  stroke:#4c4c4c;
 }
 .jodit-icon_close{
   stroke:#4c4c4c;
@@ -500,6 +499,7 @@ svg.jodit-icon{
 }
 .jodit-container:not(.jodit_inline) .jodit-workplace{
   border:0 solid #dadada;
+  max-height:100%;
 }
 .jodit-container:not(.jodit_inline).jodit_disabled{
   background:rvar(--jd-color-gray);
@@ -517,10 +517,8 @@ svg.jodit-icon{
   display:none !important;
 }
 .jodit_vertical_middle{
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-align:center;
-      align-items:center;
+  align-items:center;
 }
 .jodit-box{
   background:0 0;
@@ -591,12 +589,15 @@ svg.jodit-icon{
 }
 .jodit_theme_dark .jodit-icon{
   fill:silver;
+  stroke:silver;
 }
 .jodit_theme_dark .jodit-toolbar-button .jodit-toolbar-button__trigger{
   fill:silver;
+  stroke:silver;
 }
 .jodit_theme_dark .jodit__upload-button svg{
   fill:silver;
+  stroke:silver;
 }
 .jodit_theme_dark .jodit-icon-close{
   stroke:silver;
@@ -691,10 +692,8 @@ svg.jodit-icon{
   margin-bottom:calc(8px/2);
   white-space:normal;
   max-width:calc(24px*10);
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-wrap:wrap;
-      flex-wrap:wrap;
+  flex-wrap:wrap;
 }
 .jodit-color-picker a{
   width:24px;
@@ -739,7 +738,6 @@ svg.jodit-icon{
   display:none;
 }
 .jodit-ui-button-icon-text__icon:not(:empty){
-  display:-ms-inline-flexbox;
   display:inline-flex;
 }
 .jodit-ui-button-icon-text__text{
@@ -749,16 +747,12 @@ svg.jodit-icon{
   font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size:14px;
-  display:-ms-inline-flexbox;
   display:inline-flex;
-  -ms-flex:1;
-      flex:1;
-  -ms-flex-pack:center;
-      justify-content:center;
+  flex:1;
+  justify-content:center;
 }
 .jodit-ui-button-icon-text_context_menu .jodit-ui-button-icon-text__text{
-  -ms-flex-pack:left;
-      justify-content:left;
+  justify-content:left;
   padding-left:8px;
   position:relative;
 }
@@ -881,6 +875,9 @@ svg.jodit-icon{
   fill:#212529;
   stroke:#212529;
 }
+.jodit-ui-button-statuses_status_default:focus:not([disabled]){
+  outline:1px dashed #dae0e5;
+}
 .jodit-ui-button-statuses_status_primary{
   background-color:#007bff;
   color:#fff;
@@ -907,6 +904,40 @@ svg.jodit-icon{
 .jodit-ui-button-statuses_status_primary:active:not([disabled]) svg{
   fill:#fff;
   stroke:#fff;
+}
+.jodit-ui-button-statuses_status_primary:focus:not([disabled]){
+  outline:1px dashed #0062cc;
+}
+.jodit-ui-button-statuses_status_secondary{
+  background-color:#d8d8d8;
+  color:#212529;
+  border-radius:0;
+}
+.jodit-ui-button-statuses_status_secondary svg{
+  fill:#212529;
+  stroke:#212529;
+}
+.jodit-ui-button-statuses_status_secondary [disabled]{
+  opacity:.7;
+}
+.jodit-ui-button-statuses_status_secondary:hover:not([disabled]){
+  background-color:#c9cdd1;
+  color:#212529;
+}
+.jodit-ui-button-statuses_status_secondary:hover:not([disabled]) svg{
+  fill:#212529;
+  stroke:#212529;
+}
+.jodit-ui-button-statuses_status_secondary:active:not([disabled]){
+  background-color:#dae0e5;
+  color:#212529;
+}
+.jodit-ui-button-statuses_status_secondary:active:not([disabled]) svg{
+  fill:#212529;
+  stroke:#212529;
+}
+.jodit-ui-button-statuses_status_secondary:focus:not([disabled]){
+  outline:1px dashed #dae0e5;
 }
 .jodit-ui-button-statuses_status_success{
   background-color:#28a745;
@@ -935,6 +966,9 @@ svg.jodit-icon{
   fill:#fff;
   stroke:#fff;
 }
+.jodit-ui-button-statuses_status_success:focus:not([disabled]){
+  outline:1px dashed #1e7e34;
+}
 .jodit-ui-button-statuses_status_danger{
   background-color:#dc3545;
   color:#fff;
@@ -962,17 +996,17 @@ svg.jodit-icon{
   fill:#fff;
   stroke:#fff;
 }
+.jodit-ui-button-statuses_status_danger:focus:not([disabled]){
+  outline:1px dashed #bd2130;
+}
 .jodit-ui-button-style{
   padding:0 8px;
   border-radius:3px;
 }
 .jodit-ui-button,.jodit-ui-button-style{
-  display:-ms-flexbox;
-  display:flex;
-  -ms-flex-pack:center;
-      justify-content:center;
-  -ms-flex-align:center;
-      align-items:center;
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
 }
 .jodit-ui-button{
   padding:0;
@@ -1075,7 +1109,6 @@ svg.jodit-icon{
   display:none;
 }
 .jodit-ui-button__icon:not(:empty){
-  display:-ms-inline-flexbox;
   display:inline-flex;
 }
 .jodit-ui-button__text{
@@ -1085,16 +1118,12 @@ svg.jodit-icon{
   font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size:14px;
-  display:-ms-inline-flexbox;
   display:inline-flex;
-  -ms-flex:1;
-      flex:1;
-  -ms-flex-pack:center;
-      justify-content:center;
+  flex:1;
+  justify-content:center;
 }
 .jodit-ui-button_context_menu .jodit-ui-button__text{
-  -ms-flex-pack:left;
-      justify-content:left;
+  justify-content:left;
   padding-left:8px;
   position:relative;
 }
@@ -1111,6 +1140,9 @@ svg.jodit-icon{
 }
 .jodit-ui-button__icon:empty+.jodit-ui-button__text:not(:empty){
   padding:0 8px;
+}
+.jodit-ui-button:focus:not([disabled]){
+  outline:1px dashed #b5d6fd;
 }
 .jodit-ui-button_status_default{
   background-color:#d8d8d8;
@@ -1139,6 +1171,9 @@ svg.jodit-icon{
   fill:#212529;
   stroke:#212529;
 }
+.jodit-ui-button_status_default:focus:not([disabled]){
+  outline:1px dashed #dae0e5;
+}
 .jodit-ui-button_status_primary{
   background-color:#007bff;
   color:#fff;
@@ -1165,6 +1200,40 @@ svg.jodit-icon{
 .jodit-ui-button_status_primary:active:not([disabled]) svg{
   fill:#fff;
   stroke:#fff;
+}
+.jodit-ui-button_status_primary:focus:not([disabled]){
+  outline:1px dashed #0062cc;
+}
+.jodit-ui-button_status_secondary{
+  background-color:#d8d8d8;
+  color:#212529;
+  border-radius:0;
+}
+.jodit-ui-button_status_secondary svg{
+  fill:#212529;
+  stroke:#212529;
+}
+.jodit-ui-button_status_secondary [disabled]{
+  opacity:.7;
+}
+.jodit-ui-button_status_secondary:hover:not([disabled]){
+  background-color:#c9cdd1;
+  color:#212529;
+}
+.jodit-ui-button_status_secondary:hover:not([disabled]) svg{
+  fill:#212529;
+  stroke:#212529;
+}
+.jodit-ui-button_status_secondary:active:not([disabled]){
+  background-color:#dae0e5;
+  color:#212529;
+}
+.jodit-ui-button_status_secondary:active:not([disabled]) svg{
+  fill:#212529;
+  stroke:#212529;
+}
+.jodit-ui-button_status_secondary:focus:not([disabled]){
+  outline:1px dashed #dae0e5;
 }
 .jodit-ui-button_status_success{
   background-color:#28a745;
@@ -1193,6 +1262,9 @@ svg.jodit-icon{
   fill:#fff;
   stroke:#fff;
 }
+.jodit-ui-button_status_success:focus:not([disabled]){
+  outline:1px dashed #1e7e34;
+}
 .jodit-ui-button_status_danger{
   background-color:#dc3545;
   color:#fff;
@@ -1219,6 +1291,9 @@ svg.jodit-icon{
 .jodit-ui-button_status_danger:active:not([disabled]) svg{
   fill:#fff;
   stroke:#fff;
+}
+.jodit-ui-button_status_danger:focus:not([disabled]){
+  outline:1px dashed #bd2130;
 }
 .jodit-popup{
   background:0 0;
@@ -1249,27 +1324,20 @@ svg.jodit-icon{
   max-height:300px;
 }
 .jodit-ui-group{
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex:0 0 auto;
-      flex:0 0 auto;
-  -ms-flex-negative:0;
-      flex-shrink:0;
-  -ms-flex-wrap:wrap;
-      flex-wrap:wrap;
+  flex:0 0 auto;
+  flex-shrink:0;
+  flex-wrap:wrap;
 }
 .jodit-ui-group:last-child{
   border-bottom:0;
 }
 .jodit-ui-list{
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-direction:column;
-      flex-direction:column;
+  flex-direction:column;
 }
 .jodit-ui-list_mode_vertical .jodit-ui-group{
-  -ms-flex-direction:column;
-      flex-direction:column;
+  flex-direction:column;
   background-color:transparent;
   border:0;
 }
@@ -1283,8 +1351,7 @@ svg.jodit-icon{
   min-height:calc(16px + (16px - 4px)*2 + 2px*2);
 }
 .jodit-ui-list_mode_vertical .jodit-toolbar-button__text:not(:empty){
-  -ms-flex-pack:left;
-      justify-content:left;
+  justify-content:left;
 }
 .jodit-ui-separator{
   border-left:0;
@@ -1294,11 +1361,140 @@ svg.jodit-icon{
   cursor:default;
 }
 .jodit-ui-break{
-  -ms-flex-preferred-size:100%;
-      flex-basis:100%;
+  flex-basis:100%;
   width:0;
   border-top:1px solid #dadada;
   height:0 !important;
+}
+
+.jodit-ui-input{
+  display:flex;
+  flex-direction:column;
+  margin-bottom:8px;
+}
+.jodit-ui-input__input{
+  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-size:14px;
+  width:100%;
+  height:32px;
+  padding:calc(8px/2) 8px;
+  line-height:100%;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  appearance:none;
+  outline:none;
+  box-sizing:border-box;
+  border:1px solid #dadada;
+  border-radius:0;
+  background-color:#fff;
+  min-width:200px;
+}
+.jodit-ui-input__input[disabled]{
+  background-color:#f0f0f0;
+  color:#dadada;
+}
+.jodit-ui-input__input_has-error_true{
+  border-color:#ff3b3b;
+}
+.jodit-ui-input_has-error_true .jodit-ui-input__input{
+  border-color:#ff3b3b;
+}
+.jodit-ui-input__error{
+  display:block;
+  color:#a5a5a5;
+  font-size:.8em;
+}
+.jodit-ui-input__label{
+  display:block;
+  color:#a5a5a5;
+  font-size:.8em;
+}
+.jodit-ui-input__error{
+  color:#ff3b3b;
+}
+.jodit-ui-input_has-error_true .jodit-ui-input__label{
+  color:#ff3b3b;
+}
+.jodit-ui-block .jodit-ui-input{
+  margin-bottom:0;
+}
+
+.jodit-ui-text-area{
+  display:flex;
+  flex-direction:column;
+  margin-bottom:8px;
+}
+.jodit-ui-text-area__input{
+  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-size:14px;
+  width:100%;
+  height:32px;
+  padding:calc(8px/2) 8px;
+  line-height:100%;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  appearance:none;
+  outline:none;
+  box-sizing:border-box;
+  border:1px solid #dadada;
+  border-radius:0;
+  background-color:#fff;
+  min-width:200px;
+}
+.jodit-ui-text-area__input[disabled]{
+  background-color:#f0f0f0;
+  color:#dadada;
+}
+.jodit-ui-text-area__input_has-error_true{
+  border-color:#ff3b3b;
+}
+.jodit-ui-text-area_has-error_true .jodit-ui-text-area__input{
+  border-color:#ff3b3b;
+}
+.jodit-ui-text-area__error{
+  display:block;
+  color:#a5a5a5;
+  font-size:.8em;
+}
+.jodit-ui-text-area__label{
+  display:block;
+  color:#a5a5a5;
+  font-size:.8em;
+}
+.jodit-ui-text-area__error{
+  color:#ff3b3b;
+}
+.jodit-ui-text-area_has-error_true .jodit-ui-text-area__label{
+  color:#ff3b3b;
+}
+.jodit-ui-text-area__input{
+  min-height:60px;
+}
+
+.jodit-ui-checkbox{
+  display:flex;
+  flex-direction:row-reverse;
+  align-items:center;
+  justify-content:flex-end;
+  margin-bottom:8px;
+}
+.jodit-ui-checkbox__input{
+  margin-right:8px;
+}
+.jodit-ui-block .jodit-ui-checkbox{
+  margin-bottom:0;
+}
+
+.jodit-ui-block{
+  margin-bottom:8px;
+  display:flex;
+  justify-content:stretch;
+  align-items:center;
+}
+.jodit-ui-block_align_full{
+  justify-content:space-between;
 }
 .jodit-tabs{
   font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -1309,10 +1505,8 @@ svg.jodit-icon{
   line-height:18px;
   margin-bottom:calc(8px/2);
   margin-top:4px;
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-pack:center;
-      justify-content:center;
+  justify-content:center;
 }
 .jodit-tabs .jodit-tabs__buttons>*{
   margin-left:calc(8px/2);
@@ -1368,20 +1562,22 @@ svg.jodit-icon{
   transform:translateZ(0);
   box-shadow:0 4px 1px -2px rgba(76, 76, 76, 0.2),
 		0 3px 3px 0 rgba(76, 76, 76, 0.15), 0 1px 4px 0 rgba(76, 76, 76, 0.13);
+  z-index:30000005;
 }
 .jodit-context-menu__content{
+  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-size:14px;
   padding:8px;
   background:#fff;
   overflow-scrolling:touch;
   overflow:auto;
   max-height:300px;
 }
-.jodit-context-menu__actions{
-  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-  font-size:14px;
+.jodit-context-menu .jodit-ui-button{
+  display:flex;
 }
-.jodit-context-menu__content{
+.jodit-context-menu__actions{
   font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size:14px;
@@ -1431,10 +1627,8 @@ svg.jodit-icon{
 }
 .jodit-dialog__box .jodit-dialog{
   z-index:20000004;
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-flow:column nowrap;
-      flex-flow:column nowrap;
+  flex-flow:column nowrap;
   white-space:normal;
   text-align:left;
   position:fixed;
@@ -1472,10 +1666,8 @@ svg.jodit-icon{
   word-break:break-all;
 }
 .jodit-dialog__box .jodit-dialog__header{
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-pack:justify;
-      justify-content:space-between;
+  justify-content:space-between;
   text-align:left;
   cursor:move;
   overflow:hidden;
@@ -1484,16 +1676,12 @@ svg.jodit-icon{
 }
 @media (max-width:480px){
   .jodit-dialog__box .jodit-dialog__header{
-    -ms-flex-direction:column;
-        flex-direction:column;
+    flex-direction:column;
   }
 }
 .jodit-dialog__box .jodit-dialog__header-title{
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-align:center;
   align-items:center;
-  -ms-flex-negative:3;
   flex-shrink:3;
   font-size:18px;
   margin:0;
@@ -1503,11 +1691,8 @@ svg.jodit-icon{
   padding:0 8px;
 }
 .jodit-dialog__box .jodit-dialog__header-toolbar{
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-align:center;
   align-items:center;
-  -ms-flex-negative:3;
   flex-shrink:3;
   font-size:18px;
   margin:0;
@@ -1525,8 +1710,7 @@ svg.jodit-icon{
   color:#222;
   font-size:28px;
   transition:background-color .2s ease 0s;
-  -ms-flex-preferred-size:48px;
-      flex-basis:48px;
+  flex-basis:48px;
   height:48px;
   line-height:48px;
   text-decoration:none;
@@ -1545,8 +1729,7 @@ svg.jodit-icon{
   width:auto;
 }
 .jodit-dialog__box .jodit-dialog__content{
-  -ms-flex:1 0;
-      flex:1 0;
+  flex:1 0;
   min-height:100px;
   overflow:auto;
 }
@@ -1600,10 +1783,8 @@ svg.jodit-icon{
 }
 .jodit-dialog__box .jodit-dialog__footer{
   padding:8px;
-  -ms-flex-pack:justify;
-      justify-content:space-between;
-  -ms-flex-wrap:nowrap;
-      flex-wrap:nowrap;
+  justify-content:space-between;
+  flex-wrap:nowrap;
   display:none;
 }
 .jodit-dialog__box .jodit-dialog__footer button{
@@ -1613,7 +1794,6 @@ svg.jodit-icon{
   margin-right:0;
 }
 .jodit-dialog__box .jodit-dialog__column{
-  display:-ms-flexbox;
   display:flex;
 }
 .jodit-dialog__box .jodit-dialog__resizer{
@@ -1636,7 +1816,6 @@ svg.jodit-icon{
   }
 }
 .jodit-dialog__box .jodit-dialog_footer_true .jodit-dialog__footer{
-  display:-ms-flexbox;
   display:flex;
 }
 .jodit-dialog__box.jodit_fullsize .jodit-dialog{
@@ -1654,15 +1833,11 @@ svg.jodit-icon{
   background-color:#f9f9f9;
   overflow:hidden;
   border-radius:3px 3px 0 0;
-}
-.jodit-toolbar__box:not(:empty)+.jodit-workplace{
-  border-top-width:1px;
+  border-bottom:1px solid #dadada;
 }
 .jodit-toolbar-collection,.jodit-toolbar-editor-collection{
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-direction:column;
-      flex-direction:column;
+  flex-direction:column;
 }
 .jodit-toolbar-collection_mode_horizontal{
   position:relative;
@@ -1753,8 +1928,7 @@ svg.jodit-icon{
   background-image:repeating-linear-gradient(transparent, transparent 43px, #dadada 44px);
 }
 .jodit-toolbar-collection_mode_vertical .jodit-ui-group,.jodit-toolbar-editor-collection_mode_vertical .jodit-ui-group{
-  -ms-flex-direction:column;
-      flex-direction:column;
+  flex-direction:column;
   background-color:transparent;
   border:0;
 }
@@ -1777,8 +1951,7 @@ svg.jodit-icon{
   min-height:calc(16px + (16px - 4px)*2 + 2px*2);
 }
 .jodit-toolbar-collection_mode_vertical .jodit-toolbar-button__text:not(:empty),.jodit-toolbar-editor-collection_mode_vertical .jodit-toolbar-button__text:not(:empty){
-  -ms-flex-pack:left;
-      justify-content:left;
+  justify-content:left;
 }
 .jodit-toolbar-collection .jodit-toolbar-button{
   margin:2px 1px;
@@ -1803,12 +1976,9 @@ svg.jodit-icon{
   border:1px solid transparent;
   border-radius:3px;
   overflow:hidden;
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-pack:center;
-      justify-content:center;
-  -ms-flex-align:center;
-      align-items:center;
+  justify-content:center;
+  align-items:center;
   min-width:34px;
   height:34px;
 }
@@ -1816,7 +1986,6 @@ svg.jodit-icon{
   display:none;
 }
 .jodit-toolbar-button__icon:not(:empty){
-  display:-ms-inline-flexbox;
   display:inline-flex;
 }
 .jodit-toolbar-button__text{
@@ -1826,16 +1995,12 @@ svg.jodit-icon{
   font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size:14px;
-  display:-ms-inline-flexbox;
   display:inline-flex;
-  -ms-flex:1;
-      flex:1;
-  -ms-flex-pack:center;
-      justify-content:center;
+  flex:1;
+  justify-content:center;
 }
 .jodit-toolbar-button_context_menu .jodit-toolbar-button__text{
-  -ms-flex-pack:left;
-      justify-content:left;
+  justify-content:left;
   padding-left:8px;
   position:relative;
 }
@@ -1927,12 +2092,9 @@ svg.jodit-icon{
   background-clip:padding-box;
   text-decoration:none;
   outline:0;
-  display:-ms-flexbox;
-  display:flex;
-  -ms-flex-pack:center;
-      justify-content:center;
-  -ms-flex-align:center;
-      align-items:center;
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
   padding:0 8px;
   border-radius:3px;
 }
@@ -1956,12 +2118,9 @@ svg.jodit-icon{
   opacity:.3;
 }
 .jodit-toolbar-button__trigger{
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-align:center;
-      align-items:center;
-  -ms-flex-pack:center;
-      justify-content:center;
+  align-items:center;
+  justify-content:center;
   border-radius:0 3px 3px 0;
   opacity:.4;
   height:100%;
@@ -2034,12 +2193,9 @@ svg.jodit-icon{
   background-clip:padding-box;
   text-decoration:none;
   outline:0;
-  display:-ms-flexbox;
-  display:flex;
-  -ms-flex-pack:center;
-      justify-content:center;
-  -ms-flex-align:center;
-      align-items:center;
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
   border-radius:3px;
   min-width:34px;
   height:34px;
@@ -2123,7 +2279,6 @@ svg.jodit-icon{
   display:none;
 }
 .jodit-toolbar-content__icon:not(:empty){
-  display:-ms-inline-flexbox;
   display:inline-flex;
 }
 .jodit-toolbar-content__text{
@@ -2133,16 +2288,12 @@ svg.jodit-icon{
   font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size:14px;
-  display:-ms-inline-flexbox;
   display:inline-flex;
-  -ms-flex:1;
-      flex:1;
-  -ms-flex-pack:center;
-      justify-content:center;
+  flex:1;
+  justify-content:center;
 }
 .jodit-toolbar-content_context_menu .jodit-toolbar-content__text{
-  -ms-flex-pack:left;
-      justify-content:left;
+  justify-content:left;
   padding-left:8px;
   position:relative;
 }
@@ -2159,6 +2310,9 @@ svg.jodit-icon{
 }
 .jodit-toolbar-content__icon:empty+.jodit-toolbar-content__text:not(:empty){
   padding:0 8px;
+}
+.jodit-toolbar-content:focus:not([disabled]){
+  outline:1px dashed #b5d6fd;
 }
 .jodit-toolbar-content_status_default{
   background-color:#d8d8d8;
@@ -2187,6 +2341,9 @@ svg.jodit-icon{
   fill:#212529;
   stroke:#212529;
 }
+.jodit-toolbar-content_status_default:focus:not([disabled]){
+  outline:1px dashed #dae0e5;
+}
 .jodit-toolbar-content_status_primary{
   background-color:#007bff;
   color:#fff;
@@ -2213,6 +2370,40 @@ svg.jodit-icon{
 .jodit-toolbar-content_status_primary:active:not([disabled]) svg{
   fill:#fff;
   stroke:#fff;
+}
+.jodit-toolbar-content_status_primary:focus:not([disabled]){
+  outline:1px dashed #0062cc;
+}
+.jodit-toolbar-content_status_secondary{
+  background-color:#d8d8d8;
+  color:#212529;
+  border-radius:0;
+}
+.jodit-toolbar-content_status_secondary svg{
+  fill:#212529;
+  stroke:#212529;
+}
+.jodit-toolbar-content_status_secondary [disabled]{
+  opacity:.7;
+}
+.jodit-toolbar-content_status_secondary:hover:not([disabled]){
+  background-color:#c9cdd1;
+  color:#212529;
+}
+.jodit-toolbar-content_status_secondary:hover:not([disabled]) svg{
+  fill:#212529;
+  stroke:#212529;
+}
+.jodit-toolbar-content_status_secondary:active:not([disabled]){
+  background-color:#dae0e5;
+  color:#212529;
+}
+.jodit-toolbar-content_status_secondary:active:not([disabled]) svg{
+  fill:#212529;
+  stroke:#212529;
+}
+.jodit-toolbar-content_status_secondary:focus:not([disabled]){
+  outline:1px dashed #dae0e5;
 }
 .jodit-toolbar-content_status_success{
   background-color:#28a745;
@@ -2241,6 +2432,9 @@ svg.jodit-icon{
   fill:#fff;
   stroke:#fff;
 }
+.jodit-toolbar-content_status_success:focus:not([disabled]){
+  outline:1px dashed #1e7e34;
+}
 .jodit-toolbar-content_status_danger{
   background-color:#dc3545;
   color:#fff;
@@ -2268,6 +2462,9 @@ svg.jodit-icon{
   fill:#fff;
   stroke:#fff;
 }
+.jodit-toolbar-content_status_danger:focus:not([disabled]){
+  outline:1px dashed #bd2130;
+}
 .jodit-toolbar-content:hover:not([disabled]){
   background-color:transparent;
   outline:0;
@@ -2277,7 +2474,6 @@ svg.jodit-icon{
   font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   height:100%;
-  display:-ms-flexbox;
   display:flex;
 }
 .jodit-filebrowser_no_files{
@@ -2285,8 +2481,7 @@ svg.jodit-icon{
 }
 @media (max-width:480px){
   .jodit-filebrowser{
-    -ms-flex-flow:column-reverse;
-        flex-flow:column-reverse;
+    flex-flow:column-reverse;
   }
 }
 .jodit-filebrowser__loader{
@@ -2338,7 +2533,6 @@ svg.jodit-icon{
   border-radius:0;
 }
 .jodit-filebrowser__files.jodit-filebrowser_active,.jodit-filebrowser__tree.jodit-filebrowser_active{
-  display:-ms-flexbox;
   display:flex;
 }
 .jodit-filebrowser__files::-webkit-scrollbar{
@@ -2355,8 +2549,7 @@ svg.jodit-icon{
   outline:1px solid #708090;
 }
 .jodit-filebrowser__tree.jodit-filebrowser_active{
-  -ms-flex-direction:column;
-      flex-direction:column;
+  flex-direction:column;
   width:31%;
   min-width:200px;
   max-width:290px;
@@ -2387,23 +2580,18 @@ svg.jodit-icon{
       -ms-user-select:none;
           user-select:none;
   display:block;
-  padding:8px;
+  padding:2px 4px;
   color:#969696;
   border-bottom:1px solid #484848;
-  line-height:17px;
-  min-height:38px;
   position:relative;
   word-break:break-all;
   background:#5a5a5a;
-  font-size:16px;
+  font-size:12px;
 }
 .jodit-filebrowser__tree.jodit-filebrowser_active .jodit-filebrowser__tree-item{
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-pack:justify;
-      justify-content:space-between;
-  -ms-flex-align:center;
-      align-items:center;
+  justify-content:space-between;
+  align-items:center;
   min-height:38px;
   padding:calc(8px/2) 8px;
   text-decoration:none;
@@ -2414,19 +2602,15 @@ svg.jodit-icon{
   word-break:break-all;
 }
 .jodit-filebrowser__tree.jodit-filebrowser_active .jodit-filebrowser__tree-item-title{
-  -ms-flex:1;
-      flex:1;
+  flex:1;
 }
 .jodit-filebrowser__tree.jodit-filebrowser_active .jodit-filebrowser__tree-item .jodit-icon_folder{
   margin-left:calc(8px/2);
   width:calc(12px + 4px);
   height:calc(12px + 4px);
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-pack:center;
-      justify-content:center;
-  -ms-flex-align:center;
-      align-items:center;
+  justify-content:center;
+  align-items:center;
   opacity:.3;
 }
 .jodit-filebrowser__tree.jodit-filebrowser_active .jodit-filebrowser__tree-item .jodit-icon_folder svg{
@@ -2449,10 +2633,8 @@ svg.jodit-icon{
   width:100%;
   overflow-y:auto;
   padding:calc(8px/2);
-  -ms-flex-wrap:wrap;
-      flex-wrap:wrap;
-  -ms-flex-line-pack:start;
-      align-content:flex-start;
+  flex-wrap:wrap;
+  align-content:flex-start;
 }
 .jodit-filebrowser__files.jodit-filebrowser_active .jodit-filebrowser__source-title{
   -webkit-user-select:none;
@@ -2463,8 +2645,6 @@ svg.jodit-icon{
   margin-bottom:0;
   display:block;
   padding:8px;
-  line-height:17px;
-  min-height:38px;
   position:relative;
   word-break:break-all;
   background:#5a5a5a;
@@ -2477,12 +2657,9 @@ svg.jodit-icon{
 .jodit-filebrowser__files.jodit-filebrowser_active .jodit-filebrowser__files-item{
   width:150px;
   height:150px;
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-pack:center;
-      justify-content:center;
-  -ms-flex-align:center;
-      align-items:center;
+  justify-content:center;
+  align-items:center;
   text-align:center;
   border:1px solid #dadada;
   margin:calc(8px/2);
@@ -2618,10 +2795,8 @@ svg.jodit-icon{
   font-size:400px;
 }
 .jodit-dialog__box .jodit-dialog__header-title.jodit-filebrowser__title-box{
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-align:center;
-      align-items:center;
+  align-items:center;
   padding-left:8px;
 }
 .jodit-filebrowser_preview{
@@ -2631,12 +2806,9 @@ svg.jodit-icon{
   min-height:700px;
   max-height:100%;
   position:relative;
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-pack:center;
-      justify-content:center;
-  -ms-flex-align:center;
-      align-items:center;
+  justify-content:center;
+  align-items:center;
 }
 @media (max-width:768px){
   .jodit-filebrowser_preview{
@@ -2648,14 +2820,10 @@ svg.jodit-icon{
   }
 }
 .jodit-filebrowser_preview_box{
-  -ms-flex-positive:1;
-      flex-grow:1;
-  display:-ms-flexbox;
+  flex-grow:1;
   display:flex;
-  -ms-flex-pack:center;
-      justify-content:center;
-  -ms-flex-align:center;
-      align-items:center;
+  justify-content:center;
+  align-items:center;
 }
 .jodit-filebrowser_preview_navigation{
   position:absolute;
@@ -2882,12 +3050,20 @@ svg.jodit-icon{
   display:block;
 }
 .jodit-image-editor__area.jodit-image-editor__area_crop.jodit-image-editor_active{
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-pack:center;
-      justify-content:center;
-  -ms-flex-align:center;
-      align-items:center;
+  justify-content:center;
+  align-items:center;
+}
+@-webkit-keyframes pulse{
+  30%{
+    opacity:.6;
+  }
+  60%{
+    opacity:0;
+  }
+  to{
+    opacity:.6;
+  }
 }
 @keyframes pulse{
   30%{
@@ -2917,7 +3093,8 @@ svg.jodit-icon{
   will-change:width, opacity;
 }
 .jodit-progressbar div:after{
-  animation:pulse 2s ease-out 0s infinite;
+  -webkit-animation:pulse 2s ease-out 0s infinite;
+          animation:pulse 2s ease-out 0s infinite;
   content:"";
   display:inline-block;
   position:absolute;
@@ -2928,7 +3105,8 @@ svg.jodit-icon{
   opacity:.6;
 }
 .jodit-progressbar div:before{
-  animation:pulse 2s ease-out 0s infinite;
+  -webkit-animation:pulse 2s ease-out 0s infinite;
+          animation:pulse 2s ease-out 0s infinite;
   content:"";
   display:inline-block;
   position:absolute;
@@ -2950,12 +3128,9 @@ svg.jodit-icon{
 }
 .jodit-status-bar{
   font-size:11px;
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-pack:start;
-      justify-content:flex-start;
-  -ms-flex-align:center;
-      align-items:center;
+  justify-content:flex-start;
+  align-items:center;
   background-color:#f9f9f9;
   padding:0 calc(8px/2);
   overflow:hidden;
@@ -2963,17 +3138,14 @@ svg.jodit-icon{
 }
 .jodit-status-bar:before{
   content:"";
-  -ms-flex:auto;
-      flex:auto;
-  -ms-flex-order:1;
-      order:1;
+  flex:auto;
+  order:1;
 }
 .jodit-status-bar .jodit-status-bar__item{
   line-height:1.57142857em;
   margin:0 8px 0 0;
   padding:0;
-  -ms-flex-order:0;
-      order:0;
+  order:0;
 }
 .jodit-status-bar .jodit-status-bar__item{
   font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -2989,8 +3161,7 @@ svg.jodit-icon{
 }
 .jodit-status-bar .jodit-status-bar__item.jodit-status-bar__item-right{
   margin:0 0 0 8px;
-  -ms-flex-order:2;
-      order:2;
+  order:2;
 }
 .jodit-status-bar .jodit-status-bar__item a{
   text-decoration:none;
@@ -3072,12 +3243,9 @@ svg.jodit-icon{
 .jodit-add-new-line span{
   position:absolute;
   right:0;
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-pack:center;
-      justify-content:center;
-  -ms-flex-align:center;
-      align-items:center;
+  justify-content:center;
+  align-items:center;
   width:30px;
   height:calc(8px*2);
   background:rgba(236, 235, 233, 0.3);
@@ -3193,17 +3361,17 @@ svg.jodit-icon{
   color:#5d5a5a;
   border:1px solid hsla(0, 0%, 58%, .44);
 }
-.jodit-fullsize_box{
+.jodit_fullsize-box_true{
   z-index:100000 !important;
   position:static !important;
   overflow:visible !important;
 }
-body.jodit-fullsize_box,html.jodit-fullsize_box{
+body.jodit_fullsize-box_true,html.jodit_fullsize-box_true{
   height:0 !important;
   width:0 !important;
   overflow:initial !important;
 }
-html.jodit-fullsize_box{
+html.jodit_fullsize-box_true{
   position:fixed !important;
 }
 .jodit_fullsize{
@@ -3221,7 +3389,7 @@ html.jodit-fullsize_box{
 .jodit_fullsize .jodit__area,.jodit_fullsize .jodit_editor{
   height:100%;
 }
-.jodit-properties__lock>svg{
+.jodit-properties__lock>svg,.jodit-properties__unlock>svg{
   font-style:normal;
   display:inline-block;
   width:14px;
@@ -3237,12 +3405,9 @@ html.jodit-fullsize_box{
   padding:8px;
 }
 .jodit-properties .jodit-properties_view_box .jodit-properties_image_view{
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-align:center;
-      align-items:center;
-  -ms-flex-pack:center;
-      justify-content:center;
+  align-items:center;
+  justify-content:center;
   height:150px;
   padding:0;
   margin:0 0 8px;
@@ -3253,10 +3418,8 @@ html.jodit-fullsize_box{
   max-height:100%;
 }
 .jodit-properties .jodit-properties_view_box .jodit-properties_image_sizes.jodit-form__group{
-  -ms-flex-direction:row;
-      flex-direction:row;
-  -ms-flex-align:center;
-      align-items:center;
+  flex-direction:row;
+  align-items:center;
   padding:0 !important;
   margin:0 !important;
 }
@@ -3385,7 +3548,6 @@ html.jodit-fullsize_box{
 .jodit-search .jodit-search__box{
   width:320px;
   max-width:100vw;
-  display:-ms-flexbox;
   display:flex;
   position:absolute;
   right:0;
@@ -3424,25 +3586,18 @@ html.jodit-fullsize_box{
 }
 .jodit-search .jodit-search__box .jodit-search__counts{
   width:15%;
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-pack:center;
-      justify-content:center;
-  -ms-flex-align:center;
-      align-items:center;
+  justify-content:center;
+  align-items:center;
   color:#dadada;
   border-left:1px solid #dadada;
 }
 .jodit-search .jodit-search__box .jodit-search__buttons{
-  -ms-flex:1;
-      flex:1;
+  flex:1;
   padding-left:0;
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-pack:center;
-      justify-content:center;
-  -ms-flex-align:center;
-      align-items:center;
+  justify-content:center;
+  align-items:center;
 }
 .jodit-search .jodit-search__box .jodit-search__buttons button{
   width:32%;
@@ -3488,28 +3643,25 @@ html.jodit-fullsize_box{
   box-shadow:inset 0 0 3px 0 #dadada;
 }
 .jodit-search.jodit-search_replace .jodit-search__buttons{
-  -ms-flex-wrap:wrap;
-      flex-wrap:wrap;
+  flex-wrap:wrap;
 }
 .jodit-search.jodit-search_replace .jodit-search__buttons button[data-ref=replace-btn],.jodit-search.jodit-search_replace .jodit-search__inputs input[data-ref=replace]{
   display:block;
 }
-.jodit-container{
+.jodit-container:not(.jodit_inline){
   min-height:100px;
 }
-.jodit-container .jodit-workplace{
-  display:-ms-flexbox;
+.jodit-container:not(.jodit_inline) .jodit-workplace{
   display:flex;
-  -ms-flex-direction:column;
-      flex-direction:column;
+  flex-direction:column;
   height:auto;
   min-height:50px;
   overflow:hidden;
 }
-.jodit-editor__resize{
+.jodit-container:not(.jodit_inline) .jodit-editor__resize{
   position:relative;
 }
-.jodit-editor__resize a{
+.jodit-container:not(.jodit_inline) .jodit-editor__resize a{
   position:absolute;
   bottom:0;
   right:0;
@@ -3530,8 +3682,7 @@ html.jodit-fullsize_box{
   display:none;
   position:relative;
   background-color:#323232;
-  -ms-flex:auto;
-      flex:auto;
+  flex:auto;
   overflow:auto;
 }
 .jodit-source,.jodit-source .jodit-source__mirror-fake{
@@ -3547,15 +3698,13 @@ html.jodit-fullsize_box{
   display:block !important;
 }
 .jodit-container.jodit_split_mode .jodit-workplace{
-  -ms-flex-wrap:nowrap;
-      flex-wrap:nowrap;
-  -ms-flex-direction:row;
-      flex-direction:row;
+  flex-wrap:nowrap;
+  flex-direction:row;
 }
 .jodit-container.jodit_split_mode .jodit-source,.jodit-container.jodit_split_mode .jodit-wysiwyg,.jodit-container.jodit_split_mode .jodit-wysiwyg_iframe{
+  display:block !important;
   width:50%;
-  -ms-flex:1;
-      flex:1;
+  flex:1;
 }
 .jodit-source__mirror{
   border:0;
@@ -3641,8 +3790,11 @@ html.jodit-fullsize_box{
   line-height:calc(18px*1.2);
   vertical-align:top;
 }
-.jodit-symbols table td a:focus,.jodit-symbols table td a:hover{
-  border:1px solid selected;
+.jodit-symbols table td a:focus{
+  outline:2px solid #dadada;
+}
+.jodit-symbols table td a:hover{
+  outline:2px solid #dadada;
 }
 .jodit-table-resizer{
   cursor:col-resize;
@@ -3667,7 +3819,6 @@ html.jodit-fullsize_box{
   border-right:1px solid moved;
 }
 .jodit-wysiwyg table{
-  width:100%;
   border:none;
   border-collapse:collapse;
   table-layout:fixed;
@@ -3690,13 +3841,11 @@ html.jodit-fullsize_box{
           user-select:text;
 }
 .jodit-form__inserter .jodit-form__table-creator-box{
-  display:-ms-flexbox;
   display:flex;
 }
 @media (max-width:768px){
   .jodit-form__inserter .jodit-form__table-creator-box{
-    -ms-flex-direction:column;
-        flex-direction:column;
+    flex-direction:column;
   }
 }
 .jodit-form__inserter .jodit-form__table-creator-box .jodit-form__container{
@@ -3739,16 +3888,16 @@ html.jodit-fullsize_box{
   margin:0;
 }
 .jodit-tooltip{
-  position:absolute;
+  position:fixed;
   background:#727171;
   color:#fff;
   font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size:14px;
   font-size:11px;
-  line-height:15px;
+  line-height:1.4;
   white-space:normal;
-  padding:6px;
+  padding:calc(8px/4) calc(8px/2);
   z-index:10000002;
   max-width:120px;
   border-radius:2px;
@@ -3771,14 +3920,11 @@ html.jodit-fullsize_box{
   opacity:1;
 }
 .jodit-xpath{
-  display:-ms-flexbox;
   display:flex;
-  -ms-flex-align:center;
-      align-items:center;
+  align-items:center;
   margin-left:calc(8px/-2);
 }
 .jodit-xpath__item{
-  display:-ms-flexbox;
   display:flex;
   line-height:calc(11px - 1px);
   height:11px;

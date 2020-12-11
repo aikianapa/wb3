@@ -96,20 +96,22 @@ function wbInitEnviroment()
 
 function wbInitSettings(&$app)
 {
-    if (!$app->vars('_sess.events')) {
-        $app->vars('_sess.events', []);
-    } // массив для передачи событий в браузер во время вызова wbapp.alive()
+    $app->vars('_sess.events') ? null : $app->vars('_sess.events', []);
+    // массив для передачи событий в браузер во время вызова wbapp.alive()
+
     if (isset($_COOKIE['user']) && !isset($_SESSION['user'])) {
         $_SESSION['user'] = $app->ItemRead("users", $_COOKIE['user']);
     }
-    if (!isset($_SESSION['user'])) {
-        $_SESSION['user'] = null;
-    } elseif ($_SESSION['user'] !== null) {
+    if (isset($_SESSION['user']) AND $_SESSION['user'] !== null AND isset($_SESSION['user']['active']) AND $_SESSION['user']['active'] = 'on') {
         $_ENV["user"] = $_SESSION['user'];
+        $_SESSION['user_role'] = $_SESSION['user']['role'];
         $app->user = (object)$_ENV["user"];
         unset($_COOKIE['user']);
         isset($app->user->id) ? $cookuser = $app->user->id : $cookuser = "";
         setcookie("user", $cookuser, time()+3600, "/"); // срок действия час
+    } else {
+        $_SESSION['user'] = $_ENV["user"] = null;
+        setcookie("user", null, time()-3600, "/");
     }
     $variables = [];
     $settings = $app->ItemRead('_settings', 'settings');
@@ -129,7 +131,6 @@ function wbInitSettings(&$app)
     if ($_SERVER['REQUEST_URI']=='/engine/') {
         unset($_ENV['lang']);
     }
-
 
     isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'] : $lang = 'en';
     isset($settings['lang']) ? $_ENV['lang'] = $settings['lang'] : $_ENV['lang'] = substr($lang, 0, 2);
@@ -2210,28 +2211,6 @@ function wbRole($role, $userId = null)
     return $res;
 }
 
-function wbControls($set = '')
-{
-    $res = '*';
-    $controls = '[data-wb-role],[data-wb]';
-    $allow = '[data-wb-allow], [data-wb-disallow], [data-wb-disabled], [data-wb-enabled], [data-wb-readonly], [data-wb-writable]';
-    $target = '[data-wb-prepend], [data-wb-append], [data-wb-remove], [data-wb-before], [data-wb-after], [data-wb-html], [data-wb-replace], [data-wb-selector], [data-wb-addclass], [data-wb-removeclass], [data-wb-prependto], [data-wb-appendto], [data-wb-htmlto], [data-wb-removeattr], [data-wb-attr], [data-wb-src], [data-wb-clear]';
-    $tags = array('dict', 'tree', 'gallery', 'imageloader', 'thumbnail', 'uploader','multiinput', 'where');
-    foreach (array_keys($_ENV["tags"]) as $tag) {
-        if (!in_array($tag, $tags)) {
-            $tags[]=$tag;
-        }
-    }
-
-    if ('' !== $set) {
-        $res = $$set;
-    } else {
-        $res = "{$controls},{$allow},{$target}";
-    }
-    unset($controls,$allow,$target);
-
-    return $res;
-}
 
 function wbListForms($exclude = true)
 {

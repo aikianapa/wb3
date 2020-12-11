@@ -1183,6 +1183,8 @@ class wbApp
             }
             $cur=str_replace($_ENV["path_app"], "", $cur);
             wbError('func', __FUNCTION__, 1011, array($cur));
+        } else {
+            $out->fetchLang();
         }
 
         return $out;

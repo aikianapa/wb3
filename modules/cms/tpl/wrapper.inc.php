@@ -39,7 +39,7 @@
 
 		<script type="wbapp">
 			wbapp.loadStyles([
-				"{{_var.base}}./assets/css/dashforge.css"
+        "{{_var.base}}./assets/css/dashforge.css"
 				,"{{_var.base}}./assets/css/dashforge.chat.css"
 				,"{{_var.base}}./assets/css/skin.cool.css"
 				,"{{_var.base}}./assets/css/cms.less"
