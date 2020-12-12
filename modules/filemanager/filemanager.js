@@ -8,8 +8,10 @@
     filemanagerDialog();
     filemanagerBuffer();
     filemanagerUploader();
+    $("#filemanager").trigger("checkbox");
     $("#filemanagerTabs").data("tab", $("#filemanagerTabs").html());
     $("#filemanagerTabs").html("");
+    $('body').addClass('chat-content-show');
 
 
     function filemanagerUploader() {/*
@@ -91,6 +93,12 @@
             }
     });
 
+
+    $("#filemanager").delegate(".chat-wrapper", "click tap swipe", function () {
+        $('body').addClass('chat-content-show');    
+    })
+
+    $("#filemanager").undelegate("#list tr", "dblclick");
     $("#filemanager").delegate("#list tr", "dblclick", function() {
             var path = $("#filemanager #list").data("path");
             if ($(this).is(".dir,.dir1")) {
@@ -241,6 +249,7 @@
     function filemanagerSideMenu() {
         $("#filemanager").undelegate(".filemgr-sidebar .nav a.nav-link", "click");
         $("#filemanager").delegate(".filemgr-sidebar .nav a.nav-link", "click", function() {
+            $('body').addClass('chat-content-show');
             var check = $("#filemanager #list").find("tr:not(.back) [type=checkbox]:checked");
             var count = $(check).length;
             var href = $(this).attr("href");
@@ -541,12 +550,10 @@
         height = height - $('#filemanagerModalSrc .modal-header').height();
         height = height - $('#filemanagerModalSrc #filemanagerTabs').height();
         editor.setSize('100vw', height+'px');
-        console.log(height);
     }
 
 
     function filemanagerStateSave() {
-        console.log('savestate');
         var editor = $('#filemanagerEditor').data('editor');
         var path = $('#filemanagerTabs').data('path');
         var tabs = $('#filemanagerTabs');
@@ -559,7 +566,6 @@
     }
 
     function filemanagerStateLoad(path) {
-        console.log('loadstate');
         var editor = $('#filemanagerEditor').data('editor');
         var tabs = $('#filemanagerTabs');
         if (path !== undefined) {
@@ -568,7 +574,7 @@
 
             let his = $('#filemanagerTabs').data('editorHistory:' + path);
             if (his == undefined) his = {}
-console.log(his);
+
             editor.setValue($('#filemanagerTabs').data('editorValue:' + path));
             $('#filemanagerModalSrc .modal-title span').text(path);
             setTimeout(() => {

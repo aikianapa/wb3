@@ -342,7 +342,7 @@ $(document).on("yandex-map-js", function () {
     }, 100);
 
     $(document).on('wb-ajax-done', function (e, data) {
-      if (data.module && data.module == 'yamap') {
+      if ($(document).find('.yamap').length &&  data.module !== udefined && data.module == 'yamap') {
         let canvas = $(document).find(data.target).children('.yamap_canvas');
         $(document).find(data.target).removeClass('done').children('.yamap_canvas').css('opacity',0);
         yamap_init();
