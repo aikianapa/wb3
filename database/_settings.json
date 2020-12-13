@@ -1,14 +1,14 @@
 {
     "settings": {
         "id": "settings",
-        "header": "",
+        "header": "Апартаменты",
         "_id": "settings",
         "_form": "_settings",
         "_table": "_settings",
-        "_created": "2020-12-01 17:08:50",
+        "_created": "2020-12-13 15:15:36",
         "_creator": "admin",
-        "_lastdate": "2020-12-01 17:08:50",
-        "_lastuser": "admin",
+        "_lastdate": "2020-12-13 15:15:36",
+        "_lastuser": "id5fc6987d0730",
         "cmsmenu": {
             "data": {
                 "aside": {
@@ -39,7 +39,7 @@
                                     "data": {
                                         "label": "Пользователи",
                                         "icon": "ri-group-line",
-                                        "ajax": "{'url':'/cms/ajax/form/users/list','html':'.content-body'}"
+                                        "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/users\/list\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
                                     }
                                 },
                                 "pages": {
@@ -49,7 +49,7 @@
                                     "data": {
                                         "label": "Страницы",
                                         "icon": "ri-pages-line",
-                                        "ajax": "{'url':'/cms/ajax/form/pages/list','html':'.content-body'}"
+                                        "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/pages\/list\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
                                     }
                                 },
                                 "catalogs": {
@@ -59,7 +59,7 @@
                                     "data": {
                                         "label": "Справочники",
                                         "icon": "ri-node-tree",
-                                        "ajax": "{'url':'/cms/ajax/form/catalogs/list','html':'.content-body'}"
+                                        "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/catalogs\/list\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
                                     }
                                 }
                             }
@@ -81,7 +81,17 @@
                                     "data": {
                                         "label": "Настройки",
                                         "icon": "ri-settings-4-line",
-                                        "ajax": "{'url':'/cms/settings/settings_ui','html':'.content-body'}"
+                                        "ajax": "{\u0027url\u0027:\u0027\/cms\/settings\/settings_ui\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
+                                    }
+                                },
+                                "filemanager": {
+                                    "id": "filemanager",
+                                    "name": "Файловый менеджер",
+                                    "active": "on",
+                                    "data": {
+                                        "label": "Файлменеджер",
+                                        "icon": "ri-folder-4-line",
+                                        "ajax": "{\u0027url\u0027:\u0027\/module\/filemanager\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
                                     }
                                 }
                             },
@@ -101,7 +111,7 @@
                             "data": {
                                 "label": "Настройки",
                                 "icon": "ri-settings-5-line",
-                                "ajax": "{'url':'/cms/settings/settings_ui','html':'.content-body'}"
+                                "ajax": "{\u0027url\u0027:\u0027\/cms\/settings\/settings_ui\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
                             }
                         },
                         "profile": {
@@ -111,7 +121,7 @@
                             "data": {
                                 "label": "Профиль",
                                 "icon": "ri-user-settings-line",
-                                "ajax": "{'url':'/cms/ajax/form/users/profile','html':'.content-body'}"
+                                "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/users\/profile\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
                             }
                         },
                         "exit": {
@@ -121,34 +131,38 @@
                             "data": {
                                 "label": "Выход",
                                 "icon": "ri-logout-box-r-line",
-                                "ajax": "{'url':'/cms/logout'}"
+                                "ajax": "{\u0027url\u0027:\u0027\/cms\/logout\u0027}"
                             }
                         }
                     },
-                    "open": true
+                    "open": "true"
                 }
             },
             "dict": [{
-                    "name": "label",
-                    "label": "Метка",
-                    "type": "string",
-                    "value": ""
-                },
-                {
-                    "name": "icon",
-                    "label": "Иконка",
-                    "type": "string",
-                    "value": ""
-                },
-                {
-                    "name": "ajax",
-                    "label": "Свойства Ajax",
-                    "type": "text",
-                    "value": ""
-                }
-            ]
-        }
+                "name": "label",
+                "label": "Метка",
+                "type": "string",
+                "value": ""
+            }, {
+                "name": "icon",
+                "label": "Иконка",
+                "type": "string",
+                "value": ""
+            }, {
+                "name": "ajax",
+                "label": "Свойства Ajax",
+                "type": "text",
+                "value": ""
+            }]
+        },
+        "email": "",
+        "page_size": "",
+        "cache": "",
+        "logo1": "",
+        "logo2": "",
+        "slogan": "",
+        "logofontsize": "",
+        "logo": "[]",
+        "showstats": ""
     }
 }
-
-
