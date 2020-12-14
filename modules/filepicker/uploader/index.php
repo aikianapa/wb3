@@ -26,6 +26,9 @@ $handler = new Handler($uploader);
 
 $config['debug'] = true;
 $config['upload_url'] = '/uploads';
+
+$app->vars('_sess.user_role') == 'admin' ? $config['accept_file_types_regex'] = '/.*/' : null;
+
 if ($app->vars("_req.upload_ext") > "") $config['accept_file_types'] = $app->vars("_req.upload_ext");
 if ($app->vars("_req.upload_url") > "") $config['upload_url'] = $app->vars("_req.upload_url");
 
@@ -35,8 +38,6 @@ $config['max_file_size'] = $app->vars("_sett.max_upload_size");
 $config['auto_orient'] = true;
 $config['image_file_types'] = 'gif|jpg|jpeg|png|webp';
 $config['inline_file_types'] = 'gif|jpg|jpeg|png|webp|pdf|doc|docx|xls|xlsx|zip|rar|gzip';
-
-$app->vars('_sess.user_role') == 'admin' ? $config['accept_file_types_regex'] = '/.*/' : null;
 
 if (isset($_POST["_method"])) {
     isset($_POST["file"]) ? $file = $_POST["file"] : null;

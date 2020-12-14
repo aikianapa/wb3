@@ -396,7 +396,7 @@ if (typeof $ === 'undefined') {
                     if (func !== null) return func(params, data);
                 }
 
-                if (params.target) $(document).find(params.target).html($(data).find(params.target).html());
+                if (params.target && params.target > '#') $(document).find(params.target).html($(data).find(params.target).html());
                 if (params.html) $(document).find(params.html).html(data);
                 if (params.append) $(document).find(params.append).append(data);
                 if (params.prepend) $(document).find(params.prepend).prepend(data);

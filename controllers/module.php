@@ -39,6 +39,10 @@ class ctrlModule {
 
   function settings() {
       $app = $this->app;
+      if ($app->vars('_sess.user_role') !== 'admin') {
+          echo $app->vars('_env.sysmsg.disallow');
+          die;
+      }
       $modules = $app->listModules();
       $module = $modules[$app->route->module];
       $tpl = $app->fromFile($app->vars('_env.path_engine').'/modules/cms/forms/_settings/ui_mods.php');
