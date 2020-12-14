@@ -12,6 +12,8 @@ use Hazzard\Config\Repository as Config;
 
 $app = new wbApp();
 
+if (!$app->vars('_sess.user_role') == 'admin') return;
+
 if (class_exists('Imagick')) {
     $uploader = new Uploader($config = new Config, new ImageManager(array('driver' => 'imagick')));
 } else {
@@ -31,24 +33,27 @@ $config['script_url'] = $app->vars("_route.host").'/engine/modules/filepicker/up
 $config['overwrite'] = true;
 $config['max_file_size'] = $app->vars("_sett.max_upload_size");
 $config['auto_orient'] = true;
-$config['image_file_types'] = 'gif|jpg|jpeg|png';
-$config['inline_file_types'] = 'gif|jpg|jpeg|png|pdf|doc|docx|xls|xlsx|zip|rar|gzip';
+$config['image_file_types'] = 'gif|jpg|jpeg|png|webp';
+$config['inline_file_types'] = 'gif|jpg|jpeg|png|webp|pdf|doc|docx|xls|xlsx|zip|rar|gzip';
+
+$app->vars('_sess.user_role') == 'admin' ? $config['accept_file_types_regex'] = '/.*/' : null;
 
 if (isset($_POST["_method"])) {
-    if (isset($_POST["file"])) $file = $_POST["file"];
-    if (isset($_POST["files"])) $file = $_POST["files"][0];
-
+    isset($_POST["file"]) ? $file = $_POST["file"] : null;
+    isset($_POST["files"]) ? $file = $_POST["files"][0] : null;
     $dir = explode("/",$file);
     $_POST["file"] = array_pop($dir);
     $config['upload_url'] = implode("/",$dir);
+} else if (isset($_POST['upload_url'])) {
+    isset($_POST["files"]) ? $file = $_POST["files"][0] : null;
+    $config['upload_url'] = $_POST['upload_url'];
 } else {
   isset($_POST["file"]) ? $file = $_POST["file"] : $file = wbNewId("img");
   $config['upload_url'] .= "/".substr(md5($file),0,2);
 }
 
+$config['upload_dir'] = wbNormalizePath($_SERVER["DOCUMENT_ROOT"].$config['upload_url']);
 
-
-$config['upload_dir'] = $_SERVER["DOCUMENT_ROOT"].$config['upload_url'];
 if (!is_dir($config['upload_dir'])) mkdir($config['upload_dir'],0755);
 
 //$_ENV['upload_url'] = $config['upload_url'];
@@ -67,7 +72,14 @@ $config['image_versions.thumb'] = array(
  */
 $handler->on('upload.before', function ($file) {
     $_ENV["original"] = $file->getClientOriginalName();
-    $file->save = wbNewId("img");
+    if (isset($_POST["rename"]) && $_POST["rename"] == "false") {
+        $name = $file->getClientOriginalName();
+        $name = explode('.', $name);
+        count($name) > 1 ? array_pop($name) : null;
+        $file->save = implode('.', $name);
+    } else {
+        $file->save = wbNewId("img");
+    }
     // throw new \Hazzard\Filepicker\Exception\AbortException('Error message!');
 });
 
@@ -79,7 +91,7 @@ $handler->on('upload.before', function ($file) {
 $handler->on('upload.success', function ($file) {
   $app = $_ENV["app"];
   $ext = $file->getExtension();
-  //if (!in_array($ext,["jpg","png","gif"])) return;
+  if (!in_array($ext,['jpeg','jpg','png','gif','webp'])) return;
   $resize = intval($app->vars("_sett.modules.filepicker.resizeto"));
   $quality = intval($app->vars("_sett.modules.filepicker.quality"));
   if ($resize > 0) {

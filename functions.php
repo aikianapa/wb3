@@ -2462,10 +2462,13 @@ function wbArrayAttr($attr)
     return $attr;
 }
 
-function wbNormalizePath($path)
-{
-    return realpath($path);
-}
+    function wbNormalizePath($path)
+    {
+        $patterns = array('~/{2,}~', '~/(\./)+~', '~([^/\.]+/(?R)*\.{2,}/)~', '~\.\./~');
+        $replacements = array('/', '/', '', '');
+        return preg_replace($patterns, $replacements, $path);
+    }
+
 
 function wbClearValues($out, $rep='')
 {

@@ -8,8 +8,14 @@ class modFilepicker
     public function init($dom)
     {
         $app = $dom->app;
+        if ($dom->params("mode") == "" and $dom->tagName == 'button') {
+            $dom->params("mode", 'button');
+        }
+
         if ($dom->params("mode") == "single") {
             $out=$app->fromFile(__DIR__ ."/filepicker_ui_single.php", true);
+        } else if ($dom->params("mode") == "button") {
+            $out=$app->fromFile(__DIR__ ."/filepicker_ui_button.php", true);
         } else {
             $out=$app->fromFile(__DIR__ ."/filepicker_ui_multi.php", true);
         }
@@ -35,9 +41,14 @@ class modFilepicker
               ->after("<input type='hidden' name='upload_ext' value='{$dom->params->ext}'>");
         }
         $out->fetch();
-        if ($dom->tagName == 'input' ) {
+        if ($dom->tagName == 'input') {
             $dom->after($out);
             $dom->remove();
+        } else if ($dom->tagName == 'button') {
+            $inner = $out->find('.filepicker')->inner();
+            $dom->append($inner);
+            $dom->removeAttr("wb");
+            $dom->addClass('filepicker fileinput');
         } else {
             $dom->html($out);
         }

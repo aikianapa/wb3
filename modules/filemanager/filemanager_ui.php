@@ -12,7 +12,7 @@
                 <div class="filemgr-sidebar-header">
                     <div id="filemanagerUploader" class="dropdown dropdown-icon flex-fill mg-l-10">
                         <div class="uploader">
-                            <button id="pickfiles" class="btn btn-xs btn-block btn-primary">
+                            <button id="pickfiles" wb="module=filepicker&mode=button" class="btn btn-xs btn-block btn-primary" wb-path="/">
                                 {{_lang.upload}} <i class="ri-upload-2-line"></i>
                             </button>
                         </div>

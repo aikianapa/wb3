@@ -36,7 +36,7 @@ $(document).on("filepicker-init", function() {
 
             var getparams = function() {
               let params = {};
-              $filepicker.find(".fileinput input[type=hidden]").each(function(i){
+              $filepicker.find("input[type=hidden]").each(function(i){
                   params[$(this).attr("name")] = $(this).val();
               });
               $filepicker.params = params;
@@ -111,11 +111,13 @@ $(document).on("filepicker-init", function() {
                 }
                 let tpl = wbapp.template["#fp-listviewItem"].html;
                 $filepicker.list = input.html();
-                if ($filepicker.list == "") {
-                    $filepicker.list = [];
-                } else {
-                    $filepicker.list = json_decode($filepicker.list);
-                }
+
+                    try {
+                      $filepicker.list = json_decode($filepicker.list);                      
+                    } catch (error) {
+                      $filepicker.list = [];
+                    }  
+
                 if (!$(inpfile).is("[multiple]") && $filepicker.list.length) {
                     $filepicker.list = [$filepicker.list[0]];
                 }
@@ -142,7 +144,7 @@ $(document).on("filepicker-init", function() {
 
                 $filepicker.filePicker({
                     url: uploader
-                    ,data: getparams()
+                    ,data: ()=> {return getparams()}
                     ,ui: {
                         autoUpload: true
                     }
@@ -197,6 +199,8 @@ $(document).on("filepicker-init", function() {
                     ractive.set({images:$filepicker.list});
                     setdata();
                   }
+                  console.log('Trigger: mod-filepicker-done');
+                  $filepicker.trigger('mod-filepicker-done');
                 }).on('cropsave.filepicker', function (e,file) {
                     let thumb = getthumb(file.url,true);
                     $filepicker.find(".listview .card img[data-src='"+file.url+"']").attr("src",thumb);

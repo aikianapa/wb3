@@ -7,54 +7,11 @@
     filemanagerBreadcrumbs();
     filemanagerDialog();
     filemanagerBuffer();
-    filemanagerUploader();
+
     $("#filemanager").trigger("checkbox");
     $("#filemanagerTabs").data("tab", $("#filemanagerTabs").html());
     $("#filemanagerTabs").html("");
     $('body').addClass('chat-content-show');
-
-
-    function filemanagerUploader() {/*
-        var path="/";
-		var uploader = new plupload.Uploader({
-		runtimes : 'html5,html4',
-		browse_button : 'pickfiles', // you can pass in id...
-		container: document.getElementById("filemanagerUploader"), // ... or DOM Element itself
-		url : '/engine/js/uploader/upload.php?path='+path,
-		dragdrop: true,
-		chunk_size : '1mb',
-		unique_names : true,
-		//resize : {width : 320, height : 240, quality : 90},
-		filters : {
-			//max_file_size : max+'mb',
-			//mime_types: types
-		},
-		init: {
-			PostInit: function() {
-                // ************
-			},
-			FilesAdded: function(up, files) {
-				uploader.start();
-			},
-			FileUploaded: function(up, file, res) {
-				var res=$.parseJSON(res.response);
-                filemanager_reload_list();
-			},
-			UploadProgress: function(up, file) {
-				// *************
-			},
-            BeforeUpload: function(uploader, file) {
-                uploader.setOption('url', '/engine/js/uploader/upload.php?path='+$("#filemanager #list").data("path"));
-            },
-			Error: function(up, err) {
-                // отработка ошибок
-				// document.getElementById('console').innerHTML += "\nError #" + err.code + ": " + err.message;
-			}
-		}
-		});
-		uploader.init();
-    */
-    }
 
     function filemanagerListEvents() {
 
@@ -94,8 +51,14 @@
     });
 
 
+    $("#filemanager").undelegate(".chat-wrapper", "click tap swipe");
     $("#filemanager").delegate(".chat-wrapper", "click tap swipe", function () {
         $('body').addClass('chat-content-show');    
+    })
+
+    $("#filemanager").undelegate(".filepicker", "mod-filepicker-done");
+    $("#filemanager").delegate(".filepicker", "mod-filepicker-done", function () {
+        filemanager_reload_list();
     })
 
     $("#filemanager").undelegate("#list tr", "dblclick");
@@ -389,6 +352,7 @@
         var data = wbapp.getSync("/module/filemanager/getdir/?dir=" + urlencode(dir));
             $("#filemanager #panel").replaceWith(data);
             $("#filemanager #list").data("path", dir);
+            $("#filemanager [name=upload_url]").val(dir);
 //            $("#filemanager").noSelect();
             $("#filemanager").trigger("checkbox");
             if ($("#filemanager").data("buffer")!==undefined) {
