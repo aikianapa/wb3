@@ -1,10 +1,5 @@
 <html>
 <div class="app-filemgr">
-
-    <h6 class="element-header">
-        {{_lang.filemanager}}
-    </h6>
-
     <div id="filemanager">
         <div class="chat-wrapper chat-wrapper-two">
             <div class="content-toasts pos-absolute t-10 r-10" style="z-index:5000;"></div>
@@ -111,7 +106,7 @@
                 <div class="content-body-header">
                     <div class="d-flex">
                         <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
+                            <ol class="breadcrumb py-1 px-2">
                                 <li class="breadcrumb-item" prepend="nav .breadcrumb">
                                     <a href="#" data-path=""><i class="fa fa-home"></i></a>
                                 </li>
