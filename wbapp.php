@@ -223,7 +223,7 @@ class wbDom extends DomQuery
 
     public function fetchLang()
     {
-        $langs = $this->children("wb-lang",0);
+        $langs = $this->children("wb-lang");
         if ($langs->length) {
             foreach ($langs as $wb) {
                 $wb->copy($this);
@@ -1116,6 +1116,7 @@ class wbApp
     {
         $dom = new wbDom($string);
         $dom->app = $this;
+        $dom->fetchLang();
         return $dom;
     }
 
@@ -1194,9 +1195,7 @@ class wbApp
             }
             $cur=str_replace($_ENV["path_app"], "", $cur);
             wbError('func', __FUNCTION__, 1011, array($cur));
-        } else {
-            $out->fetchLang();
-        }
+        } 
 
         return $out;
     }

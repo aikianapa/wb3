@@ -25,15 +25,6 @@ class modFilemanager
         }
     }
 
-    public function locale()
-    {
-        $app = new wbApp();
-        $out=$app->fromFile(__DIR__ ."/filemanager_ui.php");
-        $locale=$out->getLocale();
-        echo base64_encode(json_encode($locale[$_SESSION["lang"]]));
-        die;
-    }
-
     public function getdir($result=false)
     {
         if ($this->allow()) {
@@ -85,8 +76,8 @@ class modFilemanager
                 return $arr;
             } else {
                 $out = $this->app->getTpl("/engine/modules/filemanager/filemanager_ui.php", true);
-                $out=$out->find("#panel", 0);
                 $out->fetch($arr);
+                $out = $out->find("#panel", 0);
                 echo $out;
             }
         }

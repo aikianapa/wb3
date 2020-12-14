@@ -20,7 +20,11 @@ body {
         overflow: hidden;
     }
     .content-body {
-        overflow-x: hidden;
+        overflow: hidden;
+        > * {
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
     }
     .chat-wrapper {
         overflow: auto;

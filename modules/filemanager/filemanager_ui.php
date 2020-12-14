@@ -107,7 +107,7 @@
                 </div>
             </div>
             <!-- content-left -->
-            <div class="content-body chat-content" id="panel">
+            <div class="chat-content p-2" id="panel">
                 <div class="content-body-header">
                     <div class="d-flex">
                         <nav aria-label="breadcrumb">
@@ -296,11 +296,6 @@
             </div>
         </div>
     </div>
-</div>
-<script type="wbapp">
-    wbapp.loadScripts(["/engine/modules/filemanager/filemanager.js?{{_env.new_id}}"],"filemanager-js");
-    wbapp.loadStyles(["/engine/modules/filemanager/filemanager.css"]);
-</script>
 <wb-lang>
     [ru]
     refresh = Обновить
@@ -388,5 +383,11 @@
     prompt_unzip = Unzip objects from archive?<br>Exists objects will be rewrite.
     prompt_to = to
 </wb-lang>
+</div>
+<script type="wbapp">
+    wbapp.loadScripts(["/engine/modules/filemanager/filemanager.js?{{_env.new_id}}"],"filemanager-js");
+    wbapp.loadStyles(["/engine/modules/filemanager/filemanager.css"]);
+</script>
+
 
 </html>
