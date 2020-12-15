@@ -1,4 +1,5 @@
 <?php
+
 use Adbar\Dot;
 use Nahid\JsonQ\Jsonq;
 
@@ -9,6 +10,34 @@ class jsonDrv
         $this->app = $app;
     }
 
+    public function itemRead1($form = null, $id = null)
+    {
+        $file = $this->tableFile($form);
+
+        $list = JsonMachine::fromFile($file);
+        $item = null;
+
+        $cid = md5($file . $id . $_SESSION['lang']);
+
+        if (isset($_ENV['cache'][$cid])) {
+            $item = $_ENV['cache'][$cid];
+        } else {
+            foreach ($list as $key => $data) {
+                if (isset($data['_id']) and $data['_id'] == $id) {
+                    $item = &$data;
+                    break;
+                }
+            }
+        }
+        if ($item) {
+            $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
+        } else {
+            wbError('func', __FUNCTION__, 1006, func_get_args());
+            $item = null;
+        }
+        return $item;
+    }
+
     public function itemRead($form = null, $id = null)
     {
             $list = $this->itemList($form, ['orm' => "where('id','{$id}')"]);
@@ -17,7 +46,7 @@ class jsonDrv
             }
             if (isset($list[$id])) {
                 $item = $list[$id];
-            } else if (isset($list[0])) {
+            } elseif (isset($list[0])) {
                 $item = $list[0];
             } else {
                 wbError('func', __FUNCTION__, 1006, func_get_args());
@@ -37,7 +66,7 @@ class jsonDrv
 
     public function tableCreate($form)
     {
-        if (!$this->tableExist($form) AND $this->app->formExist()) {
+        if (!$this->tableExist($form) and $this->app->formExist()) {
             $file = $this->tablePath($form);
             $json = wbJsonEncode(null);
             $res = wbPutContents($file, $json, LOCK_EX);
@@ -52,7 +81,8 @@ class jsonDrv
         return $res;
     }
 
-    public function tableExist($form, $engine = false) {
+    public function tableExist($form, $engine = false)
+    {
         $file = $this->tablePath($form, $engine);
         return is_file($file);
     }
@@ -155,14 +185,14 @@ class jsonDrv
             foreach ((array) $options->sort as $key => $fld) {
                 if (!((array)$fld === $fld)) {
                     if (is_numeric($fld)) {
-                        $fld = [$key,$fld]; 
+                        $fld = [$key,$fld];
                     } else {
                         $fld = explode(':', $fld);
                     }
                     isset($fld[1]) ? $fld[1] = strtolower($fld[1]) : $fld[1] = 1;
                     if (in_array($fld[1], ['a', 'asc', '1'])) {
                         $fld[1] = '';
-                    } else if (in_array($fld[1], ['d', 'desc', '-1'])) {
+                    } elseif (in_array($fld[1], ['d', 'desc', '-1'])) {
                         $fld[1] = 'desc';
                     }
                     $params['sort'][$fld[0]] = $fld[1];
@@ -202,7 +232,9 @@ class jsonDrv
                     wbError('func', __FUNCTION__, 1001, $form);
                     return array();
                 }
-                try { $json = new Jsonq($file);} catch (Exception $err) {
+                try {
+                    $json = new Jsonq($file);
+                } catch (Exception $err) {
                     $json = new Jsonq();
                     $json = $json->collect([]);
                 }
@@ -218,12 +250,10 @@ class jsonDrv
                     foreach ($params['sort'] as $fld => $order) {
                         $list->sortBy($fld, $order);
                     }
-
                 }
                 $list = $list->get();
             }
         } else {
-
             $file = $this->tableFile($form);
             if (!is_file($file)) {
                 wbError('func', __FUNCTION__, 1001, func_get_args());
@@ -231,14 +261,14 @@ class jsonDrv
             }
 
             try {
-                $json = new Jsonq($file);} catch (Exception $err) {
+                $json = new Jsonq($file);
+            } catch (Exception $err) {
                 $json = new Jsonq();
                 $json = $json->collect([]);
             }
             $json->empty('');
             $list = $json->where('_removed', 'neq', 'on');
             $list = $list->get();
-
         }
 
         $dot = new Dot();
@@ -255,7 +285,9 @@ class jsonDrv
                 $flag = wbItemFilter($item, $options->filter);
             }
 
-            if (!$flag) {unset($list[$key]);} else {
+            if (!$flag) {
+                unset($list[$key]);
+            } else {
                 if (isset($item['id']) and !isset($item['_id'])) {
                     $item['_id'] = $item['id'];
                 }
@@ -270,7 +302,6 @@ class jsonDrv
                         if (isset($v)) {
                             $tmp[$fld] = $v;
                         }
-
                     }
                     $item = $tmp;
                 }
@@ -279,7 +310,6 @@ class jsonDrv
             if (!isset($options->sort) && isset($options->limit) && count($list) == $options->limit) {
                 break;
             }
-
         }
 
         if (count($params['sort'])) {
@@ -307,7 +337,11 @@ class jsonDrv
 
         if ($size > 0 && $size < $count) {
             $chunk = array_chunk($list, $size);
-            if (isset($chunk[$page - 1])) {$chunk = $chunk[$page - 1];} else { $chunk = [];}
+            if (isset($chunk[$page - 1])) {
+                $chunk = $chunk[$page - 1];
+            } else {
+                $chunk = [];
+            }
             $list = [];
             foreach ($chunk as $item) {
 //              $item['_id'] = $item['id'];
@@ -360,32 +394,37 @@ class jsonDrv
 
     public function tableFile($form = 'pages', $engine = false)
     {
-        $create = false;
-        if (strpos($form, ':')) {
-            $form = explode(':', $form);
-            if ($form[1] == 'engine' or $form[1] == 'e') {
-                $engine = true;
-            } elseif ($form[1] == 'create' or $form[1] == 'c') {
-                $create = true;
-            }
-            $form = $form[1];
-        }
-        $file = $this->tablePath($form, $engine);
-        if (!is_file($file) and $create == true) {
-            $this->TableCreate($form);
-        }
-        if (!is_file($file)) {
-            wbError('func', __FUNCTION__, 1001, func_get_args());
-            $form = null;
+        $cid = md5($form.$engine);
+        if (isset($_ENV['cache'][$cid])) {
+            return $_ENV['cache'][$cid];
         } else {
-            $_ENV[$form]['name'] = $form;
+            $create = false;
+            if (strpos($form, ':')) {
+                $form = explode(':', $form);
+                if ($form[1] == 'engine' or $form[1] == 'e') {
+                    $engine = true;
+                } elseif ($form[1] == 'create' or $form[1] == 'c') {
+                    $create = true;
+                }
+                $form = $form[1];
+            }
+            $file = $this->tablePath($form, $engine);
+            if (!is_file($file) and $create == true) {
+                $this->TableCreate($form);
+            }
+            if (!is_file($file)) {
+                wbError('func', __FUNCTION__, 1001, func_get_args());
+                $form = null;
+            } else {
+                $_ENV[$form]['name'] = $form;
+            }
         }
+        $_ENV['cache'][$cid] = $file;
         return $file;
     }
 
     public function tableList($engine = false)
     {
-
         (false == $engine) ? $db = $_ENV['dba'] : $db = $_ENV['dbe'];
         $list = wbListFiles($db);
         foreach ($list as $i => $form) {

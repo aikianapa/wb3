@@ -57,10 +57,10 @@ class modFilemanager
                             } else {
                                 $size.="";
                             }
-                            $list[] = array("type"=>"file","path"=>$dir,"perms"=>$perms,"size"=>$size,"href"=>$href,"link"=>$link,"ext"=>$ext,"name"=>$dircont[$i]);
+                            $list[] = array("type"=>"file","path"=>$dir,"perms"=>$perms,"size"=>$size,"href"=>$href,"link"=>$link,"ext"=>$ext,"name"=>$dircont[$i],'wr'=>is_writable($current_file));
                         }
                         if (is_dir($current_file)) {
-                            $list[] = array("type"=>"dir","path"=>$dir,"perms"=>$perms,"size"=>"-","href"=>$href,"link"=>$link,"ext"=>"DIR","name"=>$dircont[$i]);
+                            $list[] = array("type"=>"dir","path"=>$dir,"perms"=>$perms,"size"=>"-","href"=>$href,"link"=>$link,"ext"=>"DIR","name"=>$dircont[$i],'wr'=>is_writable($current_file));
                         }
                     }
                     $i++;

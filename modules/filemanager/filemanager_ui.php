@@ -126,10 +126,13 @@
                 <table id="list" class="table table-striped tx-13">
                     <tbody>
                         <wb-foreach wb="from=result&size=10">
+                            <wb-var wrd="disabled" wb-where='"{{wr}}"!="1"' else="" />
                             <tr class="col-12 {{type}}{{link}} {{ext}}" data-name="{{name}}" data-ext="{{ext}}">
                                 <td class="valign-middle">
                                     <label class="ckbox mg-b-0">
-                                        <input type="checkbox"><span></span>
+                                        <input type="checkbox" wb-if='"{{wr}}"!="1"' disabled>
+                                        <input type="checkbox" wb-if='"{{wr}}"=="1"'>
+                                        <span></span>
                                     </label>
                                 </td>
                                 <td class="col name">
@@ -143,11 +146,11 @@
                                     <nobr>{{size}}</nobr>
                                 </td>
                                 <td class="hidden-xs-down">{{ext}}</td>
-                                <td class="dropdown">
+                                <td class="dropdown" wb-if='"{{wr}}"=="1"' >
                                     <a href="#" data-toggle="dropdown" class="btn pd-y-3 tx-gray-500 hover-info"
                                         wb-if='"{{type}}"!=="back"'><i class="ri-more-2-fill"></i></a>
                                     <div class="dropdown-menu dropdown-menu-right pd-10" wb-if='"{{type}}"!=="back"'>
-                                        <nav class="nav nav-style-1 flex-column">
+                                        <nav class="nav nav-style-1 flex-column" >
                                             <a href="#edit" class="nav-link nobr" wb-if='"{{type}}"=="file"'><i
                                                     class="fa fa-edit"></i> {{_lang.edit}}</a>
                                             <a href="#rendir" class="nav-link nobr" wb-if='"{{type}}"=="dir"'><i

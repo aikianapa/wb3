@@ -64,9 +64,9 @@ function wbItemRead($form = null, $id = null)
     wbTrigger('form', __FUNCTION__, 'beforeItemRead', func_get_args(), array());
     !isset($_SESSION['lang']) ? $_SESSION['lang'] = 'en' : null;
 
-    $cid = md5($form . $_SESSION['lang']);
-    if (isset($_ENV['cache'][$cid][$id])) {
-        $item = $_ENV['cache'][$cid][$id];
+    $cid = md5($form . $id . $_SESSION['lang']);
+    if (isset($_ENV['cache'][$cid])) {
+        $item = $_ENV['cache'][$cid];
     } else {
         $item = $db->itemRead($form, $id);
         if (null !== $item) {
@@ -78,11 +78,11 @@ function wbItemRead($form = null, $id = null)
                 $item["_form"] = $item["_table"] = $form;
             }
             $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
-            $_ENV['cache'][$cid][$id] = $item;
         } else {
             $item = wbTrigger('form', __FUNCTION__, 'emptyItemRead', func_get_args(), $item);
         }
     }
+    $_ENV['cache'][$cid] = $item;
     return $item;
 }
 

@@ -2661,13 +2661,16 @@ function wbListTpl()
     }
 
     function wbUsageStat() {
-        $_ENV["cache_used"] ? $cache = 'Yes' : $cache = 'No';
+        (isset($_ENV["cache_used"]) AND $_ENV["cache_used"] == 'on') ? $cache = 'Yes' : $cache = 'No';
         $mem = memory_get_usage();
         $mem = wbFormatBytes($mem, 2);
+        $peak = memory_get_peak_usage();
+        $peak = wbFormatBytes($peak, 2);
+
         $sec = round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 3);
         echo <<<STAT
             <div>
-            Memory usage : {$mem}, Rendering: {$sec} sec, Cached: {$cache}
+            Memory usage : {$mem}, Peak: {$peak}, Rendering: {$sec} sec, Cached: {$cache}
             </div>    
         STAT;
     }
