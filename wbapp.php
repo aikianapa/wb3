@@ -1011,24 +1011,6 @@ class wbApp
         return $this->route;
     }
 
-    public function variable($name, $value="__wbVarNotAssigned__")
-    {
-        if ($value=="__wbVarNotAssigned__") {
-            return $this->data[$name];
-        }
-        $this->data[$name]=$value;
-        return $this->data;
-    }
-
-    public function ___data($data="__wbVarNotAssigned__")
-    {
-        if ($data=="__wbVarNotAssigned__") {
-            return $this->data;
-        }
-        $this->data=$data;
-        return $this->data;
-    }
-
     public function template($name="default.php")
     {
         $this->template=wbGetTpl($name);
@@ -1195,8 +1177,10 @@ class wbApp
             }
             $cur=str_replace($_ENV["path_app"], "", $cur);
             wbError('func', __FUNCTION__, 1011, array($cur));
-        } 
-
+        } else if (!$out->is('html')) {
+            $out = $out->outer();
+            $out = $this->fromString("<html>\n{$out}\n</html>");
+        }
         return $out;
     }
 

@@ -108,6 +108,7 @@ if (typeof $ === 'undefined') {
     wbapp.ajaxAuto = function () {
         $(document).find("[data-ajax][auto]").each(function () {
             $(this).trigger("click");
+            if ($(this).attr('once') !== undefined) $(this).removeAttr('data-ajax').removeAttr('once');
             $(this).removeAttr("auto");
         });
     }
@@ -390,7 +391,12 @@ if (typeof $ === 'undefined') {
             }
             let opts = Object.assign({}, params);
             delete opts._event;
+            
+            
+            if (opts._tid !== undefined && opts._tid > '') delete opts.data; // добавил для очистки фильтра
+
             $.post(params.url, opts, function (data) {
+
                 if (count(data) == 2 && data.error !== undefined && data.callback !== undefined) {
                     eval(data.callback + '(params,data)');
                     if (func !== null) return func(params, data);

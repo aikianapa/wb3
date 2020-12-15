@@ -115,6 +115,19 @@ class ctrlAjax {
     return json_encode(['result'=>$out->outer()]);
   }
 
+  function renderTpl() {
+      header('Content-Type: text/html; charset=utf-8');
+      $app = &$this->app;
+      $tpl = $app->getTpl($app->vars('_route.params.0'));
+      if (!$tpl) {
+        return null;
+      } else {
+        $tpl->fetch();
+        $out = $tpl->outer();
+        return $out;
+      }
+  }
+
   function rmitem()
   {
       $app = $this->app;

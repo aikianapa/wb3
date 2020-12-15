@@ -12,6 +12,7 @@ $.fn.wbFilterChange = function (filter, target, flag = null) {
     });
 
     wbapp.ajax({ 'target': target, '_tid': target, 'filter': filter},function(){
+        console.log(target);
         $(that).prop('disabled', false);
     });
 }

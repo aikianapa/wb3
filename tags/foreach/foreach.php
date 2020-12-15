@@ -40,6 +40,7 @@ class tagForeach
         $dom->attr("id") > "" ? $tid = $dom->attr("id") : $tid = "fe_" . $dom->app->newId();
         $list = $parent = $dom->item;
         $options = [];
+        $dom->params("form") > "" ? $dom->params->table = $dom->params->form : null;
         $dom->params("table") > "" ? $table = $dom->params->table : $table = "";
         isset($dom->params->field) ? $field = $dom->params->field : $field = null;
        
@@ -69,8 +70,9 @@ class tagForeach
             $options["where"] = $dom->params->where;
         }
         if ($dom->params("render") == "client" && $dom->params("table") > "") {
-            $dom->attr("data-ajax", '{"url":"/ajax/' . $dom->params("table") . '/list/"}');
-            unset($table);
+            $dom->params->ajax = '/api/query/' . $dom->params("table") . '/';
+            $dom->attr("data-ajax", '{"url":"' . $dom->params("ajax") . '"}');
+            $table = null;
         }
         if ($dom->params("return") > "") {
             $options["return"] = $app->attrToArray($dom->params("return"));
@@ -244,7 +246,8 @@ class tagForeach
             
             isset($dom->params->pos) ? $pos = $dom->params->pos : $pos = 'bottom';
 
-            if ($srvpag) {
+            if ($srvpag OR ($app->route->controller == 'ajax' AND $app->vars('_post._route') > "")) {
+                // При вызове из data-ajax требуется второе условие
                 $res = [
                     'html' => $html,
                     'route' => $app->route,
