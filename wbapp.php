@@ -566,6 +566,8 @@ class wbApp
 
     public function __construct($settings=[])
     {
+        require_once __DIR__. '/modules/cms/cms_formsclass.php'; // important!!!
+
         $this->settings = new stdClass();
 
         foreach ($settings as $key => $val) {

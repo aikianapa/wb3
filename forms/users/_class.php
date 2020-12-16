@@ -1,4 +1,5 @@
 <?php
+
 class usersClass extends cmsFormsClass {
     function beforeItemSave(&$item) {
         if (isset($item['phone'])) {

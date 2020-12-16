@@ -9,6 +9,7 @@ ini_set('display_errors', 1);
 if (!isset($_SESSION["lang"])) $_SESSION["lang"] = "ru";
 require_once __DIR__."/modules/setup/requrements.php";
 require_once __DIR__."/functions.php";
+
 $app = new wbApp();
 session_write_close();
 ?>
