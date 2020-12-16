@@ -45,7 +45,7 @@ if (isset($_POST["_method"])) {
     $dir = explode("/",$file);
     $_POST["file"] = array_pop($dir);
     $config['upload_url'] = implode("/",$dir);
-} else if (isset($_POST['upload_url'])) {
+} else if ($app->vars("_req.upload_url") > "") {
     isset($_POST["files"]) ? $file = $_POST["files"][0] : null;
     $config['upload_url'] = $_POST['upload_url'];
 } else {
