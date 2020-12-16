@@ -1023,12 +1023,11 @@ class wbApp
         $_ENV['error'][__FUNCTION__] = '';
         null == $form ? $form = $this->vars->get("_route.form") : 0;
         null == $mode ? $mode = $this->vars->get("_route.mode") : 0;
+        $form == '_settings' ? $formname = substr($form, 1) : $formname = $form;
+
         $modename = $mode;
-        if (strtolower(substr($modename, -4)) == ".ini") {
-            $ini = true;
-        } else {
-            $ini = false;
-        }
+        strtolower(substr($modename, -4)) == ".ini" ? $ini = true : $ini = false;
+
         if (!in_array(strtolower(substr($modename, -4)), [".php",".ini",".htm",".tpl"])) {
             $modename = $modename.".php";
         }
@@ -1051,34 +1050,22 @@ class wbApp
         if (!isset($out)) {
             $current = '';
             $flag = false;
-            $path = array("/modules/cms/forms/{$form}/{$modename}","/forms/{$form}_{$modename}", "/forms/{$form}/{$form}_{$modename}", "/forms/{$form}/{$modename}");
+            $path = ["/forms/{$form}/{$formname}_{$modename}"
+                    ,"/forms/{$form}/{$modename}"
+                    ,"/forms/common/common_{$modename}"
+                ];
             foreach ($path as $form) {
-                if (false == $flag) {
-                    if (is_file($_ENV['path_engine'].$form)) {
-                        $current = $_ENV['path_engine'].$form;
-                        $flag = $engine;
-                    }
-                    if (is_file($_ENV['path_app'].$form) && false == $flag) {
-                        $current = $_ENV['path_app'].$form;
-                        $flag = true;
-                    }
-                }
+                    $current = wbNormalizePath($_ENV['path_engine'].$form);
+                    if (is_file($current)) break;
+                    $current = wbNormalizePath($_ENV['path_app'].$form);
+                    if (is_file($current)) break;
+                    $current = '';
             }
+
             //unset($form);
             if ('' == $current) {
-                $out=null;
-                $current = "{$_ENV['path_engine']}/forms/common/common_{$modename}";
-                if (is_file($current)) {
-                    $out = $this->fromFile($current, true);
-                }
-                $current = "{$_ENV['path_app']}/forms/common/common_{$modename}";
-                if (is_file($current)) {
-                    $out = $this->fromFile($current, true);
-                }
-                if ($out == null) {
-                    $current = wbNormalizePath("/forms/{$form}_{$modename}");
-                    $out = wbErrorOut(wbError('func', __FUNCTION__, 1012, array($current)), true);
-                }
+                    strtolower(substr($mode, -4)) == '.php' ? $arg = $modename : $arg = $aCall;
+                    $out = wbErrorOut(wbError('func', __FUNCTION__, 1012, array($arg)), true);
             } else {
                 if ($ini) {
                     $out = file_get_contents($current);
@@ -1090,7 +1077,10 @@ class wbApp
         }
         if (is_object($out)) {
             $out->path = $current;
+        } else {
+            $out = $this->fromString('<html>'.$out.'</html>');
         }
+
         return $out;
     }
 

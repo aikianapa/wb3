@@ -14,7 +14,7 @@ class cmsFormsClass {
 
     function list() {
         $app = $this->app;
-        $form = $this->getForm("list");
+        $form = $this->app->getForm($this->form, "list");
         if (!$form) {
           echo "Form {$app->vars("_route.form")}->list not found!";
         } else {
@@ -26,7 +26,7 @@ class cmsFormsClass {
     function methodForm($method) {
         // edit, role
         $app = $this->app;
-        $form = $this->getForm($method);
+        $form = $this->app->getForm($this->form,$method);
         if ($form) {
             $form->item = $this->app->itemRead($this->form,$app->vars("_route.id"));
             $form->item = wbTrigger('form', __FUNCTION__, 'beforeItem'.ucfirst($method), [$this->form], $form->item);
@@ -37,18 +37,5 @@ class cmsFormsClass {
         }
         die;
     }
-
-    function getForm($form) {
-      $app = $this->app;
-      if (is_file($app->vars("_env.path_app")."/forms/{$this->form}/{$form}.php")) {
-        $form = $app->fromFile($app->vars("_env.path_app")."/forms/{$this->form}/{$form}.php");
-      } else if (is_file(__DIR__."/forms/{$this->form}/{$form}.php")) {
-        $form = $app->fromFile(__DIR__."/forms/{$this->form}/{$form}.php");
-      } else {
-        $form = false;
-      }
-      return $form;
-    }
-
 }
 ?>

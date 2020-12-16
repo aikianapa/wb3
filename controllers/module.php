@@ -45,7 +45,7 @@ class ctrlModule {
       }
       $modules = $app->listModules();
       $module = $modules[$app->route->module];
-      $tpl = $app->fromFile($app->vars('_env.path_engine').'/modules/cms/forms/_settings/ui_mods.php');
+      $tpl = $app->getForm('_settings','ui_mods');
       $tpl = $app->fromString($tpl->find('#modSettingsWrapper')->inner());
       $out = $app->fromFile($module['sett']);
       $tpl->find("form > div")->html($out->outer());

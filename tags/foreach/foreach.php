@@ -246,7 +246,7 @@ class tagForeach
             
             isset($dom->params->pos) ? $pos = $dom->params->pos : $pos = 'bottom';
 
-            if ($srvpag OR ($app->route->controller == 'ajax' AND $app->vars('_post._route') > "")) {
+            if ($srvpag OR ($app->route->controller == 'ajax' AND $app->vars('_post._params') > "")) {
                 // При вызове из data-ajax требуется второе условие
                 $res = [
                     'html' => $html,

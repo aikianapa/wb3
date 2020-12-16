@@ -1360,8 +1360,9 @@ function wbError($type, $name, $error = '__return__error__', $args = null)
                 if ((array)$arg === $arg) {
                     $arg = implode(',', $arg);
                 }
-                $errname = str_replace('{{'.$key.'}}', $arg, $error);
+                $errname = str_replace('{{'.$key.'}}', $arg, $errname);
             }
+            $_ENV['errors'][$error] = $errname;
         }
 
         if ('__return__error__' == $error) {
