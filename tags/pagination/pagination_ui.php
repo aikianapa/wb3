@@ -18,6 +18,9 @@
     </li>
 </ul>
 
+<script type='wbapp'>
+    wbapp.loadScripts(['/engine/tags/pagination/pagination.js'],'pagination-js');
+</script>
 
 <wb-lang>
 [en]

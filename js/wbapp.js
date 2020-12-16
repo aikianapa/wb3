@@ -55,30 +55,6 @@ if (typeof $ === 'undefined') {
             return false;
         })
 
-
-        $(document).delegate(".pagination .page-link", "click", function (e) {
-            if ($(this).is('[disabled]') || $(this).parents('[disabled]').length) return false;
-            e.preventDefault();
-            let paginator = $(this).closest(".pagination");
-            let tid = $(paginator).data("tpl");
-            let params = wbapp.template[tid].params;
-
-            let page = $(this).attr("data-page");
-            let that = this;
-            let inner = $(that).html();
-            $(paginator).find('.page-link, .page-item').removeClass('active');
-            $(that).html(wbapp.ui.spinner_sm);
-
-            if (params._route) {
-                params.url = params._route.url;
-                params._params.page = page;
-            } else {
-                params.page = page;
-            }
-            params._tid = tid;
-            wbapp.ajax(params);
-        });
-
         $(document).delegate("input[type=search][data-ajax]", "keyup", function () {
             var minlen = 0;
             var that = this;

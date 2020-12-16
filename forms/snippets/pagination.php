@@ -22,4 +22,7 @@
     {{/if}}
     {{/if}}
   {{/if}}
+        <script type='wbapp'>
+            wbapp.loadScripts(['/engine/tags/pagination/pagination.js'],'pagination-js');
+        </script>
 </div>

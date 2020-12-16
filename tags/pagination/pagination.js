@@ -1,5 +1,7 @@
 $(document).one("pagination-js", function() {
 
+  wbapp.loadStyles(['/engine/tags/pagination/pagination.css']);
+
   $(document).find(".pagination .page-more[data-trigger]").each(function(){
       var more = this;
       var selector = $(this).attr("data-trigger");
@@ -10,71 +12,39 @@ $(document).one("pagination-js", function() {
 
   });
 
-  $(document).delegate(".pagination .page-link", "click", function(e) {
+  $(document).undelegate(".pagination:not(.wb-wait) .page-link", "tap click");
+  $(document).delegate(".pagination:not(.wb-wait) .page-link", "tap click", function (e) {
+    if ($(this).is('[disabled]') || $(this).parents('[disabled]').length) return false;
     e.preventDefault();
-    var paginator = $(this).closest(".pagination");
-    var pid = $(paginator).attr("id");
-    var tplid = pid.substr(5);
-    var item = $(this).parent("[data-page]");
-    if (item.is("[data-page=next]")) {
-      $(this).closest(".pagination").find(".page-item.active").next(".page-item:not([data-page=next])").children(".page-link").trigger("click");
-      return;
-    } else if (item.is("[data-page=more]")) {
-      $(this).closest(".pagination").find(".page-item.active").next(".page-item:not([data-page=next])").children(".page-link").trigger("click");
-      return;
-    } else if (item.is("[data-page=prev]")) {
-      $(this).closest(".pagination").find(".page-item.active").prev(".page-item:not([data-page=prev])").children(".page-link").trigger("click");
-      return;
+    let paginator = $(this).closest(".pagination");
+    let tid = $(paginator).data("tpl");
+    let params = wbapp.template[tid].params;
+    let page = $(this).attr("data-page");
+    let that = this;
+    let inner = $(that).html();
+    let offset = 0;
+
+    $(paginator).addClass('wb-wait');
+
+
+    $(paginator).find('.page-link, .page-item').removeClass('active');
+    $(that).html(wbapp.ui.spinner_sm);
+
+    if (params._route) {
+      params.url = params._route.url;
+      params._params.page = page;
+      if (params._params.offset !== undefined) offset = params._params.offset*1;
     } else {
-      $(this).wbPagination();
+      params.page = page;
     }
-    //$(document).find(".pagination[id=" + pid + "] .page-item").removeClass("active");
-    //$(document).find(".pagination[id=" + pid + "] .page-item:nth-child(" + ($(this).parent("li").index() + 1) + ")").addClass("active");
-  });
-
-
-  $.fn.wbPagination = async function() {
-    var paginator = $(this).closest(".pagination");
-    var that = $(this);
-    var id = $(paginator).attr("id");
-    var tid = '#'+id;
-
-    console.log("Trigger: pagination-click");
-    $(document).trigger("pagination-click",that);
-
-
-    //=======//
-    // Short function
-    var tpl = tid;
-    var page = explode("/", $(this).attr("data-page"));
-    var c = count(page);
-    var pagenum = page[c - 2];
-    var params = wbapp.tpl(tpl).params;
-    var uri = params.route.uri;
-      console.log(uri)
-    var result = await wbapp.postSync(uri, {
-      _watch_page: pagenum
-    },function(data){
-        console.log(data);
+    params._tid = tid;
+    wbapp.ajax(params, function () {
+      var top = $(tid).offset().top;
+      
+      $([document.documentElement, document.body]).animate({
+        scrollTop: top + offset
+      }, 500);
+      $(paginator).removeClass('wb-wait');
     });
-    var pager = $(result).find(".pagination#ajax-"+tpl).html();
-    result = $(result).find("[data-wb-tpl='"+tpl+"']");
-    $(result).find("script[type='text/locale'],template").remove();
-    result = $(result).html();
-    $("body").removeClass("cursor-wait");
-//    wbapp.watcher[tpl].page(result);
-//    window.location.hash = "page-" + idx + "-" + pagenum;
-
-    $(document).find(".pagination#ajax-"+tpl).html(pager);
-    $("body").removeClass("cursor-wait");
-    console.log("Trigger: pagination-done");
-    $(document).trigger("pagination-done",page,tpl,result);
-    return;
-    //=======//
-
-    //if (more == undefined || !$(more).length) $("[data-wb-tpl=" + tid + "]").closest().scrollTop(0);
-
-
-  }
-
+  });
 });

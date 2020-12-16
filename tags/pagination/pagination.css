@@ -7,6 +7,11 @@
     border-radius: 4px
 }
 
+.pagination.wb-wait * {
+    cursor: wait!important;
+}
+
+
 .page-link {
     position: relative;
     display: block;
