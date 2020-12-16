@@ -1260,10 +1260,11 @@ if (typeof $ === 'undefined') {
 
     setTimeout(function () {
         if (typeof str_replace == 'undefined') {
+            wbapp.loadStyles([`/engine/css/wbloader.css`]);
             wbapp.loadScripts([
-                `/engine/js/php.js`
+                `/engine/js/php.min.js`
                 , `/engine/js/jquery-migrate.min.js`
-                , `/engine/js/jquery.tap.js`
+                , `/engine/js/jquery.tap.min.js`
                 , `/engine/js/jquery-ui.min.js`
                 , `/engine/js/ractive.js`
                 , `/engine/js/lazyload.js`

@@ -8,3 +8,12 @@
         cursor: wait!important;
         z-index: 999999;
 }
+
+img[data-src]:not([src]) {
+        opacity: 0;
+}
+
+img[data-src][src] {
+        opacity: 1;
+        transition-duration: .8s;
+}

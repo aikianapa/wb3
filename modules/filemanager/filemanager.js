@@ -134,7 +134,7 @@
 
         $("#filemanager").undelegate("#list tr", "contextmenu");
         $("#filemanager").delegate("#list tr", "contextmenu", function() {
-            $(this).find("td.dropdown > a").trigger("click");
+            $(this).find("td .dropdown > a").trigger("click");
             return false;
         });
 

@@ -146,31 +146,33 @@
                                     <nobr>{{size}}</nobr>
                                 </td>
                                 <td class="hidden-xs-down">{{ext}}</td>
-                                <td class="dropdown" wb-if='"{{wr}}"=="1"' >
-                                    <a href="#" data-toggle="dropdown" class="btn pd-y-3 tx-gray-500 hover-info"
-                                        wb-if='"{{type}}"!=="back"'><i class="ri-more-2-fill"></i></a>
-                                    <div class="dropdown-menu dropdown-menu-right pd-10" wb-if='"{{type}}"!=="back"'>
-                                        <nav class="nav nav-style-1 flex-column" >
-                                            <a href="#edit" class="nav-link nobr" wb-if='"{{type}}"=="file"'><i
-                                                    class="fa fa-edit"></i> {{_lang.edit}}</a>
-                                            <a href="#rendir" class="nav-link nobr" wb-if='"{{type}}"=="dir"'><i
-                                                    class="fa fa-i-cursor"></i> {{_lang.rename}}</a>
-                                            <a href="#renfile" class="nav-link nobr" wb-if='"{{type}}"=="file"'><i
-                                                    class="fa fa-i-cursor"></i> {{_lang.rename}}</a>
-                                            <a href="#renlink" class="nav-link nobr"
-                                                wb-if='"{{type}}"=="dir1" OR "{{type}}"=="file1"'><i
-                                                    class="fa fa-i-cursor"></i> {{_lang.rename}}</a>
-                                            <a href="{{href}}" download="{{name}}" class="nav-link nobr"
-                                                wb-if='"{{type}}"=="file"'><i class="fa fa-download"></i>
-                                                {{_lang.download}}</a>
-                                            <a href="#rmfile" class="nav-link nobr" wb-if='"{{type}}"=="file"'><i
-                                                    class="fa fa-remove"></i> {{_lang.remove}}</a>
-                                            <a href="#rmdir" class="nav-link nobr" wb-if='"{{type}}"=="dir"'><i
-                                                    class="fa fa-remove"></i> {{_lang.remove}}</a>
-                                            <a href="#rmlink" class="nav-link nobr"
-                                                wb-if='"{{type}}"=="dir1" OR "{{type}}"=="file1"'><i
-                                                    class="fa fa-trash-o"></i> {{_lang.remove}}</a>
-                                        </nav>
+                                <td>
+                                    <div class="dropdown" wb-if='"{{wr}}"=="1"'>
+                                        <a href="#" data-toggle="dropdown" class="btn pd-y-3 tx-gray-500 hover-info"
+                                            wb-if='"{{type}}"!=="back"'><i class="ri-more-2-fill"></i></a>
+                                        <div class="dropdown-menu dropdown-menu-right pd-10" wb-if='"{{type}}"!=="back"'>
+                                            <nav class="nav nav-style-1 flex-column" >
+                                                <a href="#edit" class="nav-link nobr" wb-if='"{{type}}"=="file"'><i
+                                                        class="fa fa-edit"></i> {{_lang.edit}}</a>
+                                                <a href="#rendir" class="nav-link nobr" wb-if='"{{type}}"=="dir"'><i
+                                                        class="fa fa-i-cursor"></i> {{_lang.rename}}</a>
+                                                <a href="#renfile" class="nav-link nobr" wb-if='"{{type}}"=="file"'><i
+                                                        class="fa fa-i-cursor"></i> {{_lang.rename}}</a>
+                                                <a href="#renlink" class="nav-link nobr"
+                                                    wb-if='"{{type}}"=="dir1" OR "{{type}}"=="file1"'><i
+                                                        class="fa fa-i-cursor"></i> {{_lang.rename}}</a>
+                                                <a href="{{href}}" download="{{name}}" class="nav-link nobr"
+                                                    wb-if='"{{type}}"=="file"'><i class="fa fa-download"></i>
+                                                    {{_lang.download}}</a>
+                                                <a href="#rmfile" class="nav-link nobr" wb-if='"{{type}}"=="file"'><i
+                                                        class="fa fa-remove"></i> {{_lang.remove}}</a>
+                                                <a href="#rmdir" class="nav-link nobr" wb-if='"{{type}}"=="dir"'><i
+                                                        class="fa fa-remove"></i> {{_lang.remove}}</a>
+                                                <a href="#rmlink" class="nav-link nobr"
+                                                    wb-if='"{{type}}"=="dir1" OR "{{type}}"=="file1"'><i
+                                                        class="fa fa-trash-o"></i> {{_lang.remove}}</a>
+                                            </nav>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
