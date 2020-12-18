@@ -1,0 +1,101 @@
+@import url("../../css/colors.less");
+
+
+
+#tasks {
+
+    #taskComments {
+        height: calc(~"100vh - 127px");
+        .comment {
+        .close {
+            display: none;
+        }
+        &:hover .close {
+            display: inline-block;
+        }
+        .text {
+            color: @color_dark;
+        }
+        .time {
+            color: @color_gray;
+        }
+        }
+    }
+
+    .card:not(.empty) {
+        padding: 15px;
+        border-color: @color_gray;
+        box-shadow: none;
+        margin-bottom: 5px;
+        &:hover:not(.active) {
+            background-color: @color_light !important;
+        }
+
+        &.active {
+            background-color: @color_primary !important;
+            border: 0;
+            input {
+                color: @color_light!important;
+            }
+            .form-control::-moz-placeholder {
+                color: @color_light;
+                opacity: 1;
+            }
+
+            .form-control:-ms-input-placeholder {
+                color: @color_light;
+            }
+
+            .form-control::-webkit-input-placeholder {
+                color: @color_light;
+            }
+        }
+        .form-control::-moz-placeholder {
+            color: @color_dark;
+            opacity: 1;
+        }
+
+        .form-control:-ms-input-placeholder {
+            color: @color_dark;
+        }
+
+        .form-control::-webkit-input-placeholder {
+            color: @color_dark;
+        }
+
+        
+        input {
+            box-shadow: none;
+            color: @color_dark;
+            &:checked + div > input {
+                text-decoration: line-through;
+                color: @color_gray;
+            }
+        }
+
+        .close {
+            opacity:0;
+            color: white;
+            text-shadow: none;
+            display: inline-block;
+        }
+        
+        &:hover .close {
+            opacity:1;
+        }
+
+        &:hover:not(.active) .close {
+            color: @color_dark;
+        }
+
+.form-control {
+    height: auto;
+    border: 0;
+    padding: 0;
+    box-shadow: none;
+    background-color: transparent;
+}
+    }
+
+}
+

@@ -19,10 +19,9 @@ if ($err > '') {
     @mkdir($path.'/forms', 0766);
     @mkdir($path.'/modules', 0766);
     @mkdir($path.'/tpl', 0766);
-    @copy($path.'/engine/database/_settings.json', $path.'/database/__setup.json');
+    copy($path.'/engine/database/_settings.json', $path.'/database/__setup.json');
     !is_file($path.'/.htaccess') ? @copy($path.'/engine/.htaccess', $path.'/.htaccess') : null;
     !is_file($path.'/index.php') ? @copy($path.'/engine/index.php', $path.'/index.php') : null;
     !is_file($path.'/database/users.json') ? @copy($path.'/engine/database/users.json', $path.'/database/users.json') : null;
-
 }
 ?>

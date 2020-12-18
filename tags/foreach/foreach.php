@@ -11,12 +11,10 @@ class tagForeach
 
     function foreach($dom)
     {
-        if ($dom->is(":root")) {
-            $dom->rootError();
-        }
         if (!isset($dom->role)) {
             return $dom;
         }
+        $dom->is(":root") ? $dom->rootError() : null;
 
         $app = &$dom->app;
         $this->app = &$app;
@@ -35,9 +33,10 @@ class tagForeach
             $this->placeholder = $dom->parent()->attr("placeholder");
         }
 
+        $dom->params('tpl') == 'true' ? $dom->addTpl() : null;
         $tpl = $dom->html();
         $dom->html("");
-        $dom->attr("id") > "" ? $tid = $dom->attr("id") : $tid = "fe_" . $dom->app->newId();
+        $dom->parent()->attr("id") > "" ? $tid = $dom->parent()->attr("id") : $tid = "fe_" . $dom->app->newId();
         $list = $parent = $dom->item;
         $options = [];
         $dom->params("form") > "" ? $dom->params->table = $dom->params->form : null;
@@ -183,10 +182,11 @@ class tagForeach
             shuffle($list);
         }
         $dom->attr("data-ajax") == "" ? $render = false : $render = true;
+        $dom->params("render") > "" ? $render = $dom->params("render") : null;
+
         if (!$render) {
             $tpl = "<wb>{$tpl}</wb>";
         }
-
         foreach ((array) $list as $key => $val) {
             $value = $val;
             $val = (object) $val;
@@ -216,7 +216,16 @@ class tagForeach
         }
 
         if ($render == "client") {
-            $dom->append("<template id = \"{$tid}\" data-ajax=\"" . $dom->attr("data-ajax") . "\">\n{{#each result}}\n" . $tpl . "\n{{/each}}</template>\n");
+            $params = $dom->params;
+            $params->target = '#'.$tid;
+            $params = json_encode($params);
+            
+            $dom->params("from") > "" ? $from = $dom->params->from : $from = 'result';
+
+            $dom->append("<template id = \"{$tid}\" >\n{{#each {$from}}}\n" . $tpl . "\n{{/each}}</template>\n");
+            $dom->attr("data-ajax") > '' ? $dom->find("template[id='{$tid}']")->attr('data-ajax', $dom->attr("data-ajax")) : null;
+            $params > '' ? $dom->find("template[id='{$tid}']")->attr('data-params', $params) : null;
+
             $dom->find("template[id=\"{$tid}\"] .pagination")->attr("data-tpl", $tid);
         } else if ($dom->params("size") > "") {
             $size = $dom->params("size");

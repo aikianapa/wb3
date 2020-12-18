@@ -134,7 +134,7 @@ function wbInitSettings(&$app)
 
     isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'] : $lang = 'en';
     isset($settings['lang']) ? $_ENV['lang'] = $settings['lang'] : $_ENV['lang'] = substr($lang, 0, 2);
-    $_ENV['settings']['locale'] = substr($_ENV['lang'], 0, 2);
+    $app->lang = $_ENV['settings']['locale'] = substr($_ENV['lang'], 0, 2);
 
     if (isset($_ENV['settings']['path_tpl']) and $_ENV['settings']['path_tpl'] > '') {
         $_ENV['base']=$_ENV['settings']['path_tpl'];
@@ -413,22 +413,6 @@ function wbMail(
         } catch (Exception $e) {
             return ['error'=>true,'msg'=>$mail->ErrorInfo];
         }
-}
-
-function wbCheckWorkspace()
-{
-    if (!is_readable($_ENV['path_app']) or !is_writable($_ENV['path_app'])) {
-        @chmod($_ENV['path_app'], 0777);
-        if (!is_readable($_ENV['path_app']) or !is_writable($_ENV['path_app'])) {
-            $out = wbGetTpl('setup.htm');
-            $error = $out->find('#errors #rights');
-            $out->find('#error.alert-warning')->html($error);
-            $out->find('#wizard')->remove();
-            $out->wbSetData();
-            echo $out;
-            die;
-        }
-    }
 }
 
 function wbPagination($c, $m, $dots = '...')

@@ -179,6 +179,16 @@ if (typeof $ === 'undefined') {
             })
             eval(`data.${key} = value`);
             localStorage.setItem(list[0], json_encode(data));
+
+            $.each(wbapp.template, function (i, tpl) {
+                if (tpl.params.bind !== undefined && tpl.params.bind == key && 
+                    tpl.params.render !== undefined && tpl.params.render == 'client') {
+                    wbapp.renderTemplate(tpl.params, value);
+                }
+            });
+
+
+
             $(document).trigger("bind", { key: key, data: value });
             console.log("Trigger: bind [" + key + "]");
             $(document).trigger("bind-" + key, value);
@@ -279,11 +289,13 @@ if (typeof $ === 'undefined') {
             })
 
             if (data._id !== undefined) $(obj).data('saved-id', data._id);
-            console.log("Trigger: wb-save-done");
-            $(obj).trigger("wb-save-done", {
-                params: params,
-                data: data
-            });
+            if (params.silent == undefined || !params.silent == 'true') {
+                console.log("Trigger: wb-save-done");
+                $(obj).trigger("wb-save-done", {
+                    params: params,
+                    data: data
+                });
+            }
         });
     }
 
@@ -661,7 +673,11 @@ if (typeof $ === 'undefined') {
             }
             tid = "#" + tid;
             var params = [];
-            if ($(this).attr("data-params") !== undefined) params = json_decode($(this).attr("data-params"));
+            if ($(this).attr("data-params") !== undefined) {
+                try {
+                    params = json_decode($(this).attr("data-params"));    
+                } catch (error) {null}
+            }
             $(this).removeAttr("data-params");
             if ($(this).attr("data-ajax") !== undefined) {
                 params = wbapp.parseAttr($(this).attr("data-ajax"));
@@ -672,8 +688,8 @@ if (typeof $ === 'undefined') {
                 $(this).trigger("click", tid);
             } else {
                 wbapp.tpl(tid, {
-                    html: $(this).html(),
-                    params: params
+                    "html": $(this).html(),
+                    "params": params
                 });
             }
             if ($(this).attr("visible") == undefined) $(this).remove();
@@ -688,6 +704,14 @@ if (typeof $ === 'undefined') {
 
     wbapp.tpl = function (tid, data = null) {
         if (data == null) {
+            if (wbapp.template[tid].params.locale !== undefined) {
+                let tpl = wbapp.template[tid].html;
+                let loc = wbapp.template[tid].params.locale;
+                $.each(loc, function (key, val) {
+                    tpl = str_replace('{{_lang.'+key+'}}',val,tpl);
+                });
+                wbapp.template[tid].html = tpl;
+            }
             return wbapp.template[tid];
         } else {
             wbapp.template[tid] = data;
@@ -699,7 +723,6 @@ if (typeof $ === 'undefined') {
         var newbind = false;
         if (params._tid !== undefined) tid = params._tid;
         if (params.target !== undefined) tid = params.target;
-
 
         /*
         var that = params._event.target;
@@ -723,7 +746,7 @@ if (typeof $ === 'undefined') {
                 return data
             }
         })
-        wbapp.storage(params.bind, data);
+        ///wbapp.storage(params.bind, data);
         
         wbapp.template[tid].params = params;
         var pagination = $(tid).find(".pagination");
@@ -1287,6 +1310,7 @@ if (typeof $ === 'undefined') {
         wbapp.session();
         wbapp.settings();
         wbapp.lazyload();
+        $(document).scrollTop(0);
     });
     function is_object(val) { return val instanceof Object; }
     function is_callable(t, n, o) { var e = "", r = {}, i = ""; if ("string" == typeof t) r = window, e = i = t; else { if (!(t instanceof Array && 2 === t.length && "object" == typeof t[0] && "string" == typeof t[1])) return !1; r = t[0], i = t[1], e = (r.constructor && r.constructor.name) + "::" + i } return !(!n && "function" != typeof r[i]) && (o && (window[o] = e), !0) }

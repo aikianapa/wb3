@@ -406,15 +406,22 @@ class wbDom extends DomQuery
             return;
         }
         $this->params->route = $this->app->vars("_route");
+        isset($this->locale[$this->app->lang]) ? $this->params->locale = $this->locale[$this->app->lang] : $this->params->locale = [];
         $params = json_encode($this->params);
-        ($this->attr("id") > '') ? $tplId = $this->attr("id") : $tplId = "tp_".md5($params);
+        if ($this->attr("id") > '') {
+            $tplId = $this->attr("id");
+        } else if (substr($this->tagName,0,3) == 'wb-' AND $this->parent()->attr("id") > '') {
+            $tplId = $this->parent()->attr("id");
+        } else {
+            $tplId = "tp_".md5($params);
+        }
         $this->params->tpl = $tplId;
         if ($real) {
             $tpl = $this->outer();
-            $this->after("
+            $this->after("\n
                   <template id='{$tplId}' data-params='{$params}'>
                       $tpl
-                  </template>");
+                  </template>\n");
             $this->attr("data-wb-tpl", $tplId);
         }
         return $tplId;
