@@ -8,13 +8,13 @@ class tagInclude {
     if ($dom->is(":root")) $dom->rootError();
     if ($dom->params("src")) {
         $inc = $dom->app->fromFile($_ENV["path_app"].$dom->params("src"));
-        $dom->before("<!-- Include src: ".$dom->params("src")." -->");
+        $dom->before("\n<!-- Include src: ".$dom->params("src")." -->\n");
     } else if ($dom->params("url")) {
         $inc = $dom->app->fromString(file_get_contents($dom->app->vars("_route.host").$dom->params("url")));
-        $dom->before("<!-- Include url: ".$dom->params("url")." -->");
+        $dom->before("\n<!-- Include url: ".$dom->params("url")." -->\n");
     } else if ($dom->params("tpl")) {
         $inc = $dom->app->getTpl($dom->params("tpl"));
-        $dom->before("<!-- Include tpl: ".$dom->params("tpl")." -->");
+        $dom->before("\n<!-- Include tpl: ".$dom->params("tpl")." -->\n");
     } else if ($dom->params("form")) {
       $form = $dom->params("form");
       $mode = $dom->params("mode");
@@ -24,7 +24,7 @@ class tagInclude {
           $mode = implode("_",$mode);
       }
       $inc = $dom->app->getForm($form,$mode,$dom->params("engine"));
-      $dom->before("<!-- Include form: {$form}->{$mode} -->");
+      $dom->before("\n<!-- Include form: {$form}->{$mode} -->\n");
 
     }
     if (isset($inc) AND is_object($inc)) {

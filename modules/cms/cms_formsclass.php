@@ -19,6 +19,10 @@ class cmsFormsClass {
           echo "Form {$app->vars("_route.form")}->list not found!";
         } else {
           $form->fetch();
+          if ($app->vars('_post.target') > '') {
+              $form = $form->find($app->vars('_post.target'));
+              $form = $app->fromString('<html>'.$form->outer().'</html>');
+          }
           echo $form->html();
         }
     }

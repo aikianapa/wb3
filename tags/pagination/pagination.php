@@ -67,15 +67,17 @@ class tagPagination
             foreach ( $pagarr as $i => $p ) {
                 $pn = $p;
                 if ($p == '...' and $pagarr[$i-1]<$page ) {
-                    $pn = intval($page/2);
+                    $pn = intval(($pagarr[$i+1] + $pagarr[$i-1]) /2);
                 }
                 if ($p == '...' and $pagarr[$i-1] >= $page ) {
-                    $pn = intval($page+( $pages-$page )/2);
+                    //$pn = intval($page+( $pages-$page )/2);
+                    $pn = intval( ($pagarr[$i+1] + $pagarr[$i-1]) /2 );
                 }
 
                 $href = $_ENV['route']['controller'].'/'.$_ENV['route']['mode'].'/'.$form.'/'.$pn;
                 $pagination['pages'][$i] = array(
-                    'page'=>$p,
+                    'label'=>$p,
+                    'page'=>$pn,
                     'href'=>$href,
                     'flag'=>$flag,
                     'data'=>"{$tplId}-{$pn}"

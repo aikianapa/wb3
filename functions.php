@@ -1977,7 +1977,9 @@ function wbAuthGetContents($url, $get=null, $username=null, $password=null)
     $opts = array(
                 'http'=>array(
                     'method'=>'GET',
-                    'header'=>$cred,
+                    'header'=>$cred
+                    ."\r\nCookie: ".session_name()."=".session_id()
+                    ."\r\nContent-Type: application/x-www-form-urlencoded",
                     'content'=>$get
                 ),
                  "ssl"=>array(
@@ -2007,7 +2009,10 @@ function wbAuthPostContents($url, $post=null, $username=null, $password=null)
     $opts = array(
                 'http'=>array(
                     'method'=>'POST',
-                    'header'=>$cred."\r\nCookie: ".session_name()."=".session_id()."\r\n",
+                    'header'=>$cred
+                    ."\r\nCookie: ".session_name()."=".session_id()
+                    ."\r\nContent-Length: ".strlen($post)
+                    ."\r\nContent-Type: application/x-www-form-urlencoded",
                     'content'=>$post
                 ),
                  "ssl"=>array(

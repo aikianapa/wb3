@@ -181,7 +181,7 @@ if (typeof $ === 'undefined') {
             localStorage.setItem(list[0], json_encode(data));
 
             $.each(wbapp.template, function (i, tpl) {
-                if (tpl.params.bind !== undefined && tpl.params.bind == key && 
+                if (tpl.params.bind !== undefined && tpl.params.bind == key &&
                     tpl.params.render !== undefined && tpl.params.render == 'client') {
                     wbapp.renderTemplate(tpl.params, value);
                 }
@@ -223,13 +223,14 @@ if (typeof $ === 'undefined') {
         data = wbapp.objByForm(form);
         if (data._idx) delete data._idx;
 
-        if ($(obj).is(":input") && params.table && (params.id || params.item) && params.field) {
+        if ($(obj).is("input,select,textarea") && params.table && (params.id || params.item)) {
             let fld = $(obj).attr("name");
             let value = $(obj).val();
             let id;
+            if (params.field == undefined && fld > '') params.field = fld;
             if ($(obj).is(":checkbox") && $(obj).prop("checked")) value = "on";
             if ($(obj).is(":checkbox") && !$(obj).prop("checked")) value = "";
-            if ($(obj).is("textarea")) value = $(obj).html();
+
             if (params.id) {
                 id = params.id;
             } else if (params.item) id = params.item;
@@ -271,31 +272,38 @@ if (typeof $ === 'undefined') {
 
             if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
 
-            
             $.each(wbapp.template, function (i, tpl) {
-                if (tpl.params && tpl.params && tpl.params.bind && tpl.params.render && tpl.params.render == 'client') {
+                if (tpl.params.render && tpl.params.render !== 'client') tpl.params.render = 'server';
+
+                if (tpl.params.render == 'client') {
                     // client-side update
-                    if (tpl.params.bind && (tpl.params.bind == params.bind || tpl.params.bind == params.update) ) {
+                    if (tpl.params.bind && (tpl.params.bind == params.bind || tpl.params.bind == params.update)) {
                         if (params.bind) wbapp.storage(params.bind, data);
                         if (params.update) wbapp.storageUpdate(params.update, data);
                     }
-                } else if (tpl.params && tpl.params._params && tpl.params._params.bind == params.update) {
+                } else {
                     // server-side update
-                    wbapp.ajax(tpl.params, function (data) {
-                        let inner = $(data.data).find(tpl.params.target).html();
-                        $(tpl.params.target).html(inner);
-                    });
+                    if (tpl.params.route) {
+                        delete tpl.params.data;
+                        wbapp.ajax(tpl.params, function (data) {
+                            var inner = '<wb>'+data.data+'</wb>';
+                            inner = $(inner).find(tpl.params.target).html();
+                            $(tpl.params.target).html(inner);
+                        });
+                    }
                 }
             })
 
             if (data._id !== undefined) $(obj).data('saved-id', data._id);
-            if (params.silent == undefined || !params.silent == 'true') {
-                console.log("Trigger: wb-save-done");
-                $(obj).trigger("wb-save-done", {
-                    params: params,
-                    data: data
-                });
-            }
+            if (params.silent !== undefined && (params.silent == true || params.silent == 'true')) {
+                params.silent = true;
+            } else { params.silent = false; }
+            console.log("Trigger: wb-save-done");
+            $(obj).trigger("wb-save-done", {
+                params: params,
+                data: data,
+            });
+
         });
     }
 
@@ -341,17 +349,12 @@ if (typeof $ === 'undefined') {
     wbapp.parseAttr = function (queryString = null) {
         if (queryString == null) queryString = $(this).attr("wb-data");
         queryString = str_replace("'", '"', queryString);
+        queryString = str_replace("&amp;", '&', queryString);
         var params = {};
         if (wbapp.checkJson(queryString)) {
             params = JSON.parse(queryString);
         } else {
-            var queries, temp, i, l;
-            queries = queryString.split("&");
-            // Convert the array of strings into an object
-            for (i = 0, l = queries.length; i < l; i++) {
-                temp = queries[i].split('=');
-                params[temp[0]] = temp[1];
-            }
+            parse_str(queryString, params);
         }
         $(this).data("wb-data", params);
         return params;
@@ -363,34 +366,36 @@ if (typeof $ === 'undefined') {
             if (params.form !== undefined) {
                 params.formdata = wbapp.objByForm(params.form);
                 params.formflds = {};
-                    $(params.form).find('[name][placeholder]').each(function(){
-                        if ($(this).attr('name')) {
-                            if ($(this).attr('data-label') > '') {
-                                params.formflds[$(this).attr('name')] = $(this).attr('data-label');
-                            } else if ($(this).closest('.form-group').find('label').length) {
-                                params.formflds[$(this).attr('name')] = $(this).closest('.form-group').find('label').text();
-                            } else if ($(this).prev("label").length) {
-                                params.formflds[$(this).attr('name')] = $(this).prev("label").text();
-                            } else if ($(this).attr('placeholder') > '') {
-                                params.formflds[$(this).attr('name')] = $(this).attr('placeholder');
-                            }
+                $(params.form).find('[name][placeholder]').each(function () {
+                    if ($(this).attr('name')) {
+                        if ($(this).attr('data-label') > '') {
+                            params.formflds[$(this).attr('name')] = $(this).attr('data-label');
+                        } else if ($(this).closest('.form-group').find('label').length) {
+                            params.formflds[$(this).attr('name')] = $(this).closest('.form-group').find('label').text();
+                        } else if ($(this).prev("label").length) {
+                            params.formflds[$(this).attr('name')] = $(this).prev("label").text();
+                        } else if ($(this).attr('placeholder') > '') {
+                            params.formflds[$(this).attr('name')] = $(this).attr('placeholder');
                         }
-                    })
+                    }
+                })
             }
             let opts = Object.assign({}, params);
             delete opts._event;
-            
-            
-            if (opts._tid !== undefined && opts._tid > '') delete opts.data; // добавил для очистки фильтра
+
+            if (opts._tid !== undefined && opts._tid > '') {
+                delete opts.data; // добавил для очистки фильтра
+                params = wbapp.tpl(opts._tid).params;
+            }
 
             $.post(params.url, opts, function (data) {
-
                 if (count(data) == 2 && data.error !== undefined && data.callback !== undefined) {
                     eval(data.callback + '(params,data)');
                     if (func !== null) return func(params, data);
                 }
 
                 if (params.target && params.target > '#') $(document).find(params.target).html($(data).find(params.target).html());
+
                 if (params.html) $(document).find(params.html).html(data);
                 if (params.append) $(document).find(params.append).append(data);
                 if (params.prepend) $(document).find(params.prepend).prepend(data);
@@ -405,14 +410,15 @@ if (typeof $ === 'undefined') {
                     // $inp = $(params._event.target).parent();
                     // тут нужна обработка значений на клиенте
                 }
+
                 if (params.render == 'client') {
                     let res = $(data).find(params.target).html();
                     $(document).find(params.target).html(res);
                 } else if (params.render == undefined || params.render == 'server') {
                     if (data.html !== undefined) {
                         $(document).find(params.target).html(data.html);
-                    } 
-                    
+                    }
+
                     $(document).find(params.target).children('template').remove();
 
                     if ($(document).find(params.target).children(':first-child').is('tr')) {
@@ -423,7 +429,7 @@ if (typeof $ === 'undefined') {
                     if (data.pos == 'top') {
                         $(pagert).prev('nav').remove();
                         $(pagert).before(data.pag);
-                    } 
+                    }
                     if (data.pos == 'bottom') {
                         $(pagert).next('nav').remove();
                         $(pagert).after(data.pag);
@@ -436,12 +442,12 @@ if (typeof $ === 'undefined') {
                     }
 
                     if ($(params.target).is('tbody')) {
-                            var top = $(params.target);
+                        var top = $(params.target);
                         if ($(top).find('nav:first-child .pagination').length) {
                             if ($(top).prev('nav').length) $(top).prev('nav').html($(params.target).find('nav:first-child .pagination'));
                         }
                         if ($(top).find('nav .pagination').length) {
-                             if ($(top).next('nav').length) $(top).next('nav').html($(params.target).find('nav:last-child .pagination'));
+                            if ($(top).next('nav').length) $(top).next('nav').html($(params.target).find('nav:last-child .pagination'));
                         }
                     }
                 }
@@ -484,7 +490,7 @@ if (typeof $ === 'undefined') {
                         })
                     }
                 });
-                
+
                 if (target._params && target._params.page !== undefined) target._params.page = 1
                 if (target._params && target._params.pages !== undefined) delete target._params.pages
                 if (target._params && target._params.count !== undefined) delete target._params.count
@@ -517,7 +523,7 @@ if (typeof $ === 'undefined') {
     }
 
 
-    wbapp.loading = function() {
+    wbapp.loading = function () {
 
     }
 
@@ -569,7 +575,7 @@ if (typeof $ === 'undefined') {
         }
 
         if (is_object(html)) { var tpl = $(html).outer(); } else { var tpl = html; }
-// контроллер не обслуживает данный запрос - устарело
+        // контроллер не обслуживает данный запрос - устарело
         var url = "/ajax/setdata/" + form + "/" + item;
         var res = null;
         var param = { tpl: tpl, data: data };
@@ -653,7 +659,7 @@ if (typeof $ === 'undefined') {
         return data;
     }
 
-    wbapp.tplInit = async function () {
+    wbapp.tplInit = function () {
         if (!wbapp.template) wbapp.template = {};
         if (wbapp.template['wb.modal'] == undefined) {
             var res = wbapp.getForm("snippets", "modal");
@@ -662,7 +668,7 @@ if (typeof $ === 'undefined') {
                 params: {}
             });
         }
-        $(document).find("template").each(async function () {
+        $(document).find("template").each(function () {
             var tid
             if (tid == undefined) tid = $(this).parent().attr("id");
             if (tid == undefined && $(this).is("template[id]")) tid = $(this).attr("id");
@@ -672,27 +678,35 @@ if (typeof $ === 'undefined') {
                 var tid = $(this).attr("id");
             }
             tid = "#" + tid;
-            var params = [];
-            if ($(this).attr("data-params") !== undefined) {
-                try {
-                    params = json_decode($(this).attr("data-params"));    
-                } catch (error) {null}
-            }
-            $(this).removeAttr("data-params");
-            if ($(this).attr("data-ajax") !== undefined) {
-                params = wbapp.parseAttr($(this).attr("data-ajax"));
-                wbapp.tpl(tid, {
-                    html: $(this).html(),
-                    params: params
-                });
-                $(this).trigger("click", tid);
-            } else {
-                wbapp.tpl(tid, {
-                    "html": $(this).html(),
-                    "params": params
-                });
-            }
-            if ($(this).attr("visible") == undefined) $(this).remove();
+            
+                var params = [];
+                if ($(this).attr("data-params") !== undefined) {
+                    try {
+                        params = wbapp.parseAttr($(this).attr("data-params"));
+                    } catch (error) { null }
+                }
+
+                let html = $(this).html();
+                html = html.replace(/<template\b[^<]*(?:(?!<\/template>)<[^<]*)*<\/template>/gi, "");                
+
+                
+                $(this).removeAttr("data-params");
+                if ($(this).attr("data-ajax") !== undefined) {
+                    let prms = wbapp.parseAttr($(this).attr("data-ajax"));
+                    params = array_merge(prms, params);
+                    wbapp.tpl(tid, {
+                        'html': html,
+                        'params': params
+                    });
+                    $(this).trigger("click", tid);
+                } else {
+                    wbapp.tpl(tid, {
+                        "html": html,
+                        "params": params
+                    });
+                }
+            
+            if ($(this).prop("visible") == undefined) $(this).remove();
         });
         wbapp.wbappScripts();
     }
@@ -708,7 +722,7 @@ if (typeof $ === 'undefined') {
                 let tpl = wbapp.template[tid].html;
                 let loc = wbapp.template[tid].params.locale;
                 $.each(loc, function (key, val) {
-                    tpl = str_replace('{{_lang.'+key+'}}',val,tpl);
+                    tpl = str_replace('{{_lang.' + key + '}}', val, tpl);
                 });
                 wbapp.template[tid].html = tpl;
             }
@@ -739,15 +753,17 @@ if (typeof $ === 'undefined') {
             newbind = tid;
         }
 
+        var html = wbapp.template[tid].html;
+
         wbapp.bind[params.bind][tid] = new Ractive({
             target: tid,
-            template: wbapp.template[tid].html,
+            template: html,
             data: () => {
                 return data
             }
         })
         ///wbapp.storage(params.bind, data);
-        
+
         wbapp.template[tid].params = params;
         var pagination = $(tid).find(".pagination");
         if (pagination) {
@@ -766,9 +782,9 @@ if (typeof $ === 'undefined') {
                 } catch (error) {
                     wbapp.bind[params.bind][tid].update(data);
                 }
-                
+
             })
-        }        
+        }
     }
 
     wbapp.newId = function (separator, prefix) {
@@ -787,7 +803,7 @@ if (typeof $ === 'undefined') {
     }
 
     wbapp.modalsInit = function () {
-        var zndx = $(document).data("modal-zindex");
+        var zndx = $(document).data("modal-zindex") * 1;
         if (document.modalZndx == undefined) {
             document.modalZndx = 2000;
         }
@@ -812,7 +828,7 @@ if (typeof $ === 'undefined') {
                     handle: '.modal-header'
                 });
 
-            var zndx = document.modalZndx + 10;
+            var zndx = document.modalZndx * 1 + 10;
             document.modalZndx = zndx;
             if (!$(this).closest().is("body")) {
                 if ($(this).data("parent") == undefined) $(this).data("parent", $(this).closest());
@@ -831,7 +847,7 @@ if (typeof $ === 'undefined') {
 
         $(document).delegate(".modal [data-dismiss]", "click", function (event) {
             event.preventDefault();
-            var zndx = $(this).attr("data-dismiss");
+            var zndx = $(this).attr("data-dismiss") * 1;
             var modal = $(document).find(".modal[data-zndx='" + $(this).attr("data-dismiss") + "']");
             modal.modal("hide");
             $("#modalBackDrop" + (zndx - 5) + ".modal-backdrop").remove();
@@ -839,9 +855,9 @@ if (typeof $ === 'undefined') {
 
         $(document).delegate(".modal", "hide.bs.modal", function (event) {
             var that = $(event.target);
-            var zndx = $(that).attr("data-zndx");
+            var zndx = $(that).attr("data-zndx") * 1;
             $("#modalBackDrop" + (zndx - 5) + ".modal-backdrop").remove();
-            var zndx = document.modalZndx - 10;
+            var zndx = document.modalZndx * 1 - 10;
             document.modalZndx = zndx;
         });
         $(document).delegate(".modal", "hidden.bs.modal", function (event) {
@@ -873,7 +889,7 @@ if (typeof $ === 'undefined') {
             modal = $("<div>" + modal.content + "</div>").find(".modal").clone();
             $(document).data("wbapp-modal", modal);
         }
-        var zndx = document.modalZndx + 10;
+        var zndx = document.modalZndx * 1 + 10;
         document.modalZndx = zndx;
         if (id !== null) $(modal).attr("id", id);
         if (zndx !== undefined) $(modal).data("zndx", zndx).attr("style", "z-index:" + zndx);
@@ -1044,14 +1060,14 @@ if (typeof $ === 'undefined') {
         return answer;
     }
 
-    wbapp.check_email = function(email) {
+    wbapp.check_email = function (email) {
         if (email.match(/^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/i)) {
             return true;
         } else {
             return false;
         }
     }
-    
+
 
 
     var array_column = function (list, column, indice) {

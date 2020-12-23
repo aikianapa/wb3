@@ -61,7 +61,7 @@ $(document).on("wb-save-done", function (e, params) {
         $("#userProfileMenu").data("ractive").set(params.data);
         wbapp.lazyload();
     }
-    wbapp.toast("Сохранение","Данные успешно сохранены",{target:'.content-toasts','bgcolor':'success','txcolor':'white'});
+    if (params.params.silent == undefined || params.params.silent !== true) wbapp.toast("Сохранение","Данные успешно сохранены",{target:'.content-toasts','bgcolor':'success','txcolor':'white'});
 })
 
 $(document).on("wb-ajax-done",function(e,params) {

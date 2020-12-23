@@ -6,7 +6,7 @@
 
     <wb-foreach wb="from=pages&tpl=false">
         <li class="page-item">
-            <a class="page-link" href="#{{page}}" data-page='{{page}}'>{{page}}</a>
+            <a class="page-link" href="#{{page}}" data-page='{{page}}'>{{label}}</a>
         </li>
     </wb-foreach>
 

@@ -91,8 +91,8 @@ class ctrlForm
         $form = $app->vars('_route.params.0');
         $mode = $app->vars('_route.params.1');
         if ($mode == 'list' AND $app->vars('_post.render') == 'client') {
-            $dom = $app->getForm($form, $mode);
-            $dom->fetch();
+//            $dom = $app->getForm($form, $mode);
+//            $dom->fetch();
             $options = ( object )$_POST;
             !isset($options->size) ? $options->size = 500 : 0 ;
             !isset($options->page) ? $options->page = 1 : 0;

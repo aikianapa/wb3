@@ -10,34 +10,6 @@ class jsonDrv
         $this->app = $app;
     }
 
-    public function itemRead1($form = null, $id = null)
-    {
-        $file = $this->tableFile($form);
-
-        $list = JsonMachine::fromFile($file);
-        $item = null;
-
-        $cid = md5($file . $id . $_SESSION['lang']);
-
-        if (isset($_ENV['cache'][$cid])) {
-            $item = $_ENV['cache'][$cid];
-        } else {
-            foreach ($list as $key => $data) {
-                if (isset($data['_id']) and $data['_id'] == $id) {
-                    $item = &$data;
-                    break;
-                }
-            }
-        }
-        if ($item) {
-            $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
-        } else {
-            wbError('func', __FUNCTION__, 1006, func_get_args());
-            $item = null;
-        }
-        return $item;
-    }
-
     public function itemRead($form = null, $id = null)
     {
             $list = $this->itemList($form, ['orm' => "where('id','{$id}')"]);
@@ -277,6 +249,7 @@ class jsonDrv
         $flag = true;
         foreach ($iter as $key => $item) {
             $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
+
             if (isset($options->trigger)) {
                 $item = wbTrigger('form', __FUNCTION__, $options->trigger, func_get_args(), $item);
             }

@@ -2,48 +2,77 @@
 
 
 
-#tasks {
-
-    #taskComments {
+#notes {
+    #noteComments {
         height: calc(~"100vh - 127px");
-        .comment {
-        .close {
-            display: none;
-        }
-        &:hover .close {
-            display: inline-block;
-        }
-        .text {
-            color: @color_dark;
-        }
-        .time {
-            color: @color_gray;
-        }
-        &:hover {
-            background-color: @color_light;
-        }
-        }
     }
 
-        .form-control {
-            box-shadow: none;
-        }
+    .form-control {
+        box-shadow: none;
+    }
+
+.paper {
+    position: relative;
+    background: -webkit-linear-gradient(top, #f0f0f0 0%, white 5%) 0 0;
+    background: -moz-linear-gradient(top, #f0f0f0 0%, white 5%) 0 0;
+    background: linear-gradient(top, #f0f0f0 0%, white 5%) 0 0;
+    -webkit-background-size: 100% 30px;
+    -moz-background-size: 100% 30px;
+    -ms-background-size: 100% 30px;
+    background-size: 100% 30px;
+}
+
+.paper:before {
+    content: '';
+    position: absolute;
+    width: 0px;
+    top: 0;
+    left: 39px;
+    bottom: 0;
+    border-left: 1px solid #F9D3D3;
+}
+
+.paper textarea {
+    border: none;
+    border-radius: 0;
+    background-color: transparent;
+    height: calc(~"100vh - 110px");
+    padding: 0px 0 0 55px;
+    line-height: 30px;
+    min-height: 210px;
+}
 
     .card:not(.empty) {
-        padding: 15px;
+        margin: 5px;
         border-color: @color_gray;
         box-shadow: none;
         margin-bottom: 5px;
+
+        cursor: pointer;
+
         &:hover:not(.active) {
             background-color: @color_light !important;
+        }
+        .card-body {
+            display: inline-block;
+            padding:5px;
+            .text {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 16px;
+            max-height: 32px;
+            &::first-line {
+                font-weight: bold;
+            }
+        }
         }
 
         &.active {
             background-color: @color_primary !important;
             border: 0;
-            input {
-                color: @color_light!important;
-            }
+            color: @color_light!important;
+
             .form-control::-moz-placeholder {
                 color: @color_light;
                 opacity: 1;
@@ -57,6 +86,7 @@
                 color: @color_light;
             }
         }
+
         .form-control::-moz-placeholder {
             color: @color_dark;
             opacity: 1;
@@ -85,6 +115,7 @@
             color: white;
             text-shadow: none;
             display: inline-block;
+            font-weight: normal;
         }
         
         &:hover .close {

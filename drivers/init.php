@@ -121,14 +121,19 @@ function wbItemRename($form = null, $old = null, $new = null, $flush = true)
 
 function wbItemSave($form, $item = null, $flush = true)
 {
-    $item = wbItemInit($form, $item);
-    $item = wbTrigger('form', __FUNCTION__, 'beforeItemSave', func_get_args(), $item);
     $db = wbSetDb($form);
-    $item = $db->itemSave($form, $item, $flush);
+    $item = wbTrigger('form', __FUNCTION__, 'beforeItemSave', func_get_args(), $item);
+
     if ($item) {
         // читаем всю запись, иначе возвращаются не все поля
-        $item = $db->itemRead($form, $item["id"]);
+        $src = $db->itemRead($form, $item["id"]);
+        if ($src) {
+            $item = array_merge($src, $item);
+        } else {
+            $item = wbItemInit($form, $item);
+        }
     }
+    $item = $db->itemSave($form, $item, $flush);
     $item = wbTrigger('form', __FUNCTION__, 'afterItemSave', func_get_args(), $item);
     return $item;
 }

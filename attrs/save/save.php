@@ -32,19 +32,19 @@ class attrSave extends wbDom
         }
         $callback = "wbapp.save($(this),".json_encode($params).");";
 
-        if (!$dom->is("[contenteditable]") && !$dom->is("input,select.textarea")) {
+        if (!$dom->is("[contenteditable]") && !$dom->is("input,select,textarea")) {
             if ($params->method == "ajax") {
                 $callback .= "return false;";
             }
             $dom->attr("onClick", $callback);
-        } elseif ($dom->is(":input")) {
+        } elseif ($dom->is("input,textarea,select")) {
             $callback = "wbapp.save($(this),".json_encode($params).");";
-            $dom->attr("onChange", $callback);
+            $dom->attr("onKeyup", $callback);
         } else {
             $dom->addClass("contenteditable");
             $params->editor_id = $id;
             $callback = "wbapp.save($(this),".json_encode($params).");";
-            if ($dom->is(":input") || $params->editor>"") {
+            if ($dom->is("input,textarea,select") || $params->editor>"") {
                 $dom->attr("onChange", $callback);
             } else {
                 $dom->attr("onBlur", $callback);

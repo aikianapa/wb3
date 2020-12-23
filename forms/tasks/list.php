@@ -38,7 +38,7 @@
                     <div class="d-flex">
                         <nav class="nav navbar col">
                             <button class="order-1 btn btn-success btn-sm pull-right btn-icon" id="newTask">
-                                <i class="fa fa-plus"></i>
+                                <i class="fa fa-plus"></i> {{_lang.new}}
                             </button>
                             <span class="mr-3"><i class="ri-task-line"></i> {{_lang.tasks}}</span>
                         </nav>
@@ -46,7 +46,6 @@
                 </div>
 
                 <div class="m-2" id="{{_form}}List">
-
                     <wb-foreach wb="table=tasks&bind=cms.tasks.list&tpl=true&sort=_created:d" wb-filter="{'_creator':'{{_sess.user.id}}'}">
                         <div class="card px-0" data-id="{{_id}}">
                             <form class="card-body row m-0 p-0">
@@ -73,12 +72,12 @@
 <wb-lang>
     [ru]
     tasks = Задачи
-    new_task = "Новая задача"
+    new = "Новая"
     type = "Напишите комментарий"
     empty = "Нет текущих задач"
     [en]
     tasks = Tasks
-    new_task = "New task"
+    new = "New"
     type = "Type a comment"
     empty = "No have tasks"
 
