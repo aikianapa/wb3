@@ -7,6 +7,7 @@ class tagForeach
     public function __construct($dom)
     {
         if (!isset($dom->role)) return;
+        unset($dom->role);
         $dom->is(":root") ? $dom->rootError() : null;
         $this->foreach($dom);
     }
@@ -14,12 +15,11 @@ class tagForeach
     function foreach($dom)
     {
         !$dom->app ? $dom->app = new wbApp() : null;
-        $app = &$dom->app;
-        $this->app = &$app;
+        $this->app = &$dom->app;
         $this->dom = &$dom;
-        $dom->empty = $dom->find("wb-empty")[0];
+        $this->empty = $dom->find("wb-empty")[0];
         $dom->find("wb-empty")->remove();
-        $this->tpl = "<html>".$dom->html()."</html>";
+        $dom->tpl = "<html>".$dom->inner()."</html>";
 
         if ($dom->parent()->is("select[placeholder]")) {
             $this->opt = $dom->find('option', 0)->clone();
@@ -31,13 +31,14 @@ class tagForeach
         $dom->params('target') == '' ? $dom->params->target = '#'.$this->tid : null;
         $dom->params("render") == "client" ? $render = $dom->params("render") : $render = "server";
         $dom->params("render", $render);
+
         $this->$render($dom);
         $dom->rendered = true;
     }
 
 
     private function client(&$dom) {
-        $empty = &$dom->empty;
+        $empty = &$this->empty;
         $render = 'client';
 
         $idx = 0;
@@ -53,9 +54,6 @@ class tagForeach
         $dom->attr("data-ajax") > "" ? $ajax = $dom->attr("data-ajax") : $ajax = false;
 
         list($list, $count, $pages, $page, $srvpag) = $this->list();
-
-        
-
 
         foreach ((array) $list as $key => $val) {
             $value = $val;
@@ -75,7 +73,7 @@ class tagForeach
             if ($ajax !== false) {
                 $list[$key] = (array) $val;
             } else {
-                $line = $this->app->fromString($this->tpl, true);
+                $line = $this->app->fromString($dom->tpl, true);
                 $line->copy($dom);
                 $line->item = (array) $val;
                 $line->fetch();
@@ -89,7 +87,7 @@ class tagForeach
             $params->target = '#'.$this->tid;
             $params = json_encode($params);
             $dom->params("from") > "" ? $from = $dom->params->from : $from = 'result';
-            $dom->append("<template id = \"{$this->tid}\" >\n{{#each {$from}}}\n" . $this->tpl . "\n{{/each}}</template>\n");
+            $dom->append("<template id = \"{$this->tid}\" >\n{{#each {$from}}}\n" . $dom->tpl . "\n{{/each}}</template>\n");
             $ajax !== false ? $dom->find("template[id='{$this->tid}']")->attr('data-ajax', $dom->attr("data-ajax")) : null;
             $params > '' ? $dom->find("template[id='{$this->tid}']")->attr('data-params', $params) : null;
             $dom->find("template[id=\"{$this->tid}\"] .pagination")->attr("data-tpl", $this->tid);
@@ -119,14 +117,12 @@ class tagForeach
                     $dom->inner($empty->inner());
                 }
 
-                $html = $dom->html();
-            
                 isset($dom->params->pos) ? $pos = $dom->params->pos : $pos = 'bottom';
 
                 if ($srvpag or ($this->app->route->controller == 'ajax' and $this->app->vars('_post._params') > "")) {
                     // При вызове из data-ajax требуется второе условие
                     $res = [
-                    'html' => $html,
+                    'html' => $dom->inner(),
                     'route' => $this->app->route,
                     'params' => $dom->params,
                     'pag' => $pag->outer(),
@@ -162,18 +158,15 @@ class tagForeach
 
     private function server(&$dom) {
 
-        $empty = &$dom->empty;
+        $empty = &$this->empty;
         $render = "server";
 
          $idx = 0;
         $ndx = 1;
 
-
-       
+    
 
         //$this->app->vars('_post.route') == '' and $dom->params('tpl') == 'true' ? $dom->addTpl() : null;
-        
-        $dom->html("");
 
         list($list, $count, $pages, $page, $srvpag) = $this->list();
 
@@ -198,7 +191,7 @@ class tagForeach
             if ($ajax !== false) {
                 $list[$key] = (array) $val;
             } else {
-                $line = $this->app->fromString($this->tpl,true);
+                $line = $this->app->fromString($dom->tpl,true);
                 $line->copy($dom);
                 $line->item = (array) $val;
                 $line->fetch();
@@ -215,7 +208,7 @@ class tagForeach
             
             $dom->params("from") > "" ? $from = $dom->params->from : $from = 'result';
 
-            $dom->append("<template id = \"{$this->tid}\" >\n{{#each {$from}}}\n" . $this->tpl . "\n{{/each}}</template>\n");
+            $dom->append("<template id = \"{$this->tid}\" >\n{{#each {$from}}}\n" . $dom->tpl . "\n{{/each}}</template>\n");
             $ajax !== false ? $dom->find("template[id='{$this->tid}']")->attr('data-ajax', $dom->attr("data-ajax")) : null;
             $params > '' ? $dom->find("template[id='{$this->tid}']")->attr('data-params', $params) : null;
 
@@ -245,12 +238,12 @@ class tagForeach
                     $dom->inner($empty->inner());
                 }
 
-                $html = $dom->html();
-            
+          
                 isset($dom->params->pos) ? $pos = $dom->params->pos : $pos = 'bottom';
 
                 if ($srvpag or ($this->app->route->controller == 'ajax' and $this->app->vars('_post._params') > "")) {
                     // При вызове из data-ajax требуется второе условие
+                    $html = $dom->inner();
                     $res = [
                     'html' => $html,
                     'route' => $this->app->route,
@@ -278,12 +271,12 @@ class tagForeach
                     $dom->prepend('<option value="">'.$this->placeholder.'</option>');
                 }
             }
+
         $dom->before($dom->inner());
         $dom->remove();
     }
 
     private function list() {
-        $app = &$this->app;
         $dom = &$this->dom;
 
         $dom->filterStrict();
@@ -404,7 +397,6 @@ class tagForeach
     }
 
     private function options() {
-        $app = &$this->app;
         $dom = &$this->dom;
         $options = [];
         $options['filter'] = [];

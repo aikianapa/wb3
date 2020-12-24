@@ -413,6 +413,7 @@ class wbDom extends DomQuery
         $this->params->route = $this->app->vars("_route");
         isset($this->locale[$this->app->lang]) ? $this->params->locale = $this->locale[$this->app->lang] : $this->params->locale = [];
         $params = json_encode($this->params);
+        $this->attr('data-params', $params);
         if ($this->attr("id") > '') {
             $tplId = $this->attr("id");
         } else if (substr($this->tagName,0,3) == 'wb-' AND $this->parent()->attr("id") > '') {

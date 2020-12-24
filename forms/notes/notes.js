@@ -30,7 +30,7 @@ $(document).ready(function () {
         }
 
         if (params.render == 'client') {
-            item = wbapp.storage(bind + '.' + note)
+            item = wbapp.storage(bind + '.result.' + note)
         } else {
             item = wbapp.getSync("/api/query/notes/?_id=" + note);
             item = item[note];

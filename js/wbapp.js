@@ -283,11 +283,12 @@ if (typeof $ === 'undefined') {
                     }
                 } else {
                     // server-side update
-                    if (tpl.params.route) {
+                    if (tpl.params._route) {
                         delete tpl.params.data;
                         wbapp.ajax(tpl.params, function (data) {
                             var inner = '<wb>'+data.data+'</wb>';
                             inner = $(inner).find(tpl.params.target).html();
+                            console.log(tpl.params.target,inner);
                             $(tpl.params.target).html(inner);
                         });
                     }

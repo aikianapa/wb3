@@ -123,7 +123,13 @@ function wbItemSave($form, $item = null, $flush = true)
 {
     $db = wbSetDb($form);
     $item = wbTrigger('form', __FUNCTION__, 'beforeItemSave', func_get_args(), $item);
-
+    if (!isset($item['id'])) {
+        if (isset($item['_id']) && $item['_id'] > '') {
+            $item['id'] = $item['_id']; 
+        } else if ($_ENV['app']->vars('_route.mode') == 'save' AND $_ENV['app']->vars('_route.item') > '') {
+            $item['id'] = $_ENV['app']->vars('_route.item');
+        }
+    } 
     if ($item) {
         // читаем всю запись, иначе возвращаются не все поля
         $src = $db->itemRead($form, $item["id"]);
