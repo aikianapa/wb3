@@ -288,6 +288,8 @@ class tagForeach
 
 
         $list = $parent = $dom->item;
+        
+        $this->app->vars('_post.route') == '' and $dom->params('tpl') == 'true' ? $dom->addTpl() : null;
 
         $dom->params("form") > "" ? $dom->params->table = $dom->params->form : null;
         $dom->params("table") > "" ? $table = $dom->params->table : $table = "";

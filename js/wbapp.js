@@ -273,7 +273,7 @@ if (typeof $ === 'undefined') {
             if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
 
             $.each(wbapp.template, function (i, tpl) {
-                if (tpl.params.render && tpl.params.render !== 'client') tpl.params.render = 'server';
+                if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
 
                 if (tpl.params.render == 'client') {
                     // client-side update
@@ -283,12 +283,12 @@ if (typeof $ === 'undefined') {
                     }
                 } else {
                     // server-side update
-                    if (tpl.params._route) {
+                    if (tpl.params.target !== undefined) {
                         delete tpl.params.data;
+                        tpl.params._tid = tpl.params.target;
                         wbapp.ajax(tpl.params, function (data) {
                             var inner = '<wb>'+data.data+'</wb>';
                             inner = $(inner).find(tpl.params.target).html();
-                            console.log(tpl.params.target,inner);
                             $(tpl.params.target).html(inner);
                         });
                     }
