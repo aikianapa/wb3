@@ -44,6 +44,7 @@ class tagForeach
         $idx = 0;
         $ndx = 1;
         $srvpag = false;
+        unset($dom->params->tpl);
 
         if ($dom->params("table") > "") {
             $dom->params->ajax = '/ajax/list/' . $dom->params("table") . '/';
@@ -163,8 +164,6 @@ class tagForeach
 
          $idx = 0;
         $ndx = 1;
-
-    
 
         //$this->app->vars('_post.route') == '' and $dom->params('tpl') == 'true' ? $dom->addTpl() : null;
 

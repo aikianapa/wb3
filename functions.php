@@ -1105,6 +1105,21 @@ function wbJsonFromFile($file) {
 
 }
 
+function wbJsonDecode($json = '') {
+    $params = &$json;
+    if ($params > '') {
+        try {
+            $params = json_decode($json,true);
+        } catch (\Throwable $th) {
+            $params = [];
+        }
+    } else {
+        $params = [];
+    }
+    return $params;
+}
+
+
 
 function wbJsonEncode($Item = [])
 {

@@ -265,10 +265,12 @@ class wbDom extends DomQuery
         if ($this->tagName == "template" or $this->closest("template")->length) {
             $this->strict = true;
             // set locale for template
-            if ($this->tagName == "template" && $this->attr('data-params') == "" && strpos($this->outer(),'_lang.') !== 0) {
+            if ($this->tagName == "template" && strpos($this->outer(),'_lang.') !== 0) {
+                parse_str($this->attr('data-params'),$params);
                 $locale = $this->app->vars('_env.locale');
                 $locale = $locale[$_SESSION["lang"]];
-                $this->attr('data-params', json_encode(['locale'=>$locale]));
+                $params['locale'] = $locale;
+                $this->attr('data-params',$this->app->jsonEncode($params));
             }
             isset($_ENV["locales"][$_SESSION["lang"]]) ? $data = ["_lang" => $_ENV["locales"][$_SESSION["lang"]]] : $data = [];
             $this->setValues();

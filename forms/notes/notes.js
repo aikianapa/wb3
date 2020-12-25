@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    
+    var currentNote = null;
 
     $('#notes').delegate('form', 'submit', function () {
         if ($(this).find('#noteCommentBtn').length) {
@@ -28,7 +30,6 @@ $(document).ready(function () {
         if (params.from !== undefined && params.from > '') {
             bind += '.' + params.from;
         }
-
         if (params.render == 'client') {
             item = wbapp.storage(bind + '.result.' + note)
         } else {
@@ -41,6 +42,7 @@ $(document).ready(function () {
     $('#notes').delegate('#newNote', 'tap click', function () {
         let tpl = wbapp.tpl('#notesPaper');
         let nid = wbapp.newId();
+        currentNote = nid;
         tpl = str_replace('{{_id}}', nid, tpl.html);
         tpl = str_replace('{{note}}', '', tpl);
         $('#notesPaper').html(tpl);
@@ -50,6 +52,8 @@ $(document).ready(function () {
         let id = $(this).attr('data-id');
         if (this.dirty !== undefined && this.dirty == false) return;
         if (id == undefined) return;
+        if ($(this).val() == '' && wbapp.storage("cms.list.notes").result[id] == undefined) return;
+        currentNote = id;
         try {
             params = wbapp.parseAttr($(this).attr("wb-save"));
         } catch (error) { return }
@@ -57,6 +61,18 @@ $(document).ready(function () {
         this.dirty = false;
         return false;
     })
+
+    $('#notes').delegate('#notesList','wb-ajax-done',function(){
+        // server mode
+        setTimeout(function(){
+            $('#notesList .card[data-id="' + currentNote + '"]').addClass('active');
+        })
+    })
+
+    $('#notes').delegate('#notesPaper textarea', 'wb-save-done', function (ev,a,b) {
+        // client mode
+        $('#notesList .card[data-id="' + currentNote + '"]').addClass('active');
+    });
 
     $('#notes').delegate('button.close', 'tap click', function () {
         var card = $(this).closest('.card');
@@ -89,7 +105,7 @@ $(document).ready(function () {
         }
         this.timer = setTimeout(function () {
             $(self).trigger('change')
-        }, 1000)
+        }, 500)
     });
 
     if ($('#notes .card:not(.empty)').length == 0) {

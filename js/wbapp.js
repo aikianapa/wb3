@@ -271,7 +271,7 @@ if (typeof $ === 'undefined') {
             }
 
             if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
-
+console.log('Update by tpl');
             $.each(wbapp.template, function (i, tpl) {
                 if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
 
@@ -283,14 +283,24 @@ if (typeof $ === 'undefined') {
                     }
                 } else {
                     // server-side update
-                    if (tpl.params.target !== undefined) {
-                        delete tpl.params.data;
-                        tpl.params._tid = tpl.params.target;
-                        wbapp.ajax(tpl.params, function (data) {
-                            var inner = '<wb>'+data.data+'</wb>';
-                            inner = $(inner).find(tpl.params.target).html();
-                            $(tpl.params.target).html(inner);
-                        });
+                    if (tpl.params.target !== undefined && $(document).find(tpl.params.target).length) {
+                        let check = true;
+                        if (data._table !== undefined) {
+                            if (tpl.params.table !== undefined && tpl.params.table !== data._table) {
+                                check = false;
+                            } else if (tpl.params._params !== undefined && tpl.params._params.table !== undefined && tpl.params._params.table !== data._table) {
+                                check = false;
+                            }
+                        }
+                        if (check) {
+                            delete tpl.params.data;
+                            tpl.params._tid = tpl.params.target;
+                            wbapp.ajax(tpl.params, function (data) {
+                                var inner = '<wb>'+data.data+'</wb>';
+                                inner = $(inner).find(tpl.params.target).html();
+                                $(tpl.params.target).html(inner);
+                            });
+                        }
                     }
                 }
             })
@@ -460,6 +470,8 @@ if (typeof $ === 'undefined') {
                 if (data.result == undefined) params['data'] = data;
                 if (params.form !== undefined) {
                     $(params.form).trigger("wb-ajax-done", params);
+                } else if (params.target !== undefined) {
+                        $(params.target).trigger("wb-ajax-done", params);
                 } else {
                     $(document).trigger("wb-ajax-done", params);
                 }
@@ -764,7 +776,6 @@ if (typeof $ === 'undefined') {
             }
         })
         ///wbapp.storage(params.bind, data);
-
         wbapp.template[tid].params = params;
         var pagination = $(tid).find(".pagination");
         if (pagination) {
@@ -778,12 +789,12 @@ if (typeof $ === 'undefined') {
         if (newbind) {
             wbapp.bind[params.bind][tid].set(data);
             $(document).on("bind-" + params.bind, function (e, data) {
+                console.log('set data', params.bind,tid);
                 try {
                     wbapp.bind[params.bind][tid].set(data);
                 } catch (error) {
                     wbapp.bind[params.bind][tid].update(data);
                 }
-
             })
         }
     }
