@@ -269,46 +269,49 @@ if (typeof $ === 'undefined') {
                     eval(params.data + ' = update;');
                 }
             }
-
-            if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
-console.log('Update by tpl');
-            $.each(wbapp.template, function (i, tpl) {
-                if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
-
-                if (tpl.params.render == 'client') {
-                    // client-side update
-                    if (tpl.params.bind && (tpl.params.bind == params.bind || tpl.params.bind == params.update)) {
-                        if (params.bind) wbapp.storage(params.bind, data);
-                        if (params.update) wbapp.storageUpdate(params.update, data);
-                    }
-                } else {
-                    // server-side update
-                    if (tpl.params.target !== undefined && $(document).find(tpl.params.target).length) {
-                        let check = true;
-                        if (data._table !== undefined) {
-                            if (tpl.params.table !== undefined && tpl.params.table !== data._table) {
-                                check = false;
-                            } else if (tpl.params._params !== undefined && tpl.params._params.table !== undefined && tpl.params._params.table !== data._table) {
-                                check = false;
-                            }
-                        }
-                        if (check) {
-                            delete tpl.params.data;
-                            tpl.params._tid = tpl.params.target;
-                            wbapp.ajax(tpl.params, function (data) {
-                                var inner = '<wb>'+data.data+'</wb>';
-                                inner = $(inner).find(tpl.params.target).html();
-                                $(tpl.params.target).html(inner);
-                            });
-                        }
-                    }
-                }
-            })
-
-            if (data._id !== undefined) $(obj).data('saved-id', data._id);
             if (params.silent !== undefined && (params.silent == true || params.silent == 'true')) {
                 params.silent = true;
             } else { params.silent = false; }
+            if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
+
+            if (params.silent == false) {
+                console.log('Update by tpl');
+                $.each(wbapp.template, function (i, tpl) {
+                    if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
+
+                    if (tpl.params.render == 'client') {
+                        // client-side update
+                        if (tpl.params.bind && (tpl.params.bind == params.bind || tpl.params.bind == params.update)) {
+                            if (params.bind) wbapp.storage(params.bind, data);
+                            if (params.update) wbapp.storageUpdate(params.update, data);
+                        }
+                    } else {
+                        // server-side update
+                        if (tpl.params.target !== undefined && $(document).find(tpl.params.target).length) {
+                            let check = true;
+                            if (data._table !== undefined) {
+                                if (tpl.params.table !== undefined && tpl.params.table !== data._table) {
+                                    check = false;
+                                } else if (tpl.params._params !== undefined && tpl.params._params.table !== undefined && tpl.params._params.table !== data._table) {
+                                    check = false;
+                                }
+                            }
+                            if (check) {
+                                delete tpl.params.data;
+                                tpl.params._tid = tpl.params.target;
+                                wbapp.ajax(tpl.params, function (data) {
+                                    var inner = '<wb>' + data.data + '</wb>';
+                                    inner = $(inner).find(tpl.params.target).html();
+                                    $(tpl.params.target).html(inner);
+                                });
+                            }
+                        }
+                    }
+                })
+            }
+
+            if (data._id !== undefined) $(obj).data('saved-id', data._id);
+
             console.log("Trigger: wb-save-done");
             $(obj).trigger("wb-save-done", {
                 params: params,
@@ -471,7 +474,7 @@ console.log('Update by tpl');
                 if (params.form !== undefined) {
                     $(params.form).trigger("wb-ajax-done", params);
                 } else if (params.target !== undefined) {
-                        $(params.target).trigger("wb-ajax-done", params);
+                    $(params.target).trigger("wb-ajax-done", params);
                 } else {
                     $(document).trigger("wb-ajax-done", params);
                 }
@@ -509,7 +512,7 @@ console.log('Update by tpl');
                 if (target._params && target._params.count !== undefined) delete target._params.count
                 if (target.tpl !== undefined) target._params.tpl = target.tpl;
                 if (target._tid == undefined) target._tid = params.target; // чтобы срабатывал вариант ответа с json
-                if (target.url == undefined && target.route.uri !== undefined) target.url = target.route.uri;
+                if (target.url == undefined && target.route !== undefined && target.route.uri !== undefined) target.url = target.route.uri;
                 wbapp.ajax(target, func);
             }
         }
@@ -691,34 +694,34 @@ console.log('Update by tpl');
                 var tid = $(this).attr("id");
             }
             tid = "#" + tid;
-            
-                var params = [];
-                if ($(this).attr("data-params") !== undefined) {
-                    try {
-                        params = wbapp.parseAttr($(this).attr("data-params"));
-                    } catch (error) { null }
-                }
 
-                let html = $(this).html();
-                html = html.replace(/<template\b[^<]*(?:(?!<\/template>)<[^<]*)*<\/template>/gi, "");                
+            var params = [];
+            if ($(this).attr("data-params") !== undefined) {
+                try {
+                    params = wbapp.parseAttr($(this).attr("data-params"));
+                } catch (error) { null }
+            }
 
-                
-                $(this).removeAttr("data-params");
-                if ($(this).attr("data-ajax") !== undefined) {
-                    let prms = wbapp.parseAttr($(this).attr("data-ajax"));
-                    params = array_merge(prms, params);
-                    wbapp.tpl(tid, {
-                        'html': html,
-                        'params': params
-                    });
-                    $(this).trigger("click", tid);
-                } else {
-                    wbapp.tpl(tid, {
-                        "html": html,
-                        "params": params
-                    });
-                }
-            
+            let html = $(this).html();
+            html = html.replace(/<template\b[^<]*(?:(?!<\/template>)<[^<]*)*<\/template>/gi, "");
+
+
+            $(this).removeAttr("data-params");
+            if ($(this).attr("data-ajax") !== undefined) {
+                let prms = wbapp.parseAttr($(this).attr("data-ajax"));
+                params = array_merge(prms, params);
+                wbapp.tpl(tid, {
+                    'html': html,
+                    'params': params
+                });
+                $(this).trigger("click", tid);
+            } else {
+                wbapp.tpl(tid, {
+                    "html": html,
+                    "params": params
+                });
+            }
+
             if ($(this).prop("visible") == undefined) $(this).remove();
         });
         wbapp.wbappScripts();
@@ -789,7 +792,6 @@ console.log('Update by tpl');
         if (newbind) {
             wbapp.bind[params.bind][tid].set(data);
             $(document).on("bind-" + params.bind, function (e, data) {
-                console.log('set data', params.bind,tid);
                 try {
                     wbapp.bind[params.bind][tid].set(data);
                 } catch (error) {

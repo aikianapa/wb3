@@ -266,15 +266,26 @@ class wbDom extends DomQuery
             $this->strict = true;
             // set locale for template
             if ($this->tagName == "template" && strpos($this->outer(),'_lang.') !== 0) {
-                parse_str($this->attr('data-params'),$params);
                 $locale = $this->app->vars('_env.locale');
                 $locale = $locale[$_SESSION["lang"]];
-                $params['locale'] = $locale;
-                $this->attr('data-params',$this->app->jsonEncode($params));
+                $this->addParams(['locale'=>$locale]);
             }
-            isset($_ENV["locales"][$_SESSION["lang"]]) ? $data = ["_lang" => $_ENV["locales"][$_SESSION["lang"]]] : $data = [];
+            //isset($_ENV["locales"][$_SESSION["lang"]]) ? $data = ["_lang" => $_ENV["locales"][$_SESSION["lang"]]] : $data = [];
             $this->setValues();
         }
+    }
+
+    public function addParams($data) {
+        $add = $data;
+        if (!is_array($data)) {
+            $add = json_decode($data, true);
+            if (!$add) parse_str($data, $add);
+        }
+        $params = json_decode($this->attr('data-params'), true);
+        if (!$params) parse_str($this->attr('data-params'), $params);
+        !$params ? $params = [] : null;
+        $params = array_merge($params, $add);
+        $this->attr('data-params', json_encode($params));
     }
 
     public function params($name = null)

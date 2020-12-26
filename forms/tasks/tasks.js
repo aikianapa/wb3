@@ -1,5 +1,34 @@
 $(document).ready(function () {
 
+    var taskListComments = function (data) {
+        storage = { 'comments': [] };
+        storage.comments = data;
+        wbapp.storage('cms.list.taskComments', storage);
+    }
+
+    var taskPushComments = function (data) {
+        let storage = wbapp.storage('cms.list.taskComments');
+        if (storage == undefined) storage = { 'comments': [] };
+        storage.comments.push(data);
+        wbapp.storage('cms.list.taskComments', storage);
+    }
+
+    var currentTask = null;
+
+
+    $('#tasks').delegate('#tasksList', 'wb-ajax-done', function () {
+        // server mode
+        setTimeout(function () {
+            $('#tasksList .card[data-id="' + currentTask + '"]').addClass('active');
+        })
+    })
+
+    $('#tasks').delegate('input', 'wb-save-done', function (ev) {
+        // client mode
+        $('#tasksList .card[data-id="' + currentTask + '"]').addClass('active');
+    });
+
+
     $('#tasks').delegate('form','submit',function(){
         if ($(this).find('#taskCommentBtn').length) {
             $(this).find('#taskCommentBtn').trigger('click');
@@ -21,6 +50,7 @@ $('#tasks').delegate('.card', 'tap click', function () {
     $('#tasks').find('#taskComment, #taskCommentBtn').prop('disabled',false);
     $(this).addClass('active');
     var id = $('#tasks .card.active').attr('data-id');
+    currentTask = id;
     $.post("/api/call/tasks/listComments/",{'id':id},function(res){
         taskListComments(res)
     })
@@ -39,15 +69,19 @@ $('#tasks').delegate('#taskCommentBtn', 'tap click', function () {
 })
 
 $('#tasks').delegate('#newTask','tap click',function(){
-    let tpl = wbapp.tpl('#tasksList');
+    let tpl = '<wb>'+wbapp.tpl('#tasksList').html+'</wb>';
     let nid = wbapp.newId();
-    tpl = str_replace('{{_id}}', nid, $(tpl.html).html());
+    tpl = $(tpl).find('.card').outer();
+    tpl = str_replace('{{_id}}', nid, tpl);
+    tpl = str_replace('{{task}}', '', tpl);
+    currentTask = nid;
     $('#tasks').find('.card.new').remove();
     $('#tasks #tasksList').prepend(tpl);
     $('#tasks').find('.card:first-child').trigger('click')
-    $('#tasks').find('.card:first-child').addClass('new');
+    $('#tasks').find('.card:first-child').addClass('new active');
     $('#tasks').find('.card:first-child input[name=task]').focus();
     $('#tasks').find('.card.empty').addClass('d-none');
+    $('#tasks #taskComments').html('');
 })
 
 $('#tasks').delegate('input', 'change', function () {
@@ -75,6 +109,7 @@ $('#tasks').delegate('button.close', 'tap click', function () {
             if ($('#tasks .card:not(.empty)').length == 0) {
                 $('#tasks .card.empty').removeClass('d-none');
             }
+            $('#tasks #taskComments').html('');
         }
     });
     return false;
@@ -94,19 +129,5 @@ $('#tasks').delegate('input', 'keyup', function () {
 if ($('#tasks .card:not(.empty)').length == 0) {
     $('#tasks #newTask').trigger('click');
 }
-
-    var taskListComments = function(data) {
-        storage = { 'comments': [] };
-        storage.comments = data;
-        wbapp.storage('cms.list.taskComments', storage);
-    }
-
-    var taskPushComments = function (data) {
-        let storage = wbapp.storage('cms.list.taskComments');
-        if (storage == undefined) storage = { 'comments': [] };
-        storage.comments.push(data);
-        wbapp.storage('cms.list.taskComments', storage);
-    }
-
 
 })

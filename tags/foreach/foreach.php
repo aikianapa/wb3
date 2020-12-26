@@ -27,6 +27,7 @@ class tagForeach
         }
 
         $dom->html("");
+        $dom->outer = $dom->outer();
         $dom->parent()->attr("id") > "" ? $this->tid = $dom->parent()->attr("id") : $this->tid = "fe_" . $this->app->newId();
         $dom->params('target') == '' ? $dom->params->target = '#'.$this->tid : null;
         $dom->params("render") == "client" ? $render = $dom->params("render") : $render = "server";
@@ -200,16 +201,29 @@ class tagForeach
             $ndx++;
         }
 
-        if ($ajax !== false) {
-            $params = $dom->params;
-            $params->target = '#'.$this->tid;
-            $params = json_encode($params);
-            
-            $dom->params("from") > "" ? $from = $dom->params->from : $from = 'result';
+        $params = $dom->params;
 
-            $dom->append("<template id = \"{$this->tid}\" >\n{{#each {$from}}}\n" . $dom->tpl . "\n{{/each}}</template>\n");
+        if ($ajax !== false OR isset($params->table) && $params->table > '') {
+            $params->target = '#'.$this->tid;
+            $locale = $dom->locale;
+            if ( isset($locale[$_SESSION["lang"]]) ) {
+                $locale = $locale[$_SESSION["lang"]];
+                $params->locale = $locale;
+            } 
+            $params->route = $dom->app->route;
+            $params = json_encode($params);
+
+            $dom->params("from") > "" ? $from = $dom->params->from : $from = 'result';
+            if ($ajax !== false) {
+                $dom->append("<template id = \"{$this->tid}\" >\n{{#each {$from}}}\n" . $dom->tpl . "\n{{/each}}</template>\n");
+            } else {
+                $tpl = $dom->app->fromString($dom->outer);
+                $tpl->append($dom->tpl);
+                $dom->append("<template id = \"{$this->tid}\" >\n" . $tpl->outer() . "\n</template>\n");
+            }
+            
             $ajax !== false ? $dom->find("template[id='{$this->tid}']")->attr('data-ajax', $dom->attr("data-ajax")) : null;
-            $params > '' ? $dom->find("template[id='{$this->tid}']")->attr('data-params', $params) : null;
+            $params > '' ? $dom->find("template[id='{$this->tid}']")->addParams($params) : null;
 
             $dom->find("template[id=\"{$this->tid}\"] .pagination")->attr("data-tpl", $this->tid);
         } else {

@@ -46,13 +46,13 @@
                 </div>
 
                 <div class="m-2" id="{{_form}}List">
-                    <wb-foreach wb="table=tasks&bind=cms.tasks.list&tpl=true&sort=_created:d" wb-filter="{'_creator':'{{_sess.user.id}}'}">
+                    <wb-foreach wb="table=tasks&bind=cms.tasks.list&sort=_created:d&render=server" wb-filter="{'_creator':'{{_sess.user.id}}'}">
                         <div class="card px-0" data-id="{{_id}}">
                             <form class="card-body row m-0 p-0">
                                 <input class="col ml-1 mt-1" name="done" type="checkbox">
                                 <div class="col-11">
-                                    <input type="text" class="form-control" placeholder="{{_lang.new_task}}" name="task"
-                                        autocomplete="off">
+                                    <input type="text" class="form-control" placeholder="{{_lang.new}}" name="task"
+                                        autocomplete="off" value="{{task}}">
                                 </div>
                                 <button type="button" class="form-control close col mr-1 tx-18">×</button>
                             </form>
