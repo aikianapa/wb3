@@ -226,7 +226,7 @@ class tagForeach
             $params > '' ? $dom->find("template[id='{$this->tid}']")->addParams($params) : null;
 
             $dom->find("template[id=\"{$this->tid}\"] .pagination")->attr("data-tpl", $this->tid);
-        } else {
+        } 
             if ($dom->params("size") > "") {
                 $size = $dom->params("size");
                 !isset($count) ? $count = null : null;
@@ -272,7 +272,7 @@ class tagForeach
             } elseif (!$dom->children()->length) {
                 $dom->inner($empty->inner());
             }
-        }
+        
 
             if (isset($this->placeholder)) {
                 if ($this->opt) {

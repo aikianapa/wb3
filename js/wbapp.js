@@ -686,8 +686,8 @@ if (typeof $ === 'undefined') {
         }
         $(document).find("template").each(function () {
             var tid
-            if (tid == undefined) tid = $(this).parent().attr("id");
             if (tid == undefined && $(this).is("template[id]")) tid = $(this).attr("id");
+            if (tid == undefined) tid = $(this).parent().attr("id");
             if (tid == undefined && $(this).is("[data-target]")) tid = $(this).attr("data-target");
             if (tid == undefined) {
                 $(this).attr("id", "fe_" + wbapp.newId());

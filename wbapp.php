@@ -176,7 +176,7 @@ class wbDom extends DomQuery
             return $this->head;
         }
         //$this->head->html($head);
-        if ($item == null) {
+        if (isset($item) && $item == null) {
             $item = $this->item;
         }
     }
@@ -267,7 +267,7 @@ class wbDom extends DomQuery
             // set locale for template
             if ($this->tagName == "template" && strpos($this->outer(),'_lang.') !== 0) {
                 $locale = $this->app->vars('_env.locale');
-                $locale = $locale[$_SESSION["lang"]];
+                if ($locale > '') $locale = $locale[$_SESSION["lang"]];
                 $this->addParams(['locale'=>$locale]);
             }
             //isset($_ENV["locales"][$_SESSION["lang"]]) ? $data = ["_lang" => $_ENV["locales"][$_SESSION["lang"]]] : $data = [];
