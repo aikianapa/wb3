@@ -484,7 +484,9 @@ if (typeof $ === 'undefined') {
                 if (func !== null) return func(params, data);
             });
         } else if (params.target !== undefined) {
-            var target = wbapp.template[params.target].params;
+            if (wbapp.template[params.target] !== undefined) {
+                var target = wbapp.template[params.target].params;
+            }
             if (!target) {
                 console.log("Template not found: " + params.target);
                 return;
