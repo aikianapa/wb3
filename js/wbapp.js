@@ -183,6 +183,7 @@ if (typeof $ === 'undefined') {
             $.each(wbapp.template, function (i, tpl) {
                 if (tpl.params.bind !== undefined && tpl.params.bind == key &&
                     tpl.params.render !== undefined && tpl.params.render == 'client') {
+                        console.log(tpl);
                     wbapp.renderTemplate(tpl.params, value);
                 }
             });
@@ -751,8 +752,9 @@ if (typeof $ === 'undefined') {
     wbapp.renderTemplate = function (params, data = {}) {
         var tid;
         var newbind = false;
-        if (params._tid !== undefined) tid = params._tid;
-        if (params.target !== undefined) tid = params.target;
+        if (tid == undefined && params._tid !== undefined) tid = params._tid;
+        if (tid == undefined && params.target !== undefined) tid = params.target;
+        if (params.target == undefined && tid !== undefined) params.target = tid;
 
         /*
         var that = params._event.target;
@@ -772,7 +774,7 @@ if (typeof $ === 'undefined') {
         var html = wbapp.template[tid].html;
 
         wbapp.bind[params.bind][tid] = new Ractive({
-            target: tid,
+            target: params.target,
             template: html,
             data: () => {
                 return data
