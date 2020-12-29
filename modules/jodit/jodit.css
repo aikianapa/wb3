@@ -1,3 +1,12 @@
 .jodit-modal {
 	z-index: 4000!important;
 }
+
+.jodit_fullsize-box_true {
+	position: fixed !important;
+	z-index: 100000 !important;
+	width: 100vw;
+	margin: 0;
+	top: 0;
+	left: 0;
+}

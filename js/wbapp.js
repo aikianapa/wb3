@@ -183,7 +183,6 @@ if (typeof $ === 'undefined') {
             $.each(wbapp.template, function (i, tpl) {
                 if (tpl.params.bind !== undefined && tpl.params.bind == key &&
                     tpl.params.render !== undefined && tpl.params.render == 'client') {
-                        console.log(tpl);
                     wbapp.renderTemplate(tpl.params, value);
                 }
             });
@@ -828,7 +827,7 @@ if (typeof $ === 'undefined') {
 
         $(document).delegate(".modal-header", "dblclick", function (event) {
             var that = $(event.target);
-            $(that).closest(".modal").find(".modal-content").toggleClass("modal-wide");
+            $(that).closest(".modal").toggleClass("modal-fullscreen");
         });
 
 
@@ -843,7 +842,8 @@ if (typeof $ === 'undefined') {
                 //        handles: 'n, e, s, w, ne, sw, se, nw',
                 //      })
                 .draggable({
-                    handle: '.modal-header'
+                    handle: '.modal-header',
+                    containment: "body" 
                 });
 
             var zndx = document.modalZndx * 1 + 10;
