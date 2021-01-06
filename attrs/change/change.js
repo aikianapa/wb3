@@ -8,11 +8,13 @@ $.fn.wbAttrChange = function (sl, fn) {
         if ($(that).is('select')) {
             let opt = $(that).find('option[value="' + $(that).val() + '"]');
             data = $(opt).data();
+        } else if ($(that).attr('name') > '') {
+            data[$(that).attr('name')] = $(that).val();
         }
         data.value = $(that).val();
         $.post("/ajax/change_fld/", { 'cache': cache, 'data': data }, function (data) {
             if (data.content) {
-                let old = $(selector).html();
+//                let old = $(selector).html();
                 $(selector).html($(data.content).html());
                 if ($(selector).is('[onchange *= "wbAttrChange"]')) {
                     $(selector).trigger('change');

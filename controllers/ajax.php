@@ -40,8 +40,9 @@ class ctrlAjax
     public function list()
     {
         $app = $this->app;
-        $table = $app->route->params[0];
-        $list = $app->authPostContents($app->route->host."/api/query/{$table}", $_POST);
+        $params = (array)$app->route->params;
+        $table = $params[0];
+        $list = $app->authPostContents($app->route->host."/api/query/{$table}", $app->vars('_post'));
         $list = json_decode($list, true);
         $count = count($list);
         $options = ( object )$_POST;

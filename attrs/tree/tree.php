@@ -152,7 +152,7 @@ class tagTreeSelect {
                 
             }
 
-            if (isset($params->sort)) {
+            if (isset($params->sort) && isset($this->tree[0]['children'])) {
                 $this->tree[0]['children'] = wbArraySort($this->tree[0]['children'], $params->sort);
             }
         }

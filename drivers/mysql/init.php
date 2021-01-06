@@ -251,12 +251,10 @@ class mysqlDrv
             $doc = $this->app->ItemInit($form, $doc);
             $doc = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $doc);
             $res = true;
-            if (isset($options->filter)) {
-                $res = wbItemFilter($doc, (array)$options->filter);
+            if (isset($options->filter) or isset($options->context)) {
+                $flag = wbItemFilter($item, $options);
             }
-            if ($res) {
-                $list[] = $doc;
-            }
+            $res ? $list[] = $doc : null;
         }
         
         if (count($params['sort'])) {

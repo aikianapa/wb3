@@ -4,7 +4,18 @@ class ctrlApi
 {
 
     /* 
-    http://work2.loc/api/query/units/?active=on&square%3E=46&__options=sort=square:d;trigger=beforeItemShow;return=square,address;limit=2
+    http://work2.loc/api/query/units/?active=on&square%3E=46&_context*=test&__options=sort=square:d;trigger=beforeItemShow;return=square,address;limit=2
+
+    Знаки перед равно:
+    *= - слово присутствует в поле
+    >= - больше или равно
+    <= - меньше или равно
+
+    Значения в __options (опции перечисляются через ; ):
+    sort - сортировка по указанному полю :d (desc) :a (asc)
+    limit - ограничение по количеству выводимых записей
+    trigger - выполнение функции перед выполнением условий
+    return - через запятую перечисляются поля, которые необходимо вернуть в выдачу
     */
 
     public function __construct($app)
@@ -46,8 +57,16 @@ class ctrlApi
         if (!$this->apikey()) {
             return;
         }
+        
         $table = $app->route->table;
+        
+
+        $query = (array)$app->route->query;
+        $app->route->method == 'POST' ? $query = array_merge($query, $app->vars('_post')) : null;
+        $app->route->query = (object)$query;
+
         $options = $this->prepQuery($app->route->query);
+
         if (isset($app->route->item)) {
             $json = $app->itemRead($table, $app->route->item);
             if (isset($app->route->field)) {

@@ -1688,14 +1688,22 @@ function wbQuery($sql)
     return $table['data'];
 }
 
-function wbItemFilter($item, $filter)
+function wbItemFilter($item, $options)
 {
-    if (isset($item['_form'])) {
-        $item = wbTrigger('form', __FUNCTION__, 'beforeItemFilter', [$item['_form']] , $item);
-    }
+    (isset($item['id']) && !isset($item['_id'])) ? $item['_id'] = $item['id'] : null ;
+    isset($options->filter) ? $filter = $options->filter : $filter = $options;
+    isset($options->context) ? $context = wbAttrToArray($options->context) : $context = ['_id','header','text','articul'];
+    isset($item['_form']) ? $item = wbTrigger('form', __FUNCTION__, 'beforeItemFilter', [$item['_form']] , $item) : null;
+
 
     $fields = new Dot();
     $fields->setReference($item);
+    if (count($context)) {
+        $text = [];
+        foreach ($context as $c) $text[] = $fields->get($c);
+        $item['_context'] = strtolower(trim(implode(' ', $text)));
+    }
+
     $result = true;
     foreach ((array)$filter as $fld => $expr) {
         if ((array)$expr !== $expr) {
@@ -1713,7 +1721,7 @@ function wbItemFilter($item, $filter)
             if ($fld == '$or') {
                 $result = false;
                 foreach($expr as $key => $orFilter) {
-                    if (wbItemFilter($item, $expr) == true) $result = true;
+                    wbItemFilter($item, $expr) == true ? $result = true : null;
                 }
             } else if ($fld == '$and') {
                 $result = true;

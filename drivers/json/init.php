@@ -254,8 +254,8 @@ class jsonDrv
                 $item = wbTrigger('form', __FUNCTION__, $options->trigger, func_get_args(), $item);
             }
             $dot->setReference($item);
-            if (isset($options->filter)) {
-                $flag = wbItemFilter($item, $options->filter);
+            if (isset($options->filter) OR isset($options->context)) {
+                $flag = wbItemFilter($item, $options);
             }
 
             if (!$flag) {
