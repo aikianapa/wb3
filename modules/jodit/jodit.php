@@ -8,7 +8,7 @@ class modJodit {
   }
   public function init($dom) {
   		$out = $dom->app->fromFile(__DIR__ ."/jodit_ui.php",true);
-      $id = "jd-".$dom->app->newId();
+      $dom->attr('id') > '' ? $id = $dom->attr('id') : $id = "jd-".$dom->app->newId();
   		$textarea = $out->find("textarea");
   		$textarea->attr("id",$id);
       $out->copy($dom);
@@ -22,7 +22,7 @@ class modJodit {
           $text = $dom->html();
       }
       $textarea->inner($text);
-      $dom->html($out);
+      $dom->inner($out);
   }
 }
 

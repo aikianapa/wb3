@@ -44,10 +44,11 @@ class wbDom extends DomQuery
         if ($html == null) {
             return $this->getinnerHtml();
         }
-        $esc = "wb";
-        if ($this->head) {
-            $esc = "head";
+        
+        if (!is_string($html) && !is_object($html)) {
+            $html='';
         }
+        $this->head ? $esc = "head" : $esc = "wb";
 
         $html = "<{$esc}>{$html}</{$esc}>"; // magick
             $this->html($html);         // magick
@@ -192,7 +193,11 @@ class wbDom extends DomQuery
         if ($this->tagName == "head") $this->head = $this;
         $this->item = $item;
         $this->fetchParams();
-        if ($this->is(":root") and ($this->func or $this->funca)) $this->fetchFunc();
+        
+        if ($this->is(":root")) {
+            if ($this->func or $this->funca) $this->fetchFunc(); // так нужно для рутовых тэгов
+        } 
+
         $childrens = $this->children();
         foreach ($childrens as $wb) {
             $wb->copy($this);
@@ -841,9 +846,8 @@ class wbApp
 
     public function fieldBuild($dict=[], $data=[])
     {
-        if ((array)$dict == $dict) {
-            $dict = wbArrayToObj($dict);
-        }
+        (array)$dict == $dict ? $dict = wbArrayToObj($dict) : null;
+        
         if ($dict->name == "") {
             return "";
         }
@@ -851,6 +855,7 @@ class wbApp
         isset($data["data"]) ? $this->item = $data["data"] : $this->item = [];
         $this->data = $data;
         $this->tpl = $this->getForm('snippets', $dict->type);
+        //$this->tpl = $this->fromString('<html>'.$this->tpl->outer().'</html>');
         if (!is_object($this->tpl)) {
             $this->tpl = $this->fromString("<b>Snippet {$dict->type} not found</b>");
         }
@@ -864,20 +869,10 @@ class wbApp
             $this->tpl->find("[style]")->removeAttr("style");
         }
         $func = __FUNCTION__ . "_". $dict->type;
-        if (!method_exists($this, $func)) {
-            $func = __FUNCTION__ . "_". "common";
-        }
+        !method_exists($this, $func) ? $func = __FUNCTION__ . "_". "common" : null;
         return $this->$func();
     }
 
-    public function fieldBuild_multiinput()
-    {
-        $mult = $this->tpl;
-        $mult->item = $this->item;
-        $mult->dict = $this->dict;
-        $mult->fetch();
-        return $mult;
-    }
 
     public function fieldBuild_image()
     {
@@ -913,7 +908,35 @@ class wbApp
 
     public function fieldBuild_common()
     {
-        //$this->tpl->setValues();
+        $common = &$this->tpl;
+        $common->find("[wb]")->setAttributes((array)$this->tpl->dict);
+        $common->find("wb-module")->setAttributes((array)$this->tpl->dict);
+        $common->fetch();
+        return $common;
+    }
+
+    public function fieldBuild_enum()
+    {
+        $lines=[];
+        if (isset($this->dict->prop) && isset($this->dict->prop->enum) && $this->dict->prop->enum > "") {
+            $arr=explode(",", $this->dict->prop->enum);
+            foreach ($arr as $i => $line) {
+                $lines[$line] = ['id' => $line, 'name' => $line];
+            }
+        }
+        $res = $this->tpl->fetch(["enum" => $lines]);
+        if (isset($this->data['data'][$this->dict->name]) && $this->data['data'][$this->dict->name] > '') {
+            $res->find('option[value="'.$this->data['data'][$this->dict->name].'"]')->attr("selected", true);
+        } else {
+            $res->find("option[value]:first")->attr("selected", true);
+        }
+        return $res;
+    }
+
+
+    public function fieldBuild_module()
+    {
+        $this->tpl->setAttributes($this->dict);
         return $this->tpl->fetch();
     }
 
@@ -923,29 +946,6 @@ class wbApp
         $events[$name] = $params;
         $events = base64_encode(json_encode($events));
         setcookie("events", $events, time()+3600, "/"); // срок действия сутки
-    }
-
-
-    public function fieldBuild_enum()
-    {
-        $lines=[];
-        if ($this->dict->prop->enum > "") {
-            $arr=explode(",", $this->dict->prop->enum);
-            foreach ($arr as $i => $line) {
-                $lines[$line] = ['id' => $line, 'name' => $line];
-            }
-        }
-        $res = $this->tpl->fetch(["enum" => $lines]);
-        $value = $this->data[$this->dict->name];
-        $res->find("option[value='{$value}']")->attr("selected", true);
-        return $res;
-    }
-
-
-    public function fieldBuild_module()
-    {
-        $this->tpl->setAttributes($this->dict);
-        $this->tpl->fetch();
     }
 
     public function addEditor($name, $path, $label = null)

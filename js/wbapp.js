@@ -820,72 +820,82 @@ if (typeof $ === 'undefined') {
     }
 
     wbapp.modalsInit = function () {
-        var zndx = $(document).data("modal-zindex") * 1;
-        if (document.modalZndx == undefined) {
-            document.modalZndx = 2000;
+        if (wbapp.modalZndx == undefined) {
+            wbapp.modalZndx = 2000;
         }
 
+        $(document).undelegate(".modal-header", "dblclick");
         $(document).delegate(".modal-header", "dblclick", function (event) {
             var that = $(event.target);
             $(that).closest(".modal").toggleClass("modal-fullscreen");
         });
 
+        if (document.modalDelegates == undefined) {
+            document.modalDelegates = true;
+            $(document).delegate(".modal", "shown.bs.modal", function () {
+                $('.modal[style*="z-index:"]').each(function () {
+                    let max = $(this).css('z-index') * 1;
+                    if (max > wbapp.modalZndx) wbapp.modalZndx = max;
+                })
 
-        $(document).delegate(".modal", "shown.bs.modal", function (event) {
-            var that = $(event.target);
-            if ($(that).is("[data-zndx]")) return;
-            if ($(that).find('.modal-content').css('position') == 'fixed') return;
-            $(that).find('.modal-content')
-                //      .resizable({
-                //        minWidth: 300,
-                //        minHeight: 175,
-                //        handles: 'n, e, s, w, ne, sw, se, nw',
-                //      })
+                var that = this;
+                if ($(that).find('.modal-content').css('position') == 'fixed') return;
+                $(that).find('.modal-content')
+                    //      .resizable({
+                    //        minWidth: 300,
+                    //        minHeight: 175,
+                    //        handles: 'n, e, s, w, ne, sw, se, nw',
+                    //      })
                 .draggable({
-                    handle: '.modal-header',
-                    containment: "body" 
+                        handle: '.modal-header',
+                        containment: "body"
                 });
 
-            var zndx = document.modalZndx * 1 + 10;
-            document.modalZndx = zndx;
-            if (!$(this).closest().is("body")) {
-                if ($(this).data("parent") == undefined) $(this).data("parent", $(this).closest());
-                // нельзя переносить модальное окно, так как могут возникнуть проблемы с селектором!
-                //$(this).appendTo("body");
-            }
-            $(that).data("zndx", zndx).css("z-index", zndx).attr("data-zndx", zndx);
-            $(that).find("[data-dismiss]").attr("data-dismiss", zndx);
+                wbapp.modalZndx += 10;
 
-            if ($(that).attr("data-backdrop") !== undefined && $(that).attr("data-backdrop") !== "false") {
-                setTimeout(function () {
-                    $(".modal-backdrop:not([id])").css("z-index", (zndx - 5)).attr("id", "modalBackDrop" + (zndx - 5));
-                }, 0);
-            }
-        });
+                console.log(wbapp.modalZndx);
+                if (!$(this).closest().is("body")) {
+                    if ($(this).data("parent") == undefined) $(this).data("parent", $(this).closest());
+                    // нельзя переносить модальное окно, так как могут возникнуть проблемы с селектором!
+                    //$(this).appendTo("body");
+                }
+                $(that).css("z-index", wbapp.modalZndx);
+                $(that).find("[data-dismiss]").attr("data-dismiss", wbapp.modalZndx);
+                if ($(that).attr("data-backdrop") !== "false") {
+                        $(".modal-backdrop:not([style])").css("z-index", (wbapp.modalZndx - 5));
+                }
 
-        $(document).delegate(".modal [data-dismiss]", "click", function (event) {
-            event.preventDefault();
-            var zndx = $(this).attr("data-dismiss") * 1;
-            var modal = $(document).find(".modal[data-zndx='" + $(this).attr("data-dismiss") + "']");
-            modal.modal("hide");
-            $("#modalBackDrop" + (zndx - 5) + ".modal-backdrop").remove();
-        });
+            });
 
-        $(document).delegate(".modal", "hide.bs.modal", function (event) {
-            var that = $(event.target);
-            var zndx = $(that).attr("data-zndx") * 1;
-            $("#modalBackDrop" + (zndx - 5) + ".modal-backdrop").remove();
-            var zndx = document.modalZndx * 1 - 10;
-            document.modalZndx = zndx;
-        });
-        $(document).delegate(".modal", "hidden.bs.modal", function (event) {
-            var that = $(event.target);
-            if ($(this).hasClass("removable")) {
-                $(that).modal("dispose").remove();
-            } else {
-                $(this).appendTo($(this).data("parent"));
-            }
-        });
+            $(document).delegate(".modal", 'hidden.bs.modal', function (e) {
+                let zndx = $(this).css("z-index") * 1;
+                //$(".modal-backdrop[style='z-index: " + (zndx - 5)+"']").remove();
+            })
+
+            $(document).delegate(".modal [data-dismiss]", "click", function (event) {
+                event.preventDefault();
+                var zndx = $(this).attr("data-dismiss") * 1;
+                var modal = $(document).find(".modal[style*='z-index: " + $(this).attr("data-dismiss") + "']");
+                modal.modal("hide");
+            });
+
+            $(document).delegate(".modal", "hide.bs.modal", function (event) {
+                var that = this;
+                var zndx = $(this).css('z-index') * 1;
+                $("#modalBackDrop" + (zndx - 5) + ".modal-backdrop").remove();
+                wbapp.modalZndx -= 10;
+            });
+            $(document).delegate(".modal", "hidden.bs.modal", function (event) {
+                var that = this;
+                if ($(this).hasClass("removable")) {
+                    $(that).modal("dispose").remove();
+                } else {
+                    $(this).appendTo($(this).data("parent"));
+                }
+            });
+        }
+
+
         $(document).off("wb-ajax-done");
         $(document).on("wb-ajax-done", function () {
             console.log("Trigger: wb-ajax-done");
@@ -907,8 +917,8 @@ if (typeof $ === 'undefined') {
             modal = $("<div>" + modal.content + "</div>").find(".modal").clone();
             $(document).data("wbapp-modal", modal);
         }
-        var zndx = document.modalZndx * 1 + 10;
-        document.modalZndx = zndx;
+        var zndx = wbapp.modalZndx * 1 + 10;
+        wbapp.modalZndx = zndx;
         if (id !== null) $(modal).attr("id", id);
         if (zndx !== undefined) $(modal).data("zndx", zndx).attr("style", "z-index:" + zndx);
         return $(modal).clone();

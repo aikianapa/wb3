@@ -1,10 +1,9 @@
 $(document).off("jodit-js");
 $(document).on("jodit-js", function() {
   //$(document).on("wb-ajax-done",function(){$(document).trigger("jodit-js");});
-  $('.jodit:not(.ready):not(.jodit-box)').each(function() {
+  $('.jodit:not(.ready):not(.jodit-box)[id]').each(function() {
     $(this).addClass("ready");
     let editable = this;
-
       $(editable).data("timeout", false);
       var name = $(editable).attr("name");
       var id = $(editable).attr("id");
@@ -30,7 +29,7 @@ $(document).on("jodit-js", function() {
 
         //lang = explode("-", lang);
           
-        $(document).on('ajax-done',function(){
+        $(document).on('ajax-done wb-tree-change-data',function(){
             // Чистим  "хвосты" jodit
             if (!$('.jodit-workplace').length) {
                 $('.jodit').remove();
@@ -76,7 +75,7 @@ $(document).on("jodit-js", function() {
           };
         }
 
-        var edit = new Jodit('#' + id, options);
+        new Jodit('#' + id, options);
 
       });
   });

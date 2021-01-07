@@ -1,3 +1,4 @@
+$(document).off("datatimepicker-js");
 $(document).on("datatimepicker-js",function() {
   wbapp.loadStyles(["/engine/modules/datetimepicker/datetimepicker/bootstrap-datetimepicker.min.css",
                     "/engine/modules/datetimepicker/datetimepicker.less",
@@ -5,11 +6,15 @@ $(document).on("datatimepicker-js",function() {
   var scripts = ["/engine/js/php.js","/engine/modules/datetimepicker/datetimepicker/bootstrap-datetimepicker.min.js"];
 
   wbapp.loadScripts(scripts, "datetimepicker-js-init");
+
+  $(document).off("datetimepicker-js-init");
   $(document).on("datetimepicker-js-init", function() {
         $(".dtpmod:not(.wb-done)").each(function(){
+            $(this).addClass("wb-done");
             var input = this;
             var picker = $(input).prev("input");
-            var params = JSON.parse($(input).attr("wb-params"));
+            var params = {};
+            if ($(input).attr("wb-params")> '') var params = JSON.parse($(input).attr("wb-params"));
             $(input).removeAttr("wb-params");
             var lang = params.lang;
             if (params.lang == undefined && wbapp._session.lang !== undefined) lang = wbapp._session.lang;
@@ -36,7 +41,7 @@ $(document).on("datatimepicker-js",function() {
               options.viewSelect = 'hour';
               options.todayBtn = false;
             }
-            if (wbapp._session.lang !== undefined) {
+            if (lang !== undefined) {
                 wbapp.loadScripts(["/engine/modules/datetimepicker/datetimepicker/locales/bootstrap-datetimepicker." + lang + ".js"],null,function(){
                   datetimepicker_start();
                 });
@@ -45,6 +50,7 @@ $(document).on("datatimepicker-js",function() {
             }
 
             function datetimepicker_start() {
+              $(picker).datetimepicker(options).datetimepicker("show").datetimepicker("hide").off("change");
               $(picker).datetimepicker(options).datetimepicker("show").datetimepicker("hide").on("change",function(){
                   if ($(picker).attr("type")=="datetimepicker") {
                       $(input).attr("value",date("Y-m-d H:i:s",strtotime($(picker).val())));
@@ -54,7 +60,6 @@ $(document).on("datatimepicker-js",function() {
                       $(input).attr("value",$(picker).val());
                   }
               });
-              $(input).addClass("wb-done");
             }
 
         });

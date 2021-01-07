@@ -9,17 +9,19 @@ class modDatetimepicker
     {
         $out=$dom->app->fromFile(__DIR__ ."/datetimepicker_ui.php");
         $inph = $out->children("input[type=hidden]");
-        $inpv = $inph->next("input");
+        $inpv = $out->children("input.form-control");
         $attributes = $dom->attributes();
         $inpv->attr("autocomplete","off");
         if (isset($dom->params->type)) {
-            $inpv->attr("type",$dom->params->type);
+            $dom->params->type = $dom->params->type;
         } else if ($dom->attr("type") > "") {
-            $inpv->attr("type",$dom->attr("type"));
+            $dom->params->type = $dom->attr("type");
         } else {
             $dom->params->type = "datetimepicker";
-            $inpv->attr("type","datetimepicker");
         }
+        $inpv->attr("type", $dom->params->type);
+
+        isset($dom->app->lang) AND !isset($dom->params->lang) ? $dom->params->lang = $dom->app->lang : null; 
         foreach ($attributes as $attr => $val) {
             $attr = mb_strtolower($attr);
             if (substr($attr, 0, 9) !== "wb-module") {
@@ -35,8 +37,9 @@ class modDatetimepicker
                 }
             }
         }
+        $inph->attr("wb-params", json_encode($dom->params));
+        $inpv->removeAttr('wb');
         $out->copy($dom);
-        $out->attr("wb-params",json_encode($dom->params));
         $dom->after($out);
         $dom->remove();
     }
