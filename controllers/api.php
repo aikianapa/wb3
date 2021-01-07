@@ -62,8 +62,11 @@ class ctrlApi
         
 
         $query = (array)$app->route->query;
-        $app->route->method == 'POST' ? $query = array_merge($query, $app->vars('_post')) : null;
-        $app->route->query = (object)$query;
+        if ($app->vars('_post._tid') == '') {
+            // если передан _tid, то значения в _post не используются в условиях запроса
+            $app->route->method == 'POST' ? $query = array_merge($query, $app->vars('_post')) : null;
+            $app->route->query = (object)$query;
+        }
 
         $options = $this->prepQuery($app->route->query);
 

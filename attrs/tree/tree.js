@@ -27,7 +27,7 @@ $.fn.wbTreeInit = function() {
             var res = wbapp.postSync("/ajax/tree/form/", {"data":data,"dict":dict});
             var modal = res.content;
             $(modal).modal({"backdrop":"static"}).modal("show").runScripts();
-						wbapp.tplInit();
+			wbapp.tplInit();
             var mid = $(modal).attr("id");
             var modal = $("#"+mid);
             // Procedure after edit branch data //

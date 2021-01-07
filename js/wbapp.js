@@ -852,8 +852,6 @@ if (typeof $ === 'undefined') {
                 });
 
                 wbapp.modalZndx += 10;
-
-                console.log(wbapp.modalZndx);
                 if (!$(this).closest().is("body")) {
                     if ($(this).data("parent") == undefined) $(this).data("parent", $(this).closest());
                     // нельзя переносить модальное окно, так как могут возникнуть проблемы с селектором!
