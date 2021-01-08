@@ -528,12 +528,13 @@ class wbDom extends DomQuery
         $fields->setReference($this->item);
         $inputs = $this->find("[name]");
         foreach ($inputs as $inp) {
-            if (in_array($inp->tagName, ["input","textarea","select"]) && !$inp->hasAttr("done") && !$inp->closest("template")->length) {
                 $name = $inp->attr("name");
                 $value = $fields->get($name);
                 if ((array)$value === $value and $inp->tagName !== "select") {
                     $value = wb_json_encode($value);
                 }
+
+            if (in_array($inp->tagName, ["input","textarea","select"]) && !$inp->hasAttr("done") && !$inp->closest("template")->length) {
                 if ($inp->tagName == "textarea") {
                     $inp->text($value);
                 } elseif ($inp->tagName == "select") {
@@ -564,7 +565,12 @@ class wbDom extends DomQuery
                     }
                 }
                 $inp->attr("done", "");
+            } else if ($inp->hasAttr('type') && !$inp->hasAttr("done") && !$inp->closest("template")->length) {
+                    $inp->attr("value", $value)
+                        ->attr("done", "");
             }
+            
+
         }
         foreach ($this->find("template") as $t) {
             $t->inner(str_replace("{{", "_{_{_", $t->inner()));

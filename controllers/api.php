@@ -198,6 +198,13 @@ class ctrlApi
         echo $result;
     }
 
+    public function apiOptions($arr) {
+        // convert options array to string for __options
+        $options = http_build_query($options);
+        $options = str_replace(['&','%2C'], ';', $options);
+        return $options;
+    }
+
     public function prepQuery($query)
     {
         $query = (array)$query;
@@ -233,12 +240,10 @@ class ctrlApi
                         $sarr[trim($fld[0])] = 1;
                     }
                     $item[1] = $sarr;
-                } else {
-                    if (is_numeric($item[1])) {
+                } else if (isset($item[1]) && is_numeric($item[1])) {
                         $item[1] = $item[1] * 1;
-                    }
                 }
-                $options[$item[0]] = $item[1];
+                isset($item[1]) ? $options[$item[0]] = $item[1] : null;
             }
             unset($query['__options']);
         }

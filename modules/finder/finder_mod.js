@@ -6,17 +6,18 @@ $(document).delegate('.mod-finder input','keyup',function(){
     params = json_decode(params);
     params.finder.value = $(this).val();
     $.post('/module/finder/get/', params ,function(data){
-        $(finder).find('.dropdown-menu').html(data);
+        $(finder).find('.dropdown-menu').html(data.render);
         $(finder).find('.dropdown-menu').dropdown('show');
         console.log('Trigger: mod-finder-data');
-        $(finder).trigger('mod-finder-data',data);
-        $(finder).find('[data-finder-id]').off('tap click');
-        $(finder).find('[data-finder-id]').on('tap click', function () {
+        $(finder).trigger('mod-finder-data', self, data);
+        $(finder).find('.dropdown-item').off('tap click');
+        $(finder).find('.dropdown-item').on('tap click', function () {
             let finder = $(self).parents('.mod-finder');
-            $(finder).find('input[type=hidden]').val($(this).attr('data-finder-id'));
             $(finder).find('input[type=search]').val($(this).text());
-            $(finder).find('input[type=hidden]').trigger('change');
             setTimeout(function(){$(finder).find('.dropdown-menu').dropdown('hide');},10);
+            console.log('Trigger: mod-finder-value');
+            let values = array_values(data.result);
+            $(finder).trigger('mod-finder-value', self, values[$(this).index()]);
         });
     });
 
@@ -24,10 +25,5 @@ $(document).delegate('.mod-finder input','keyup',function(){
     $(finder).delegate('input', 'tap click', function () {
         $(finder).find('.dropdown-menu').dropdown('hide');
     });
-});
-
-$(window).resize(function(){
     $('.mod-finder > .dropdown-menu').width($('.mod-finder > input[type=search]').width());
 });
-
-$(window).trigger('resize');
