@@ -1,7 +1,7 @@
 <html>
 
 <nav class="nav navbar navbar-expand-md col">
-  <a class="navbar-brand tx-bold tx-spacing--2 order-1" href="javascript:">Страницы</a>
+  <a class="navbar-brand tx-bold tx-spacing--2 order-1" href="javascript:">{{_lang.pages}}</a>
   <button class="navbar-toggler order-2" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <i class="wd-20 ht-20 fa fa-ellipsis-v"></i>
@@ -10,25 +10,25 @@
   <div class="collapse navbar-collapse order-2" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#" data-ajax="{'target':'#{{_form}}List','filter_remove': 'active'}">Все
+        <a class="nav-link" href="#" data-ajax="{'target':'#{{_form}}List','filter_remove': 'active'}">{{_lang.all}}
           <span class="sr-only">(current)</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#" data-ajax="{'target':'#{{_form}}List','filter_remove': 'active','filter_add':{'active':'on'}}">Активные</a>
+        <a class="nav-link" href="#" data-ajax="{'target':'#{{_form}}List','filter_remove': 'active','filter_add':{'active':'on'}}">{{_lang.active}}</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#" data-ajax="{'target':'#{{_form}}List','filter_remove': 'active','filter_add':{ 'active': { '$ne': 'on' } } }">Скрытые</a>
+        <a class="nav-link" href="#" data-ajax="{'target':'#{{_form}}List','filter_remove': 'active','filter_add':{ 'active': { '$ne': 'on' } } }">{{_lang.hidden}}</a>
       </li>
     </ul>
     <form class="form-inline mg-t-10 mg-lg-0">
 
-    <input class="form-control search-header" type="search" placeholder="Поиск..." aria-label="Поиск..."
+    <input class="form-control search-header" type="search" placeholder="{{_lang.search}}..." aria-label="Поиск..."
     data-ajax="{'target':'#{{_form}}List','filter_add':{'$or':[{ '_id' : {'$like' : '$value'} }, { 'header': {'$like' : '$value'} }]} }">
 
 
       <div class="form-group">
-        <button class="btn btn-success" type="submit" data-ajax="{'url':'/cms/ajax/form/pages/edit/_new','html':'.pages-edit-modal'}">Создать</button>
+        <button class="btn btn-success" type="submit" data-ajax="{'url':'/cms/ajax/form/pages/edit/_new','html':'.pages-edit-modal'}">{{_lang.create}}</button>
       </div>
     </form>
   </div>
@@ -64,9 +64,8 @@
           <i class="fa fa-ellipsis-v"></i>
         </a>
         <div class="dropdown-menu">
-          <a class="dropdown-item" href="#" data-ajax="{'url':'/cms/ajax/form/pages/edit/{{_id}}','html':'.pages-edit-modal'}">Изменить</a>
-          <a class="dropdown-item" href="#">Переименовать</a>
-          <a class="dropdown-item" href="javascript:" data-ajax="{'url':'/ajax/rmitem/{{_form}}/{{_id}}','update':'cms.list.{{_form}}','html':'.{{_form}}-edit-modal'}">Удалить</a>
+          <a class="dropdown-item" href="#" data-ajax="{'url':'/cms/ajax/form/pages/edit/{{_id}}','html':'.pages-edit-modal'}">{{_lang.edit}}</a>
+          <a class="dropdown-item" href="javascript:" data-ajax="{'url':'/ajax/rmitem/{{_form}}/{{_id}}','update':'cms.list.{{_form}}','html':'.{{_form}}-edit-modal'}">{{_lang.remove}}</a>
         </div>
       </div>
     </div>
@@ -75,6 +74,26 @@
     <wb-snippet wb-name="pagination"/>
   </wb-jq>
 </div>
+    <wb-lang>
+        [ru]
+        pages = Страницы
+        create = "Создать"
+        edit = Изменить
+        remove = Удалить
+        all = Все
+        active = Активные
+        hidden = Скрытые
+        search = Поиск
+        [en]
+        pages = Pages
+        create = "Create"
+        edit = Edit
+        remove = Remove
+        all = All
+        active = Active
+        hidden = Hidden
+        search = Search
+    </wb-lang>
 <div class="pages-edit-modal">
 
 </div>

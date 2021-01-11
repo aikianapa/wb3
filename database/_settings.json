@@ -79,7 +79,7 @@
                                     "data": {
                                         "label": "Заметки",
                                         "icon": "ri-sticky-note-line",
-                                        "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/tasks\/list\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
+                                        "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/notes\/list\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
                                     }
                                 },
                                 "catalogs": {
