@@ -1,7 +1,7 @@
 {
     "settings": {
         "id": "settings",
-        "header": "Апартаменты",
+        "header": "WebBasic Pandemic Edition",
         "_id": "settings",
         "_form": "_settings",
         "_table": "_settings",
@@ -50,6 +50,36 @@
                                         "label": "Страницы",
                                         "icon": "ri-pages-line",
                                         "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/pages\/list\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
+                                    }
+                                },
+                                "news": {
+                                    "id": "news",
+                                    "name": "Новости",
+                                    "active": "on",
+                                    "data": {
+                                        "label": "Новости",
+                                        "icon": "ri-newspaper-line",
+                                        "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/news\/list\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
+                                    }
+                                },
+                                "tasks": {
+                                    "id": "tasks",
+                                    "name": "Задачи",
+                                    "active": "on",
+                                    "data": {
+                                        "label": "Задачи",
+                                        "icon": "ri-task-line",
+                                        "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/tasks\/list\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
+                                    }
+                                },
+                                "notes": {
+                                    "id": "notes",
+                                    "name": "Заметки",
+                                    "active": "on",
+                                    "data": {
+                                        "label": "Заметки",
+                                        "icon": "ri-sticky-note-line",
+                                        "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/tasks\/list\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
                                     }
                                 },
                                 "catalogs": {
@@ -155,7 +185,7 @@
                 "value": ""
             }]
         },
-        "email": "",
+        "email": "oleg_frolov@mail.ru",
         "page_size": "",
         "cache": "",
         "logo1": "",

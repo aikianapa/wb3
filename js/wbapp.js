@@ -287,7 +287,7 @@ if (typeof $ === 'undefined') {
                         }
                     } else {
                         // server-side update
-                        if (tpl.params.target !== undefined && $(document).find(tpl.params.target).length) {
+                        if (tpl.params.target !== undefined && tpl.params.target > '#' && $(document).find(tpl.params.target).length) {
                             let check = true;
                             if (data._table !== undefined) {
                                 if (tpl.params.table !== undefined && tpl.params.table !== data._table) {

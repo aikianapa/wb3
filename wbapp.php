@@ -566,8 +566,8 @@ class wbDom extends DomQuery
                 }
                 $inp->attr("done", "");
             } else if ($inp->hasAttr('type') && !$inp->hasAttr("done") && !$inp->closest("template")->length) {
-                    $inp->attr("value", $value)
-                        ->attr("done", "");
+                    $inp->attr("value", $value);
+                    $inp->attr("done", "");
             }
             
 
