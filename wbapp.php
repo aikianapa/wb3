@@ -1089,9 +1089,9 @@ class wbApp
                     ,"/forms/common/common_{$modename}"
                 ];
             foreach ($path as $form) {
-                    $current = wbNormalizePath($_ENV['path_engine'].$form);
-                    if (is_file($current)) break;
                     $current = wbNormalizePath($_ENV['path_app'].$form);
+                    if (is_file($current)) break;
+                    $current = wbNormalizePath($_ENV['path_engine'].$form);
                     if (is_file($current)) break;
                     $current = '';
             }

@@ -34,8 +34,8 @@ $.fn.wbTreeInit = function() {
             $(modal).on('hidden.bs.modal',function(){
                 storeData();
             });
-            $(modal).undelegate(".modal-header a.nav-link",'click');
-            $(modal).delegate(".modal-header a.nav-link",'click', function () {
+            $(modal).undelegate(".modal-header a.btn",'click');
+            $(modal).delegate(".modal-header a.btn",'click', function () {
 							storeData(false);
                 var postdict = $(tree).getData(false);
                 var postdata = $(tree).getData(path);

@@ -6,7 +6,7 @@
                 <i class="fa fa-close wd-20" data-dismiss="modal" aria-label="Close"></i>
                 <div class="custom-control custom-switch">
                     <input type="checkbox" class="custom-control-input" name="active" id="{{_form}}SwitchItemActive" onchange="$('#{{_form}}ValueItemActive').prop('checked',$(this).prop('checked'));">
-                    <label class="custom-control-label" for="{{_form}}SwitchItemActive">Активирован</label>
+                    <label class="custom-control-label" for="{{_form}}SwitchItemActive">{{_lang.visible}}</label>
                 </div>
             </div>
             <div class="modal-body pd-20">
@@ -39,9 +39,9 @@
                     <div class="tab-content p-3">
                         <div class="tab-pane fade show active" id="{{_form}}EditForm-tab1" role="tabpanel" aria-labelledby="{{_form}}EditForm-tab1">
                             <div class="form-group row">
-                                <label class="col-sm-2 form-control-label">Заголовок</label>
+                                <label class="col-sm-2 form-control-label">{{_lang.header}}</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="header" placeholder="Заголовок">
+                                    <input type="text" class="form-control" name="header" placeholder="{{_lang.header}}">
                                 </div>
                             </div>
 
@@ -91,10 +91,14 @@ main = Основное
 prop = Свойства
 seo = Оптимизация
 images = Изображения
+visible = Отображать
+header = Заголовок
 [en]
 main = Main
 prop = Properties
 seo = SEO
 images = Images
+visible = Visible
+header = Header
 </wb-lang>
 </html>

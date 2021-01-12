@@ -865,9 +865,9 @@ if (typeof $ === 'undefined') {
 
             });
 
-            $(document).delegate(".modal", 'hidden.bs.modal', function (e) {
+            $(document).delegate(".modal", 'hidden.bs.modal', function () {
                 let zndx = $(this).css("z-index") * 1;
-                //$(".modal-backdrop[style='z-index: " + (zndx - 5)+"']").remove();
+                $(".modal-backdrop[style*='z-index: " + (zndx - 5)+"']").remove();
             })
 
             $(document).delegate(".modal [data-dismiss]", "click", function (event) {
@@ -875,14 +875,10 @@ if (typeof $ === 'undefined') {
                 var zndx = $(this).attr("data-dismiss") * 1;
                 var modal = $(document).find(".modal[style*='z-index: " + $(this).attr("data-dismiss") + "']");
                 modal.modal("hide");
+                $(document).find(".modal-backdrop[style*='z-index: " + (zndx - 5) + "']").remove();
             });
 
-            $(document).delegate(".modal", "hide.bs.modal", function (event) {
-                var that = this;
-                var zndx = $(this).css('z-index') * 1;
-                $("#modalBackDrop" + (zndx - 5) + ".modal-backdrop").remove();
-                wbapp.modalZndx -= 10;
-            });
+
             $(document).delegate(".modal", "hidden.bs.modal", function (event) {
                 var that = this;
                 if ($(this).hasClass("removable")) {

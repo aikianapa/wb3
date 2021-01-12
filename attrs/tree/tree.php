@@ -80,8 +80,13 @@ function tagTree( &$dom, $Item = null ) {
     }
 
     if ( isset( $dom->params->dict ) ) {
-        $dictdata = wbItemRead( 'tree', $dom->params->dict );
-        if ( !isset( $Item[$name] ) ) $Item[$name] = $dictdata['tree'];
+        $dictdata = wbItemRead( 'catalogs', $dom->params->dict );
+        if ($dictdata && isset($dictdata['tree'])) {
+            $dictdata = $tree = $dictdata['tree'];
+            if (!isset($Item[$name])) {
+                $Item = $dictdata['data'];
+            }
+        }
         unset( $dictdata );
     }
 

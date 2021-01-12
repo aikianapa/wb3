@@ -14,6 +14,7 @@ class modTagsinput {
         $dom->attrsCopy($out);
         $out->attr("name",$name);
         $out->attr("value",$value);
+        $out->copy($dom);
         $dom->after($out);
         $dom->remove();
     }
