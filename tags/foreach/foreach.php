@@ -66,6 +66,7 @@ class tagForeach
             $val->_pages = $pages;
             $val->_val = $value;
             $val->_parent = &$parent;
+            $val->_key = $key;
             if (!isset($val->_id)) {
                 isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
             }
@@ -73,11 +74,11 @@ class tagForeach
                 $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$dom->params->table], (array) $val);
             }
             if ($ajax !== false) {
-                $list[$key] = (array) $val;
+                $list[$key] = (array)$val;
             } else {
                 $line = $this->app->fromString($dom->tpl, true);
                 $line->copy($dom);
-                $line->item = (array) $val;
+                $line->item = (array)$val;
                 $line->fetch();
                 $dom->append($line->inner());
             }
@@ -182,6 +183,7 @@ class tagForeach
             $val->_pages = $pages;
             $val->_val = $value;
             $val->_parent = &$parent;
+            $val->_key = $key;
             if (!isset($val->_id)) {
                 isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
             }
@@ -347,7 +349,9 @@ class tagForeach
         }
 
         if ($dom->params('from')) {
-            if (isset($list[$dom->params->from])) {
+            if ($dom->app->vars($dom->params->from) > '') { 
+                $list = $dom->app->vars($dom->params->from);
+            } else if (isset($list[$dom->params->from])) {
                 $list = $list[$dom->params->from];
             } else {
                 $list = $dom->getField($dom->params->from);

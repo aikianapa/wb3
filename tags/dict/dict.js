@@ -28,30 +28,6 @@ $(document).on("dict-js",function(){
                         $(this).runScripts();
                     });
             });
-
-            $(this).undelegate(".wb-tree-dict-lang-btn");
-            $(this).delegate(".wb-tree-dict-lang-btn","click",function(){
-                var modal = wbapp.tpl('wb.modal').html;
-                var title = $(this).next("input").val();
-                var lang = $(this).next("input").next("textarea");
-                $(modal).attr("id",wbapp.newId());
-                $(modal).modal("show")
-                    .on("hidden.bs.modal",function(){
-                        var data = $(modal).find(".modal-body form").serializeJson();
-                        $(lang).jsonVal(data);
-                        $(modal).remove();
-                    })
-                    .on("shown.bs.modal",function(){
-                        $(this).runScripts();
-                    });
-                var res = wbapp.postSync("/ajax/tree/form/lang/", {"dict":$(lang).jsonVal(),"type":"lang"});
-                $(modal).find(".modal-body").html(res.content);
-                if ($(modal).find(".modal-body form",0).attr("data-title") !== undefined) {
-                    title = $(modal).find("form",0).attr("data-title") + title;
-                }
-                $(modal).find(".modal-title").html(title);
-            });
-
             $(this).data("wb-dict", true);
         }
    });

@@ -80,17 +80,21 @@ class wbAjaxTree
         $app = $this->app;
         $fldset = $app->fromFile(__DIR__ . "/tree_fldset.php");
         $out = "";
+        $env = $app->vars('_env.locale');
         if (!isset($data["data"])) $data["data"] = [];
         if ((array)$dict === $dict) {
             foreach($dict as $fld) {
               $set = $fldset->clone();
+              isset($fld["label"]) ? $label = $fld["label"] : $label='';
+              $app->vars('_env.locale', $label);
+              isset($label[$_SESSION['lang']]) ? $label = $label[$_SESSION['lang']] : null;
+              $fld['label'] = $label;
               $set->fetch($fld);
-              $set->find("label")->inner($fld["label"]);
               $set->find("div.col-12")->append($app->fieldBuild($fld,$data));
               $out .= $set->outer()."\n";
-              //$out .= $app->FieldBuild($fld,$data)."\n";
             }
         }
+        $app->vars('_env.locale',$env);
         return $out;
     }
 

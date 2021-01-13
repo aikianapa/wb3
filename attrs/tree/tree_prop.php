@@ -4,14 +4,14 @@
         <div class="form-group">
             <wb-multiinput name="labels">
                 <div class="col-sm-5">
-                <select class="form-control" placeholder="{{_lang.lang}}" name="id">
-										<wb-foreach wb="from={{_env.locales}}">
-                    <option value="{{id}}">{{_locale}}</option>
-										</wb-foreach>
-                </select>
+                    <select class="form-control" placeholder="{{_lang.lang}}" name="id">
+                        <wb-foreach wb="from={{_env.locales}}">
+                            <option value="{{id}}">{{_locale}}</option>
+                        </wb-foreach>
+                    </select>
                 </div>
                 <div class="col-sm-7">
-                <input class="form-control" placeholder="{{_lang.name}}" type="text" name="name">
+                    <input class="form-control" placeholder="{{_lang.name}}" type="text" name="name">
                 </div>
             </wb-multiinput>
         </div>
@@ -23,7 +23,8 @@
         <div class="form-group row">
             <label class="col-sm-3 form-control-label">{{_lang.enum}}</label>
             <div class="col-sm-9">
-                <input class="form-control" data-wb="role=module&load=tagsinput" placeholder="{{_lang.enum}}" type="text" name="enum">
+                <input class="form-control" data-wb="role=module&load=tagsinput" placeholder="{{_lang.enum}}"
+                    type="text" name="enum">
             </div>
         </div>
     </form>
@@ -31,20 +32,21 @@
 
 <template type="forms">
     <form data-title="{{_lang.form}}: " action="javascript:void(0);">
-      <div class="form-group row">
-          <label class="col-sm-3 form-control-label">{{_lang.form}}</label>
-          <div class="col-sm-4">
-              <select data-wb="role=foreach&from=_env.forms" name="form" class="form-control" placeholder="{{_lang.form}}">
-                  <option value='{{_value}}'>{{_value}}</option>
-              </select>
-          </div>
-      </div>
-      <div class="form-group row">
-          <label class="col-sm-3 form-control-label">{{_lang.mode}}</label>
-          <div class="col-sm-4">
-              <input class="form-control" placeholder="{{_lang.mode}}" type="text" name="mode">
-          </div>
-      </div>
+        <div class="form-group row">
+            <label class="col-sm-3 form-control-label">{{_lang.form}}</label>
+            <div class="col-sm-4">
+                <select data-wb="role=foreach&from=_env.forms" name="form" class="form-control"
+                    placeholder="{{_lang.form}}">
+                    <option value='{{_value}}'>{{_value}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 form-control-label">{{_lang.mode}}</label>
+            <div class="col-sm-4">
+                <input class="form-control" placeholder="{{_lang.mode}}" type="text" name="mode">
+            </div>
+        </div>
     </form>
 </template>
 
@@ -52,7 +54,7 @@
 
 <template type="multiinput">
     <form data-title="{{_lang.multiinput}}: " action="javascript:void(0);">
-			<wb-dict name="multiflds" />
+        <wb-dict name="multiflds" />
     </form>
 </template>
 
@@ -85,45 +87,48 @@
 
 
 <wb-lang>
-[en]
-        label	= "Label"
-        name    = "Field name"
-        type	= "Field type"
-        default = "Default value"
-        json    = "JSON data"
-        css	= "Style CSS"
-        other	= "Other"
-        plugins = "Plugins"
-        form 	= "Form"
-        mode	= "Mode"
-        class 	= "Сlass"
-        style 	= "Style"
-        selector= "Selector"
-        locales = "Locales"
-        lang    = "Language"
-        prop	= "Properties"
-        multiinput = "Multiinput"
-        enum    = "Enum"
-        unwrap  = "Unwrap"
-[ru]
-        label	= "Метка"
-        name    = "Имя поля"
-        type	= "Тип поля"
-        default = "Значение по-умолчанию"
-        json    = "Данные JSON"
-        css	= "Стиль CSS"
-        other	= "Другие"
-        plugins = "Плагины"
-        form 	= "Форма"
-        mode	= "Режим"
-        class 	= "Класс"
-        style = "Стиль"
-        selector= "Селектор"
-        locales = "Локализации"
-        lang    = "Язык"
-        prop	= "Свойства"
-        multiinput = "Мультиполе"
-        enum    = "Перечисление"
-        unwrap  = "В колонку"
+    [en]
+    label = "Label"
+    name = "Field name"
+    type = "Field type"
+    default = "Default value"
+    json = "JSON data"
+    css = "Style CSS"
+    other = "Other"
+    plugins = "Plugins"
+    form = "Form"
+    mode = "Mode"
+    class = "Сlass"
+    style = "Style"
+    selector= "Selector"
+    locales = "Locales"
+    lang = "Language"
+    prop = "Properties"
+    multiinput = "Multiinput"
+    enum = "Enum"
+    unwrap = "Unwrap"
+    langinp = "Input multi-language"
+    [ru]
+    label = "Метка"
+    name = "Имя поля"
+    type = "Тип поля"
+    default = "Значение по-умолчанию"
+    json = "Данные JSON"
+    css = "Стиль CSS"
+    other = "Другие"
+    plugins = "Плагины"
+    form = "Форма"
+    mode = "Режим"
+    class = "Класс"
+    style = "Стиль"
+    selector= "Селектор"
+    locales = "Локализации"
+    lang = "Язык"
+    prop = "Свойства"
+    multiinput = "Мультиполе"
+    enum = "Перечисление"
+    unwrap = "В колонку"
+    langinp = "Ввод с переводом"
 </wb-lang>
+
 </html>

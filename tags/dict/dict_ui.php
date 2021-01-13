@@ -12,7 +12,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-4">
+        <!--div class="col-4">
             <div class="form-group mb-0">
                 <div class="input-group">
                     <div class="input-group-prepend wb-tree-dict-lang-btn">
@@ -23,6 +23,11 @@
                     <input class="form-control" placeholder="{{_lang.label}}" type="text" name="label">
                     <textarea type="json" name="lang" class="d-none"></textarea>
                 </div>
+            </div>
+        </div-->
+        <div class="col-4">
+            <div class="form-group mb-0">
+                <input class="form-control" placeholder="{{_lang.label}}" type="text" name="label" wb-module="langinp">
             </div>
         </div>
         <div class="col-4">
@@ -39,6 +44,7 @@
                 <option value="images">multi images</option>
                 <!--option value="gallery">gallery</option-->
                 <option value="multiinput">multiinput</option>
+                <option value="langinp">langinp</option>
                 <option value="switch">switch</option>
                 <option value="enum">enum</option>
                 <option value="tree">tree</option>

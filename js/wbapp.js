@@ -1302,9 +1302,9 @@ if (typeof $ === 'undefined') {
         }
         if (data == undefined) {
             var data = $(this).val();
-            if (data > "") {
+            try {
                 data = json_decode(data);
-            } else {
+            } catch (error) {
                 data = {};
             }
             return data;

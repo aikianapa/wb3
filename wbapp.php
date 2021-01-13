@@ -272,7 +272,7 @@ class wbDom extends DomQuery
             // set locale for template
             if ($this->tagName == "template" && strpos($this->outer(),'_lang.') !== 0) {
                 $locale = $this->app->vars('_env.locale');
-                if ($locale > '') $locale = $locale[$_SESSION["lang"]];
+                isset($locale[$_SESSION["lang"]]) ? $locale = $locale[$_SESSION["lang"]] : null;
                 $this->addParams(['locale'=>$locale]);
             }
             //isset($_ENV["locales"][$_SESSION["lang"]]) ? $data = ["_lang" => $_ENV["locales"][$_SESSION["lang"]]] : $data = [];
@@ -880,6 +880,15 @@ class wbApp
     }
 
 
+    public function fieldBuild_multiinput()
+    {
+        $mult = $this->tpl;
+        $mult->item = $this->item;
+        $mult->dict = $this->dict;
+        $mult->fetch();
+        return $mult;
+    }
+
     public function fieldBuild_image()
     {
         $img = $this->tpl;
@@ -918,6 +927,9 @@ class wbApp
         $common->find("[wb]")->setAttributes((array)$this->tpl->dict);
         $common->find("wb-module")->setAttributes((array)$this->tpl->dict);
         $common->fetch();
+        if ($this->tpl->dict->type == 'langinp') {
+            $common->find('.mod-langinp[placeholder]')->attr('placeholder', $common->dict->label);
+        }
         return $common;
     }
 
