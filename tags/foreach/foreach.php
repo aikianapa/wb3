@@ -155,11 +155,6 @@ class tagForeach
                 }
             }
 
-$dom->before(`341234
-      <wb-jq wb="{'append':'#{{_form}}List template','render':'client'}" >
-        <wb-snippet wb-name="pagination"/>
-      </wb-jq>
-      `);
         $dom->before($dom->inner());
         $dom->remove();
     }
@@ -256,6 +251,7 @@ $dom->before(`341234
                 $dom->params->tpl = $dom->parent()->attr('id');
                 $dom->params->page = $page;
                 $pag = $dom->tagPagination($dom);
+                
                 if (!count((array)$list) or $dom->html() == "") {
                     $dom->inner($empty->inner());
                 }
@@ -263,14 +259,24 @@ $dom->before(`341234
           
                 isset($dom->params->pos) ? $pos = $dom->params->pos : $pos = 'bottom';
 
-                if ($srvpag or ($this->app->route->controller == 'ajax' and $this->app->vars('_post._params') > "")) {
-                    // При вызове из data-ajax требуется второе условие
-                    $html = $dom->inner();
+                if ($srvpag 
+                    or ($this->app->route->controller == 'ajax' and $this->app->vars('_post._params') > "")
+                    or ($this->app->route->mode == 'ajax' and $this->app->vars('_post._params') > "")
+                    ) {
+
+                    if (!count((array)$list) or $dom->html() == "") {
+                        $html = $empty->inner();
+                        $pag = "";
+                    } else {
+                        $html = $dom->html();
+                        $pag = $pag->outer();
+                    }
+
                     $res = [
                     'html' => $html,
                     'route' => $this->app->route,
                     'params' => $dom->params,
-                    'pag' => $pag->outer(),
+                    'pag' => $pag,
                     'pos' => $pos
                 ];
                     header('Content-Type: charset=utf-8');
@@ -293,7 +299,6 @@ $dom->before(`341234
                     $dom->prepend('<option value="">'.$this->placeholder.'</option>');
                 }
             }
-
         $dom->before($dom->inner());
         $dom->remove();
     }

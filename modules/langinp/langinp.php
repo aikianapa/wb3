@@ -23,7 +23,7 @@ class modLanginp
         $out->fetch();
         $name = $txt->attr('name');
         if (isset($dom->item[$name])) {
-            foreach ($dom->item[$name] as $k => $v) {
+            foreach ((array)$dom->item[$name] as $k => $v) {
                 $out->find('input[data-name="'.$k.'"]')->attr('value', $v);
                 $k == $dom->app->vars('_env.lang') ? $inp->attr('value', $v) : null;
             }

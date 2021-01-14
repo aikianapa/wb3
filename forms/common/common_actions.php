@@ -1,26 +1,18 @@
-<div class="cms-actions btn-group">
-  <a class="btn bg-transparent" type="button" data-wb="role=ajax&url=/form/{{_form}}/edit/{{id}}&append=#content">
-    <i class='fa fa-pencil'></i>
-  </a>
-  <a aria-expanded="false" aria-haspopup="true" class="btn bg-transparent dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" type="button">
-    <span class="sr-only">Toggle Dropdown</span>
-    <i class='fa fa-ellipsis-v'></i>
-  </a>
-  <div class="dropdown-menu dropdown-menu-right">
-    <a class="dropdown-item" href="javascript:void(0);"
-      data-wb="role=ajax&url=/form/{{_table}}/edit/{{id}}&append=#content">
-      <i class='fa fa-pencil'></i> <span>{{_lang.edit}}</span>
+<html>
+<div class="dropdown dropright pos-absolute r-10 p-0 m-0" style="line-height: normal;">
+    <a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false">
+        <i class="ri-more-2-fill"></i>
     </a>
-    <a class="dropdown-item" href="javascript:void(0);"
-      data-wb="role=ajax&url=/form/{{_form}}/rename/{{id}}/?confirm=true&append=#content">
-      <i class="fa fa-i-cursor"></i> <span>{{_lang.rename}}</span></a>
-    <!--a class="dropdown-item" href="#"> <i class="fa fa-pencil"></i> Дублировать</a-->
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" href="javascript:void(0);"
-      data-wb="role=ajax&url=/form/{{_form}}/remove/{{id}}/?confirm=true&append=#content">
-      <i class='fa fa-trash'></i> <span>{{_lang.remove}}</span>
-    </a>
-  </div>
+    <div class="dropdown-menu">
+        <a class="dropdown-item" href="#"
+            data-ajax="{'url':'/cms/ajax/form/{{_form}}/edit/{{_id}}','html':'.{{_form}}-edit-modal'}">
+            <i class="ri-file-edit-line"></i> Изменить</a>
+        <!--a class="dropdown-item" href="#">Переименовать</a-->
+        <a class="dropdown-item" href="javascript:"
+            data-ajax="{'url':'/ajax/rmitem/{{_form}}/{{_id}}','update':'cms.list.{{_form}}','html':'.{{_form}}-edit-modal'}">
+            <i class="ri-delete-bin-2-line"></i> Удалить</a>
+    </div>
 </div>
 
 <script type="text/locale">
@@ -33,3 +25,4 @@
         remove  = "Remove"
         rename  = "Rename"
 </script>
+</html>

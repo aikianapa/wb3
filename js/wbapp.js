@@ -183,7 +183,10 @@ if (typeof $ === 'undefined') {
             $.each(wbapp.template, function (i, tpl) {
                 if (tpl.params.bind !== undefined && tpl.params.bind == key &&
                     tpl.params.render !== undefined && tpl.params.render == 'client') {
-                    wbapp.renderTemplate(tpl.params, value);
+                    wbapp.renderClient(tpl.params, value);
+                } else if (tpl.params._params !== undefined && tpl.params._params.bind !== undefined 
+                    && tpl.params._params.bind == key && tpl.params.render == 'server') {
+                    wbapp.renderServer(tpl.params, value);
                 }
             });
 
@@ -273,7 +276,6 @@ if (typeof $ === 'undefined') {
                 params.silent = true;
             } else { params.silent = false; }
             if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
-
             if (params.silent == false) {
                 console.log('Update by tpl');
                 $.each(wbapp.template, function (i, tpl) {
@@ -287,25 +289,7 @@ if (typeof $ === 'undefined') {
                         }
                     } else {
                         // server-side update
-                        if (tpl.params.target !== undefined && tpl.params.target > '#' && $(document).find(tpl.params.target).length) {
-                            let check = true;
-                            if (data._table !== undefined) {
-                                if (tpl.params.table !== undefined && tpl.params.table !== data._table) {
-                                    check = false;
-                                } else if (tpl.params._params !== undefined && tpl.params._params.table !== undefined && tpl.params._params.table !== data._table) {
-                                    check = false;
-                                }
-                            }
-                            if (check) {
-                                delete tpl.params.data;
-                                tpl.params._tid = tpl.params.target;
-                                wbapp.ajax(tpl.params, function (data) {
-                                    var inner = '<wb>' + data.data + '</wb>';
-                                    inner = $(inner).find(tpl.params.target).html();
-                                    $(tpl.params.target).html(inner);
-                                });
-                            }
-                        }
+                        wbapp.renderServer(tpl.params,data);
                     }
                 })
             }
@@ -419,7 +403,7 @@ if (typeof $ === 'undefined') {
                 if (params.update && typeof data == "object") wbapp.storageUpdate(params.update, data);
                 if (params._trigger !== undefined && params._trigger == "remove") eval('delete ' + params.data); // ???
                 if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
-                if (params.render !== undefined && params.render == 'client') wbapp.renderTemplate(params, data);
+                if (params.render !== undefined && params.render == 'client') wbapp.renderClient(params, data);
                 if (params._event !== undefined && $(params._event.target).parent().is(":input")) {
                     // $inp = $(params._event.target).parent();
                     // тут нужна обработка значений на клиенте
@@ -750,7 +734,29 @@ if (typeof $ === 'undefined') {
         }
     }
 
-    wbapp.renderTemplate = function (params, data = {}) {
+    wbapp.renderServer = function (params, data = {}) {
+        if (params.target !== undefined && params.target > '#' && $(document).find(params.target).length) {
+            let check = true;
+            if (data._table !== undefined) {
+                if (params.table !== undefined && params.table !== data._table) {
+                    check = false;
+                } else if (params._params !== undefined && params._params.table !== undefined && params._params.table !== data._table) {
+                    check = false;
+                }
+            }
+            if (check) {
+                delete params.data;
+                params._tid = params.target;
+                wbapp.ajax(params, function (data) {
+                    var inner = '<wb>' + data.data + '</wb>';
+                    inner = $(inner).find(params.target).html();
+                    $(params.target).html(inner);
+                });
+            }
+        }
+    }
+
+    wbapp.renderClient = function (params, data = {}) {
         var tid;
         var newbind = false;
         if (tid == undefined && params._tid !== undefined) tid = params._tid;
@@ -1128,7 +1134,7 @@ if (typeof $ === 'undefined') {
 
             $(this).data("idx", idx);
 
-            if ($(this).is("[required]:visible") && $(this).val() == "") {
+            if ($(this).is("[required]:visible:not(select)") && $(this).val() == "") {
                 res = false;
                 $(this).data("error", wbapp._settings.sysmsg.required + ucfirst(label));
                 console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
@@ -1215,7 +1221,7 @@ if (typeof $ === 'undefined') {
                 }
             }
 
-            if ($(this).is('select:visible')) {
+            if ($(this).is('select[required]:visible')) {
                 let val = $(this).find('option:selected').attr('value');
                 if (val == undefined || val == '') {
                     res = false;
