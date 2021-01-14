@@ -2,11 +2,8 @@
 
 function wbItemList($form = 'pages', $options=[])
 {
-    if (!is_array($options)) {
-        $options=json_decode($options, true);
-    }
+    !is_array($options) ? $options = json_decode($options, true) : null;
     $db = wbSetDb($form);
-
     ini_set('max_execution_time', 900);
     ini_set('memory_limit', '1024M');
     return $db->ItemList($form, $options);
@@ -63,7 +60,6 @@ function wbItemRead($form = null, $id = null)
     $db = wbSetDb($form);
     wbTrigger('form', __FUNCTION__, 'beforeItemRead', func_get_args(), array());
     !isset($_SESSION['lang']) ? $_SESSION['lang'] = 'en' : null;
-
     $cid = md5($form . $id . $_SESSION['lang']);
     if (isset($_ENV['cache'][$cid])) {
         $item = $_ENV['cache'][$cid];

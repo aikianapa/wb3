@@ -282,7 +282,6 @@ function wbFormClass($form = null) {
 }
 
 function wbCorrelation($form,$id,$fld) {
-    $app = $_ENV["app"];
     $item = wbItemRead($form,$id);
     $item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', func_get_args(), $item);
     if ($item) {
@@ -291,8 +290,6 @@ function wbCorrelation($form,$id,$fld) {
     } else {
         return null;
     }
-
-
 }
 
 function wbMime($path) {

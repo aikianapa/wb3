@@ -155,7 +155,11 @@ class tagForeach
                 }
             }
 
-
+$dom->before(`341234
+      <wb-jq wb="{'append':'#{{_form}}List template','render':'client'}" >
+        <wb-snippet wb-name="pagination"/>
+      </wb-jq>
+      `);
         $dom->before($dom->inner());
         $dom->remove();
     }

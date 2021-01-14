@@ -12,6 +12,9 @@ class jsonDrv
 
     public function itemRead($form = null, $id = null)
     {
+            $cid = md5($form . $id . $_SESSION['lang']);
+            if (isset($_ENV['cache'][$cid])) return $_ENV['cache'][$cid];
+
             $list = $this->itemList($form, ['orm' => "where('id','{$id}')"]);
             if (isset($list['list'])) {
                 $list = $list['list'];
@@ -283,6 +286,9 @@ class jsonDrv
             if (!isset($options->sort) && isset($options->limit) && count($list) == $options->limit) {
                 break;
             }
+
+            $cid = md5($form . $item['_id'] . $_SESSION['lang']);
+            $_ENV['cache'][$cid] = $item;
         }
 
         if (count($params['sort'])) {
