@@ -111,7 +111,7 @@
                                     <a href="#" data-path=""><i class="fa fa-home"></i></a>
                                 </li>
                                 <wb-var path='' />
-                                <wb-foreach wb="from=path">
+                                <wb-foreach wb-from="path">
                                     <wb-var path='{{_var.path}}/{{_parent.path[{{_ndx}}]}}' />
                                     <li class="breadcrumb-item">
                                         <a href="#" data-path="{{_var.path}}">{{_parent.path[{{_ndx}}]}}</a>

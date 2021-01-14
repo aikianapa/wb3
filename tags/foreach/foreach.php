@@ -41,6 +41,7 @@ class tagForeach
     private function client(&$dom) {
         $empty = &$this->empty;
         $render = 'client';
+        $parent = $dom->item;
 
         $idx = 0;
         $ndx = 1;
@@ -55,7 +56,7 @@ class tagForeach
 
         $dom->attr("data-ajax") > "" ? $ajax = $dom->attr("data-ajax") : $ajax = false;
 
-        list($list, $count, $pages, $page, $srvpag) = $this->list();
+        list($list, $count, $pages, $page, $srvpag, $options) = $this->list();
 
         foreach ((array) $list as $key => $val) {
             $value = $val;
@@ -167,9 +168,11 @@ class tagForeach
          $idx = 0;
         $ndx = 1;
 
+        $parent = $dom->item;
+
         //$this->app->vars('_post.route') == '' and $dom->params('tpl') == 'true' ? $dom->addTpl() : null;
 
-        list($list, $count, $pages, $page, $srvpag) = $this->list();
+        list($list, $count, $pages, $page, $srvpag, $options) = $this->list();
 
 
         $dom->attr("data-ajax") > "" ? $ajax = $dom->attr("data-ajax") : $ajax = false;
@@ -412,7 +415,11 @@ class tagForeach
             }
         }
         $dom->params("rand") == "true" ? shuffle($list) : null;
-        return [$list, $count, $pages, $page, $srvpag];
+        if (isset($options['limit'])) {
+            $list = array_chunk($list, intval($options['limit']));
+            $list = $list[0];
+        }
+        return [$list, $count, $pages, $page, $srvpag, $options];
     }
 
     private function options() {

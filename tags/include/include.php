@@ -12,6 +12,11 @@ class tagInclude {
     } else if ($dom->params("url")) {
         $inc = $dom->app->fromString(file_get_contents($dom->app->vars("_route.host").$dom->params("url")));
         $dom->before("\n<!-- Include url: ".$dom->params("url")." -->\n");
+    } else if ($dom->params("snippet")) {
+        $snippet = $dom->params("snippet");
+        strtolower(substr($snippet, -4)) == '.php' ? null : $snippet .= '.php';
+        $inc = $dom->app->getForm('snippets', $snippet);
+        $dom->before("\n<!-- Include snippet: ".$dom->params("tpl")." -->\n");
     } else if ($dom->params("tpl")) {
         $inc = $dom->app->getTpl($dom->params("tpl"));
         $dom->before("\n<!-- Include tpl: ".$dom->params("tpl")." -->\n");

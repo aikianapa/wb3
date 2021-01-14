@@ -29,7 +29,7 @@ class modFilemanager
     {
         if ($this->allow()) {
             $list=array();
-            $dir=$_ENV["path_app"];
+            $dir = $_ENV["path_app"];
             if ($_ENV["route"]["params"]["dir"]>"") {
                 $dir.=$_ENV["route"]["params"]["dir"];
                 $dir=str_replace("..", "", $dir);
@@ -66,7 +66,7 @@ class modFilemanager
                     $i++;
                 }
             }
-            $path=explode("/", $_ENV["route"]["params"]["dir"]);
+            $path = explode("/", $_ENV["route"]["params"]["dir"]);
             unset($path[0]);
             $arr=array(
             "result"=> $this->app->arraySort($list, "type,name"),
