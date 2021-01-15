@@ -49,7 +49,7 @@ class mongodbDrv
                     $item = $this->db->$form->findOne(['_id' => $id]);
                     $item = $this->app->objToArray($item);
                     $this->ItemPrepare($item);
-                    if ((array)$item['_id'] === $item['_id'] AND count($item)) $item['_id'] = $item['_id']['$oid'];
+                    if ($item !== null && (array)$item['_id'] === $item['_id'] AND count($item)) $item['_id'] = $item['_id']['$oid'];
                 }
                 catch(Exception $err) {
                     $item = null;
@@ -198,6 +198,7 @@ class mongodbDrv
         $item = wbItemInit($form, $item);
         $id = $sid = $item["id"];
         $item["_id"] = $this->init_id($sid);
+        print_r($item);
         try {
             try {
                 $this->db->$form->insertOne($item);
@@ -216,15 +217,27 @@ class mongodbDrv
         return true;
     }
 
-    public function TableCreate($form, $engine)
+    public function tableExist($form, $engine = false) {
+        $res = false;
+        foreach ($this->db->listCollections() as $collectionInfo) {
+            if ($form == $collectionInfo['name']) {
+                $res = true;
+                break;
+            }
+        }
+        return $res;
+    }
+
+    public function TableCreate($form, $engine = false)
     {
-        if ($form == "admin") {
+        if ($form == "_settings") {
             return false;
         }
         if ($engine) {
             return jsonTableCreate($form, $engine);
         }
         if ($form) {
+            $this->db->$form->createCollection($form);
         } else {
             wbError('func', __FUNCTION__, 1002, func_get_args());
         }
@@ -232,7 +245,7 @@ class mongodbDrv
 
     public function TableRemove($form, $engine)
     {
-        if ($form == "admin") {
+        if ($form == "_settings") {
             return false;
         }
         if (wbRole('admin')) {

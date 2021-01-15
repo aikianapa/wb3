@@ -133,8 +133,11 @@ function wbInitSettings(&$app)
     }
 
     isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'] : $lang = 'en';
-    isset($settings['lang']) ? $_ENV['lang'] = $settings['lang'] : $_ENV['lang'] = substr($lang, 0, 2);
-    $app->lang = $_ENV['settings']['locale'] = substr($_ENV['lang'], 0, 2);
+    isset($settings['lang']) ? $lang = $settings['lang'] : $lang = substr($lang, 0, 2);
+    isset($_SESSION['lang']) ? $lang = $_SESSION['lang'] : null ;
+    $app->vars('_sess.user.lang') > '' ? $lang = $app->vars('_sess.user.lang') : null;
+
+    $app->lang = $_ENV['settings']['locale'] = $_SESSION['lang'] = $_ENV['lang'] = substr($lang, 0, 2);
 
     if (isset($_ENV['settings']['path_tpl']) and $_ENV['settings']['path_tpl'] > '') {
         $_ENV['base']=$_ENV['settings']['path_tpl'];
@@ -2240,12 +2243,15 @@ function wbListTags()
 
 function wbListLocales(&$app = null)
 {
-    if (!$app) {
-        $app = new wbApp();
-    }
+    !$app ? $app = new wbApp() : null;
+    isset($_ENV['settings']['locales']) ? $langs = wbAttrToArray($_ENV['settings']['locales']) : $langs = [];
+    !count($langs) ? $langs = ['en','ru'] : null;
+    return $langs;
+/*
     $out = $app->getForm("admin", "common.ini", true);
     $out->setLocale(parse_ini_string(trim($out->text()), true));
     return $out->locale;
+    */
 }
 
 function wbListFormsFull()

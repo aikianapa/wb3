@@ -44,6 +44,8 @@ class tagJq {
             $that->parents('html')->find( $that->params( 'after' ) )->after($inner->inner());
         } else if ( $that->params( 'before' ) ) {
             $that->parents('html')->find( $that->params( 'before' ) )->before($inner->inner());
+        } else if ( $that->params( 'context' ) ) {
+            $that->after($inner->find($that->params('context'))->inner());
         } else {
             $jqs = explode( ';', $that->params->wb );
             $dom = &$that->parent;

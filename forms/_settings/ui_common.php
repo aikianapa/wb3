@@ -21,6 +21,13 @@
     </div>
 
     <div class="form-group row">
+      <label class="col-sm-3 form-control-label">{{_lang.locales}}<br><small>(en, ru...)</small></label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" name="locales" placeholder="{{_lang.locales}}" wb-module="tagsinput">
+      </div>
+    </div>
+
+    <div class="form-group row">
       <label class="col-sm-3 form-control-label">{{_lang.pagesize}}</label>
       <div class="col-sm-9">
         <input type="number" class="form-control" name="page_size" min="1" max="500" step="1" placeholder="{{_lang.pagesize}}">
@@ -100,6 +107,7 @@ email = "Email"
 pagesize = "Page size (default)"
 cachelt = "Cache lifetime (sec.)"
 showstats = "Statistics at bottom"
+locales = Localizations
 [ru]
 header = "Общие настройки"
 save = "Сохранить"
@@ -113,5 +121,6 @@ email = "Эл.почта"
 pagesize = "Размер страниц (по-умолчанию)"
 cachelt = "Время жизни кэша (сек.)"
 showstats = "Показывать статистику"
+locales = Локализации
 </wb-lang>
 </html>
