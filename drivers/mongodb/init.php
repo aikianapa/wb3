@@ -198,7 +198,6 @@ class mongodbDrv
         $item = wbItemInit($form, $item);
         $id = $sid = $item["id"];
         $item["_id"] = $this->init_id($sid);
-        print_r($item);
         try {
             try {
                 $this->db->$form->insertOne($item);
