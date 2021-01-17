@@ -27,7 +27,7 @@ class ctrlApi
         $mode = $this->mode = $app->route->mode;
         //print_r($app->route);
         if (method_exists($this, $mode)) {
-            $this->$mode($app);
+            echo $this->$mode($app);
         }
     }
 
@@ -39,7 +39,7 @@ class ctrlApi
         $table = 'catalogs';
         $json = $app->itemRead($table, $app->route->item);
         $json = wbTreeToArray($json['tree']['data'], true);
-        echo $app->jsonEncode($json);
+        return $app->jsonEncode($json);
     }
 
     public function call($app)
@@ -77,10 +77,10 @@ class ctrlApi
                 $fields->setReference($json);
                 $json = $fields->get($app->route->field);
             }
-            echo $app->jsonEncode($json);
+            return $app->jsonEncode($json);
         } else {
             $json = $app->itemList($table, $options);
-            echo $app->jsonEncode($json["list"]);
+            return $app->jsonEncode($json["list"]);
         }
     }
 
@@ -89,13 +89,55 @@ class ctrlApi
         $this->method = ['post','get'];
         $app = &$this->app;
         echo json_encode([
-                    'token' => $app->vars("_sess.token")
-                ]);
+            'token' => $app->getToken()
+        ]);
     }
 
-    public function auth()
+    public function auth($app)
     {
         $this->method = ['post','get'];
+        $post = (object)$app->vars('_req');
+        $fld = $app->route->type;
+        $url = '/';
+        if ($fld == 'logout') {
+            if (@isset($_SESSION['user']['userole']['url_login']) && $_SESSION['user']['userole']['url_login'] > '') {
+                $url = $_SESSION['user']['userole']['url_login'];
+            }
+            setcookie("user", null, time()-3600, "/");
+            unset($_SESSION['user']);
+            session_regenerate_id();
+            session_destroy();
+            return json_encode(['login'=>false,'error'=>false,'redirect'=>$url,'user'=>[],'role'=>[]]);
+        }
+
+        if (!in_array($fld, ['email','phone','login']) or !isset($post->login)) {
+            return json_encode(['login'=>false,'error'=>'Unknown']);
+        }
+
+        $user = $app->itemList('users', ['filter'=> [$fld => $post->login ], 'limit'=>1 ]);
+        if (intval($user['count']) > 0) {
+            $user = array_shift($user['list']);
+        } else {
+            return json_encode(['login'=>false,'error'=>'Unknown']);
+        }
+        $user = (object)$user;
+
+        if (isset($post->password) and isset($user->password) and $app->passwordCheck($post->password, $user->password)) {
+            $role = (object)$app->itemRead('users', $user->role);
+            $url = '/cms';
+            if (!isset($role->active) or $role->active !== 'on' or $user->active !== 'on') {
+                return json_encode(['login'=>false,'error'=>'Account is not active']);
+            }
+            isset($role->url_login) and $role->url_login > '' ? $url = $role->url_login : null;
+            unset($user->password);
+            $_SESSION['user'] = (array)$user;
+            $_SESSION['userole'] = (array)$role;
+            $user->token = $app->getToken();
+
+            return json_encode(['login'=>true,'error'=>false,'redirect'=>$url,'user'=>$user,'role'=>$role]);
+        } else {
+            return json_encode(['login'=>false,'error'=>'Wrong password']);
+        }
     }
 
 
@@ -104,20 +146,11 @@ class ctrlApi
         $app = &$this->app;
         $mode = &$this->mode;
         $token = $app->vars("_sess.token");
-        $access = true;
-        $local = false;
+        $access = $app->checkToken($app->vars('_req.__token'));
 
-        //if ($app->vars('_sett.api_key_'.$mode) == 'on') $access = false;
-        if ($app->vars('_sett.api_key_'.'query') == 'on') {
-            $access = false;
-        }
-        /*
-                        if ($access && $token !== $app->vars('_req.__token') ) {
-                                echo json_encode(['error'=>true,'msg'=>'Access denied']);
-                                die;
-                        }
-        */
-        if (!$access && $app->vars('_sett.api_key') !== $app->vars('_req.__apikey')) {
+        if ($app->vars('_sett.api_key_'.$mode) !== 'on') $access = true;
+
+        if (!$access) {
             echo json_encode(['error'=>true,'msg'=>'Access denied']);
             die;
         }

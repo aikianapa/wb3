@@ -190,14 +190,29 @@ function wbInitSettings(&$app)
 function wbGetToken() {
 	$app = &$_ENV['app'];
 	$apikey = $app->vars('_sett.api_key');
-	$role = $app->vars('_sess.user.role');
-	$allow = explode(',',$app->vars('_sett.api_allow'));
-	$disallow = explode(',',$app->vars('_sett.api_disallow'));
+    $role = $app->vars('_sess.user.role');
+    $user = $app->vars('_sess.user.id');
+    !$user ? $user = microtime() : null;
+    !$role ? $role = microtime() : null;
+	$app->vars('_sett.api_allow') ? $allow = explode(',',$app->vars('_sett.api_allow')) : $allow = [];
+	$app->vars('_sett.api_disallow') ? $disallow = explode(',',$app->vars('_sett.api_disallow')) : $disallow = [];
 	$flag = true;
-	if (!in_array($role,$allow)) $flag = false;
-	if (in_array($role,$disallow)) $flag = false;
+	if (count($allow) && !in_array($role,$allow)) $flag = false;
+    if (count($disallow) && in_array($role,$disallow)) $flag = false;
 	if (!$flag) $role = microtime();
-	return md5(session_id().$apikey.$role);
+	return md5($app->route->host.session_id().$apikey.$role.$user);
+}
+
+function wbCheckToken($token) {
+    $app = &$_ENV['app'];
+    $apikey = $app->vars('_sett.api_key');
+    $role = $app->vars('_sess.user.role');
+    $user = $app->vars('_sess.user.id');
+    !$user ? $user = microtime() : null;
+    !$role ? $role = microtime() : null;
+    $valid = md5($app->route->host.session_id().$apikey.$role.$user);
+    $token == $valid ? $res = true : $res = false;
+    return $res;
 }
 
 function wbMaxUplSize()
