@@ -28,7 +28,8 @@ class modLanginp
                 $k == $dom->app->vars('_env.lang') ? $inp->attr('value', $v) : null;
             }
         }
-        $dom->after($out->inner());
+        $out->find('.dropdown-item input')->removeAttr('name');
+        $dom->after($out->outer());
         $dom->remove();
 
     }

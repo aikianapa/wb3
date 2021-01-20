@@ -17,21 +17,17 @@ class attrIf extends wbDom {
       }
       $dom->params->if = $dom->params->if[0];
 
-      if (in_array(substr(trim($dom->params->if),0,1),['"',"'"] ) ) {
-          $res = wbEval($dom->params->if );
-      } else {
-          $res = wbEval( '$item'.$dom->params->if );
-      }
-
+      $res = $dom->app->cond($dom->params->if, $item);
+      $dom->params->if = $res;
       if (isset($setattr)) {
         if ($res) {
           $setattr = explode("=",$setattr);
           if (!isset($setattr[1])) $setattr[1] = true;
           $dom->attr(trim($setattr[0]),$setattr[1]);
         }
-      } else {
-          if (!$res) $dom->remove();
-      }
+      } 
+      if (!$res && !$dom->is('wb-var[else]')) $dom->remove();
+      
       return $dom;
   }
 }

@@ -90,6 +90,7 @@ class wbAjaxTree
               isset($label[$_SESSION['lang']]) ? $label = $label[$_SESSION['lang']] : null;
               $fld['label'] = $label;
               $set->fetch($fld);
+              //if ($fld['name'] == 'test') echo $app->fieldBuild($fld, $data);
               $set->find("div.col-12")->append($app->fieldBuild($fld,$data));
               $out .= $set->outer()."\n";
             }

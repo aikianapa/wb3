@@ -1258,19 +1258,19 @@ function wbError($type, $name, $error = '__return__error__', $args = null)
                 }
                 $errname = str_replace('{{'.$key.'}}', $arg, $errname);
             }
-            $_ENV['errors'][$error] = $errname;
-        }
-
-        if ('__return__error__' == $error) {
-            $error = $_ENV['error'][$type][$name];
+            $_ENV["last_error"] = $errname;
         } else {
-            if (isset($_ENV['errors'])) {
-                $_ENV['error'][$type][$name] = array('errno' => $error, 'error' => $errname);
+            if ('__return__error__' == $error) {
+                $error = $_ENV['error'][$type][$name];
             } else {
-                $_ENV['error'][$type][$name] = array('errno' => $error, 'error' => 'unknown error');
+                if (isset($_ENV['errors'])) {
+                    $_ENV['error'][$type][$name] = array('errno' => $error, 'error' => $errname);
+                } else {
+                    $_ENV['error'][$type][$name] = array('errno' => $error, 'error' => 'unknown error');
+                }
             }
+            $_ENV["last_error"]=$error;
         }
-        $_ENV["last_error"]=$error;
     }
     return $error;
 }
@@ -1352,7 +1352,7 @@ function wbErrorList()
                           1003 => 'Do not remove {{0}}',
                           1004 => 'Failed to remove file {{0}}',
                           1005 => 'Failed to remove table {{0}}',
-                          1006 => 'Item {{1}} in table {{0}} not exists',
+                          1006 => 'Item {{1}} is not exists in table {{0}}',
                           1007 => 'Failed to save record to table {{0}}',
                           1008 => 'Delete item {{1}} in table {{0}}',
                           1009 => 'Flush data from cache table {{0}}',
@@ -1360,7 +1360,8 @@ function wbErrorList()
                           1010 => 'Create a table {{0}}',
                           1011 => 'Template {{0}} not found',
                           1012 => 'Form {{0}} not found',
-                          1013 => 'PHP code not valid'
+                          1013 => 'PHP code not valid',
+                          1016 => 'Item {{1}} already exists in table {{0}}',
                       );
 }
 
@@ -2466,7 +2467,12 @@ function wbListTpl()
 
     function wbEval($code)
     {
-        $res = eval('return '.$code.';');
+        try {
+            $res = eval('return '.$code.';');
+        } catch (\Throwable $th) {
+            $res = false;
+        }
+        
         return $res;
     }
 

@@ -1279,6 +1279,8 @@ if (typeof $ === 'undefined') {
             data[val["name"]] = val["value"];
             if ($(form).find("textarea[type=json][name='" + val["name"] + "']").length && strpos(data[val["name"]], "}")) {
                 data[val["name"]] = json_decode(data[val["name"]]);
+            } else if ($(form).find("textarea[name='" + val["name"] + "']").length) {
+                data[val["name"]] = htmlentities(data[val["name"]]);
             }
         });
 

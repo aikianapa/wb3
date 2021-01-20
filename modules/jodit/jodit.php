@@ -18,11 +18,12 @@ class modJodit {
 					$item->setReference($dom->item);
           $textarea->attr("name",$dom->params->name);
           $text = $item->get($dom->params->name);
-			} else {
+        } else {
           $text = $dom->html();
       }
-      $textarea->inner($text);
-      $dom->inner($out);
+//      $text = html_entity_decode(htmlspecialchars_decode($text));
+      $dom->after($out);
+      $dom->remove();
   }
 }
 

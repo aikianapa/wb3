@@ -18,20 +18,22 @@ class tagVar
         $name = '';
         foreach ($attrs as $atname => $atval) {
             $wb = substr($atname, 0, 3);
-            if (!in_array($wb, ["wb","wb-"])) {
+            if (!in_array($wb, ["wb","wb-"]) && $atname !== 'else') {
                 $name = $atname;
                 if (!(strpos($atval, ">") and strpos(" ".$atval, "<"))) {
                     $atval = wbAttrToValue($atval);
                 }
+
+                if (isset($dom->params->if) && $dom->params->if !== true && isset($attrs['else'])) {
+                    $atval = $attrs['else'];
+                } 
                 $dom->app->vars("_var.{$atname}", $atval);
                 $parent->variables[$atname] = $atval;
                 break;
             }
         }
-        if (isset($dom->params->where) AND !wbEval($dom->params->where)) {
-            $dom->app->vars("_var.{$name}", $dom->attr('wb-else'));
-            $parent->variables[$name] = $dom->attr('wb-else');
-        }
+
+
         $dom->remove();
     }
 }

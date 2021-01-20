@@ -14,7 +14,7 @@ class ctrlApi
     Значения в __options (опции перечисляются через ; ):
     sort - сортировка по указанному полю :d (desc) :a (asc)
     limit - ограничение по количеству выводимых записей
-    trigger - выполнение функции перед выполнением условий
+    trigger - выполнение функции перед проверкой условия
     return - через запятую перечисляются поля, которые необходимо вернуть в выдачу
     */
 
@@ -24,43 +24,87 @@ class ctrlApi
         header('Content-Type: charset=utf-8');
         header('Content-Type: application/json');
         $this->app = &$app;
-        $mode = $this->mode = $app->route->mode;
-        //print_r($app->route);
-        if (method_exists($this, $mode)) {
-            echo $this->$mode($app);
+        $mode = $this->mode = $app->vars('_route.mode');
+        $table = $app->vars('_route.table');
+        if ($this->apikey() OR in_array($mode,['auth','token'])) {
+            if (method_exists($this, $mode)) {
+                echo $this->$mode();
+            } else if ($table > '') {
+                $form = $app->formClass($table);
+                $func = 'api'.$mode;
+                if (method_exists($form, $func)) {
+                    echo $form->$func();
+                } else {
+                    echo json_encode(null);
+                }
+            } else {
+                echo json_encode(null);
+            }
+        }
+        die;
+    }
+
+
+    public function create() {
+        $app = &$this->app;
+        $app->route->item == '_new' ? $item = null : $item = $app->itemRead($app->route->table, $app->route->item);
+        if ($item == null) {
+            $item = $app->vars('_'.strtolower($app->route->method));
+            $item['_id'] = $app->route->item;
+            $item = $app->itemSave($app->route->table, $item);
+            return $app->jsonEncode($item);
+        } else {
+            wbError("", "", 1016, [$app->route->table, $app->route->item]);
+            return $app->jsonEncode(['error'=>true,'msg'=>$_ENV["last_error"]]);
         }
     }
 
-    public function catalog($app)
-    {
-        if (!$this->apikey()) {
-            return;
+    public function update() {
+        $app = &$this->app;
+        $item = $app->itemRead($app->route->table, $app->route->item);
+        if ($item !== null) {
+            $item = $app->vars('_'.strtolower($app->route->method));
+            $item['_id'] = $app->route->item;
+            $item = $app->itemSave($app->route->table, $item);
+            return $app->jsonEncode($item);
+        } else {
+            wbError("", "", 1006, [$app->route->table, $app->route->item]);
+            return $app->jsonEncode(['error'=>true,'msg'=>$_ENV["last_error"]]);
         }
+    }
+
+    public function read() {
+        $app = &$this->app;
+        $json = $app->itemRead($app->route->table, $app->route->item);
+        if ($json == null) {
+            wbError("", "", 1006, [$app->route->table, $app->route->item]);
+            return $app->jsonEncode(['error'=>true,'msg'=>$_ENV["last_error"]]);
+        } else {
+            return $app->jsonEncode($json);
+        }
+    }
+
+    public function catalog()
+    {
+        $app = &$this->app;
         $table = 'catalogs';
         $json = $app->itemRead($table, $app->route->item);
         $json = wbTreeToArray($json['tree']['data'], true);
         return $app->jsonEncode($json);
     }
 
-    public function call($app)
+    public function call()
     {
-        if (!$this->apikey()) {
-            return;
-        }
+        $app = &$this->app;
         $class = $app->formClass($app->route->form);
         $call = $app->route->call;
-        $class->$call();
+        return $class->$call();
     }
 
-    public function query($app)
+    public function query()
     {
-        if (!$this->apikey()) {
-            return;
-        }
-        
+        $app = &$this->app;
         $table = $app->route->table;
-        
-
         $query = (array)$app->route->query;
         if ($app->vars('_post._tid') == '') {
             // если передан _tid, то значения в _post не используются в условиях запроса
@@ -93,8 +137,9 @@ class ctrlApi
         ]);
     }
 
-    public function auth($app)
+    public function auth()
     {
+        $app = &$this->app;
         $this->method = ['post','get'];
         $post = (object)$app->vars('_req');
         $fld = $app->route->type;
@@ -141,7 +186,7 @@ class ctrlApi
     }
 
 
-    public function apikey()
+    private function apikey()
     {
         $app = &$this->app;
         $mode = &$this->mode;
@@ -170,11 +215,9 @@ class ctrlApi
         return true;
     }
 
-    public function mail($app)
+    public function mail()
     {
-        if (!$this->apikey()) {
-            return;
-        }
+        $app = &$this->app;
         $attachments=[];
         if (!isset($_POST["_subject"])) {
             $_POST["_subject"]=$_ENV['sysmsg']["mail_from_site"];
@@ -231,14 +274,14 @@ class ctrlApi
         echo $result;
     }
 
-    public function apiOptions($arr) {
+    private function apiOptions($arr) {
         // convert options array to string for __options
         $options = http_build_query($options);
         $options = str_replace(['&','%2C'], ';', $options);
         return $options;
     }
 
-    public function prepQuery($query)
+    private function prepQuery($query)
     {
         $query = (array)$query;
         $options = [];

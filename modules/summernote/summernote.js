@@ -3,7 +3,6 @@ $(document).on("summernote-js",function(){
         var that = this;
         var name = $(that).attr("name");
         $(that).data("timeout",false);
-
             //var lang = wbapp.settings.i18n;
             var scripts = ["/engine/modules/summernote/dist/summernote-bs4.min.js"];
             var lang = $(that).attr("data-lang");

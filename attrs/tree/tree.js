@@ -5,6 +5,11 @@ function wb_tree() {
     wbapp.loadScripts(["/engine/lib/js/nestable/nestable.min.js"],"nestable-js");
 
 $.fn.wbTreeInit = function() {
+
+        let data = $(this).find('.wb-tree-data').html();
+        data = json_encode(json_decode(data));
+        $(this).find('.wb-tree-data').text(data);
+
         $(this).find(".wb-tree-line[data-id='']").each(function(){
             $(this).attr("data-id",wbapp.newId());
         });
@@ -171,6 +176,7 @@ $.fn.wbTreeInit = function() {
 }
 
 $.fn.setData = function(newdata,path=false) {
+
     var tree = $(this).getTree();
     if (path === false) {
         var data = json_encode(newdata);

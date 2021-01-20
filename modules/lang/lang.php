@@ -13,17 +13,11 @@ class modLang
 		$lang = $langs[0];
 		$p = $app->vars('_route.mode');
 		in_array($p, $langs) ? $lang = $p : null;
-
 		$_SESSION["lang"] = $_ENV["lang"] = $lang;
-		
         $check=explode("/", $_SERVER["REQUEST_URI"]);
 		session_write_close();
         Header("HTTP/1.0 200 OK");
-        if (count($check)>2 and $check[1]=="module" and $check[2]=="lang") {
-            header("Refresh:0; url=/");
-        } else {
-            header("Refresh:0; url=".$_SERVER["HTTP_REFERER"]);
-        }
+        header("Refresh:0; url=".$_SERVER["HTTP_REFERER"]);
         exit;
     }
 }

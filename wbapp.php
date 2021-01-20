@@ -267,10 +267,10 @@ class wbDom extends DomQuery
 
     public function fetchStrict()
     {
-        if ($this->tagName == "template" or $this->closest("template")->length) {
+        if ($this->tagName == "template" or $this->closest("template")->length or $this->tagName == "code" or $this->closest("code")->length) {
             $this->strict = true;
             // set locale for template
-            if ($this->tagName == "template" && strpos($this->outer(),'_lang.') !== 0) {
+            if (in_array($this->tagName, ['template', 'code']) && strpos($this->outer(),'_lang.') !== 0) {
                 $locale = $this->app->vars('_env.locale');
                 isset($locale[$_SESSION["lang"]]) ? $locale = $locale[$_SESSION["lang"]] : null;
                 $this->addParams(['locale'=>$locale]);
@@ -521,39 +521,38 @@ class wbDom extends DomQuery
         if ($this->strict) {
             return;
         }
-        if (!isset($this->item)) {
-            $this->item = [];
-        }
+        isset($this->item) ? null : $this->item = [];
+
         $fields = new Dot();
         $fields->setReference($this->item);
         $inputs = $this->find("[name]");
         foreach ($inputs as $inp) {
                 $name = $inp->attr("name");
                 $value = $fields->get($name);
-                if ((array)$value === $value and $inp->tagName !== "select") {
-                    $value = wb_json_encode($value);
-                }
+                ((array)$value === $value and $inp->tagName !== "select") ? $value = wb_json_encode($value) : null;
 
-            if (in_array($inp->tagName, ["input","textarea","select"]) && !$inp->hasAttr("done") && !$inp->closest("template")->length) {
+            if (in_array($inp->tagName, ["input","textarea","select"]) && !$inp->hasAttr("done") && !$inp->closest("template,code")->length) {
                 if ($inp->tagName == "textarea") {
-                    $inp->text($value);
+
+                    //if ($inp->attr('type') == 'json') {
+                        $inp->text($value);
+                    //} 
+                    /*else {
+                        $inp->inner(htmlentities($value));
+                    }*/
+                    
+
                 } elseif ($inp->tagName == "select") {
                     if ((array)$value === $value) {
                         foreach ($value as $val) {
-                            if ($val > "") {
-                                $inp->find("[value='{$val}']")->attr("selected", true);
-                            }
+                            $val > "" ? $inp->find("[value='{$val}']")->attr("selected", true) : null;
                         }
-                    } else {
-                        if ($value > "") {
+                    } else if ($value > "") {
                             $inp->find("[value='{$value}']")->attr("selected", true);
-                        }
                     }
                 } elseif ($inp->tagName == "input") {
                     if ($inp->attr("type") == "radio") {
-                        if ($inp->attr("value") == $value) {
-                            $inp->attr('checked', 'checked');
-                        }
+                        $inp->attr("value") == $value ? $inp->attr('checked', 'checked') : null;
                     } else {
                         $inp->attr("value", $value);
                         if ($inp->attr("type") == "checkbox") {
@@ -565,14 +564,14 @@ class wbDom extends DomQuery
                     }
                 }
                 $inp->attr("done", "");
-            } else if ($inp->hasAttr('type') && !$inp->hasAttr("done") && !$inp->closest("template")->length) {
+            } else if ($inp->hasAttr('type') && !$inp->hasAttr("done") && !$inp->closest("template,code")->length) {
                     $inp->attr("value", $value);
                     $inp->attr("done", "");
             }
             
 
         }
-        foreach ($this->find("template") as $t) {
+        foreach ($this->find("template,code") as $t) {
             $t->inner(str_replace("{{", "_{_{_", $t->inner()));
         }
         if (strpos($this, "{{")) {
@@ -584,7 +583,7 @@ class wbDom extends DomQuery
                 $this->inner($html);
             }
         }
-        foreach ($this->find("template") as $t) {
+        foreach ($this->find("template,code") as $t) {
             $t->inner(str_replace("_{_{_", "{{", $t->inner()));
         }
         return $this;
@@ -867,6 +866,7 @@ class wbApp
         }
         $this->tpl->dict = $this->dict;
         $this->tpl->item = $this->item;
+
         $this->tpl->setAttributes($dict);
         $this->tpl->find("input")->attr("name", $this->dict->name);
         if (isset($this->dict->prop) and $this->dict->prop->style > "") {
@@ -1027,6 +1027,24 @@ class wbApp
         $dot = new Dot();
         $dot->setReference($array);
         return $dot;
+    }
+
+    public function cond($condition, $item) 
+    {
+        if (in_array(substr(trim($condition), 0, 1), ['"',"'"])) {
+            $res = wbEval($condition);
+        } else {
+            $cond = explode(" ", $condition);
+            if (!strpos($cond[0], "(")) {
+                $dot = $this->dot($item);
+                $cond[0] = eval('return $dot->get("'. $cond[0] .'");');
+                (array)$cond[0] === $cond[0] ? $cond[0] = wbJsonEncode($cond[0]) : null;
+                $cond[0] = "'".$cond[0]."'";
+                $condition = implode(' ', $cond);
+            }
+            $res = wbEval($condition);
+        }
+        return $res;
     }
 
     public function settings()
