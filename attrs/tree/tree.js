@@ -7,6 +7,7 @@ function wb_tree() {
 $.fn.wbTreeInit = function() {
 
         let data = $(this).find('.wb-tree-data').html();
+        console.log(data);
         data = json_encode(json_decode(data));
         $(this).find('.wb-tree-data').text(data);
 

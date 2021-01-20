@@ -142,7 +142,6 @@ class ctrlAjax
         $this->app->vars('_route.mode', 'ajax');
         $this->app->route = (object)$this->app->vars('_route');
         $ctrl = new ctrlForm($this->app);
-        //$ctrl->ajax->
     }
 
     public function getform()

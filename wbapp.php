@@ -531,9 +531,8 @@ class wbDom extends DomQuery
                 $value = $fields->get($name);
                 ((array)$value === $value and $inp->tagName !== "select") ? $value = wb_json_encode($value) : null;
 
-            if (in_array($inp->tagName, ["input","textarea","select"]) && !$inp->hasAttr("done") && !$inp->closest("template,code")->length) {
+            if (in_array($inp->tagName, ["input","textarea","select"]) && !$inp->hasAttr("done") && !$inp->closest("template")->length) {
                 if ($inp->tagName == "textarea") {
-
                     //if ($inp->attr('type') == 'json') {
                         $inp->text($value);
                     //} 
@@ -564,14 +563,15 @@ class wbDom extends DomQuery
                     }
                 }
                 $inp->attr("done", "");
-            } else if ($inp->hasAttr('type') && !$inp->hasAttr("done") && !$inp->closest("template,code")->length) {
+            } else if ($inp->hasAttr('type') && !$inp->hasAttr("done") && !$inp->closest("template")->length) {
                     $inp->attr("value", $value);
                     $inp->attr("done", "");
             }
             
 
         }
-        foreach ($this->find("template,code") as $t) {
+        $unset = $this->find("template,textarea,code");
+        foreach ($unset as $t) {
             $t->inner(str_replace("{{", "_{_{_", $t->inner()));
         }
         if (strpos($this, "{{")) {
@@ -583,7 +583,8 @@ class wbDom extends DomQuery
                 $this->inner($html);
             }
         }
-        foreach ($this->find("template,code") as $t) {
+        $unset = $this->find("template,textarea,code");
+        foreach ($unset as $t) {
             $t->inner(str_replace("_{_{_", "{{", $t->inner()));
         }
         return $this;

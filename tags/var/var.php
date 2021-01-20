@@ -24,8 +24,14 @@ class tagVar
                     $atval = wbAttrToValue($atval);
                 }
 
-                if (isset($dom->params->if) && $dom->params->if !== true && isset($attrs['else'])) {
-                    $atval = $attrs['else'];
+                if (isset($dom->params->if) && $dom->params->if !== true) {
+                    if (isset($attrs['else'])) {
+                        $atval = $attrs['else'];
+                    } else if (isset($attrs['wb-else'])) {
+                        $atval = $attrs['wb-else'];
+                    } else {
+                        $atval = null;
+                    }
                 } 
                 $dom->app->vars("_var.{$atname}", $atval);
                 $parent->variables[$atname] = $atval;
