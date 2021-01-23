@@ -5,9 +5,7 @@ function wb_tree() {
     wbapp.loadScripts(["/engine/lib/js/nestable/nestable.min.js"],"nestable-js");
 
 $.fn.wbTreeInit = function() {
-
         let data = $(this).find('.wb-tree-data').html();
-        console.log(data);
         data = json_encode(json_decode(data));
         $(this).find('.wb-tree-data').text(data);
 

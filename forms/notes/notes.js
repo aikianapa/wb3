@@ -32,9 +32,11 @@ $(document).ready(function () {
         }
         if (params.render == 'client') {
             item = wbapp.storage(bind + '.result.' + note)
+            wbapp.renderClient(wbapp.template['#notesPaper'].params, item);
         } else {
             item = wbapp.getSync("/api/query/notes/?_id=" + note);
             item = item[note];
+            wbapp.renderServer(wbapp.template['#notesPaper'].params, item);
         }
         wbapp.renderTemplate(wbapp.template['#notesPaper'].params, item);
     });

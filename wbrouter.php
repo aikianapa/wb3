@@ -29,11 +29,17 @@ final class wbRouter {
     public static $requestedUrl = '';
 
     public function init() {
-        $route_e = $_ENV['path_engine'].'/router.ini';
-        if (is_file($route_e)) { $this->addRouteFile($route_e);}
-
         $route_a = $_ENV['path_app'].'/router.ini';
-        if (is_file($route_a)) { $this->addRouteFile($route_a);}
+        $route_e = $_ENV['path_engine'].'/router.ini';
+        $rese = glob($_ENV['path_engine'].'/modules/*/router.ini');
+        $resa = glob($_ENV['path_app'].'/modules/*/router.ini');
+        $res = array_merge($rese, $resa);
+        foreach ($res as $r) {
+            $this->addRouteFile($r);
+        }
+
+        is_file($route_e) ? $this->addRouteFile($route_e) : null;
+        is_file($route_a) ? $this->addRouteFile($route_a) : null;
     }
     
     
@@ -42,15 +48,15 @@ final class wbRouter {
         if ($destination != null && !is_array($route)) {
             $route = array($route => $destination);
         }
-        self::$routes = array_merge($route,self::$routes);
+        self::$routes = array_merge(self::$routes,$route);
     }
 
 
     public function addRouteFile($file) {
         if (is_file($file)) {
             $route = file($file);
-        } else if (is_file($app->vars('path_app').'/'.$file)) {
-            $route = file($app->vars('path_app').'/'.$file);
+        } else if (is_file($_ENV['path_app'].'/'.$file)) {
+            $route = file($_ENV['path_app'].'/'.$file);
         }
         if (!isset($route)) return;
         foreach((array)$route  as $key => $r) {
@@ -190,6 +196,7 @@ final class wbRouter {
         $ROUTE['url'] = $ROUTE['host'].$ROUTE['uri'];
         $ROUTE['path_app'] = $_ENV['path_app'];
         $ROUTE['path_engine'] = $_ENV['path_engine'];
+        isset($_SERVER['HTTP_REFERER']) ? $ROUTE['refferer'] = $_SERVER['HTTP_REFERER'] : $ROUTE['refferer']="";
         if (is_file($ROUTE['path_app'].$ROUTE['uri'])) {
             $ROUTE['file'] = $ROUTE['path_app'].$ROUTE['uri'];
             $ROUTE['fileinfo'] = pathinfo($ROUTE['file']);

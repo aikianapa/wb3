@@ -43,10 +43,9 @@ class modLogin
     public function signin($dom)
     {
         $app = $dom->app;
-        $out = $app->getTpl("login_ui.php");
-        if (!$out) {
-            $out = $app->fromFile(__DIR__."/login_ui.php");
-        }
+        $app->vars('_route.tpl') ? $out = $app->getTpl($app->vars('_route.tpl')) : $out = $app->getTpl("login_ui.php");
+        $out ? null : $out = $app->fromFile(__DIR__."/login_ui.php", true);
+
         $out->item = $app->vars("_post");
         $out->item["_dir_"] = $out->path;
         $out->fetch();
@@ -66,14 +65,15 @@ class modLogin
     public function signup($dom)
     {
         $app = $dom->app;
-        $out = $app->getTpl("login_ui.php");
-        if (!$out) {
-            $out = $app->fromFile(__DIR__."/login_ui.php", true);
-        }
+        $app->vars('_route.tpl') ? $out = $app->getTpl($app->vars('_route.tpl')) : $out = $app->getTpl("login_ui.php");
+        $out ? null : $out = $app->fromFile(__DIR__."/login_ui.php", true);
+        
         $out->item = $app->vars("_post");
         $out->item["_dir_"] = $out->path;
         $out->fetch();
         if (count($app->vars("_post"))) {
+            $fld = "login";
+
             if ($app->vars("_sett.modules.login.loginby") == "phone") {
                 $fld = "phone";
             }
@@ -84,7 +84,8 @@ class modLogin
                 $fld = "login";
             }
 
-            $user = modLoginCheckUser($app->vars("_post.{$fld}"));
+            $user = $this->modLoginCheckUser($app->vars("_post.{$fld}"));
+            
             if ($user) {
                 $out->find("#signup .signup-wrong")->removeClass("d-none");
                 if ($user->active == "on") {

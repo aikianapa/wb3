@@ -530,7 +530,7 @@ class wbDom extends DomQuery
                 $name = $inp->attr("name");
                 $value = $fields->get($name);
                 ((array)$value === $value and $inp->tagName !== "select") ? $value = wb_json_encode($value) : null;
-
+                if ($value > '')$value = str_replace('&amp;quot;', '"', $value); // борьба с ковычками в атриибутах тэгов
             if (in_array($inp->tagName, ["input","textarea","select"]) && !$inp->hasAttr("done") && !$inp->closest("template")->length) {
                 if ($inp->tagName == "textarea") {
                     //if ($inp->attr('type') == 'json') {
@@ -737,8 +737,9 @@ class wbApp
         }
     }
 
-    public function route()
+    public function router()
     {
+        $this->router->init();
         $route = $this->router->getRoute();
         $_ENV["route"] = $route;
         $this->route = wbArrayToObj($route);
@@ -756,8 +757,8 @@ class wbApp
     {
         $this->InitEnviroment();
         $this->ErrorList();
-        $this->RouterAdd();
-        $this->route();
+        //$this->RouterAdd();
+        $this->router();
         $this->driver();
         $this->InitSettings($this);
         $this->controller();

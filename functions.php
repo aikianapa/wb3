@@ -1844,46 +1844,6 @@ function wbWherePhp($str = '', $item = array())
     return $str;
 }
 
-function wbRouterAdd($route = null, $destination = null)
-{
-    if (null == $route) { // Роутинг по-умолчанию
-        $route = wbRouterRead();
-    }
-    wbRouter::addRoute($route, $destination);
-}
-
-function wbRouterRead($file = null)
-{
-    if (null == $file) {
-        $file = $_ENV['path_engine'].'/router.ini';
-        $route = wbRouterRead($file);
-        if (is_file($_ENV['path_app'].'/router.ini')) {
-            $route = array_merge(wbRouterRead($_ENV['path_app'].'/router.ini'),$route);
-        }
-
-				$rese = glob($_ENV['path_engine'].'/modules/*/router.ini');
-				$resa = glob($_ENV['path_app'].'/modules/*/router.ini');
-				$res = array_merge($rese, $resa);
-				foreach ($res as $i => $r) {
-						$route = array_merge(wbRouterRead($r),$route);
-				}
-    } else {
-        if (is_file($file)) {
-            $route = array();
-            $router = new ArrayIterator(file($file));
-            foreach ($router as $key => $r) {
-                $r = explode('=>', $r);
-                if (2 == count($r)) {
-                    $route[trim($r[0])] = trim($r[1]);
-                }
-            }
-        }
-    }
-
-    return $route;
-}
-
-
 function wbAuthGetContents($url, $get=null, $username=null, $password=null)
 {
     if (func_num_args()==3) {

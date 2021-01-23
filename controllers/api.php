@@ -155,8 +155,14 @@ class ctrlApi
             return json_encode(['login'=>false,'error'=>false,'redirect'=>$url,'user'=>[],'role'=>[]]);
         }
 
-        if (!in_array($fld, ['email','phone','login']) or !isset($post->login)) {
+        if (!in_array($fld, ['email','phone','login','signup'])) {
             return json_encode(['login'=>false,'error'=>'Unknown']);
+        } else if (in_array($fld, ['signup'])) {
+            return $this->$fld();
+        }
+
+        if (!isset($post->login)) {
+            return json_encode(['login'=>false,'error'=>'Login is empty']);
         }
 
         $user = $app->itemList('users', ['filter'=> [$fld => $post->login ], 'limit'=>1 ]);
@@ -185,6 +191,40 @@ class ctrlApi
         }
     }
 
+    public function signup() {
+        $app = &$this->app;
+        if ($app->vars('_route.refferer') == '') {
+            return json_encode(['sugnup'=>false,'error'=>'Unknown']);
+        }
+        $new = $app->vars('_post');
+        $error = null;
+        isset($new['phone']) ? $new['phone'] = $app->digitsOnly($new['phone']) : null;
+        isset($new['email']) && is_email($new['email']) ? null : null;
+
+        $list = $app->itemList('users',[
+            'filter'=>['$or'=>[
+                'email'=>$new['email'],
+                'phone'=>$new['phone'],
+                'login'=>$new['login']
+            ]
+            ]
+        ]);
+        
+        if (intval($list['count']) > 0)  {
+            return json_encode(['signup'=>false,'error'=>'User already exists']);
+        } else {
+            $new['role'] = 'user';
+            $new['active'] = '';
+            $new['password'] = $app->passwordMake($new['password']);
+            $user = $app->itemSave('users', $new);
+            if ($user) {
+                unset($user['password']);
+                return json_encode(['signup'=>true,'user'=>$user]);
+            } else {
+                return json_encode(['signup'=>false,'error'=>'Unknown error']);
+            }
+        }
+    }
 
     private function apikey()
     {

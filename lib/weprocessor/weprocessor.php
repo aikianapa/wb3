@@ -137,7 +137,6 @@ class WEProcessor {
 			}
 		}
 		if ($this->debug) print("'" . json_encode($res) . "'##\n");
-
 		return $res;
 	}
 
@@ -261,6 +260,8 @@ class WEProcessor {
 					isset($obj[$idx]) ? $obj = $obj[$idx] : $obj = "";
 				}
 			}
+			(array)$obj === $obj ? null : $obj = str_replace('&quot;', '"', $obj);
+
 			return $obj;
 		} else {
 			$this->evalFail("Left must be Array or Object, got '". json_encode($obj) ."' with args='" . json_encode($args) . "'");

@@ -128,12 +128,8 @@ function wbItemSave($form, $item = null, $flush = true)
     } 
     if ($item) {
         // читаем всю запись, иначе возвращаются не все поля
-        $src = $db->itemRead($form, $item["id"]);
-        if ($src) {
-            $item = array_merge($src, $item);
-        } else {
-            $item = wbItemInit($form, $item);
-        }
+        isset($item["id"]) ? $src = $db->itemRead($form, $item["id"]) : $src = null;
+        $src ? $item = array_merge($src, $item) : $item = wbItemInit($form, $item);
     }
     $item = $db->itemSave($form, $item, $flush);
     $item = wbTrigger('form', __FUNCTION__, 'afterItemSave', func_get_args(), $item);
