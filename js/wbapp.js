@@ -109,12 +109,29 @@ if (typeof $ === 'undefined') {
         let signup = function () {
             if ($(form).attr("action") !== undefined) var url = $(form).attr("action"); else var url = "/api/auth/signup";
             $.post(url, data, function (res) {
-                if (res.login) {
+                if (res.signup) {
                     if (res.redirect) document.location.href = res.redirect;
                 } else {
                     console.log("Signup error: " + res.error);
                     $(form)[0].reset();
                 }
+            });
+        }
+
+        let recover = function () {
+            if ($(form).attr("action") !== undefined) var url = $(form).attr("action"); else var url = "/api/auth/recover";
+            data.text = json_encode($(form).find('.recover-text').html());
+
+            $.post(url, data, function (res) {
+                if (res.recover) {
+                    $(form).find(".recover-request").show();
+                    $(form).find(".recover-error").hide();
+                } else {
+                    console.log("Recover error: " + res.error);
+                    $(form).find(".recover-error").show();
+                    $(form).find(".recover-request").hide();
+                }
+                $(form)[0].reset();
             });
         }
 
@@ -1139,7 +1156,8 @@ if (typeof $ === 'undefined') {
         var form = this;
         var res = true;
         var idx = 0;
-        $(form).find("[required],[minlength],[min],[max],[type=password],[type=email]").each(function () {
+        $(form).find("[required],[minlength],[min],[max],[name=password],[type=email]").each(function () {
+            if ($(this).is('[name=password_check],[name=password-confirm]')) return;
             idx++;
             var label = $(this).attr("data-label");
 
@@ -1200,19 +1218,24 @@ if (typeof $ === 'undefined') {
                     $(form).trigger("wb-verify-false", [this]);
                 }
             }
-            if ($(this).is("[type=password]:first")) {
+            if ($(this).is("[name=password]")) {
                 if ($(form).find($(this).attr("name") + "_check").length) {
                     var pcheck = $(this).attr("name") + "_check";
                 } else {
                     var pcheck = $(this).attr("name") + "-confirm";
                 }
+                let check = $(form).find("input[name=" + pcheck + "]");
 
-                if ($("input[type=password][name='" + pcheck + "']").length) {
-                    if ($(this).val() !== $("input[type=password][name=" + pcheck + "]").val()) {
+                if (check.length) {
+                    if ($(this).val() !== $(check).val()) {
                         res = false;
+                        
                         $(this).data("error", wbapp._settings.sysmsg.pass_match);
                         console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                         $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
+                        $(form).trigger("wb-verify-false", [check, $(check).data("error")]);
+                    } else {
+                        $(form).trigger("wb-verify-true", [check]);
                     }
                 }
             }
