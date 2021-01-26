@@ -275,9 +275,7 @@ class jsonDrv
                     ];
                     foreach ($options->projection as $fld => $v) {
                         $v = $dot->get($fld);
-                        if (isset($v)) {
-                            $tmp[$fld] = $v;
-                        }
+                        isset($v) ? $tmp[$fld] = $v : null;
                     }
                     $item = $tmp;
                 }

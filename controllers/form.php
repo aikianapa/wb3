@@ -77,6 +77,7 @@ class ctrlForm
     public function get404()
     {
         $app = &$this->app;
+        header('Content-type: text/html');
         header('HTTP/1.1 404 Not Found');
         $dom = $app->getTpl('404.php');
         if (!$dom) {

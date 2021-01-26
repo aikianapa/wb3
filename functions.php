@@ -1619,12 +1619,12 @@ function wbItemFilter($item, $options)
             if ($fld == '$or') {
                 $result = false;
                 foreach($expr as $key => $orFilter) {
-                    wbItemFilter($item, $expr) == true ? $result = true : null;
+                    wbItemFilter($item, $orFilter) == true ? $result = true : null;
                 }
             } else if ($fld == '$and') {
                 $result = true;
                 foreach($expr as $andFilter) {
-                    if (wbItemFilter($item, $expr) == false) {
+                    if (wbItemFilter($item, $andFilter) == false) {
                       $result = false;
                       break;
                     }

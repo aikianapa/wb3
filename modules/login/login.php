@@ -43,9 +43,7 @@ class modLogin
     public function signin($dom)
     {
         $app = $dom->app;
-        $app->vars('_route.tpl') ? $out = $app->getTpl($app->vars('_route.tpl')) : $out = $app->getTpl("login_ui.php");
-        $out ? null : $out = $app->fromFile(__DIR__."/login_ui.php", true);
-
+        $app->vars('_route.tpl') ? $out = $app->getTpl($app->vars('_route.tpl')) : $out = $app->fromFile(__DIR__."/signin.php", true);
         $out->item = $app->vars("_post");
         $out->item["_dir_"] = $out->path;
         $out->fetch();
@@ -56,7 +54,7 @@ class modLogin
                 $user = $this->modLoginSuccess($app, $user);
                 header('Location: '.$user->group->url_login);
             } else {
-                $out->find("#signin .signin-wrong")->removeClass("d-none");
+                $out->find("#signin .signin-error")->removeClass("d-none");
             }
         }
         return $out;
@@ -65,9 +63,8 @@ class modLogin
     public function signup($dom)
     {
         $app = $dom->app;
-        $app->vars('_route.tpl') ? $out = $app->getTpl($app->vars('_route.tpl')) : $out = $app->getTpl("login_ui.php");
-        $out ? null : $out = $app->fromFile(__DIR__."/login_ui.php", true);
-        
+        $app->vars('_route.tpl') ? $out = $app->getTpl($app->vars('_route.tpl')) : $out = $app->fromFile(__DIR__."/signup.php", true);
+       
         $out->item = $app->vars("_post");
         $out->item["_dir_"] = $out->path;
         $out->fetch();
@@ -141,10 +138,7 @@ class modLogin
     public function recover(&$dom)
     {
         $app = $dom->app;
-        $out = $app->getTpl("login_ui.php");
-        if (!$out) {
-            $out = $app->fromFile(__DIR__."/login_ui.php", true);
-        }
+        $app->vars('_route.tpl') ? $out = $app->getTpl($app->vars('_route.tpl')) : $out = $app->fromFile(__DIR__."/signrc.php", true);
         $out->item = $app->vars("_post");
         $out->item["_dir_"] = $out->path;
         $out->fetch();

@@ -22,8 +22,8 @@ class ctrlModule {
             $out = new $class($app);
             $out->$mode();
         } else {
-            header( "HTTP/1.1 404 Not Found" );
-            echo "Error 404";
+            $form = $app->controller('form');
+            echo $form->get404();
         }
       }
       die;
@@ -31,8 +31,8 @@ class ctrlModule {
 
   function __call($mode, $params)  {
       if (!is_callable(@$this->$mode)) {
-        header( "HTTP/1.1 404 Not Found" );
-        echo "Error 404";
+        $form = $app->controller('form');
+        echo $form->get404();
         die;
       }
   }

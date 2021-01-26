@@ -90,6 +90,7 @@ class ctrlApi
         isset($app->route->item) ? $id = $app->route->item : null;
         isset($item['id']) ? $id = $item['id'] : null; 
         isset($item['_id']) ? $id = $item['_id'] : null;
+        isset($id) && !isset($app->route->item) ? $app->route->item = $id : null;
         isset($id) ? $srci = $app->itemRead($app->route->table, $app->route->item) : $srci = ['id'=>$app->newId()];
         if (isset($app->route->field)) {
             $fld = $app->dot($item);
@@ -176,10 +177,14 @@ class ctrlApi
             return json_encode(['login'=>false,'error'=>false,'redirect'=>$url,'user'=>[],'role'=>[]]);
         }
 
-        if (!in_array($fld, ['email','phone','login','signup'])) {
+        if (!in_array($fld, ['email','phone','login','signup','recover'])) {
             return json_encode(['login'=>false,'error'=>'Unknown']);
-        } else if (in_array($fld, ['signup'])) {
-            return $this->$fld();
+        } else if (in_array($fld, ['signup','recover'])) {
+            if (method_exists($this, $fld)) {
+                return $this->$fld();
+            } else {
+                return json_encode(['login'=>false,'error'=>'Unknown']);
+            }
         }
 
         if (!isset($post->login)) {
@@ -212,6 +217,76 @@ class ctrlApi
         }
     }
 
+    public function recover() {
+        $app = &$this->app;
+        $recover = $app->vars('_route.params.0');
+        if ($app->vars('_route.refferer') == '' && $recover > ' ') {
+                $list = $app->itemList('users', [
+                    'filter'=>['active'=>'on','recover'=>$recover]
+                ]);
+                $list['count'] > 0 ? $user = array_pop($list['list']) : $user = null;
+                if ($user && $user['recover'] == $recover) {
+                    $user['password'] = $user['recover_password'];
+                    $user['recover'] = null;
+                    $user['recover_password'] = null;
+                    $user = $app->itemSave('users', $user);
+                }
+                if (!$user) {
+                    $form = $app->controller('form');
+                    echo $form->get404();
+                    die;
+                } else {
+                    header("Location: {$app->route->host}/signin/");
+                }
+            die;
+        } else if ($app->vars('_route.refferer') == '') {
+            return json_encode(['recover'=>false,'error'=>'Unknown']);
+        }
+        $login = $app->vars('_post.login');
+        $text = $app->fromString(json_decode($app->vars('_post.text')));
+
+        $error = null;
+        $phone = $app->digitsOnly($login);
+
+        $or = [];
+        if (is_email($login)) {
+            $or[] = ['email' => $login];
+        } else if (strlen($phone) > 8) {
+            $or[] = ['phone' => $phone];
+            $or[] = ['login' => $login];
+        } else {
+            $or[] = ['login' => $login];
+        }
+        $list = $app->itemList('users', [
+            'filter'=>['active'=>'on','$or'=>$or]
+        ]);
+        if ($list['count'] == 0) {
+            return json_encode(['recover'=>false,'error'=>'User not found']);
+        } else {
+            $user = array_pop($list['list']);
+            if (!isset($user['email']) OR !is_email($user['email'])) {
+                return json_encode(['recover'=>false,'error'=>'User email is empty']);
+            } else {
+                $recover = md5(time().session_id().$user['email']);
+                $data = $user;
+                $data['recover'] = $app->route->host.'/api/auth/recover/'.$recover;
+                $data['password'] = $app->vars('_post.password');
+                $text->fetch($data);
+                $res = $app->mail('test@test.ts', $user['email'], 'test', $text->outer());
+                if (!$res['error']) {
+                    $user['recover'] = $recover;
+                    $user['recover_password'] = $app->passwordMake($app->vars('_post.password'));
+                    $user = $app->itemSave('users', $user);
+                    if ($user) {
+                        return json_encode(['recover'=>true,'error'=>'Recovery link sended']);
+                    }
+                } else {
+                    return json_encode(['recover'=>false,'error'=>'Unknown error']);
+                }
+            }
+        }
+    }
+
     public function signup() {
         $app = &$this->app;
         if ($app->vars('_route.refferer') == '') {
@@ -219,24 +294,26 @@ class ctrlApi
         }
         $new = $app->vars('_post');
         $error = null;
-        isset($new['phone']) ? $new['phone'] = $app->digitsOnly($new['phone']) : null;
-        isset($new['email']) && is_email($new['email']) ? null : null;
+        $or = [];
+        isset($new['phone']) ? $phone = $app->digitsOnly($new['phone']): $phone = null;
+        isset($new['email']) ? $email = trim($new['email']) : $email = null;
+        isset($new['login']) ?  $login = trim($new['login']) : $login = null;
 
-        $list = $app->itemList('users',[
-            'filter'=>['$or'=>[
-                'email'=>$new['email'],
-                'phone'=>$new['phone'],
-                'login'=>$new['login']
-            ]
-            ]
+        if ($email) $or[] = ['email' => $email];
+        if ($phone) $or[] = ['phone' => $phone];
+        if ($login) $or[] = ['login' => $login];
+
+        $list = $app->itemList('users', [
+            'filter'=>['$or' => $or]
         ]);
-        
+
         if (intval($list['count']) > 0)  {
             return json_encode(['signup'=>false,'error'=>'User already exists']);
         } else {
-            $new['role'] = 'user';
-            $new['active'] = '';
+            $new['role'] = $app->vars('_sett.modules.login.group');
+            $new['active'] = $app->vars('_sett.modules.login.status');
             $new['password'] = $app->passwordMake($new['password']);
+            
             $user = $app->itemSave('users', $new);
             if ($user) {
                 unset($user['password']);

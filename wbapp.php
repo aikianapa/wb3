@@ -791,24 +791,26 @@ class wbApp
         include_once $this->route->path_engine."/drivers/init.php";
     }
 
-    public function controller()
+    public function controller($controller = null)
     {
         if (substr($this->mime($this->route->uri), 0, 6) == 'image/') {
             $this->route->controller = 'thumbnails';
         }
-        if ($this->route->controller) {
+        !$controller ? $controller = $this->route->controller : null;
+
+        if ($controller) {
             if (isset($this->route->file) && in_array($this->route->fileinfo->extension, ["php","html"])) {
                 return;
             }
-            $path = "/controllers/{$this->route->controller}.php";
+            $path = "/controllers/{$controller}.php";
             if (is_file($this->route->path_app . $path)) {
                 require_once $this->route->path_app . $path;
             } elseif (is_file($this->route->path_engine.$path)) {
                 require_once $this->route->path_engine.$path;
             }
-            $class = "ctrl".ucfirst($this->route->controller);
+            $class = "ctrl".ucfirst($controller);
             if (!class_exists($class)) {
-                echo "Controller not found: {$this->route->controller}";
+                echo "Controller not found: {$controller}";
             } else {
                 new $class($this);
             }

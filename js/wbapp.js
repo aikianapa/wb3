@@ -92,17 +92,32 @@ if (typeof $ === 'undefined') {
     wbapp.auth = function (form, mode = 'signin') {
         if (!$(form).verify()) return;
         let data = $(form).serializeJson();
-      
-        
+
+        let dislink = function () {
+            $(form).find('a:not([disabled]),button:not([disabled]),[data-ajax]:not([disabled])').addClass('wb-auth-disabled').attr('disabled', true);
+            $(form).addClass('cursor-wait');
+        }
+
+        let enlink = function () {
+            $(form).find('.wb-auth-disabled').removeClass('wb-auth-disabled').removeAttr('disabled');
+            $(form).removeClass('cursor-wait');
+        }
+
         let signin = function() {
             if ($(form).attr("action") !== undefined) var url = $(form).attr("action"); else var url = "/api/auth/email";
             $.post(url, data, function (res) {
                 if (res.login) {
+                    console.log("Trigger: wb-signin-success");
+                    $(document).trigger('wb-signin-success');
                     if (res.redirect) document.location.href = res.redirect;
                 } else {
-                    console.log("Login error: " + res.error);
+                    console.log("Trigger: wb-signin-error");
+                    $(document).trigger('wb-signin-error');
+                    $(form).find('.is-valid').removeClass('is-valid');
                     $(form)[0].reset();
+                    $(form).find('.signin-error').removeClass('d-none');
                 }
+                enlink();
             });
         }
 
@@ -110,11 +125,18 @@ if (typeof $ === 'undefined') {
             if ($(form).attr("action") !== undefined) var url = $(form).attr("action"); else var url = "/api/auth/signup";
             $.post(url, data, function (res) {
                 if (res.signup) {
+                    console.log("Trigger: wb-signup-success");
+                    $(document).trigger('wb-signup-success');
+                    $(form).find('.signup-success').removeClass('d-none');
+                    $(form).find(".signup-error, .signup-form").remove();
                     if (res.redirect) document.location.href = res.redirect;
                 } else {
-                    console.log("Signup error: " + res.error);
-                    $(form)[0].reset();
+                    $(form).find('.is-valid').removeClass('is-valid');
+                    console.log("Trigger: wb-signup-error");
+                    $(document).trigger('wb-signup-error');
+                    $(form).find('.signup-error').removeClass('d-none');
                 }
+                enlink();
             });
         }
 
@@ -124,16 +146,21 @@ if (typeof $ === 'undefined') {
 
             $.post(url, data, function (res) {
                 if (res.recover) {
-                    $(form).find(".recover-request").show();
-                    $(form).find(".recover-error").hide();
+                    console.log("Trigger: wb-signrc-success");
+                    $(document).trigger('wb-signrc-success');
+                    $(form).find(".recover-success").removeClass('d-none');
+                    $(form).find(".recover-error, .recover-form").remove();
                 } else {
-                    console.log("Recover error: " + res.error);
-                    $(form).find(".recover-error").show();
-                    $(form).find(".recover-request").hide();
+                    $(form).find('.is-valid').removeClass('is-valid');
+                    console.log("Trigger: wb-signrc-error");
+                    $(document).trigger('wb-signrc-error');
+                    $(form).find(".recover-error").removeClass('d-none');
                 }
-                $(form)[0].reset();
+                enlink();
             });
         }
+        
+        dislink();
 
         eval(mode)();
     }
@@ -1381,9 +1408,9 @@ if (typeof $ === 'undefined') {
         }
     }
 
+    wbapp.loadStyles([`/engine/css/wbloader.css`]);
     setTimeout(function () {
         if (typeof str_replace == 'undefined') {
-            wbapp.loadStyles([`/engine/css/wbloader.css`]);
             wbapp.loadScripts([
                 `/engine/js/php.js`
                 , `/engine/js/jquery-migrate.min.js`
@@ -1395,7 +1422,7 @@ if (typeof $ === 'undefined') {
         } else {
             $(document).trigger("wbapp-go");
         }
-    }, 1500);
+    }, 0);
 
     setInterval(function () {
         wbapp.alive();
