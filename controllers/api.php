@@ -84,6 +84,27 @@ class ctrlApi
         }
     }
 
+    public function save() {
+        $app = &$this->app;
+        $item = $app->vars('_'.strtolower($app->route->method));
+        isset($app->route->item) ? $id = $app->route->item : null;
+        isset($item['id']) ? $id = $item['id'] : null; 
+        isset($item['_id']) ? $id = $item['_id'] : null;
+        isset($id) ? $srci = $app->itemRead($app->route->table, $app->route->item) : $srci = ['id'=>$app->newId()];
+        if (isset($app->route->field)) {
+            $fld = $app->dot($item);
+            $fld = $fld->get($app->route->field);
+            $dot = $app->dot($srci);
+            $dot->set($app->route->field,$fld);
+            $item = $dot->get();
+        } else {
+            $item = array_merge($srci, $item);
+        }
+        $item = $app->itemSave($app->route->table, $item);
+        return $app->jsonEncode($item);
+    }
+
+
     public function catalog()
     {
         $app = &$this->app;

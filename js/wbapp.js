@@ -283,13 +283,15 @@ if (typeof $ === 'undefined') {
                 wbapp.storage(tmpId + '.' + params.field, data);
                 data = wbapp.storage(tmpId);
             }
-            params.url = `/ajax/save/${params.table}`;
+            if (params.url == undefined) params.url = `/api/save/${params.table}`;
+        } else if (params.field !== undefined) {
+            wbapp.storage('tmp' + '.' + params.table + '.' + params.field, data);
+            data = wbapp.storage('tmp' + '.' + params.table);
         }
 
         if ($(obj).data('saved-id') !== undefined) {
             data['id'] = $(obj).data('saved-id');
         }
-
         $.post(params.url, data, function (data) {
             if (params.callback) eval('params = ' + params.callback + '(params,data)');
             if (params.data && params.error !== true) {

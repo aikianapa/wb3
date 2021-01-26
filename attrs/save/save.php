@@ -27,9 +27,12 @@ class attrSave extends wbDom
             if (isset($params->remove) && $params->remove == "true") {
                 $params->url = "/ajax/rmitem/{$params->table}/{$params->item}?_confirm";
             } else {
-                $params->url = "/ajax/save/{$params->table}/{$params->item}";
+                $params->url = "/api/save/{$params->table}/{$params->item}";
             }
         }
+
+        isset($params->field) ? $params->url .= '/' . $params->field : null;
+
         $callback = "wbapp.save($(this),".json_encode($params).");";
 
         if (!$dom->is("[contenteditable]") && !$dom->is("input,select,textarea")) {
