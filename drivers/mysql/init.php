@@ -1,6 +1,5 @@
 <?php
-
-require 'vendor/autoload.php';
+require_once __DIR__. '/vendor/autoload.php';
 use Nahid\JsonQ\Jsonq;
 
 class mysqlDrv
@@ -218,7 +217,6 @@ class mysqlDrv
         $options = (object) $options;
 
         if (isset($options->sort)) {
-
             // нужно проверять чтобы сортировка работала и а функциях и в api
             foreach ((array) $options->sort as $key => $fld) {
                 if (!is_array($fld) AND !is_string($key)) {
@@ -252,7 +250,7 @@ class mysqlDrv
             $doc = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $doc);
             $res = true;
             if (isset($options->filter) or isset($options->context)) {
-                $flag = wbItemFilter($item, $options);
+                $res = wbItemFilter($doc, $options);
             }
             $res ? $list[] = $doc : null;
         }
