@@ -99,6 +99,8 @@ class ctrlApi
             $dot->set($app->route->field,$fld);
             $item = $dot->get();
         } else {
+            !$srci ? $srci = [] : null;
+            !$item ? $item = [] : null;
             $item = array_merge($srci, $item);
         }
         $item = $app->itemSave($app->route->table, $item);

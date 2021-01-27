@@ -769,7 +769,9 @@ class wbApp
         if ($this->settings->driver === null) {
             $this->settings->driver = 'json';
             if (is_file($this->route->path_app."/database/_driver.ini")) {
-                $drv = parse_ini_file($this->route->path_app."/database/_driver.ini", true);
+                $drv = file_get_contents($this->route->path_app."/database/_driver.ini");
+                $drv = wbSetValuesStr($drv);
+                $drv = parse_ini_string($drv, true);
                 if (isset($drv["driver"])) {
                     $drvlist = $drv["driver"];
                     unset($drv["driver"]);

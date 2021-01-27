@@ -32,6 +32,10 @@ class ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\VarDumper\\' => 28,
         ),
+        'O' => 
+        array (
+            'Opis\\JsonSchema\\' => 16,
+        ),
         'N' => 
         array (
             'Nahid\\JsonQ\\' => 12,
@@ -83,6 +87,10 @@ class ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d
         'Symfony\\Component\\VarDumper\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/var-dumper',
+        ),
+        'Opis\\JsonSchema\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/opis/json-schema/src',
         ),
         'Nahid\\JsonQ\\' => 
         array (

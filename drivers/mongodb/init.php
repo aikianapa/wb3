@@ -23,10 +23,22 @@ class mongodbDrv
         $dbname = $ini['dbname'];
         try {
             $mongo = new MongoDB\Client("mongodb://{$ini['user']}:{$ini['password']}@{$ini['host']}:{$ini['port']}");
-            $connection = $mongo->$dbname;
             if (!$mongo) {
                 throw new Exception('mongoErr');
             }
+            $connection = $mongo->$dbname;
+            $_ENV["mongodb_connection"] = $connection;
+        } catch (Exception $err) {
+            echo "Mongo DB connection error!";
+            echo $err->getMessage();
+            die;
+        }
+        try {
+            $mongo = new MongoDB\Client("mongodb://{$ini['user']}:{$ini['password']}@{$ini['host']}:{$ini['port']}");
+            if (!$mongo) {
+                throw new Exception('mongoErr');
+            }
+            $connection = $mongo->$dbname;
             $_ENV["mongodb_connection"] = $connection;
         } catch (Exception $err) {
             echo "Mongo DB connection error!";
@@ -236,7 +248,7 @@ class mongodbDrv
             return jsonTableCreate($form, $engine);
         }
         if ($form) {
-            $this->db->$form->createCollection($form);
+            $this->db->createCollection($form);
         } else {
             wbError('func', __FUNCTION__, 1002, func_get_args());
         }
@@ -264,6 +276,9 @@ class mongodbDrv
             return jsonTableList(true);
         }
         $list = [];
+        foreach ($this->db->listCollections() as $collectionInfo) {
+            $list[] = $collectionInfo["name"];
+        }
         return $list;
     }
 }
