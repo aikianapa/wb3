@@ -21,7 +21,7 @@ class mongodbDrv
         }
         $ini = $this->app->settings->driver_options["mongodb"];
         $dbname = $ini['dbname'];
-        $dbname == '' ? $dbname = $this->app->route->domain : null;
+        $dbname == '' ? $dbname = str_replace('.','_',$this->app->route->domain) : null;
         try {
             $mongo = new MongoDB\Client("mongodb://{$ini['user']}:{$ini['password']}@{$ini['host']}:{$ini['port']}");
             if (!$mongo) {
