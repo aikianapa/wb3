@@ -7,13 +7,17 @@ class notesClass extends cmsFormsClass {
         $item['short'] = wbGetWords($item['note'], 20);
     }
 
+    function afterItemSave(&$item) {
+        return $this->afterItemRead($item);
+    }
+
+
     function beforeItemShow(&$item) {
         if (isset($item['_created'])) {
             $item['time'] = date('d.m.Y H:i', strtotime($item['_created']));
             $item['short'] = wbGetWords($item['note'], 20);
         }
     }
-
 
     function addComment() {
         $id = $this->app->vars('_post.id');

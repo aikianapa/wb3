@@ -38,7 +38,7 @@ $(document).ready(function () {
             item = item[note];
             wbapp.renderServer(wbapp.template['#notesPaper'].params, item);
         }
-        wbapp.renderTemplate(wbapp.template['#notesPaper'].params, item);
+        //wbapp.renderTemplate(wbapp.template['#notesPaper'].params, item);
     });
 
     $('#notes').delegate('#newNote', 'tap click', function () {
@@ -73,7 +73,9 @@ $(document).ready(function () {
 
     $('#notes').delegate('#notesPaper textarea', 'wb-save-done', function (ev,a,b) {
         // client mode
-        $('#notesList .card[data-id="' + currentNote + '"]').addClass('active');
+        setTimeout(function () {
+            $('#notesList .card[data-id="' + currentNote + '"]').addClass('active');
+        })
     });
 
     $('#notes').delegate('button.close', 'tap click', function () {

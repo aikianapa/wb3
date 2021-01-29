@@ -7,7 +7,7 @@ $(document).delegate("[data-ajax]","click",function(){
     var data = $(this).attr("data");
     if (data == undefined) {data = {};} else {data = $.parseJSON(data);}
     if ($(link).attr("data-filter") !== undefined) data._filter = $.parseParams($(link).attr("data-filter"));
-    var result = wbapp.postWait(url,data);
+    var result = wbapp.postSync(url,data);
     var actions=["remove","after","before","html","replace","append","prepend","value","data"];
     var selector = params.selector;
     if (selector !== undefined) {

@@ -335,27 +335,27 @@ if (typeof $ === 'undefined') {
                     eval(params.data + ' = update;');
                 }
             }
-            if (params.silent !== undefined && (params.silent == true || params.silent == 'true')) {
-                params.silent = true;
-            } else { params.silent = false; }
+
             if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
-            if (params.silent == false) {
+
                 console.log('Update by tpl');
                 $.each(wbapp.template, function (i, tpl) {
                     if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
 
-                    if (tpl.params.render == 'client') {
-                        // client-side update
                         if (tpl.params.bind && (tpl.params.bind == params.bind || tpl.params.bind == params.update)) {
-                            if (params.bind) wbapp.storage(params.bind, data);
-                            if (params.update) wbapp.storageUpdate(params.update, data);
+                            console.log(data);
+                            if (tpl.params.render == 'client') {
+                            // client-side update
+                                if (params.bind) wbapp.storage(params.bind, data);
+                                if (params.update) wbapp.storageUpdate(params.update, data);
+                            } else {
+                                // server-side update
+                                wbapp.renderServer(tpl.params, data);
+                            }
                         }
-                    } else {
-                        // server-side update
-                        wbapp.renderServer(tpl.params,data);
-                    }
+
                 })
-            }
+
 
             if (data._id !== undefined) $(obj).data('saved-id', data._id);
 
