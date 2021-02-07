@@ -2338,9 +2338,12 @@ function wbArrayAttr($attr)
 
     function wbNormalizePath($path)
     {
+    	  substr($path,0,2) == "//" ? $net = true : $net = false;
         $patterns = array('~/{2,}~', '~/(\./)+~', '~([^/\.]+/(?R)*\.{2,}/)~', '~\.\./~');
         $replacements = array('/', '/', '', '');
-        return preg_replace($patterns, $replacements, $path);
+        $path = preg_replace($patterns, $replacements, $path);
+        $net ? $path = '/' . $path : null;
+        return $path;
     }
 
 
@@ -2361,7 +2364,7 @@ function wbListTpl()
     if (is_dir($dir)) {
         $list=wbListFilesRecursive($dir, true);
         foreach ($list as $l=> $val) {
-            if (('.php' == substr($val['file'], -4) or '.htm' == substr($val['file'], -4) or '.tpl' == substr($val['file'], -4)) and !strpos('.inc.', $val['file'])) {
+            if (('.php' == substr($val['file'], -4) or '.htm' == substr($val['file'], -4) or '.tpl' == substr($val['file'], -4)) and !strpos($val['file'],'.inc.')) {
                 $path = str_replace($dir, '', $val['path']);
                 $res = substr($path.'/'.$val['file'], 1);
                 $result[] = $res;

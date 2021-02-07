@@ -37,9 +37,8 @@ final class wbRouter {
         foreach ($res as $r) {
             $this->addRouteFile($r);
         }
-
-        is_file($route_e) ? $this->addRouteFile($route_e) : null;
         is_file($route_a) ? $this->addRouteFile($route_a) : null;
+        is_file($route_e) ? $this->addRouteFile($route_e) : null;
     }
     
     
@@ -47,8 +46,8 @@ final class wbRouter {
     public static function addRoute($route, $destination=null) {
         if ($destination != null && !is_array($route)) {
             $route = array($route => $destination);
+            self::$routes = array_merge(self::$routes, $route);
         }
-        self::$routes = array_merge(self::$routes,$route);
     }
 
 

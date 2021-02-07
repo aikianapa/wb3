@@ -4,8 +4,8 @@ class ctrlForm
     public function __construct($app)
     {
         $this->app = $app;
-        $this->route = $app->route;
-        $mode = $this->route->mode;
+        $app->route = $app->route;
+        $mode = $app->route->mode;
         $this->$mode();
     }
 
@@ -31,20 +31,20 @@ class ctrlForm
 
         if (!$cache) {
             $_ENV["cache_used"] = false;
-            isset($this->route->form) ? $dom = $app->getForm($this->route->form, $this->route->mode) : null;
-            if (isset($this->route->item)) {
-                $table = $this->route->form;
-                isset($this->route->table) ? $table = $this->route->table : null;
-                $item = $app->itemRead($table, $this->route->item);
+            isset($app->route->form) ? $dom = $app->getForm($app->route->form, $app->route->mode) : null;
+            if (isset($app->route->item)) {
+                $table = $app->route->form;
+                isset($app->route->table) ? $table = $app->route->table : null;
+                $item = $app->itemRead($table, $app->route->item);
                 $item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], $item);
                 if (isset($item['template']) and $item['template'] > '' and $item['active'] == 'on') {
                     $dom = $app->getTpl($item['template']);
-                } elseif (isset($this->route->tpl)) {
-                    $dom = $app->getTpl($this->route->tpl);
+                } elseif (isset($app->route->tpl)) {
+                    $dom = $app->getTpl($app->route->tpl);
                 } else {
                     // последняя попытка
-                    $this->route->tpl = $table.'-show.php';
-                    $dom = $app->getTpl($this->route->tpl);
+                    $app->route->tpl = $table.'-show.php';
+                    $dom = $app->getTpl($app->route->tpl);
                     !$dom ? $dom = $this->get404() : null;
                 }
                 $dom ? $dom->item = $item : null;

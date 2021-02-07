@@ -16,9 +16,9 @@
 
 
           <div class="form-group row">
-            <label class="col-sm-2 form-control-label">Каталог</label>
+            <label class="col-sm-2 form-control-label">ID справочника</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" name="_id" placeholder="Идентификатор каталога" required>
+              <input type="text" class="form-control" name="_id" placeholder="ID справочника" wb="module=smartid" required>
             </div>
           </div>
 
