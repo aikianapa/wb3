@@ -121,13 +121,12 @@ class modLogin
     public function signout(&$dom)
     {
         $app = $dom->app;
-        $user = wbArrayToObj($app->vars("_env.user"));
+        $user = wbArrayToObj($app->vars("_user"));
         $group = wbArrayToObj($app->itemRead("users", $user->role));
         $app->vars->set("_sess.user", null);
         $app->vars->set("_env.user", null);
         setcookie("user", "", time()-3600, "/");
-
-        if ($group->logout_url > "") {
+        if ($group->url_logout > "") {
             header('Location: '.$group->url_logout);
         } else {
             header('Location: /');
