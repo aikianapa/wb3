@@ -203,6 +203,35 @@ function wbGetToken() {
 	return md5($app->route->host.session_id().$apikey.$role.$user);
 }
 
+    function wbApikey($mode = null)
+    {
+        $app = &$_ENV['app'];
+        $mode == null ? $mode = $app->vars('_route.mode') : null;
+        $token = $app->vars("_sess.token");
+        $access = $app->checkToken($app->vars('_req.__token'));
+
+        if (!in_array($mode,['ajax','save']) && $app->vars('_sett.api_key_'.$mode) !== 'on') $access = true;
+
+        if (!$access) {
+            echo json_encode(['error'=>true,'msg'=>'Access denied']);
+            die;
+        }
+
+        if ($app->vars('_req.__apikey')) {
+            unset($_REQUEST['__apikey']);
+            unset($_POST['__apikey']);
+            unset($_GET['__apikey']);
+            unset($app->route->query->__apikey);
+        }
+        if ($app->vars('_req.__token')) {
+            unset($_REQUEST['__token']);
+            unset($_POST['__token']);
+            unset($_GET['__token']);
+            unset($app->route->query->__token);
+        }
+        return true;
+    }
+
 function wbCheckToken($token) {
     $app = &$_ENV['app'];
     $apikey = $app->vars('_sett.api_key');

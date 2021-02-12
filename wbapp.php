@@ -551,7 +551,7 @@ class wbDom extends DomQuery
                     }
                 } elseif ($inp->tagName == "input") {
                     if ($inp->attr("type") == "radio") {
-                        $inp->attr("value") == $value ? $inp->attr('checked', 'checked') : null;
+                        $inp->attr("value") == $value AND $value > '' ? $inp->attr('checked', 'checked') : null;
                     } else {
                         $inp->attr("value", $value);
                         if ($inp->attr("type") == "checkbox") {
@@ -643,7 +643,9 @@ class wbApp
     {
         $wbfunc="wb".$func;
         $_ENV["app"] = &$this;
-        if (is_callable($wbfunc)) {
+        if (method_exists($this, $func)) {
+            $this->$func();
+        } else if (is_callable($wbfunc)) {
             $prms = [];
             foreach ($params as $k => $i) {
                 $prms[] = '$params['.$k.']';
@@ -762,7 +764,7 @@ class wbApp
         $this->driver();
         $this->InitSettings($this);
         $this->controller();
-    }
+}
 
     public function driver()
     {

@@ -72,7 +72,7 @@ $(document).on("wb-ajax-done",function(e,params) {
     if ($(document).find(".chat-sidebar").length == 0) $("body").removeClass("chat-content-show");
 });
 
-wbapp.session().then(function() {
+$(document).on("wb-getsess",function() {
     wbapp.storage('cms.profile.user',wbapp._session.user);
     var profileMenu = Ractive({
       target: "#userProfileMenu",

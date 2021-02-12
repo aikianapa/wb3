@@ -8,6 +8,7 @@ class modFilemanager
     public function init($obj)
     {
         strtolower(get_class($obj)) == 'wbapp' ? $app = &$obj : $app = &$obj->app;
+        $app->apikey('module');
         $this->app = &$app;
         if (isset($app->route->mode) AND $app->route->mode !== 'init') {
             $mode = $app->route->mode;

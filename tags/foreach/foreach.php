@@ -343,9 +343,9 @@ class tagForeach
             $ajax = $dom->params('ajax');
             $url = parse_url($ajax);
             if (!isset($url['scheme'])) {
-                if ($this->app->vars('_sett.api_key_query') == 'on' and !isset($url['__apikey'])) {
+                if ($this->app->vars('_sett.api_key_query') == 'on' and !isset($url['__token'])) {
                     strpos($ajax, '?') ? $ajax .= '&' : $ajax .= '?';
-                    $ajax .= '__apikey='.$this->app->vars('_sett.api_key');
+                    $ajax .= '__token='.$this->app->vars('_sess.token');
                 }
                 $ajax = $this->app->vars('_route.host').$ajax;
             }

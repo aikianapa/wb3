@@ -22,6 +22,7 @@ class modCms {
 
   function ajax() {
       $app = $this->app;
+      $app->apikey('module');
       if ($app->vars("_route.form") > "") {
           $form = $app->formClass($app->vars("_route.form"));
           $action = $app->vars("_route.action");

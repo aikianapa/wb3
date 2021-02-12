@@ -12,7 +12,7 @@ $(document).ready(function () {
     $('#noteComments').delegate('.close', 'tap click', function () {
         var id = $('#notes .card.active').attr('data-id');
         let idx = $(this).closest('.comment').index();
-        $.post("/api/call/notes/removeComments/", { 'id': id, 'idx': idx }, function (res) {
+        wbapp.ajax("/api/call/notes/removeComments/", { 'id': id, 'idx': idx }, function (res) {
             console.log(res);
         })
         $(this).closest('.comment').remove();

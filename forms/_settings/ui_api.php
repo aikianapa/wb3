@@ -44,6 +44,13 @@
       </div>
     </div>
 
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label">{{_lang.reqfor}} /module</label>
+      <div class="col-sm-8">
+          <wb-module wb="module=switch" name="api_key_module" />
+      </div>
+    </div>
+
     <nav class="text-right">
       <button type="button" class="btn btn-primary tx-13 r-0" wb-save="{'table':'_settings','item':'settings'}">
         <i class="fa fa-save"></i> Сохранить

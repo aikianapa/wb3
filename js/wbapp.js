@@ -319,6 +319,11 @@ if (typeof $ === 'undefined') {
         if ($(obj).data('saved-id') !== undefined) {
             data['id'] = $(obj).data('saved-id');
         }
+        
+        try {
+            data.__token = wbapp._session.token;
+        } catch (error) { null }
+
         $.post(params.url, data, function (data) {
             if (params.callback) eval('params = ' + params.callback + '(params,data)');
             if (params.data && params.error !== true) {
@@ -427,7 +432,8 @@ if (typeof $ === 'undefined') {
             if (params.form !== undefined) {
                 params.formdata = wbapp.objByForm(params.form);
                 params.formflds = {};
-                $(params.form).find('[name][placeholder]').each(function () {
+                $(params.form).find('[name]').each(function () {
+                    params.formflds[$(this).attr('name')] = $(this).attr('name');
                     if ($(this).attr('name')) {
                         if ($(this).attr('data-label') > '') {
                             params.formflds[$(this).attr('name')] = $(this).attr('data-label');
@@ -442,12 +448,17 @@ if (typeof $ === 'undefined') {
                 })
             }
             let opts = Object.assign({}, params);
+            let token;
             delete opts._event;
 
             if (opts._tid !== undefined && opts._tid > '') {
                 delete opts.data; // добавил для очистки фильтра
                 params = wbapp.tpl(opts._tid).params;
             }
+            
+            try {
+                opts.__token = wbapp._session.token;                
+            } catch (error) { null }
 
             $.post(params.url, opts, function (data) {
                 if (count(data) == 2 && data.error !== undefined && data.callback !== undefined) {
@@ -999,6 +1010,9 @@ if (typeof $ === 'undefined') {
         }
 
         for (var i = 0; i < ajaxCount; i++) { //append logic to invoke callback function once all the ajax calls are completed, in success handler.
+
+            try {ajaxObjs[i].data.__token = wbapp._session.token;} catch (error) { null }
+
             $.ajax(ajaxObjs[i]).done(function (res) {
                 ajaxCount--;
                 if (ajaxObjs.length > 0) {
@@ -1040,13 +1054,21 @@ if (typeof $ === 'undefined') {
         }])[0];
     }
 
-    wbapp.session = async function () {
-        if (wbapp._session == undefined) wbapp._session = await wbapp.getSync("/ajax/getsess/");
+    wbapp.trigger = function(trigger, event = null, data = null) {
+        console.log('Trigger: '+trigger);
+        if (event == null) event = document;
+        $(event).trigger(trigger,data);
+    }
+
+    wbapp.session = function (e) {
+        if (wbapp._session == undefined) wbapp._session = wbapp.getSync("/ajax/getsess/");
+        wbapp.trigger('wb-getsess', e, wbapp._session);
         return wbapp._session;
     }
 
-    wbapp.settings = async function () {
-        if (wbapp._settings == undefined) wbapp._settings = await wbapp.getSync("/ajax/getsett/");
+    wbapp.settings = function (e) {
+        if (wbapp._settings == undefined) wbapp._settings = wbapp.getSync("/ajax/getsett/");
+        wbapp.trigger('wb-getsett', e, wbapp._settings);
         return wbapp._settings;
     }
 
@@ -1324,12 +1346,10 @@ if (typeof $ === 'undefined') {
 
         });
         if (res == true) {
-            console.log("trigger: wb-verify-success");
-            $(form).trigger("wb-verify-success", [form]);
+            wbapp.trigger('wb-verify-success',form,[form]);
         }
         if (res == false) {
-            console.log("trigger: wb-verify-fail");
-            $(form).trigger("wb-verify-fail", [form]);
+            wbapp.trigger('wb-verify-fail', form, [form]);
         }
         return res;
     }
@@ -1429,14 +1449,14 @@ if (typeof $ === 'undefined') {
     }, 84600);
 
     $(document).on("wbapp-go", function () {
-        wbapp.tplInit();
         wbapp.eventsInit();
         wbapp.wbappScripts();
-        wbapp.modalsInit();
-        wbapp.ajaxAuto();
         wbapp.session();
         wbapp.settings();
+        wbapp.tplInit();
+        wbapp.ajaxAuto();
         wbapp.lazyload();
+        wbapp.modalsInit();
         $(document).scrollTop(0);
     });
     function is_object(val) { return val instanceof Object; }

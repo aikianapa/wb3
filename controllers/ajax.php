@@ -7,14 +7,17 @@ class ctrlAjax
         header('Content-Type: application/json');
         include_once($_ENV['path_engine'].'/attrs/save/ajax.php');
         include_once($_ENV['path_engine'].'/attrs/tree/ajax.php');
+        $this->app = $app;
+        $this->route = $app->route;
+        $mode = $this->route->mode;
+
+        in_array($mode,['getsess','getsett','auth']) ? null : $app->apikey('ajax');
+
         $app->initSettings($app);
         if (is_file($_ENV['path_app'].'/ajax.php')) {
             include_once($_ENV['path_app'].'/ajax.php');
             $this->ajax = new wbAjax($app);
         }
-        $this->app = $app;
-        $this->route = $app->route;
-        $mode = $this->route->mode;
         echo $this->$mode();
         die;
     }
@@ -42,7 +45,9 @@ class ctrlAjax
         $app = $this->app;
         $params = (array)$app->route->params;
         $table = $params[0];
-        $list = $app->authPostContents($app->route->host."/api/query/{$table}", $app->vars('_post'));
+        $data = $app->vars('_post');
+        $data['__token'] = $app->vars('_sess.token');
+        $list = $app->authPostContents($app->route->host."/api/query/{$table}", $data);
         $list = json_decode($list, true);
         $count = count($list);
         $options = ( object )$_POST;

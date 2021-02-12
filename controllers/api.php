@@ -26,7 +26,7 @@ class ctrlApi
         $this->app = &$app;
         $mode = $this->mode = $app->vars('_route.mode');
         $table = $app->vars('_route.table');
-        if ($this->apikey() OR in_array($mode,['auth','token'])) {
+        if ($app->apikey() OR in_array($mode,['auth','token'])) {
             if (method_exists($this, $mode)) {
                 echo $this->$mode();
             } else if ($table > '') {
@@ -326,35 +326,6 @@ class ctrlApi
         }
     }
 
-    private function apikey()
-    {
-        $app = &$this->app;
-        $mode = &$this->mode;
-        $token = $app->vars("_sess.token");
-        $access = $app->checkToken($app->vars('_req.__token'));
-
-        if ($app->vars('_sett.api_key_'.$mode) !== 'on') $access = true;
-
-        if (!$access) {
-            echo json_encode(['error'=>true,'msg'=>'Access denied']);
-            die;
-        }
-
-        if ($app->vars('_req.__apikey')) {
-            unset($_REQUEST['__apikey']);
-            unset($_POST['__apikey']);
-            unset($_GET['__apikey']);
-            unset($app->route->query->__apikey);
-        }
-        if ($app->vars('_req.__token')) {
-            unset($_REQUEST['__token']);
-            unset($_POST['__token']);
-            unset($_GET['__token']);
-            unset($app->route->query->__token);
-        }
-        return true;
-    }
-
     public function mail()
     {
         $app = &$this->app;
@@ -465,6 +436,7 @@ class ctrlApi
         }
 
         foreach ($query as $key => $val) {
+            (array)$val === $val ? $val = json_encode($val) : null;
             if (substr($val, -1) == "]" && substr($val, 0, 1) == "[") {
                 // считаем что в val массив и разбтраем его
                 $val = explode(",", substr($val, 1, strlen($val) -2));
@@ -476,7 +448,7 @@ class ctrlApi
                     unset($query[$key]);
                     $query[substr($key, 0, strlen($key) -1)] =  ['$nin'=> $val];
                     break;
-            }
+                }
             } else {
                 switch (substr($key, -1)) {
                 case '<': // меньше (<)
