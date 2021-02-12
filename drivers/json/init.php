@@ -252,6 +252,7 @@ class jsonDrv
         $flag = true;
         foreach ($iter as $key => $item) {
             $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
+            isset($item['_id']) ? null : $item['_id'] = &$item['id'];
 
             if (isset($options->trigger)) {
                 $item = wbTrigger('form', __FUNCTION__, $options->trigger, func_get_args(), $item);
