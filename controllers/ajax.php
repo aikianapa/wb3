@@ -156,7 +156,14 @@ class ctrlAjax
     {
         header('Content-Type: text/html; charset=utf-8');
         $app = &$this->app;
-        $tpl = $app->getTpl($app->vars('_route.params.0'));
+        if (is_array($app->vars('_route.params'))) {
+            $tpl = implode('/', $app->vars('_route.params'));
+            $path = true;
+        } else {
+            $tpl = $app->vars('_route.params.0');
+            $path = false;
+        }
+        $tpl = $app->getTpl($tpl, $path);
         if (!$tpl) {
             return null;
         } else {

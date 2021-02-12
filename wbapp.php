@@ -1229,6 +1229,8 @@ class wbApp
         if ($cur > "") {
             $out = $this->fromFile($cur);
         }
+        $_ENV['tpl_realpath'] = dirname($cur);
+        $_ENV['tpl_path'] = substr(dirname($cur),strlen($_ENV['path_app']));
 
         if (!$out) {
             if ($path !== false) {

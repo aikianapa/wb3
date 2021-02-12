@@ -6,7 +6,7 @@
           <i class="fa fa-close wd-20"  data-dismiss="modal" aria-label="Close"></i>
           <div class="custom-control custom-switch">
             <input type="checkbox" class="custom-control-input" name="active" id="{{_form}}SwitchItemActive" onchange="$('#{{_form}}ValueItemActive').prop('checked',$(this).prop('checked'));">
-            <label class="custom-control-label" for="{{_form}}SwitchItemActive">Активирован</label>
+            <label class="custom-control-label" for="{{_form}}SwitchItemActive">{{_lang.active}}</label>
           </div>
       </div>
       <div class="modal-body pd-20">
@@ -16,16 +16,16 @@
 
 
           <div class="form-group row">
-            <label class="col-sm-2 form-control-label">ID справочника</label>
+            <label class="col-sm-2 form-control-label">{{_lang.id}}</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" name="_id" placeholder="ID справочника" wb="module=smartid" required>
+              <input type="text" class="form-control" name="_id" placeholder="{{_lang.id}}" wb="module=smartid" required>
             </div>
           </div>
 
           <div class="form-group row">
-            <label class="col-sm-2 form-control-label">Наименование</label>
+            <label class="col-sm-2 form-control-label">{{_lang.name}}</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" name="name" placeholder="Наименование">
+              <input type="text" class="form-control" name="name" placeholder="{{_lang.name}}">
             </div>
           </div>
 
@@ -45,4 +45,14 @@
     </div>
   </div>
 </div>
+<wb-lang>
+[ru]
+name = Наименование
+active = Активный
+id = Идентификатор
+[en]
+name = Nane
+active = Active
+id = ID
+</wb-lang>
 </html>
