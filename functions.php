@@ -103,7 +103,7 @@ function wbInitSettings(&$app)
         $_SESSION['user'] = $app->ItemRead("users", $_COOKIE['user']);
     }
     if (isset($_SESSION['user']) AND $_SESSION['user'] !== null AND isset($_SESSION['user']['active']) AND $_SESSION['user']['active'] = 'on') {
-        $_ENV["user"] = $_SESSION['user'];
+        $_ENV["user"] = &$_SESSION['user'];
         $_SESSION['user_role'] = $_SESSION['user']['role'];
         $app->user = (object)$_ENV["user"];
         unset($_COOKIE['user']);
@@ -172,7 +172,7 @@ function wbInitSettings(&$app)
     $_ENV['settings']['max_upload_size'] = wbMaxUplSize();
     $_ENV['sysmsg'] = wbGetSysMsg();
     $_ENV['settings']['sysmsg'] = &$_ENV['sysmsg']; // для доступа из JS
-    $_ENV['settings']['user'] = $_SESSION['user'];
+    $_ENV['settings']['user'] = &$_SESSION['user'];
     if (isset($_ENV['settings']['user']['password'])) unset($_ENV['settings']['user']['password']);
     $app->vars('_sett', $_ENV['settings']);
     if (!($app->vars('_sett.cache') > "")) $app->vars('_sett.cache',1);
@@ -2592,7 +2592,6 @@ function wbListTpl()
 
     return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
 }
-
 
     function is_email($email)
     {

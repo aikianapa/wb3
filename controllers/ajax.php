@@ -11,7 +11,7 @@ class ctrlAjax
         $this->route = $app->route;
         $mode = $this->route->mode;
 
-        in_array($mode,['getsess','getsett','auth']) ? null : $app->apikey('ajax');
+        in_array($mode,['getsess','getsett','auth','alive']) ? null : $app->apikey('ajax');
 
         $app->initSettings($app);
         if (is_file($_ENV['path_app'].'/ajax.php')) {

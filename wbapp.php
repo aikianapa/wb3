@@ -618,22 +618,23 @@ class wbApp
         $this->router = new wbRouter();
         $this->vars = new Dot();
         $vars = [
-          "_env"  => &$_ENV,
-          "_get"  => &$_GET,
-          "_srv"  => &$_SERVER,
-          "_post" => &$_POST,
-          "_req"  => &$_REQUEST,
-          "_route"=> &$_ENV["route"],
-          "_sett" => &$_ENV["settings"],
-          "_var"  => &$_ENV["variables"],
-          "_sess" => &$_SESSION,
-          "_cookie"=>&$_COOKIE,
-          "_cook"  =>&$_COOKIE,
-          "_mode" => &$_ENV["route"]["mode"],
-          "_form" => &$_ENV["route"]["form"],
-          "_item" => &$_ENV["route"]["item"],
-          "_param"=> &$_ENV["route"]["param"],
-          "_locale"=> &$_ENV["locale"]
+          '_env'  => &$_ENV,
+          '_get'  => &$_GET,
+          '_srv'  => &$_SERVER,
+          '_post' => &$_POST,
+          '_req'  => &$_REQUEST,
+          '_route'=> &$_ENV['route'],
+          '_sett' => &$_ENV['settings'],
+          '_var'  => &$_ENV['variables'],
+          '_sess' => &$_SESSION,
+          '_user' => &$_SESSION['user'],
+          '_cookie'=>&$_COOKIE,
+          '_cook'  =>&$_COOKIE,
+          '_mode' => &$_ENV['route']['mode'],
+          '_form' => &$_ENV['route']['form'],
+          '_item' => &$_ENV['route']['item'],
+          '_param'=> &$_ENV['route']['param'],
+          '_locale'=> &$_ENV['locale']
       ];
         $this->vars->setReference($vars);
         $this->initApp();
@@ -641,8 +642,8 @@ class wbApp
 
     public function __call($func, $params)
     {
-        $wbfunc="wb".$func;
-        $_ENV["app"] = &$this;
+        $wbfunc='wb'.$func;
+        $_ENV['app'] = &$this;
         if (method_exists($this, $func)) {
             $this->$func();
         } else if (is_callable($wbfunc)) {
@@ -650,7 +651,7 @@ class wbApp
             foreach ($params as $k => $i) {
                 $prms[] = '$params['.$k.']';
             }
-            eval('$res = $wbfunc('.implode(",", $prms).');');
+            eval('$res = $wbfunc('.implode(',', $prms).');');
             return $res;
         } elseif (!is_callable($func)) {
             die("Function {$wbfunc} not defined");

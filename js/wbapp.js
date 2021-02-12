@@ -1061,13 +1061,13 @@ if (typeof $ === 'undefined') {
     }
 
     wbapp.session = function (e) {
-        if (wbapp._session == undefined) wbapp._session = wbapp.getSync("/ajax/getsess/");
+        if (wbapp._session == undefined) wbapp._session = wbapp.postSync("/ajax/getsess/");
         wbapp.trigger('wb-getsess', e, wbapp._session);
         return wbapp._session;
     }
 
     wbapp.settings = function (e) {
-        if (wbapp._settings == undefined) wbapp._settings = wbapp.getSync("/ajax/getsett/");
+        if (wbapp._settings == undefined) wbapp._settings = wbapp.postSync("/ajax/getsett/");
         wbapp.trigger('wb-getsett', e, wbapp._settings);
         return wbapp._settings;
     }

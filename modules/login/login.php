@@ -63,6 +63,7 @@ class modLogin
     public function signup($dom)
     {
         $app = $dom->app;
+        print_r($app->route);
         $app->vars('_route.tpl') ? $out = $app->getTpl($app->vars('_route.tpl')) : $out = $app->fromFile(__DIR__."/signup.php", true);
        
         $out->item = $app->vars("_post");

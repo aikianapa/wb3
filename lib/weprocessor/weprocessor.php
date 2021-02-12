@@ -28,22 +28,24 @@ class WEProcessor {
 		$this->parser = new parse_engine(new weparser($this));
 		$this->vars = new Dot();
 		$vars = [
-			"_env"  => &$_ENV,
-			"_get"  => &$_GET,
-			"_srv"  => &$_SERVER,
-			"_post" => &$_POST,
-			"_req"  => &$_REQUEST,
-			"_var"  => &$_ENV["variables"],
-			"_route"=> &$_ENV["route"],
-			"_sett" => &$_ENV["settings"],
-			"_sess" => &$_SESSION,
-			"_cookie"=>&$_COOKIE,
-			"_mode" => &$_ENV["route"]["mode"],
-			"_form" => &$_ENV["route"]["form"],
-			"_item" => &$_ENV["route"]["item"],
-			"_param"=> &$_ENV["route"]["param"],
-			"_locale"=> &$_ENV["locale"],
-			"_context" => &$context
+          '_env'  => &$_ENV,
+          '_get'  => &$_GET,
+          '_srv'  => &$_SERVER,
+          '_post' => &$_POST,
+          '_req'  => &$_REQUEST,
+          '_route'=> &$_ENV['route'],
+          '_sett' => &$_ENV['settings'],
+          '_var'  => &$_ENV['variables'],
+          '_sess' => &$_SESSION,
+          '_user' => &$_SESSION['user'],
+          '_cookie'=>&$_COOKIE,
+          '_cook'  =>&$_COOKIE,
+          '_mode' => &$_ENV['route']['mode'],
+          '_form' => &$_ENV['route']['form'],
+          '_item' => &$_ENV['route']['item'],
+          '_param'=> &$_ENV['route']['param'],
+          '_locale'=> &$_ENV['locale'],
+		  '_context' => &$context
 	];
 		$this->vars->setReference($vars);
 	}
@@ -100,6 +102,7 @@ class WEProcessor {
 				case '_SETTINGS': 	$res = $_ENV["settings"]; break;
 				case '_SESS': 		$res = $_SESSION; break;
 				case '_SESSION': 	$res = $_SESSION; break;
+				case '_USER': 		$res = $_SESSION['user']; break;
 				case '_VAR': 		$res = $_ENV["variables"]; break;
 				case '_SRV':		$res = $_SERVER; break;
 				case '_SERVER':		$res = $_SERVER; break;
