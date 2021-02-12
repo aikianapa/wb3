@@ -1056,8 +1056,12 @@ if (typeof $ === 'undefined') {
 
     wbapp.trigger = function(trigger, event = null, data = null) {
         console.log('Trigger: '+trigger);
-        if (event == null) event = document;
-        $(event).trigger(trigger,data);
+        if (event == null) {
+            $(document).trigger(trigger, data);
+        } else {
+            $(event).trigger(trigger, data);
+        }
+        
     }
 
     wbapp.session = function (e) {
