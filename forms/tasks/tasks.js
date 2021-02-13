@@ -8,7 +8,7 @@ $(document).ready(function () {
 
     var taskPushComments = function (data) {
         let storage = wbapp.storage('cms.list.taskComments');
-        if (storage == undefined) storage = { 'comments': [] };
+        if (storage == undefined || !storage.comments) storage = { 'comments': [] };
         storage.comments.push(data);
         wbapp.storage('cms.list.taskComments', storage);
     }
@@ -39,9 +39,8 @@ $(document).ready(function () {
     $('#taskComments').delegate('.close', 'tap click', function () {
         var id = $('#tasks .card.active').attr('data-id');
         let idx = $(this).closest('.comment').index();
-        $.post("/api/call/tasks/removeComments/", { 'id': id, 'idx':idx }, function (res) {
-            console.log(res);
-        })
+        let res = wbapp.postSync("/api/call/tasks/removeComments/", { 'id': id, 'idx':idx });
+        console.log(res);
         $(this).closest('.comment').remove();
     });
 
@@ -51,9 +50,8 @@ $('#tasks').delegate('.card', 'tap click', function () {
     $(this).addClass('active');
     var id = $('#tasks .card.active').attr('data-id');
     currentTask = id;
-    $.post("/api/call/tasks/listComments/",{'id':id},function(res){
-        taskListComments(res)
-    })
+    let res = wbapp.postSync("/api/call/tasks/listComments/",{'id':id});
+    taskListComments(res)
 });
 
 $('#tasks').delegate('#taskCommentBtn', 'tap click', function () {
@@ -88,7 +86,7 @@ $('#tasks').delegate('input', 'change', function () {
     let id = $(this).closest('.card').attr('data-id');
     if (id == undefined) return;
     $(this).closest('.card').removeClass('new');
-    wbapp.save($(this), {"silent":true,"url": "\/ajax\/save\/tasks\/"+id });
+    wbapp.save($(this), {"silent":'true',"url": "\/ajax\/save\/tasks\/"+id });
     return false;
 })
 

@@ -49,7 +49,10 @@ class tagForeach
         unset($dom->params->tpl);
 
         if ($dom->params("table") > "") {
-            $dom->params->ajax = '/ajax/list/' . $dom->params("table") . '/';
+            if ($dom->params("size") == '') $dom->params->size = 999999999;
+            $ajax = '/api/query/' . $dom->params("table") . '/';
+            $ajax .= '?&__options=size='.$dom->params("size");
+            $dom->params->ajax = $ajax;
             $dom->attr("data-ajax", '{"url":"' . $dom->params("ajax") . '"}');
             $table = null;
         } else if ($dom->params("ajax") > "") {
@@ -58,6 +61,7 @@ class tagForeach
 
         $dom->attr("data-ajax") > "" ? $ajax = $dom->attr("data-ajax") : $ajax = false;
 
+        
         list($list, $count, $pages, $page, $srvpag, $options) = $this->list();
 
         foreach ((array) $list as $key => $val) {
@@ -99,7 +103,7 @@ class tagForeach
             $dom->find("template[id=\"{$this->tid}\"] .pagination")->attr("data-tpl", $this->tid);
         //
 
-            if ($dom->params("size") > "") {
+            if ($dom->params("size") > "" AND $ajax = false) {
                 $size = $dom->params("size");
                 !isset($count) ? $count = null : null;
                 $dom->parent()->attr(
@@ -118,7 +122,7 @@ class tagForeach
                 $dom->params->count = $count;
                 $dom->params->tpl = $dom->parent()->attr('id');
                 $dom->params->page = $page;
-                $pag = $dom->tagPagination($dom);
+                //$pag = $dom->tagPagination($dom);
                 if (!count((array)$list) or $dom->html() == "") {
                     $dom->inner($empty->inner());
                 }
@@ -258,7 +262,6 @@ class tagForeach
                     $dom->inner($empty->inner());
                 }
 
-          
                 isset($dom->params->pos) ? $pos = $dom->params->pos : $pos = 'bottom';
 
                 if ($srvpag 
@@ -289,7 +292,6 @@ class tagForeach
             } elseif (!$dom->children()->length) {
                 $dom->inner($empty->inner());
             }
-        
 
             if (isset($this->placeholder)) {
                 if ($this->opt) {
@@ -317,10 +319,9 @@ class tagForeach
 
 
         $list = $parent = $dom->item;
-        
 
         $dom->params('render') == 'server' && $dom->params('bind') > '' ? $dom->params->tpl = 'true' : null;
-        $this->app->vars('_post.route') == '' and $dom->params('tpl') == 'true' ? $dom->addTpl() : null;
+        //$this->app->vars('_post.route') == '' and $dom->params('tpl') == 'true' ? $dom->addTpl() : null;
 
         $dom->params("form") > "" ? $dom->params->table = $dom->params->form : null;
         $dom->params("table") > "" ? $table = $dom->params->table : $table = "";
@@ -343,20 +344,20 @@ class tagForeach
             $list = (array) wbEval($dom->params("call"));
         }
 
-        if ($dom->params('ajax')) {
+        if ($dom->params('ajax') AND $dom->params('render') == 'server') {
             $ajax = $dom->params('ajax');
+            if ($dom->params("size") == '') $dom->params->size = 999999999;
             $url = parse_url($ajax);
             if (!isset($url['scheme'])) {
                 if ($this->app->vars('_sett.api_key_query') == 'on' and !isset($url['__token'])) {
                     strpos($ajax, '?') ? $ajax .= '&' : $ajax .= '?';
                     $ajax .= '__token='.$this->app->vars('_sess.token');
                 }
-                $ajax = $this->app->vars('_route.host').$ajax;
             }
-
-            $list = json_decode(str_replace("'", '"', wbAuthGetContents($ajax)), true);
-            !$list ? $list = [] : null;
-            $count = count($list);
+                $ajax = $this->app->vars('_route.host').$ajax;
+                $list = json_decode(str_replace("'", '"', wbAuthPostContents($ajax)), true);
+                !$list ? $list = [] : null;
+                $count = count($list);
         }
 
         if ($dom->params('json')) {

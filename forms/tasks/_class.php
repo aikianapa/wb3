@@ -2,6 +2,7 @@
 class tasksClass extends cmsFormsClass {
 
     function beforeItemShow($item) {
+        if (!$item) return [];
         if (isset($item['comments'])) {
             foreach((array)$item['comments'] as $key => $com) {
                 if (isset($com['time'])) {

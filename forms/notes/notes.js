@@ -31,14 +31,12 @@ $(document).ready(function () {
             bind += '.' + params.from;
         }
         if (params.render == 'client') {
-            item = wbapp.storage(bind + '.result.' + note)
-            wbapp.renderClient(wbapp.template['#notesPaper'].params, item);
+            item = wbapp.storage(bind + '.' + note)
         } else {
             item = wbapp.getSync("/api/query/notes/?_id=" + note);
             item = item[note];
-            wbapp.renderServer(wbapp.template['#notesPaper'].params, item);
         }
-        //wbapp.renderTemplate(wbapp.template['#notesPaper'].params, item);
+        wbapp.render('#notesPaper',item);
     });
 
     $('#notes').delegate('#newNote', 'tap click', function () {
@@ -54,7 +52,7 @@ $(document).ready(function () {
         let id = $(this).attr('data-id');
         if (this.dirty !== undefined && this.dirty == false) return;
         if (id == undefined) return;
-        if ($(this).val() == '' && wbapp.storage("cms.list.notes").result[id] == undefined) return;
+        if ($(this).val() == '' && wbapp.storage("cms.list.notes."+id) == undefined) return;
         currentNote = id;
         try {
             params = wbapp.parseAttr($(this).attr("wb-save"));

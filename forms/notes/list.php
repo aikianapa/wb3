@@ -6,7 +6,7 @@
             <div class="notes-sidebar content-sidebar chat-sidebar">
                 <div class="notes-sidebar-body p-0">
                     <div class="scrollable" id="notesList">
-                        <wb-foreach wb="table=notes&bind=cms.list.notes&sort=_created:d&tpl=true&render=client" wb-filter="{'_creator':'{{_sess.user.id}}'}">
+                        <wb-foreach wb="table=notes&bind=cms.list.notes&sort=_created:d&render=client" wb-filter="{'_creator':'{{_sess.user.id}}'}">
                             <div class="card" data-id="{{_id}}">
                                 <div class="card-body">
                                     <button type="button" class="close tx-18">×</button>
@@ -14,11 +14,6 @@
                                     <div class="time tx-10 tx-secondary"><i class="ri-time-line"></i> {{time}}</div>
                                 </div>
                             </div>
-                            <wb-empty>
-                                <div class="alert alert-info">
-                                    {{_lang.empty}}
-                                </div>
-                            </wb-empty>
                         </wb-foreach>
                     </div>
                 </div>

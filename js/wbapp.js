@@ -872,15 +872,7 @@ if (typeof $ === 'undefined') {
             wbapp.bind[params.bind] = {};
             newbind = tid;
         }
-
-        if (params.from !== undefined && params.from > '' && data.from == undefined) {
-            let from = {};
-            from[params.from] = data;
-            data = from;
-        }
-
         var html = wbapp.template[tid].html;
-
         wbapp.bind[params.bind][tid] = new Ractive({
             target: params.target,
             template: html,

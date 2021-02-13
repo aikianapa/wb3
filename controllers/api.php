@@ -148,7 +148,14 @@ class ctrlApi
             return $app->jsonEncode($json);
         } else {
             $json = $app->itemList($table, $options);
-            return $app->jsonEncode($json["list"]);
+            $options = (object)$options;
+            if (!isset($options->size)) {
+                return $app->jsonEncode($json['list']);
+            } else {
+                $pages = ceil($json['count'] / $options->size);
+                $pagination = wbPagination($json['page'], $pages);
+                return $app->jsonEncode(['result'=>$json['list'], 'pages'=>$pages, 'page'=>$json['page'], 'pagination'=>$pagination]);
+            }
         }
     }
 
