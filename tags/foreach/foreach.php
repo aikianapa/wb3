@@ -52,6 +52,8 @@ class tagForeach
             $dom->params->ajax = '/ajax/list/' . $dom->params("table") . '/';
             $dom->attr("data-ajax", '{"url":"' . $dom->params("ajax") . '"}');
             $table = null;
+        } else if ($dom->params("ajax") > "") {
+            $dom->attr("data-ajax", '{"url":"' . $dom->params("ajax") . '"}');
         }
 
         $dom->attr("data-ajax") > "" ? $ajax = $dom->attr("data-ajax") : $ajax = false;
@@ -89,8 +91,8 @@ class tagForeach
         // create template
             $params = $dom->params;
             $params->target = '#'.$this->tid;
+            $dom->params("from") > "" ? $from = $dom->params->from : $from = $dom->params->from = 'result';
             $params = json_encode($params);
-            $dom->params("from") > "" ? $from = $dom->params->from : $from = 'result';
             $dom->append("<template id = \"{$this->tid}\" >\n{{#each {$from}}}\n" . $dom->tpl . "\n{{/each}}</template>\n");
             $ajax !== false ? $dom->find("template[id='{$this->tid}']")->attr('data-ajax', $dom->attr("data-ajax")) : null;
             $params > '' ? $dom->find("template[id='{$this->tid}']")->attr('data-params', $params) : null;
@@ -316,6 +318,8 @@ class tagForeach
 
         $list = $parent = $dom->item;
         
+
+        $dom->params('render') == 'server' && $dom->params('bind') > '' ? $dom->params->tpl = 'true' : null;
         $this->app->vars('_post.route') == '' and $dom->params('tpl') == 'true' ? $dom->addTpl() : null;
 
         $dom->params("form") > "" ? $dom->params->table = $dom->params->form : null;

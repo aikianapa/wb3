@@ -241,13 +241,19 @@ if (typeof $ === 'undefined') {
             eval(`data.${key} = value`);
             localStorage.setItem(list[0], json_encode(data));
 
+            let checkBind = function(bind, key) {
+                if (bind == key) return true;
+                if (key.substr(0,bind.length) == bind) return true;
+                return false;
+            }
+
             $.each(wbapp.template, function (i, tpl) {
-                if (tpl.params.bind !== undefined && tpl.params.bind == key &&
+                if (tpl.params.bind !== undefined && checkBind(tpl.params.bind, key) &&
                     tpl.params.render !== undefined && tpl.params.render == 'client') {
-                    wbapp.renderClient(tpl.params, value);
+                    wbapp.render(tpl.params.target);
                 } else if (tpl.params._params !== undefined && tpl.params._params.bind !== undefined 
-                    && tpl.params._params.bind == key && tpl.params.render == 'server') {
-                    wbapp.renderServer(tpl.params, value);
+                    && checkBind(tpl.params._params.bind, key) && tpl.params.render == 'server') {
+                    wbapp.render(tpl.params.target);
                 }
             });
 
@@ -348,7 +354,6 @@ if (typeof $ === 'undefined') {
                     if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
 
                         if (tpl.params.bind && (tpl.params.bind == params.bind || tpl.params.bind == params.update)) {
-                            console.log(data);
                             if (tpl.params.render == 'client') {
                             // client-side update
                                 if (params.bind) wbapp.storage(params.bind, data);
@@ -808,6 +813,22 @@ if (typeof $ === 'undefined') {
         }
     }
 
+    wbapp.render = function(tid, data) {
+        let params = wbapp.template[tid].params;
+        if (data == undefined && params.bind == undefined) data = {};
+        if (data == undefined) data = wbapp.storage(params.bind);
+        if (params.render == undefined) params.render = null;
+        switch (params.render) {
+            case 'client':
+                wbapp.renderClient(params,data);
+                break;
+            case 'server':
+                wbapp.renderServer(params, data);
+                break;
+        }
+
+    }
+
     wbapp.renderServer = function (params, data = {}) {
         if (params.target !== undefined && params.target > '#' && $(document).find(params.target).length) {
             let check = true;
@@ -850,6 +871,12 @@ if (typeof $ === 'undefined') {
         if (wbapp.bind[params.bind] == undefined) {
             wbapp.bind[params.bind] = {};
             newbind = tid;
+        }
+
+        if (params.from !== undefined && params.from > '' && data.from == undefined) {
+            let from = {};
+            from[params.from] = data;
+            data = from;
         }
 
         var html = wbapp.template[tid].html;
