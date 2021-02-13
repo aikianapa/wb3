@@ -868,6 +868,13 @@ if (typeof $ === 'undefined') {
 
         if (wbapp.template[tid] == undefined) return;
 
+        if (params.from !== undefined && data[params.from] == undefined) {
+            let from = {};
+            from[params.from] = data;
+            data = from;
+        }
+
+
         if (wbapp.bind[params.bind] == undefined) {
             wbapp.bind[params.bind] = {};
             newbind = tid;
