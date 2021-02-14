@@ -118,7 +118,7 @@
             $("#filemanager").data("post", post);
             $("#filemanager").data("line", $(this).parents("tr"));
             if (substr(href, 0, 1) == "#" && !in_array(href, ["#edit"])) {
-                $.post("/module/filemanager/dialog/" + substr(href, 1), post, function(data) {
+                wbapp.post("/module/filemanager/dialog/" + substr(href, 1), post, function(data) {
                     $("#filemanager").append(data);
                     $("#filemanager #filemanagerModalDialog").modal("show");
                 });
@@ -186,7 +186,7 @@
                 "path": $("#filemanager #list").data("path"),
                 "multi": true
             };
-            $.post("/module/filemanager/dialog/" + substr(href, 1), post, function(data) {
+            wbapp.post("/module/filemanager/dialog/" + substr(href, 1), post, function(data) {
                 $("#filemanager").append(data);
                 $("#filemanager #filemanagerModalDialog").modal("show");
             });
@@ -315,7 +315,7 @@
                 post += "&type=" + data["type"] + "&path=" + data["path"];
             }
             $("#filemanager #filemanagerModalDialog").modal("hide");
-            $.post("/module/filemanager/action/" + action, post, function(data) {
+            wbapp.post("/module/filemanager/action/" + action, post, function(data) {
                 data = json_decode(data);
                 var line = $("#filemanager").data("line");
                 $("#filemanager #filemanagerModalDialog").modal("hide");
@@ -349,7 +349,7 @@
 
     function filemanagerGetDir(dir) {
         wbapp.loading();
-        var data = wbapp.getSync("/module/filemanager/getdir/?dir=" + urlencode(dir));
+        var data = wbapp.postSync("/module/filemanager/getdir/?dir=" + urlencode(dir));
             $("#filemanager #panel").replaceWith(data);
             $("#filemanager #list").data("path", dir);
             $("#filemanager [name=upload_url]").val(dir);
@@ -393,8 +393,10 @@
                 var fname = explode("/", file);
                 fname = fname[fname.length - 1];
                 var tab = $($("#filemanagerTabs").data("tab"));
-                editor.setValue( wbapp.postSync("/module/filemanager/getfile/", { file: file }) );
+                let text = wbapp.postSync("/module/filemanager/getfile/", { file: file })
+                editor.setValue( text );
                 editor.clearHistory();
+                editor.setOption('mode','php');
                 $("#filemanagerTabs").data('path',file);
                 $('#filemanagerModalSrc .modal-title span').text(file);
                 filemanagerStateSave();
@@ -470,7 +472,7 @@
     function filemanagerPaste() {
         var dpath = $("#filemanager #list").data("path");
         var method = $("#filemanager").data("buffertype");
-        $.post("/module/filemanager/dialog/paste", {
+        wbapp.post("/module/filemanager/dialog/paste", {
             list: filemanageListBuffer(),
             method: method,
             path: dpath

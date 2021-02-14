@@ -105,7 +105,7 @@ if (typeof $ === 'undefined') {
 
         let signin = function() {
             if ($(form).attr("action") !== undefined) var url = $(form).attr("action"); else var url = "/api/auth/email";
-            $.post(url, data, function (res) {
+            wbapp.post(url, data, function (res) {
                 if (res.login) {
                     console.log("Trigger: wb-signin-success");
                     $(document).trigger('wb-signin-success');
@@ -123,7 +123,7 @@ if (typeof $ === 'undefined') {
 
         let signup = function () {
             if ($(form).attr("action") !== undefined) var url = $(form).attr("action"); else var url = "/api/auth/signup";
-            $.post(url, data, function (res) {
+            wbapp.post(url, data, function (res) {
                 if (res.signup) {
                     console.log("Trigger: wb-signup-success");
                     $(document).trigger('wb-signup-success');
@@ -144,7 +144,7 @@ if (typeof $ === 'undefined') {
             if ($(form).attr("action") !== undefined) var url = $(form).attr("action"); else var url = "/api/auth/recover";
             data.text = json_encode($(form).find('.recover-text').html());
 
-            $.post(url, data, function (res) {
+            wbapp.post(url, data, function (res) {
                 if (res.recover) {
                     console.log("Trigger: wb-signrc-success");
                     $(document).trigger('wb-signrc-success');
@@ -166,7 +166,7 @@ if (typeof $ === 'undefined') {
     }
 
     wbapp.alive = function () {
-        $.get("/ajax/alive", function (data) {
+        wbapp.get("/ajax/alive", {}, function (data) {
             if (data.result == false) {
                 console.log("Trigger: session_close");
                 $(document).trigger("session_close");
@@ -325,12 +325,8 @@ if (typeof $ === 'undefined') {
         if ($(obj).data('saved-id') !== undefined) {
             data['id'] = $(obj).data('saved-id');
         }
-        
-        try {
-            data.__token = wbapp._session.token;
-        } catch (error) { null }
 
-        $.post(params.url, data, function (data) {
+        wbapp.post(params.url, data, function (data) {
             if (params.callback) eval('params = ' + params.callback + '(params,data)');
             if (params.data && params.error !== true) {
                 var update = [];
@@ -431,6 +427,28 @@ if (typeof $ === 'undefined') {
         return params;
     }
 
+    wbapp.post = async function(url, data = {}, func = null) {
+        if (is_string(data)) {
+            data += '&__token=' + wbapp._session.token;
+        } else {
+            try { data.__token = wbapp._session.token; } catch (error) { null }
+        }
+        $.post(url,data).then(function(data){
+            if (func !== null) return func(data);
+        })
+    }
+
+    wbapp.get = async function (url, data = {}, func = null) {
+        if (is_string(data)) {
+            data += '&__token=' + wbapp._session.token;
+        } else {
+            try { data.__token = wbapp._session.token; } catch (error) { null }
+        }
+        $.get(url, data).then(function (data) {
+            if (func !== null) return func(data);
+        })
+    }
+
     wbapp.ajax = async function (params, func = null) {
         if (!params.url && !params.tpl && !params.target) return;
         if (params.url !== undefined) {
@@ -461,11 +479,7 @@ if (typeof $ === 'undefined') {
                 params = wbapp.tpl(opts._tid).params;
             }
             
-            try {
-                opts.__token = wbapp._session.token;                
-            } catch (error) { null }
-
-            $.post(params.url, opts, function (data) {
+            wbapp.post(params.url, opts, function (data) {
                 if (count(data) == 2 && data.error !== undefined && data.callback !== undefined) {
                     eval(data.callback + '(params,data)');
                     if (func !== null) return func(params, data);

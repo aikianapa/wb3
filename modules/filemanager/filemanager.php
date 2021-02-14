@@ -29,6 +29,7 @@ class modFilemanager
     public function getdir($result=false)
     {
         if ($this->allow()) {
+            $app = &$this->app;
             $list=array();
             $dir = $_ENV["path_app"];
             if ($_ENV["route"]["params"]["dir"]>"") {
@@ -87,7 +88,13 @@ class modFilemanager
     public function getfile()
     {
         if ($this->allow() && isset($_POST["file"])) {
-            echo file_get_contents($_ENV["path_app"].$_POST["file"]);
+            $file = $_ENV["path_app"].$_POST["file"];
+            if (is_file($file)) {
+                $text = file_get_contents($_ENV["path_app"].$_POST["file"]);
+                $mime = wbMime($file);
+                //$text = $mime . ':' . $text;
+                echo $text;
+            }
         }
     }
 
