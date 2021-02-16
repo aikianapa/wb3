@@ -1,8 +1,6 @@
 <?php
 require_once(__DIR__."/parse_engine.php");
 use Adbar\Dot;
-
-
 class WEProcessor {
 	protected $context;
 	protected $parser;
