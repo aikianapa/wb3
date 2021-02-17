@@ -205,7 +205,7 @@ $.fn.setDict = function(newdict,path=false) {
 $.fn.updateItem = function(data) {
     var tree = $(this).getTree();
     var item = this;
-    $.post("/ajax/tree/update",data,function(data){
+    wbapp.post("/ajax/tree/update",data,function(data){
         $(item).children(":not(ol)").remove();
         $(item).prepend($(data.content).html());
         $(tree).nestable('refresh');
