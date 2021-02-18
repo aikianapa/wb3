@@ -839,8 +839,15 @@ if (typeof $ === 'undefined') {
             case 'server':
                 wbapp.renderServer(params, data);
                 break;
+            case null:
+                var profileMenu = Ractive({
+                    'target': tid,
+                    'template': wbapp.template[tid].html,
+                    'data': () => { return data; }
+                });
+                break;
         }
-
+        wbapp.lazyload()
     }
 
     wbapp.renderServer = function (params, data = {}) {
