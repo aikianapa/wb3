@@ -120,9 +120,8 @@ class ctrlThumbnails
                 $cachefile=md5($file.'_'.$app->vars('_route.w').'_'.$app->vars('_route.h').'_'.$app->vars('_get.zc').'_'.json_encode($options)).'.'.$ext;
                 $cachedir=$app->vars('_env.path_app').'/uploads/_cache/'.substr($cachefile, 0, 2);
                 $destination = $cachedir.'/'.$cachefile;
-                if (!is_dir($cachedir)) {
-                    mkdir($cachedir, 0666, true);
-                }
+                is_dir($cachedir) ? null : mkdir($cachedir, 0777, true);
+
                 if (!is_file($destination) or $cache == false) {
 
                     // https://imagine.readthedocs.io/en/latest/
@@ -138,7 +137,7 @@ class ctrlThumbnails
                     } else { $mode    = Imagine\Image\ImageInterface::THUMBNAIL_INSET;}
 
                     $image = $imagine->open(realpath($file))->thumbnail($size, $mode);
-                    file_put_contents($destination,$image);
+                    $res = file_put_contents($destination,$image);
     /*
                     if (in_array($ext, ['jpg','jpeg'])) {
                         $options = [];
