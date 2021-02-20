@@ -108,7 +108,7 @@ class ctrlThumbnails
 								in_array($ext,['jpg','jpeg','png']) ? $ext = 'webp' : null;
 								switch($ext) {
 									case 'jpg':
-										$options = ['jpeg_quality'=>85];
+										$options = ['jpeg_quality'=>80];
 										break;
 									case 'png':
 										$options = ['png_compression_level'=>8];
@@ -145,7 +145,7 @@ class ctrlThumbnails
                     $offsetX = $canvasCenter->getX() - $imageCenter->getX();
                     $offsetY = $canvasCenter->getY() - $imageCenter->getY();
                     $canvas->paste($image, new Imagine\Image\Point($offsetX, $offsetY));
-                    $res = file_put_contents($destination,$canvas);
+                    $canvas->save($destination);
     /*
                     if (in_array($ext, ['jpg','jpeg'])) {
                         $options = [];
@@ -155,7 +155,7 @@ class ctrlThumbnails
                 }
                 $image=file_get_contents($destination);
             }
-						$mime = wbMime($destination);
+			$mime = wbMime($destination);
             header('Content-Type: '.$mime);
             echo $image;
         }
