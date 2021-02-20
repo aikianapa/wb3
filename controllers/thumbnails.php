@@ -114,7 +114,7 @@ class ctrlThumbnails
 										$options = ['png_compression_level'=>8];
 										break;
 									case 'webp':
-										$options = ['webp_quality' => 85];
+										$options = ['webp_quality' => 90];
 										break;
 								}
                 $cachefile=md5($file.'_'.$app->vars('_route.w').'_'.$app->vars('_route.h').'_'.$app->vars('_get.zc').'_'.json_encode($options)).'.'.$ext;
@@ -145,7 +145,7 @@ class ctrlThumbnails
                     $offsetX = $canvasCenter->getX() - $imageCenter->getX();
                     $offsetY = $canvasCenter->getY() - $imageCenter->getY();
                     $canvas->paste($image, new Imagine\Image\Point($offsetX, $offsetY));
-                    $canvas->save($destination);
+                    $canvas->save($destination,$options);
     /*
                     if (in_array($ext, ['jpg','jpeg'])) {
                         $options = [];
