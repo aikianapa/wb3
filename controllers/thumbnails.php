@@ -121,7 +121,7 @@ class ctrlThumbnails
                 $cachedir=$app->vars('_env.path_app').'/uploads/_cache/'.substr($cachefile, 0, 2);
                 $destination = $cachedir.'/'.$cachefile;
                 if (!is_dir($cachedir)) {
-                    mkdir($cachedir, 0755, true);
+                    mkdir($cachedir, 0666, true);
                 }
                 if (!is_file($destination) or $cache == false) {
 
@@ -137,8 +137,8 @@ class ctrlThumbnails
                         $mode    = Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
                     } else { $mode    = Imagine\Image\ImageInterface::THUMBNAIL_INSET;}
 
-                    $imagine->open(realpath($file))->thumbnail($size, $mode)->save($destination,$options);
-                    $image=file_get_contents($destination);
+                    $image = $imagine->open(realpath($file))->thumbnail($size, $mode);
+                    file_put_contents($destination,$image);
     /*
                     if (in_array($ext, ['jpg','jpeg'])) {
                         $options = [];
