@@ -2,7 +2,7 @@
 require __DIR__ . '/../lib/vendor/autoload.php';
 
 use WebPConvert\WebPConvert;
-
+use Imagine\Image\Box;
 class ctrlThumbnails
 {
     public function __construct($app)
@@ -105,7 +105,7 @@ class ctrlThumbnails
                 $image = str_replace('<svg ','<svg width="'.$app->vars('_route.w').'" height="'.$app->vars('_route.h').'" ',$image);
 								$destination = $file;
             } else {
-								if ($ext == 'jpg') $ext = 'webp';
+								in_array($ext,['jpg','jpeg','png']) ? $ext = 'webp' : null;
 								switch($ext) {
 									case 'jpg':
 										$options = ['jpeg_quality'=>85];
@@ -132,12 +132,20 @@ class ctrlThumbnails
                     }
 
                     $size    = new Imagine\Image\Box($app->vars('_route.w'), $app->vars('_route.h'));
+                    $palette = new Imagine\Image\Palette\RGB();
+                    $color = $palette->color('#000', 0);
+                    $canvas = $imagine->create($size, $color);
                     if ($app->vars('_get.zc') == 0) {
                         $mode    = Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
                     } else { $mode    = Imagine\Image\ImageInterface::THUMBNAIL_INSET;}
-
                     $image = $imagine->open(realpath($file))->thumbnail($size, $mode);
-                    $res = file_put_contents($destination,$image);
+
+                    $canvasCenter = new Imagine\Image\Point\Center($canvas->getSize());
+                    $imageCenter = new Imagine\Image\Point\Center($image->getSize());
+                    $offsetX = $canvasCenter->getX() - $imageCenter->getX();
+                    $offsetY = $canvasCenter->getY() - $imageCenter->getY();
+                    $canvas->paste($image, new Imagine\Image\Point($offsetX, $offsetY));
+                    $res = file_put_contents($destination,$canvas);
     /*
                     if (in_array($ext, ['jpg','jpeg'])) {
                         $options = [];
