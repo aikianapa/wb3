@@ -56,9 +56,14 @@ class ctrlThumbnails
             $remote=true;
             $p='https';
         }
-        if (isset($query['nocache'])) {
-            $cache=false;
+
+        if (isset($_SERVER['HTTP_CACHE_CONTROL'])) {
+            parse_str($_SERVER['HTTP_CACHE_CONTROL'], $cc);
+            if (isset($cc['no-cache']) OR isset($query['nocache'])) {
+                $cache=false;
+            }
         }
+
         if ($app->vars('_route.params') and isset($app->vars('_route.params')[0])) {
             $tmp=base64_decode($app->vars('_route.params')[0]);
             if (strpos($tmp, 'ttp://') or strpos($tmp, 'ttps://')) {

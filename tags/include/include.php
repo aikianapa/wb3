@@ -35,6 +35,15 @@ class tagInclude {
     if (isset($inc) AND is_object($inc)) {
         if (!isset($dom->item['header'])) {$dom->item['header'] = $dom->app->vars('_sett.header');}
         $inc->copy($dom);
+        if ($dom->attr('class') > ' ') {
+            if ($inc->is("html")) {
+                $inc->find("html:first > :first-child")->addClass($dom->attr('class'));
+            } else {
+                $inc->children(":first-child")->addClass($dom->attr('class'));
+            }
+        }
+        
+
         if ($dom->head()) {
             $dom->head($inc->outer());
         } else {

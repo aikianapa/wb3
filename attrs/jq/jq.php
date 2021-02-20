@@ -6,7 +6,6 @@ class attrJq extends wbDom {
   }
 
   public function attrJq(&$that) {
-
             $jqs = explode( ';', $that->params->wb );
             $dom = &$that;
 
