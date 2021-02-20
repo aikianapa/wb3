@@ -1,6 +1,12 @@
 DirectoryIndex index.php
 AddDefaultCharset UTF-8
 
+<IfModule mod_headers.c>
+<FilesMatch ".(webp|gif|jpg|jpeg|png|ico|swf|js|css|pdf)$">
+  Header set Cache-Control "max-age=2592000"
+</FilesMatch>
+</IfModule>
+
 RewriteBase /
 Options +FollowSymLinks
 RewriteEngine On

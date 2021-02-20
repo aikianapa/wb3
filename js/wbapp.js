@@ -1,9 +1,7 @@
 "use strict"
-if (typeof $ === 'undefined') {
-    alert("jQuery required!");
-} else {
+var wbapp = new Object();
 
-    var wbapp = new Object();
+var start = function() {
     var data = {};
 
     wbapp.bind = {};
@@ -1199,6 +1197,28 @@ if (typeof $ === 'undefined') {
         });
     }
 
+    wbapp.loadPreload = async function() {
+        let preloads = {};
+        $('link[rel=preload][as][href]').each(function () {
+            if (preloads[$(this).attr('as')] == undefined) { preloads[$(this).attr('as')] = [];}
+            preloads[$(this).attr('as')].push($(this).attr('href'))
+        });
+        let preload_max = 0;
+        let preload_count = 0;
+        if (preloads.script.length > 0) preload_max++;
+        if (preloads.style.length > 0) preload_max++;
+        let preload_check = ()=>{
+            if (preload_count == preload_max) wbapp.trigger('ready-all');
+        }
+        wbapp.loadScripts(preloads.script,'ready-js',()=>{ preload_count++; preload_check() });
+        wbapp.loadStyles(preloads.style, 'ready-css',()=>{ preload_count++; preload_check() });
+    }
+
+    wbapp.on = async function (trigger, func = null  ) {
+        if (func == null) func = () => { return true; }
+        $(document).on(trigger,func);
+    }
+
     wbapp.furl = function (str) {
         str = str.replace(/[^а-яА-Яa-zA-Z0-9_-]{1,}/gm, "_");
         str = str.replace(/[__]{1,}/gm, "_");
@@ -1479,7 +1499,6 @@ if (typeof $ === 'undefined') {
         }
     }
 
-    wbapp.loadStyles([`/engine/css/wbloader.css`]);
     setTimeout(function () {
         if (typeof str_replace == 'undefined') {
             wbapp.loadScripts([
@@ -1512,5 +1531,14 @@ if (typeof $ === 'undefined') {
     });
     function is_object(val) { return val instanceof Object; }
     function is_callable(t, n, o) { var e = "", r = {}, i = ""; if ("string" == typeof t) r = window, e = i = t; else { if (!(t instanceof Array && 2 === t.length && "object" == typeof t[0] && "string" == typeof t[1])) return !1; r = t[0], i = t[1], e = (r.constructor && r.constructor.name) + "::" + i } return !(!n && "function" != typeof r[i]) && (o && (window[o] = e), !0) }
-
 }
+
+if (typeof $ === 'undefined') {
+    var script = document.createElement('script');
+    script.src = '/engine/js/jquery.min.js';
+    script.async = true;
+    script.onload = function () {
+        start();
+    }
+    document.head.appendChild(script);
+} 
