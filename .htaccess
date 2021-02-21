@@ -2,8 +2,8 @@ DirectoryIndex index.php
 AddDefaultCharset UTF-8
 
 <IfModule mod_headers.c>
-<FilesMatch ".(webp|gif|jpg|jpeg|png|ico|swf|js|css|pdf)$">
-  Header set Cache-Control "max-age=2592000"
+<FilesMatch ".(webp|gif|jpg|jpeg|png|ico|svg|js|css|pdf)$">
+  Header set Cache-Control "max-age=31536000"
 </FilesMatch>
 </IfModule>
 
