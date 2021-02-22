@@ -146,7 +146,7 @@ class ctrlThumbnails
                     $ratio = $r1 / $r2;
                     
                     if ($ratio > 1) {
-                        $resize    = new Imagine\Image\Box(intval($app->vars('_route.w')), $app->vars('_route.h') / $ratio);
+                        $resize    = new Imagine\Image\Box(intval($app->vars('_route.w')) * $ratio, $app->vars('_route.h') );
                         $image->resize($resize);
                     } else if ($ratio < 1) {
                         $resize    = new Imagine\Image\Box(intval($app->vars('_route.w') * $ratio), $app->vars('_route.h'));
