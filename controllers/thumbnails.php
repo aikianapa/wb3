@@ -3,6 +3,8 @@ require __DIR__ . '/../lib/vendor/autoload.php';
 
 use WebPConvert\WebPConvert;
 use Imagine\Image\Box;
+use Imagine\Image\Point;
+
 class ctrlThumbnails
 {
     public function __construct($app)
@@ -139,25 +141,46 @@ class ctrlThumbnails
                     $canvas = $imagine->create($size, $color);
                     if ($app->vars('_get.zc') == 0) {
                         $mode    = Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
-                    } else { $mode    = Imagine\Image\ImageInterface::THUMBNAIL_INSET;}
+                    } else { $mode    = Imagine\Image\ImageInterface::THUMBNAIL_FLAG_UPSCALE;}
                     $image = $imagine->open(realpath($file));
-                    $r1 = $image->getSize()->getWidth() / $image->getSize()->getHeight();
+                    $ih = $image->getSize()->getHeight();
+                    $iw = $image->getSize()->getWidth();
+                    $r1 = $iw / $ih;
                     $r2 = $app->vars('_route.w') / $app->vars('_route.h');
                     $ratio = $r1 / $r2;
-                    
-                    if ($ratio > 1) {
-                        $resize    = new Imagine\Image\Box(intval($app->vars('_route.w')) * $ratio, $app->vars('_route.h') );
-                        $image->resize($resize);
-                    } else if ($ratio < 1) {
-                        $resize    = new Imagine\Image\Box(intval($app->vars('_route.w') * $ratio), $app->vars('_route.h'));
-                        $image->resize($resize);
+
+
+                    if ($app->vars('_get.zc') == 0) {
+                        if ($ratio < 1) {
+                            $resize    = new Imagine\Image\Box(intval($app->vars('_route.w')), $app->vars('_route.h') / $ratio);
+                            $image->resize($resize);
+                        } elseif ($ratio > 1) {
+                            $resize    = new Imagine\Image\Box(intval($app->vars('_route.w') * $ratio), $app->vars('_route.h'));
+                            $image->resize($resize);
+                        } else {
+                            $image->resize($size);
+                        }
                     } else {
-                        $image->resize($size);
+                        if ($ratio > 1) {
+                            $resize    = new Imagine\Image\Box(intval($app->vars('_route.w')), $app->vars('_route.h') / $ratio);
+                            $image->resize($resize);
+                        } elseif ($ratio < 1) {
+                            $resize    = new Imagine\Image\Box(intval($app->vars('_route.w') * $ratio), $app->vars('_route.h'));
+                            $image->resize($resize);
+                        } else {
+                            $image->resize($size);
+                        }
                     }
                     $image->thumbnail($size, $mode);
                     
                     $canvasCenter = new Imagine\Image\Point\Center($canvas->getSize());
                     $imageCenter = new Imagine\Image\Point\Center($image->getSize());
+
+                    if ($image->getSize()->getWidth() > $app->vars('_route.w')) {
+                        $offsetX = ($image->getSize()->getWidth() - $app->vars('_route.w')) / 2;
+                        $image->crop(new Point($offsetX, 0), $size);
+                    }
+
                     $offsetX = $canvasCenter->getX() - $imageCenter->getX();
                     $offsetY = $canvasCenter->getY() - $imageCenter->getY();
                     $offsetX < 0 ? $offsetX = 0 : null;
