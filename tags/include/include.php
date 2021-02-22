@@ -49,7 +49,7 @@ class tagInclude {
         } else {
           $inner = $dom->app->fromString("<wb>".$dom->html().$inc->outer()."</wb>");
           $inner->copy($inc);
-          if ($dom->params('render') !== 'client') $inner->fetch();
+          if ($dom->params('render') !== 'client' && !$dom->params('nofetch')) $inner->fetch();
           $dom->before($inner->children("wb")->inner());
         }
     } else {

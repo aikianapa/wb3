@@ -37,8 +37,9 @@ final class wbRouter {
         foreach ($res as $r) {
             $this->addRouteFile($r);
         }
-        is_file($route_e) ? $this->addRouteFile($route_e) : null;
         is_file($route_a) ? $this->addRouteFile($route_a) : null;
+
+        is_file($route_e) ? $this->addRouteFile($route_e) : null;
 
     }
     
@@ -94,8 +95,8 @@ final class wbRouter {
             return self::returnRoute();
         }
 
-        if (is_array(self::$routes)) {
-        foreach (self::$routes as $route => $uri) {
+
+        foreach ((array)self::$routes as $route => $uri) {
             // Заменяем wildcards на рег. выражения
             $name=null;
             self::$names=array();
@@ -119,7 +120,7 @@ final class wbRouter {
                 break; // URL обработан!
             }
         }
-	}
+	
         $_ENV['route'] = self::returnRoute();
         return $_ENV['route'];
     }
@@ -143,8 +144,6 @@ final class wbRouter {
                 if ($i>1) $ROUTE['params'][]=$param;
                 if (isset(self::$names[$i])) $ROUTE['params'][self::$names[$i]]=$param;
             }
-
-
         }
         $tmp=explode('?',$_SERVER['REQUEST_URI']);
         if (isset($tmp[1])) {

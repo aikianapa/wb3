@@ -1,7 +1,7 @@
 <nav class="col-xs-12 col-12">
 <ul class="pagination justify-content-center mb-40">
     <li class="page-item" data-page="prev">
-        <a href="#prev" class="page-link" href tabindex="-1">&laquo;</a>
+        <a href="#prev" class="page-link prev" href tabindex="-1">&laquo;</a>
     </li>
 
     <wb-foreach wb="from=pages&tpl=false">
@@ -11,10 +11,10 @@
     </wb-foreach>
 
     <li class="page-item" data-page="next">
-        <a href="#next" class="page-link" href tabindex="-1">&raquo;</a>
+        <a href="#next" class="page-link next" href tabindex="-1">&raquo;</a>
     </li>
     <li class="page-more" data-page="more">
-        <a href="#more" class="page-link" href tabindex="-1">{{_lang.more}}</a>
+        <a href="#more" class="page-link more" href tabindex="-1">{{_lang.more}}</a>
     </li>
 </ul>
 

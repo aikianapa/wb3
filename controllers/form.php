@@ -4,7 +4,6 @@ class ctrlForm
     public function __construct($app)
     {
         $this->app = $app;
-        $app->route = $app->route;
         $mode = $app->route->mode;
         $this->$mode();
     }
@@ -28,7 +27,6 @@ class ctrlForm
             $this->target = $app->vars('_post.target');
             $cache = false;
         }
-
         if (!$cache) {
             $_ENV["cache_used"] = false;
             isset($app->route->form) ? $dom = $app->getForm($app->route->form, $app->route->mode) : null;
