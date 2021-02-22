@@ -53,7 +53,12 @@ class tagInclude {
           $dom->before($inner->children("wb")->inner());
         }
     } else {
-        $dom->before('<div>'.$inc." {$form}->{$mode} </div>");
+        if (isset($form) && isset($mode)) {
+            $dom->before('<div>'.$inc." {$form}->{$mode} </div>");
+        } else {
+            $dom->before('<div>Include error: '.json_encode($dom->params).' </div>');
+        }
+        
     }
     $dom->remove();
   }

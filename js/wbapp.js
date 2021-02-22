@@ -77,6 +77,13 @@ var start = function() {
             }
         });
 
+        $(document).delegate("[rows=auto]","keydown keyup", function () {
+            this.style.overflow = "hidden";
+            this.style.height = "1px";
+            this.style.height = (this.scrollHeight) + "px";
+        });
+
+
     }
 
     wbapp.ajaxAuto = function () {
