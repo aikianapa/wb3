@@ -35,15 +35,15 @@ class tagJq {
           $inner->fetch();
         }
         if ( $that->params( 'html' ) ) {
-            $that->parents('html')->find( $that->params( 'html' ) )->html($inner->inner());
+            $that->parent->find( $that->params( 'html' ) )->html($inner->inner());
         } else if ( $that->params( 'append' ) ) {
-            $that->parents('html')->find( $that->params( 'append' ) )->append($inner->inner());
+            $that->parent->find( $that->params( 'append' ) )->append($inner->inner());
         } else if ( $that->params( 'prepend' ) ) {
-            $that->parents('html')->find( $that->params( 'prepend' ) )->prepend($inner->inner());
+            $that->parent->find( $that->params( 'prepend' ) )->prepend($inner->inner());
         } else if ( $that->params( 'after' ) ) {
-            $that->parents('html')->find( $that->params( 'after' ) )->after($inner->inner());
+            $that->parent->find( $that->params( 'after' ) )->after($inner->inner());
         } else if ( $that->params( 'before' ) ) {
-            $that->parents('html')->find( $that->params( 'before' ) )->before($inner->inner());
+            $that->parent->find( $that->params( 'before' ) )->before($inner->inner());
         } else if ( $that->params( 'context' ) ) {
             $that->after($inner->find($that->params('context'))->inner());
         } else {
