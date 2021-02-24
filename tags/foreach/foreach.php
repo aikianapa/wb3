@@ -423,8 +423,17 @@ class tagForeach
         if ($dom->params("count") > "") {
             $item = $list;
             $list = [];
-            $count = intval($dom->params->count);
-            for ($i = 1; $i <= $count; $i++) {
+            $start = 1;
+            $count = $dom->params->count;
+            if (strpos($count,';')) {
+                $count = explode(';', $count);
+                $start = intval($count[0]);
+                $count = intval($count[1]);
+            } else {
+                $count = intval($count);
+            }
+
+            for ($i = $start; $i <= $count; $i++) {
                 $list[] = ["_id" => $i,"_value" => $i, "id" => $i];
             }
         }
