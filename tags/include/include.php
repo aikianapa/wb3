@@ -42,7 +42,15 @@ class tagInclude {
                 $inc->children(":first-child")->addClass($dom->attr('class'));
             }
         }
-        
+        foreach($dom->attributes() as $atname => $atval) {
+            if ($atname !== 'class' && substr($atname,0,2) !== 'wb') {
+                if ($inc->is("html")) {
+                    $inc->find("html:first > :first-child")->attr($atname, $atval);
+                } else {
+                    $inc->children(":first-child")->attr($atname, $atval);
+                }
+            }
+        }
 
         if ($dom->head()) {
             $dom->head($inc->outer());
