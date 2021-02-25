@@ -9,18 +9,29 @@ class tagMultilang {
   public function multilang($dom) {
         if (!$dom->app) $dom->app = new wbApp();
         $wrp = $dom->app->fromFile(__DIR__ ."/multilang_wrapper.php");
-        $field = "multifld";
-        if ($dom->attr("name") > "") $field = $dom->attr("name");
-        if ($dom->params("name") > "") $field = $dom->params("name");
+        $field = "lang";
+        $dom->attr("name") > "" ? $field = $dom->attr("name") : null;
+        $dom->params("name") > "" ? $field = $dom->params("name") : null;
         $dom->attr("name",$field);
         $dom->params->name = $field;
-        if (!$dom->params("lang")) $dom->params("lang",[$dom->app->vars('_sess.lang') => $dom->app->vars('_sess.lang')]);
+
+        if ($dom->params("lang") > '') {
+            $langs = wbArrayAttr($dom->params("lang"));
+        } else if ($dom->params("langs") > '') {
+            $langs = wbArrayAttr($dom->params("lang"));
+        } else if (isset($_ENV['locale'])) {
+            $langs = (array)$_ENV['locale'];
+            $langs = array_keys($langs);
+        } else {
+            $langs = ['ru','en'];
+        }
 
         $langdata = $dom->getField($field);
         if (!is_array($langdata)) $langdata = [];
-        foreach($dom->params("lang") as $key => $lang) {
-            if (!isset($langdata[$key])) {
-                $langdata[$key] = ['id' => $key, 'lang' => $lang, 'data' => ['test1'=>$key,'test2'=>$lang]];
+
+        foreach($langs as $key => $lang) {
+            if (!isset($langdata[$lang])) {
+                $langdata[$lang] = ['test1'=>$lang,'test2'=>$lang];
             } 
         }
         $dom->item['lang'] = $langdata;
