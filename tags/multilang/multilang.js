@@ -28,7 +28,7 @@ function wb_multilang() {
                     $(multi).find(".wb-multiinput-row").each(function () {
                         var name = $(this).attr("name");
                         var txtd = $(this).children(".wb-multiinput-data");
-                        console.log(txtd);
+
                         $(txtd).attr("wb-name", name).removeAttr("name");
                         $(multi).append($(txtd));
                         $(this).remove();
@@ -41,7 +41,7 @@ function wb_multilang() {
                     if ($(inputs).length == 1 && $(inputs).is("input")) {
                         mono = true;
                     }
-                    console.log($(multi).outer());
+
                     $(inputs).each(function () {
                         var value = $(this).jsonVal();
                         if ($(this).attr("name") !== undefined) {
@@ -64,7 +64,7 @@ function wb_multilang() {
                     });
                     data[lid] = item;
                 }
-                console.log(data);
+
                 ml_value(that, data)
                 $(that).trigger("change");
             });

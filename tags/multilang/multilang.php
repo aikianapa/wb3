@@ -8,7 +8,7 @@ class tagMultilang {
 
   public function multilang($dom) {
         if (!$dom->app) $dom->app = new wbApp();
-        $wrp = $dom->app->fromFile(__DIR__ ."/multilang_wrapper.php");
+        $wrp = $dom->app->fromFile(__DIR__ ."/multilang_wrapper_vertical.php");
         $field = "lang";
         $dom->attr("name") > "" ? $field = $dom->attr("name") : null;
         $dom->params("name") > "" ? $field = $dom->params("name") : null;
@@ -25,58 +25,25 @@ class tagMultilang {
         } else {
             $langs = ['ru','en'];
         }
-
-        $langdata = $dom->getField($field);
-        if (!is_array($langdata)) $langdata = [];
-
-        foreach($langs as $key => $lang) {
-            if (!isset($langdata[$lang])) {
-                $langdata[$lang] = ['test1'=>$lang,'test2'=>$lang];
-            } 
+        $data = [];
+        foreach((array)$langs as $l) {
+            $data[$l] = [];
         }
-        $dom->item['lang'] = $langdata;
-        $wrp->find('.tab-content > wb-foreach > .tab-pane > wb-data')->html($dom->inner());
+        $dom->item['lang'] = array_merge($data, (array)$dom->getField($field));
+        
+        $wrp->find('.tab-content > wb-foreach > .tab-pane')->html($dom->inner());
         $wrp->copy($dom);
         $wrp->fetch();
-      
         $wrp->find('.nav-tabs .nav-item:first-child .nav-link')->addClass('active');
         $wrp->find('.tab-content .tab-pane:first-child')->addClass('show active');
         $wrp->find('textarea.wb-multilang-data')[0]->attr('name',$field);
 
-      
-//        $dom->setField($field,$langdata);
-      
-
         $dom->attr("id") > "" ? $tplId = $dom->attr("id") : $tplId='ml_'.wbNewId();
         $dom->attr("id",$tplId);
         $dom->html($wrp->outer());
-
-        $dom
-//            ->append("\n<template id='{$tplId}'>{$wrp}</template>\n")
-            ->append('<script type="wbapp">wbapp.loadScripts(["/engine/js/php.js","/engine/tags/multilang/multilang.js"],"multilang-js");</script>'."\n\r");
+        $dom->append('<script type="wbapp" data-remove="multilang-js">wbapp.loadScripts(["/engine/js/php.js","/engine/tags/multilang/multilang.js"],"multilang-js");</script>'."\n\r");
     }
 
-    function setData(&$dom, $data=[[]]) {
-        $name = $dom->params("name");
-        $str = "";
-        $_idx = 0;
-        if ((array)$data === $data) {
-            foreach($data as $i => $item) {
-                $line = $dom->app->fromString($dom->tpl);
-                if ((array)$item === $item) {
-                    $item['_idx'] = $_idx;
-                    $line->item = $item;
-                    $line->fetch();
-                    $_idx++;
-                } else {
-                    $line->find("[name='{$name}']")->attr("value",$item);
-                }
-                $str .= $line;
-            }
-        }
-        if ($str > "") $dom->html($str);
-        else $dom->html($dom->tpl);
-    }
 
 }
 ?>

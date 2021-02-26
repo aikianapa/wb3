@@ -293,21 +293,17 @@ class wbDom extends DomQuery
         $this->attr('data-params', json_encode($params));
     }
 
-    public function params($name = null, $value = '#__empty__#' )
+    public function params($name = null)
     {
-        if ($value == '#__empty__#') {
-            $res = null;
-            if ($name == null) {
-                if (isset($this->params)) {
-                    $res = $this->params;
-                }
-            } else {
-                if (isset($this->params->$name)) {
-                    $res = $this->params->$name;
-                }
+        $res = null;
+        if ($name == null) {
+            if (isset($this->params)) {
+                $res = $this->params;
             }
         } else {
-            $res = $this->params->$name = $value;
+            if (isset($this->params->$name)) {
+                $res = $this->params->$name;
+            }
         }
         return $res;
     }
