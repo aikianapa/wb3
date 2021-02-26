@@ -8,7 +8,8 @@ class tagMultilang {
 
   public function multilang($dom) {
         if (!$dom->app) $dom->app = new wbApp();
-        $wrp = $dom->app->fromFile(__DIR__ ."/multilang_wrapper_vertical.php");
+        in_array($dom->params("vertical"), ['true','1','on']) ? $wrp = 'multilang_wrapper_vertical.php' : $wrp = 'multilang_wrapper.php';
+        $wrp = $dom->app->fromFile(__DIR__ .'/'.$wrp);
         $field = "lang";
         $dom->attr("name") > "" ? $field = $dom->attr("name") : null;
         $dom->params("name") > "" ? $field = $dom->params("name") : null;
