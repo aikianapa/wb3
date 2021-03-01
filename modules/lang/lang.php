@@ -14,11 +14,34 @@ class modLang
 		$p = $app->vars('_route.mode');
 		in_array($p, $langs) ? $lang = $p : null;
 		$_SESSION["lang"] = $_ENV["lang"] = $lang;
-        $check=explode("/", $_SERVER["REQUEST_URI"]);
+        $check=explode("/", $_SERVER["HTTP_REFERER"]);
+        if (isset($check[3]) && in_array($check[3],$langs)) {
+            $check[3] = $lang;
+        } else {
+            $check = $this->array_insert($check, 3, $lang);
+        }
+        $redirect = implode($check, '/');
 		session_write_close();
         Header("HTTP/1.0 200 OK");
-        header("Refresh:0; url=".$_SERVER["HTTP_REFERER"]);
+        header("Refresh:0; url=".$redirect);
         exit;
     }
+
+public function array_insert(&$array, $position, $insert)
+{
+    if (is_int($position)) {
+        array_splice($array, $position, 0, $insert);
+    } else {
+        $pos   = array_search($position, array_keys($array));
+        $array = array_merge(
+            array_slice($array, 0, $pos),
+            $insert,
+            array_slice($array, $pos)
+        );
+    }
+    return $array;
+}
+
+
 }
 ?>

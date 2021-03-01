@@ -759,9 +759,9 @@ class wbApp
     public function initApp()
     {
         $this->InitEnviroment();
+        $this->router();
         $this->ErrorList();
         //$this->RouterAdd();
-        $this->router();
         $this->driver();
         $this->InitSettings($this);
         $this->controller();

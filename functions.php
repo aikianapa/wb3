@@ -136,6 +136,7 @@ function wbInitSettings(&$app)
     isset($settings['lang']) ? $lang = $settings['lang'] : $lang = substr($lang, 0, 2);
     isset($_SESSION['lang']) ? $lang = $_SESSION['lang'] : null ;
     $app->vars('_sess.user.lang') > '' ? $lang = $app->vars('_sess.user.lang') : null;
+    $app->vars('_route.lang') > '' ? $lang = $app->vars('_route.lang') : null;
 
     $app->lang = $_ENV['settings']['locale'] = $_SESSION['lang'] = $_ENV['lang'] = substr($lang, 0, 2);
 

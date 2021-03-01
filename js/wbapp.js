@@ -1,4 +1,5 @@
 "use strict"
+
 var wbapp = new Object();
 
 var start = function() {
@@ -1512,9 +1513,8 @@ var start = function() {
         if (typeof str_replace == 'undefined') {
             wbapp.loadScripts([
                 `/engine/js/php.js`
-                , `/engine/js/jquery-migrate.min.js`
+//                , `/engine/js/jquery-migrate.min.js`
                 , `/engine/js/jquery.tap.js`
-                , `/engine/js/jquery-ui.min.js`
                 , `/engine/js/ractive.js`
                 , `/engine/js/lazyload.js`
             ], "wbapp-go");

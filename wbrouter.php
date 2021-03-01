@@ -27,6 +27,7 @@ final class wbRouter {
     private static $params = array();
     private static $names = array();
     public static $requestedUrl = '';
+    public static $lang = '';
 
     public function init() {
         $route_a = $_ENV['path_app'].'/router.ini';
@@ -79,6 +80,19 @@ final class wbRouter {
         return (self::$requestedUrl?:'/');
     }
 
+    public static function getLang($requestedUrl) {
+        $bc = explode('/', ltrim($requestedUrl,'/'));
+        if (isset($bc[0]) && in_array($bc[0],['ru','en','uk','us','fr','de','jp'])) {
+            self::$lang = $bc[0];
+            array_shift($bc);
+        } else if (isset($_SESSION['lang']) && $_SESSION['lang'] > '') {
+            self::$lang = $_SESSION['lang'];
+        }
+
+        $requestedUrl = '/' . implode('/', $bc);
+        return $requestedUrl;
+    }
+
     // Обработка переданного URL
     public static function getRoute($requestedUrl = null) {
         // Если URL не передан, берем его из REQUEST_URI
@@ -86,6 +100,7 @@ final class wbRouter {
             $request=explode('?', $_SERVER['REQUEST_URI']);
             $uri = reset($request);
             $requestedUrl = urldecode(rtrim($uri, '/'));
+            $requestedUrl = rtrim(self::getLang($requestedUrl),'/');
         }
         self::$requestedUrl = $requestedUrl;
         // если URL и маршрут полностью совпадают
@@ -200,6 +215,7 @@ final class wbRouter {
             $ROUTE['file'] = $ROUTE['path_app'].$ROUTE['uri'];
             $ROUTE['fileinfo'] = pathinfo($ROUTE['file']);
         }
+        $ROUTE['lang'] = self::$lang;
         if (!isset($ROUTE['table']) AND isset($ROUTE['form'])) $ROUTE['table'] = $ROUTE['form'];
         return $ROUTE;
     }
