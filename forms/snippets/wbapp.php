@@ -1,1 +1,1 @@
-<script async src="/engine/js/wbapp.js"></script>
+<script src="/engine/js/wbapp.js"></script>

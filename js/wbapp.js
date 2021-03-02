@@ -393,13 +393,20 @@ var start = function() {
 
     wbapp.wbappScripts = function () {
         var done = [];
-        $(document).find("script[type=wbapp]").each(function () {
+        $(document).find("script[type=wbapp],script[wbapp]").each(function () {
+            let src = null;
             if ($(this).is('[src]')) {
-                let src = $(this).attr('src');
-                console.log(src);
-                $(this).attr('src', '');
-                $(this).attr('type', 'text/javascript');
-                $(this).attr('src', src);
+                src = $(this).attr('src');
+            } if ($(this).is('[wbapp]')) {
+                src = $(this).attr('wbapp');
+            } 
+            if (src !== null) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', $(this).attr('wbapp'), true);
+                xhr.onload = function () {
+                    eval(xhr.responseText);
+                };
+                xhr.send();
             } else {
                 var script = $(this).text();
                 var hash = md5(script);
@@ -1149,7 +1156,7 @@ var start = function() {
             } else {
                 var script = document.createElement('script');
                 script.src = src;
-                script.async = false;
+                script.async = true;
                 script.onload = function () {
                     i++;
                     console.log("Script loaded: " + name);
@@ -1188,7 +1195,7 @@ var start = function() {
                 style.href = src;
                 style.rel = "stylesheet";
                 style.type = "text/css";
-                style.async = false;
+                style.async = true;
                 style.onload = function () {
                     i++;
                     if (i >= styles.length) {
@@ -1218,8 +1225,9 @@ var start = function() {
         let preload_check = ()=>{
             if (preload_count == preload_max) wbapp.trigger('ready-all');
         }
-        wbapp.loadScripts(preloads.script,'ready-js',()=>{ preload_count++; preload_check() });
-        wbapp.loadStyles(preloads.style, 'ready-css',()=>{ preload_count++; preload_check() });
+        console.log(preloads);
+        wbapp.loadScripts(preloads.script,'preloaded-js',()=>{ preload_count++; preload_check() });
+        wbapp.loadStyles(preloads.style, 'preloaded-css',()=>{ preload_count++; preload_check() });
     }
 
     wbapp.on = async function (trigger, func = null  ) {
