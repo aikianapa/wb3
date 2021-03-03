@@ -402,7 +402,7 @@ var start = function() {
             } 
             if (src !== null) {
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET', $(this).attr('wbapp'), true);
+                xhr.open('GET', src, true);
                 xhr.onload = function () {
                     eval(xhr.responseText);
                 };
