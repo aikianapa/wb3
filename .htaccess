@@ -12,6 +12,7 @@ Options +FollowSymLinks
 RewriteEngine On
 
 RewriteRule ^(.*)\.less$ index.php 
+RewriteRule ^(.*)\.scss$ index.php 
 
 RewriteCond %{HTTP_HOST} ^www\.(.*)$
 RewriteRule ^(.*)$ http://%1/$1 [L,R=301]

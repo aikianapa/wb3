@@ -1,0 +1,123 @@
+@import url("/engine/lib/fonts/roboto/roboto.css");
+@import url("/engine/css/modals.less");
+body {
+  overflow: hidden;
+  font-family: 'Roboto';
+}
+body .wblogo {
+  font-weight: 100;
+  line-height: normal;
+}
+body .rounded {
+  border-radius: 0.25rem;
+}
+body .content {
+  overflow: hidden;
+}
+body .content-body {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+body .chat-wrapper {
+  overflow: auto;
+}
+body .input-group-append {
+  min-width: 40px;
+  text-align: center;
+}
+body .input-group-append .input-group-text {
+  width: 100%;
+}
+body .modal.contain .modal-dialog {
+  margin-top: 0;
+}
+body .modal.contain .modal-body {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  max-height: calc(100vh - 130px);
+}
+body code {
+  background: #eee;
+  display: block;
+  padding: 5px;
+  border-radius: 5px;
+}
+body aside {
+  transition-duration: .4s;
+}
+body aside .aside-logo {
+  white-space: nowrap;
+  overflow: hidden;
+}
+body aside .aside-body {
+  height: 100vh;
+}
+body aside .aside-menu-link {
+  font-size: 20px;
+  line-height: 20px;
+}
+body aside .nav-link {
+  text-transform: none;
+  font-weight: normal;
+}
+body aside #userProfileMenu .avatar img {
+  width: 48px;
+  height: 48px;
+}
+@media (max-width: 991px) {
+  body aside:not(.aside-show) .aside-logo {
+    margin-right: 21px;
+  }
+}
+@media (min-width: 992px) {
+  body aside .aside-logo {
+    margin-right: 10px;
+  }
+}
+body aside .aside-menu-link {
+  display: flex;
+}
+body aside .burger-menu {
+  display: none;
+}
+body aside .nav-aside [class^="ri-"],
+body aside .nav-aside [class*=" ri-"] {
+  font-size: 16px;
+}
+body aside .nav-aside ul {
+  padding-left: 15px;
+  font-size: 12px;
+}
+body aside .nav-aside ul li {
+  list-style: none;
+}
+body aside.minimize ul {
+  padding-left: 0;
+}
+body aside.minimize #userProfileMenu .avatar img {
+  width: 30px;
+  height: 30px;
+}
+@media (max-width: 992px) {
+  body.chat-content-show aside .burger-menu {
+    display: flex !important;
+  }
+  body.chat-content-show aside .aside-menu-link {
+    display: none !important;
+  }
+}
+body .input-group .input-group-append > .form-control {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.scrollable {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.nobr {
+  white-space: nowrap;
+}

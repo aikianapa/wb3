@@ -482,16 +482,9 @@ class wbDom extends DomQuery
     public function copy($parent)
     {
         isset($parent->locale) ? $this->locale = $parent->locale : $this->locale = [];
-        if (isset($parent->head)) {
-            $this->head = $parent->head;
-        } else {
-            $this->head = false;
-        }
-        if (isset($parent->strict)) {
-            $this->strict = $parent->strict;
-        } else {
-            $this->strict = false;
-        }
+        isset($parent->head) ? $this->head = $parent->head : $this->head = false;
+        isset($parent->strict) ? $this->strict = $parent->strict : $this->strict = false;
+        isset($parent->path) && !isset($this->path) ? $this->path = $parent->path : null;
 
         $this->app = $parent->app;
         $this->item = $parent->item;
@@ -706,8 +699,6 @@ class wbApp
         $sub = substr($cid, 0, 4);
         $dir = $this->vars('_env.dbac').'/'.$sub;
         $name = $dir.'/'.$cid.'.html';
-
-
     
         header("Cache-control: public");
         header("Pragma: cache");
@@ -1171,7 +1162,7 @@ class wbApp
         $res = "";
         $context = null;
         if ($file=="") {
-            return $this->fromString("", $isDocument);
+            return null;
         } else {
             //session_write_close(); Нельзя, иначе проблемы с логином
             $url=parse_url($file);

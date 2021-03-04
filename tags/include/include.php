@@ -6,9 +6,16 @@ class tagInclude {
 
   public function include($dom) {
     if ($dom->is(":root")) $dom->rootError();
-    if ($dom->params("src")) {
-        $inc = $dom->app->fromFile($_ENV["path_app"].$dom->params("src"));
-        $dom->before("\n<!-- Include src: ".$dom->params("src")." -->\n");
+    if ($dom->params('src') == '' && $dom->attr('src') > '') $dom->params->src = $dom->attr('src');
+    if ($dom->params('src') == '' && $dom->attr('file') > '') $dom->params->src = $dom->attr('file');
+
+    if ($dom->params('src')) {
+        $src = realpath($dom->path . '/' . $dom->params("src"));
+        if (substr($dom->params("src"),0,2) == './' && $dom->path > '') $src = $dom->path . '/' . $dom->params("src");
+        if (substr($dom->params("src"),0,1) == '/' OR !$dom->path) $src = $_ENV['path_app'].'/'.$dom->params("src");
+        $src = realpath($src);
+        if ($src) $inc = $dom->app->fromFile(realpath($src));
+        $dom->before("\n<!-- Include src: ".$src." -->\n");
     } else if ($dom->params("url")) {
         $inc = $dom->app->fromString(file_get_contents($dom->app->vars("_route.host").$dom->params("url")));
         $dom->before("\n<!-- Include url: ".$dom->params("url")." -->\n");

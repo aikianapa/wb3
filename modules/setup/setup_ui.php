@@ -65,7 +65,7 @@
 
 </div>
 
-<script type="wbapp" src="/engine/modules/setup/wbsetup.js"></script>
+<script wbapp="/engine/modules/setup/wbsetup.js"></script>
 
 <wb-lang>
     [en]
