@@ -6,7 +6,6 @@ $(document).on("smartid-js", function() {
         $(smartid).on("keypress",function(event){
             let code = event.charCode;
             let self = this;
-            console.log(event.charCode);
             if (code > 0) {
                 let char = String.fromCharCode(event.which);
                 let offset = wbapp.furl(char).length - 1;

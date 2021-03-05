@@ -350,10 +350,10 @@ var start = function() {
             }
 
             if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
-
                 console.log('Update by tpl');
                 $.each(wbapp.template, function (i, tpl) {
-                    if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
+                        if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
+                        if (tpl.params._params && tpl.params._params.bind) tpl.params = tpl.params._params;
 
                         if (tpl.params.bind && (tpl.params.bind == params.bind || tpl.params.bind == params.update)) {
                             if (tpl.params.render == 'client') {
@@ -365,7 +365,6 @@ var start = function() {
                                 wbapp.renderServer(tpl.params, data);
                             }
                         }
-
                 })
 
 
@@ -1522,6 +1521,7 @@ var start = function() {
             wbapp.loadScripts([
                 `/engine/js/php.js`
 //                , `/engine/js/jquery-migrate.min.js`
+                , `/engine/js/jquery-ui.min.js` // для modal draggable - нужно подумать куда перенести
                 , `/engine/js/jquery.tap.js`
                 , `/engine/js/ractive.js`
                 , `/engine/js/lazyload.js`
