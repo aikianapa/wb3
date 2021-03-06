@@ -54,7 +54,10 @@ class mongodbDrv
     public function toArray(&$item, $root = true) {
         if ($item == null) return;
         (object)$item === $item ? $item = json_decode(MongoDB\BSON\toRelaxedExtendedJSON(MongoDB\BSON\fromPHP($item)),true) : null;
+
+
         foreach($item as $key => &$val) {
+            (array)$val === $val ? $this->toArray($val, false) : null;
             if (substr($key,0,1) == '$') {
                 switch($key) {
                     case '$oid' :
@@ -64,15 +67,24 @@ class mongodbDrv
                         $val = date('Y-m-d H:i:s', strtotime($val));
                         $item = $val;
                         return;
+                    case '$array' :
+                        $item = (array)$val;
+                        return;
+                    case '$string' :
+                        $item = (string)$val;
+                        return;
+                    case '$numberInt' :
+                        $item = intval($val);
+                        return;
+                    case '$numberLong' :
+                        $item = intval($val);
+                    case '$numberDecimal':
+                        $item = number_format($val, 2, '.', '') * 1;
+                        return;
                 }
-            } else if ((array)$val === $val) {
-                $this->toArray($val, false);
-            }
+            } 
 
         }
-                return $item;
-
-
     }
 
 
