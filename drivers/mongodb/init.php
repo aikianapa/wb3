@@ -51,20 +51,42 @@ class mongodbDrv
         return $connection;
     }
 
+    public function toArray(&$item, $root = true) {
+        if ($item == null) return;
+        (object)$item === $item ? $item = json_decode(MongoDB\BSON\toRelaxedExtendedJSON(MongoDB\BSON\fromPHP($item)),true) : null;
+        foreach($item as $key => &$val) {
+            if (substr($key,0,1) == '$') {
+                switch($key) {
+                    case '$oid' :
+                        $item = $val;
+                        return;
+                    case '$date' :
+                        $val = date('Y-m-d H:i:s', strtotime($val));
+                        $item = $val;
+                        return;
+                }
+            } else if ((array)$val === $val) {
+                $this->toArray($val, false);
+            }
+
+        }
+                return $item;
+
+
+    }
+
+
     public function ItemRead($form = null, $id = null)
     {
         $item = null;
         if ($id !== null && $id !== "_new") {
             try {
                 $item = $this->db->$form->findOne(['_id' => new MongoDB\BSON\ObjectId($id)]);
-                $item = $this->app->objToArray($item);
-                if ((array)$item['_id'] === $item['_id'] AND count($item)) $item['_id'] = $item['_id']['$oid'];
+                $this->toArray($item);
             } catch (Exception $err) {
                 try {
                     $item = $this->db->$form->findOne(['_id' => $id]);
-                    $item = $this->app->objToArray($item);
-                    $this->ItemPrepare($item);
-                    if ($item !== null && (array)$item['_id'] === $item['_id'] AND count($item)) $item['_id'] = $item['_id']['$oid'];
+                    $this->toArray($item);
                 }
                 catch(Exception $err) {
                     $item = null;
@@ -131,7 +153,7 @@ class mongodbDrv
         $list = [];
         $iter = new IteratorIterator($find);
         foreach ($iter as $doc) {
-            $doc = $doc->getArrayCopy();
+            $this->toArray($doc);
             if ((object)$doc['_id'] === $doc['_id']) $doc['_id'] = (array)$doc['_id'];
             if ((array)$doc['_id'] === $doc['_id']) $doc['_id'] = $doc['_id']['oid'];
             $doc["_form"] = $doc["_table"] = $form;
@@ -209,7 +231,8 @@ class mongodbDrv
     {
         $res = null;
         if (!$form) return null;
-        $this->ItemPrepare($item);
+        $item = json_decode(json_encode($item), true);
+        $this->toArray($item);
         $item = wbItemInit($form, $item);
         $id = $sid = $item["id"];
         $item["_id"] = $this->init_id($sid);
