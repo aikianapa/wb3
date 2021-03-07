@@ -26,8 +26,8 @@ class modLess {
         }
 
         $csspath = $this->path;
-        $cssfile = $csspath.$this->name.'.css';
-        $cssminfile = $csspath.$this->name.'.min.css';
+        $cssfile = $csspath.'/'.$this->name.'.css';
+        $cssminfile = $csspath.'/'.$this->name.'.min.css';
         if ($cache) {
             if ($this->minify && is_file($cssminfile)) {
                 $css = file_get_contents($cssminfile);

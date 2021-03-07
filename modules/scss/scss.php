@@ -32,9 +32,11 @@ class modScss {
         }
 
         $csspath = $this->path.'/../css/';
-        $cssfile = $csspath.$this->name.'.css';
-        $cssminfile = $csspath.$this->name.'.min.css';
         !is_dir($csspath) ? mkdir($dir, 0755, true) : null;
+        $csspath = realpath($csspath);
+        $cssfile = $csspath.'/'.$this->name.'.css';
+        $cssminfile = $csspath.'/'.$this->name.'.min.css';
+        
         
 
 
