@@ -14,6 +14,10 @@ var start = function() {
 
     wbapp.lazyload = function () {
         $("[data-src]:not([src])").lazyload();
+        $("video[data-src]:not([src])").each(function(){
+            $(this).attr('src',$(this).attr('data-src'));
+            $(this).removeAttr('data-src');
+        });
     }
 
     wbapp.eventsInit = function () {
@@ -1529,7 +1533,7 @@ var start = function() {
         } else {
             $(document).trigger("wbapp-go");
         }
-    }, 0);
+    }, 1500);
 
     setInterval(function () {
         wbapp.alive();

@@ -12,17 +12,18 @@ class modSubform
         $form = null;
         $mode = null;
         $selector = null;
+        $dom->params('form') > '' ? $form = $dom->params('form') : null;
+        $dom->params('mode') > '' ? $mode = $dom->params('mode') : null;
         $dom->params('selector') > '' ? $selector = $dom->params('selector') : null;
-        $sub->children('.mod-subform')->attr('data-params', base64_encode(json_encode($dom->params)));
-
-        if ($form == null AND $mode == null) {
-            $sub->inner('');
+        $sub->attr('data-params', base64_encode(json_encode($dom->params)));
+        if ($form == 'null' AND $mode == 'null') {
+            $sub->find('.mod-subform-inner')->html('');
         } else if ($form == null OR $mode == null) {
-            $sub->inner('<div class="alert alert-warning">Form not defined: please set form and mode params!</div>');
+            $sub->find('.mod-subform-inner')->inner('<div class="alert alert-warning">Form not defined: please set form and mode params!</div>');
         } else {
             $subform = $app->getForm($form, $mode);
             $selector ? $subform = $subform->find($selector) : null;
-            $sub->children('.mod-subform')->inner($subform);
+            $sub->find('.mod-subform-inner')->inner($subform);
         }
         $dom->after($sub);
         $dom->remove();

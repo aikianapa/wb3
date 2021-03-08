@@ -1,6 +1,10 @@
 <div class="mod-subform" data="{{ base64_encode(json_encode({{_current}})) }}">
-    123412341234
+    <div class="mod-subform-inner">
+
+    </div>
+    <script>
+        wbapp.loadScripts(["/engine/modules/subform/subform.js"],"mod-subform-js",function(){
+            mod_subform();
+        });
+    </script>
 </div>
-<script wbapp>
-  wbapp.loadScripts(["/engine/modules/subform/subform.js"],"subform-js");
-</script>
