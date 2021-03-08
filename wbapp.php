@@ -1130,7 +1130,7 @@ class wbApp
             //unset($form);
             if ('' == $current) {
                     strtolower(substr($mode, -4)) == '.php' ? $arg = $modename : $arg = $aCall;
-                    $out = wbErrorOut(wbError('func', __FUNCTION__, 1012, array($arg)), true);
+                    $out = wbError('func', __FUNCTION__, 1012, [$arg]);
             } else {
                 if ($ini) {
                     $out = file_get_contents($current);

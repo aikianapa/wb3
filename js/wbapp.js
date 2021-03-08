@@ -399,7 +399,7 @@ var start = function() {
             } if ($(this).is('[wbapp]')) {
                 src = $(this).attr('wbapp');
             } 
-            if (src !== null) {
+            if (src !== null && src > '') {
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', src, true);
                 xhr.onload = function () {

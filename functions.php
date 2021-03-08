@@ -1288,7 +1288,7 @@ function wbError($type, $name, $error = '__return__error__', $args = null)
                 }
                 $errname = str_replace('{{'.$key.'}}', $arg, $errname);
             }
-            $_ENV["last_error"] = $errname;
+            $_ENV["last_error"] = $error = $errname;
         } else {
             if ('__return__error__' == $error) {
                 $error = $_ENV['error'][$type][$name];
