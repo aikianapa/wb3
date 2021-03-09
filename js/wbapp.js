@@ -14,10 +14,6 @@ var start = function() {
 
     wbapp.lazyload = function () {
         $("[data-src]:not([src])").lazyload();
-        $("video[data-src]:not([src])").each(function(){
-            $(this).attr('src',$(this).attr('data-src'));
-            $(this).removeAttr('data-src');
-        });
     }
 
     wbapp.eventsInit = function () {
@@ -177,9 +173,10 @@ var start = function() {
 
     wbapp.alive = function () {
         wbapp.get("/ajax/alive", {}, function (data) {
-            if (data.result == false) {
+            if (data.result == false || data.result == undefined) {
                 console.log("Trigger: session_close");
                 $(document).trigger("session_close");
+                clearInterval(alive);
             }
         });
     }
@@ -460,9 +457,13 @@ var start = function() {
         } else {
             try { data.__token = wbapp._session.token; } catch (error) { null }
         }
-        $.get(url, data).then(function (data) {
-            if (func !== null) return func(data);
-        })
+        $.get(url, data)
+            .then(function (data) {
+                if (func !== null) return func(data);
+            })
+            .fail(function (data) {
+                if (func !== null) return func(false);
+            })
     }
 
     wbapp.ajax = async function (params, func = null) {
@@ -1535,7 +1536,7 @@ var start = function() {
         }
     }, 1500);
 
-    setInterval(function () {
+    var alive = setInterval(function () {
         wbapp.alive();
     }, 84600);
 
