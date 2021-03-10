@@ -74,6 +74,10 @@
                             <div class="signup-error alert alert-danger text-center mt-3 d-none">
                                 Не удалось выполнить регистрацию пользователя.<br>Возможно, такой пользователь уже существует.
                             </div>
+                            <div class="signup-success alert alert-success text-center mt-3 d-none">
+                                <p>Вы успешно зарегистрировались и можете войти в систему.</p>
+                                <a class="btn btn-primary w-50" href="/signin">Войти</a>
+                            </div>
                         </form>
                     </div>
                 </div>
