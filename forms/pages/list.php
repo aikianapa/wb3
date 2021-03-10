@@ -71,7 +71,7 @@
       </div>
     </div>
   </wb-foreach>
-  <wb-jq wb="{'append':'#{{_form}}List template','render':'client'}" >
+  <wb-jq wb="{'append':'template#{{_form}}List','render':'client'}" >
     <wb-snippet wb-name="pagination"/>
   </wb-jq>
 </div>
