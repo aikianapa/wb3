@@ -718,7 +718,7 @@ var start = function() {
         }
 
         if (wbapp.template['wb.toast'] == undefined) {
-            var res = wbapp.getForm("snippets", "toast");
+            var res = wbapp.getTpl("snippets", "toast");
             wbapp.tpl('wb.toast', {
                 html: res.result,
                 params: {}
@@ -774,7 +774,7 @@ var start = function() {
     wbapp.tplInit = function () {
         if (!wbapp.template) wbapp.template = {};
         if (wbapp.template['wb.modal'] == undefined) {
-            var res = wbapp.getForm("snippets", "modal");
+            var res = wbapp.getTpl("snippets", "modal");
             wbapp.tpl('wb.modal', {
                 html: res.result,
                 params: {}
@@ -827,6 +827,12 @@ var start = function() {
         var res = wbapp.postSync(`/ajax/getform/${form}/${mode}`, data);
         return res;
     }
+
+    wbapp.getTpl = function (form, mode, data = {}) {
+        var res = wbapp.postSync(`/ajax/gettpl/${form}/${mode}`, data);
+        return res;
+    }
+
 
     wbapp.tpl = function (tid, data = null) {
         if (data == null) {
@@ -1051,7 +1057,7 @@ var start = function() {
     wbapp.getModal = function (id = null) {
         var modal = $(document).data("wbapp-modal");
         if (modal == undefined) {
-            var modal = wbapp.postSync("/ajax/getform/snippets/modal/");
+            var modal = wbapp.postSync("/ajax/gettpl/snippets/modal/");
             modal = $("<div>" + modal.content + "</div>").find(".modal").clone();
             $(document).data("wbapp-modal", modal);
         }
