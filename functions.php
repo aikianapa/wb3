@@ -721,32 +721,22 @@ function wbItemBeforeShow(&$Item)
     $form = $Item["_form"];
     $ecall = "_{$form}BeforeItemShow";
     $acall = "{$form}BeforeItemShow";
-    if (is_callable($ecall)) {
-        $Item = @$ecall($Item);
-    }
-    if (is_callable($acall)) {
-        $Item = @$acall($Item);
-    }
+    is_callable($ecall) ? $Item = @$ecall($Item) : null;
+    is_callable($acall) ? $Item = @$acall($Item) : null;
 }
 
 
 function wbItemToArray(&$Item = array(), $convid = true)
 {
-    if (is_object($Item)) {
-        $Item=wbObjToArray($Item);
-    }
-    if (isset($Item["_table"]) && $Item["_table"]=="admin" && $Item["id"]=="settings") {
-        $convid=false;
-    }
+    is_object($Item) ? $Item=wbObjToArray($Item) : null;
+    (isset($Item["_table"]) && $Item["_table"]=="admin" && $Item["id"]=="settings") ? $convid=false : null ;
     if ((array)$Item === $Item) {
         $tmpItem=array();
         foreach ($Item as $i => $item) {
             if (substr($i, 0, 1) !== "%" and $i !== "_parent") {
                 if (!((array)$item === $item)) {
                     $tmp = json_decode($item, true);
-                    if ((array)$tmp === $tmp) {
-                        $item = wbItemToArray($tmp, $convid);
-                    }
+                    (array)$tmp === $tmp ? $item = wbItemToArray($tmp, $convid) : null;
                 }
                 $item = wbItemToArray($item, $convid);
             }
@@ -757,13 +747,27 @@ function wbItemToArray(&$Item = array(), $convid = true)
             }
         }
         $Item=$tmpItem;
-    } elseif (!(array($Item) === $Item)) {
+    } else if (!(array($Item) === $Item)) {
         $tmp = json_decode($Item, true);
-        if ((array)$tmp === $tmp) {
-            $Item = wbItemToArray($tmp, $convid);
-        }
+        (array)$tmp === $tmp ? $Item = wbItemToArray($tmp, $convid) : null;
     }
     return $Item;
+}
+
+function wbDotFix($data = [])
+{
+    $app = &$_ENV['app'];
+    $data = (array)$data;
+    $dot = $app->dot();
+    $dot->set($data);
+    foreach ($dot as $key => $val) {
+        if (strpos($key, '.')) {
+            $dot->set($key, $val);
+        } elseif ((array)$val === $val) {
+            $dot->set($key, wbDotFix($val));
+        }
+    }
+    return $dot->get();
 }
 
 function wbGetDataWbFrom($Item, $str)

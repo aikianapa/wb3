@@ -127,6 +127,7 @@ class ctrlAjax
             $tpl = &$cache['tpl'];
             foreach ($_POST['data'] as $fld => $val) {
                 $tpl = str_replace("%{$fld}%", $val, $tpl);
+                $tpl = str_replace("&amp;", '&', $tpl);
             }
             $tpl = $app->fromString($tpl);
             $opt = $tpl->find("option:first");
@@ -154,6 +155,7 @@ class ctrlAjax
         $form = $this->app->vars('_route.params.0');
         $mode = $this->app->vars('_route.params.1');
         $out = $this->app->getForm($form, $mode);
+        $this->app->vars('_post.data') > '' ? $out->fetch($this->app->vars('_post.data')) : null;
         return json_encode(['result'=>$out->outer()]);
     }
 

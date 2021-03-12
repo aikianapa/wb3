@@ -1,5 +1,6 @@
 $.fn.wbAttrChange = function (sl, fn) {
     let that = this;
+    let selector;
     $.each(sl,function(i,selector){
         $(selector).trigger('wb-change-start');
         console.log('Trigger: wb-change-start ' + selector );
@@ -7,14 +8,15 @@ $.fn.wbAttrChange = function (sl, fn) {
         var data = {};
         if ($(that).is('select')) {
             let opt = $(that).find('option[value="' + $(that).val() + '"]');
-            data = $(opt).data();
+            $(that).find('[selected]').removeAttr('selected');
+            $(opt).prop('selected',true).attr('selected',true);
+            data[$(that).attr('name')] = $(that).val();
         } else if ($(that).attr('name') > '') {
             data[$(that).attr('name')] = $(that).val();
         }
         data.value = $(that).val();
-        $.post("/ajax/change_fld/", { 'cache': cache, 'data': data }, function (data) {
+        wbapp.post("/ajax/change_fld/", { 'cache': cache, 'data': data }, function (data) {
             if (data.content) {
-//                let old = $(selector).html();
                 $(selector).html($(data.content).html());
                 if ($(selector).is('[onchange *= "wbAttrChange"]')) {
                     $(selector).trigger('change');

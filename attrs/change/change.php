@@ -29,7 +29,7 @@ class attrChange
             $selector = trim($selector);
             $selector = str_replace("'", '"', $selector);
             try {
-                if (is_object($dom->parents())) {
+                if ($dom->parents()) {
                     $tpl = $dom->parents()->find($selector);
                 } else {
                     $tpl = $dom->find($params->change);

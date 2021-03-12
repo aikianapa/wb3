@@ -117,6 +117,7 @@ function wbItemRename($form = null, $old = null, $new = null, $flush = true)
 
 function wbItemSave($form, $item = null, $flush = true)
 {
+    $app = $_ENV['app'];
     $db = wbSetDb($form);
     $item = wbTrigger('form', __FUNCTION__, 'beforeItemSave', func_get_args(), $item);
     if (!isset($item['id'])) {
@@ -131,6 +132,7 @@ function wbItemSave($form, $item = null, $flush = true)
         isset($item["id"]) ? $src = $db->itemRead($form, $item["id"]) : $src = null;
         $src ? $item = array_merge($src, $item) : $item = wbItemInit($form, $item);
     }
+    $item = wbDotFix($item);
     $item = $db->itemSave($form, $item, $flush);
     $item = wbTrigger('form', __FUNCTION__, 'afterItemSave', func_get_args(), $item);
     return $item;

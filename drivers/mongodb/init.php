@@ -160,7 +160,6 @@ class mongodbDrv
         }
 
         $filter = $this->filterPrepare($filter);
-
         $find = $this->db->$form->find($filter, $params);
         $list = [];
         $iter = new IteratorIterator($find);
@@ -187,7 +186,11 @@ class mongodbDrv
         }
         foreach($filter as $key => $node) {
             if ((array)$node === $node) $node = $this->filterPrepare($node);
+            if (is_string($node) && is_numeric(substr($node,0,1))) {
+                $node = $this->init_id($node);
+            } 
             $filter[$key] = $node;
+
         }
         return $filter;
     }

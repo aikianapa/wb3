@@ -1,0 +1,86 @@
+.text-white {
+  color: #ffffff;
+}
+.text-black {
+  color: #000000;
+}
+.text-dark {
+  color: #495057;
+}
+.text-light {
+  color: #f8f9fa;
+}
+.text-gray {
+  color: #cccccc;
+}
+.text-red {
+  color: #dc3545;
+}
+.text-blue {
+  color: #3b6998;
+}
+.text-green {
+  color: #28a745;
+}
+.text-transparent {
+  color: transparent;
+}
+.bg-white {
+  background-color: #ffffff;
+}
+.bg-black {
+  background-color: #000000;
+}
+.bg-dark {
+  color: #495057;
+}
+.bg-light {
+  color: #f8f9fa;
+}
+.bg-gray {
+  background-color: #cccccc;
+}
+.bg-red {
+  background-color: #dc3545;
+}
+.bg-blue {
+  background-color: #3b6998;
+}
+.bg-green {
+  background-color: #28a745;
+}
+.bg-transparent {
+  background-color: transparent;
+}
+.datetimepicker td {
+  padding: 10px;
+}
+.datetimepicker th {
+  padding: 5px;
+}
+.datetimepicker td span.hour {
+  margin: 5px 0;
+}
+.datetimepicker table {
+  min-width: 280px;
+}
+.datetimepicker table tr td.day:hover {
+  background-color: #cccccc;
+}
+.datetimepicker table tr td span.active.active,
+.datetimepicker table tr td.active.active {
+  background-color: #3b6998;
+  background-image: none;
+  border-radius: 2px;
+}
+.datetimepicker table tr td.today {
+  background-color: #deb25c;
+  background-image: none;
+}
+.datetimepicker table tr td.today:hover:hover {
+  background-color: #cccccc;
+  background-image: none;
+}
+.datetimepicker table tr td span:hover {
+  background-color: #cccccc;
+}
