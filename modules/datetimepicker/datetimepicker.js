@@ -64,4 +64,8 @@ $(document).on("datatimepicker-js",function() {
 
         });
   });
+
+  $(document).on('after_add',()=>{
+    $(document).trigger("datetimepicker-js-init")
+  })
 });

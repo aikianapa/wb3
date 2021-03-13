@@ -27,6 +27,8 @@ function wb_multiinput_init() {
       var line = $(this).parent(".wb-multiinput-row");
       $(line).after(wbapp.template["#" + $multi.attr("id")].html);
       $multi.store();
+      console.log("Trigger: after_add");
+      $multi.trigger("after_add", line);
       //wb_plugins();
       return false;
     });
