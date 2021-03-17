@@ -616,11 +616,18 @@ var start = function() {
 
     wbapp.storageUpdate = function (key, data) {
         var store = wbapp.storage(key);
-        if (store !== undefined && store._id == undefined && store.result !== undefined && data !== null && data._id !== undefined) {
+        if (!store) wbapp.storage(key,{});
+        if (store._id == undefined && (store.result !== undefined || store.params !== undefined) && data !== null && data._id !== undefined) {
             if (data._removed !== undefined && data._removed == true) {
-                try {
-                    delete store.result[data._id]
-                } catch (err) { }
+                if (store.params !== undefined && store.params.render == 'server') {
+                    wbapp.renderServer(store.params);
+                } else {
+                    try {
+                        delete store.result[data._id]
+                    } catch (err) { 
+                        console.log('Not removed');
+                    }
+                }
             } else if (data._renamed !== undefined && data._renamed == true) {
                 /// rename
             } else {
@@ -801,7 +808,6 @@ var start = function() {
             let html = $(this).html();
             html = html.replace(/<template\b[^<]*(?:(?!<\/template>)<[^<]*)*<\/template>/gi, "");
 
-
             $(this).removeAttr("data-params");
             if ($(this).attr("data-ajax") !== undefined) {
                 let prms = wbapp.parseAttr($(this).attr("data-ajax"));
@@ -818,6 +824,13 @@ var start = function() {
                 });
             }
 
+            if (params.bind && params.render == 'client') {
+                var profileMenu = Ractive({
+                    target: tid,
+                    template: wbapp.template[tid].html,
+                    data: () => { return wbapp.storage(params.bind); }
+                });
+            }
             if ($(this).prop("visible") == undefined) $(this).remove();
         });
         wbapp.wbappScripts();

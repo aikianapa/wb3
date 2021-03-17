@@ -40,14 +40,14 @@
       </div>
       <div class="aside-body">
         <div class="aside-loggedin">
-          <div  id="userProfileMenu">
-          <template>
+          <div id="userProfileMenu">
+          <template data-params="bind=cms.profile.user&render=client">
             <div class="d-flex align-items-center justify-content-start">
               <a href="#loggedinMenu" data-toggle="collapse" class="avatar">
                 {{#if avatar.0.img}}
-                <img data-src="/thumbc/48x48/src/{{avatar.0.img}}" class="rounded-circle" alt="">
+                <img width="48" height="48" data-src="/thumbc/48x48/src/{{avatar.0.img}}" class="rounded-circle" alt="">
                 {{else}}
-                <img data-src="/engine/modules/cms/tpl/assets/img/user.svg" class="rounded-circle" alt="">
+                <img width="48" height="48" data-src="/engine/modules/cms/tpl/assets/img/user.svg" class="rounded-circle" alt="">
                 {{/if}}
               </a>
               <div class="aside-alert-link">
@@ -56,8 +56,7 @@
               </div>
             </div>
             <div class="aside-loggedin-user">
-              <a href="#loggedinMenu" class="d-flex align-items-center justify-content-between mg-b-2"
-                data-toggle="collapse">
+              <a href="#loggedinMenu" class="d-flex align-items-center justify-content-between mg-b-2" data-toggle="collapse">
                 <h6 class="tx-semibold mg-b-0">{{first_name}} {{last_name}}</h6>
                 <i data-feather="chevron-down"></i>
               </a>
