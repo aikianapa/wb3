@@ -12,11 +12,6 @@ $(document).on("jodit-js", function () {
       $(editable).attr("id", id);
     }
 
-    $(this).find("code").each(function () {
-      $(this).html(html_entity_encode($(this).html()));
-      console.log($(this).html());
-    })
-
     //var lang = wbapp.settings.i18n;
     var lang = $(editable).attr("data-lang");
     if (lang == undefined) lang = wbapp._settings.locale;
@@ -58,7 +53,10 @@ $(document).on("jodit-js", function () {
         //            documentReady: true,
         events: {
           'change': function (text) {
-            $(editable).html(text);
+
+            text = json_encode(text);
+
+            $(editable).text(text);
             if ($(editable).data("timeout") == false) {
               $(editable).data("timeout", true);
               setTimeout(function () {

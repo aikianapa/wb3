@@ -21,8 +21,15 @@ class modJodit {
         } else {
           $text = $dom->html();
       }
-//      $text = html_entity_decode(htmlspecialchars_decode($text));
-      $dom->after($out);
+      $text = html_entity_decode($text);
+
+      $text = $dom->app->fromString($text);
+      $code = $text->find('code,pre');
+      foreach($code as $c) {
+          $c->inner(htmlentities($code->html()));
+      }
+      $out->children('.wb-content-editor')->html($text);
+      $dom->after($out->outer());
       $dom->remove();
   }
 }

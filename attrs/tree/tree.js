@@ -327,7 +327,7 @@ $.fn.getData = function(path=true) {
     // false - return dict only
     // path - return data only
     var tree = $(this).getTree();
-    var content = $.parseJSON($(tree).children(".wb-tree-data").html());
+    var content = $.parseJSON($(tree).children(".wb-tree-data").text());
 
     if (path === true) {
         eval("var data = content;");

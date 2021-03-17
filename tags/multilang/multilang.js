@@ -6,7 +6,7 @@ function wb_multilang() {
             if (data !== undefined) data = json_decode(data, true);
             return data;
         } else {
-            $(that).children("textarea").html(json_encode(data));
+            $(that).children("textarea").text(json_encode(data));
         }
     }
 

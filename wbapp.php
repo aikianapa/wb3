@@ -269,10 +269,12 @@ class wbDom extends DomQuery
 
     public function fetchStrict()
     {
-        if ($this->tagName == "template" or $this->closest("template")->length or $this->tagName == "code" or $this->closest("code")->length) {
+        if ($this->tagName == "template" or $this->closest("template")->length 
+            or $this->tagName == "code" or $this->closest("code")->length
+            or $this->tagName == "textarea" or $this->closest("textarea")->length) {
             $this->strict = true;
             // set locale for template
-            if (in_array($this->tagName, ['template', 'code']) && strpos($this->outer(),'_lang.') !== 0) {
+            if (in_array($this->tagName, ['template', 'code','textarea']) && strpos($this->outer(),'_lang.') !== 0) {
                 $locale = $this->app->vars('_env.locale');
                 isset($locale[$_SESSION["lang"]]) ? $locale = $locale[$_SESSION["lang"]] : null;
                 $this->addParams(['locale'=>$locale]);
@@ -525,17 +527,15 @@ class wbDom extends DomQuery
                 $name = $inp->attr("name");
                 $value = $fields->get($name);
                 ((array)$value === $value and $inp->tagName !== "select") ? $value = wb_json_encode($value) : null;
-                if ($value > '')$value = str_replace('&amp;quot;', '"', $value); // борьба с ковычками в атриибутах тэгов
+                if ($value > '')$value = str_replace('&amp;quot;', '"', $value); // борьба с ковычками в атрибутах тэгов
             if (in_array($inp->tagName, ["input","textarea","select"]) && !$inp->hasAttr("done") && !$inp->closest("template")->length) {
                 if ($inp->tagName == "textarea") {
-                    //if ($inp->attr('type') == 'json') {
+                    if ($inp->attr('type') == 'json') {
                         $inp->text($value);
-                    //} 
-                    /*else {
-                        $inp->inner(htmlentities($value));
-                    }*/
-                    
-
+                    } 
+                    else {
+                        $inp->text(htmlentities($value));
+                    }
                 } elseif ($inp->tagName == "select") {
                     if ((array)$value === $value) {
                         foreach ($value as $val) {
@@ -565,7 +565,7 @@ class wbDom extends DomQuery
             
 
         }
-        $unset = $this->find("template,textarea,code");
+        $unset = $this->find("template,textarea,code,pre");
         foreach ($unset as $t) {
             $t->inner(str_replace("{{", "_{_{_", $t->inner()));
         }
@@ -578,7 +578,7 @@ class wbDom extends DomQuery
                 $this->inner($html);
             }
         }
-        $unset = $this->find("template,textarea,code");
+        $unset = $this->find("template,textarea,code,pre");
         foreach ($unset as $t) {
             $t->inner(str_replace("_{_{_", "{{", $t->inner()));
         }
