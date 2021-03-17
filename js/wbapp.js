@@ -1012,7 +1012,7 @@ var start = function() {
                 if ($(that).attr("data-backdrop") !== "false") {
                         $(".modal-backdrop:not([style])").css("z-index", (wbapp.modalZndx - 5));
                 }
-
+                window.dispatchEvent(new Event('resize'));
             });
 
             $(document).delegate(".modal", 'hidden.bs.modal', function () {

@@ -74,6 +74,12 @@ function wb_multilang() {
     $(document).find("wb-multilang[name]").each(function () {
         if (this.done == undefined) {
             var that = this;
+
+            $(that).find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                window.dispatchEvent(new Event('resize'));
+                // fix for jodit
+            });
+
             $(that).delegate(".wb-multilang-row :input", "change blur", function () {
                 if ($(this).is("select")) {
                     $(this).find("option:not(:selected)").prop("selected", false).removeAttr("selected");

@@ -79,6 +79,7 @@ $(document).on("jodit-js", function () {
       }
 
       new Jodit('#' + id, options);
+      window.dispatchEvent(new Event('resize'));
 
     });
   });
