@@ -1619,7 +1619,7 @@ function wbQuery($sql)
     return $table['data'];
 }
 
-function wbItemFilter($item, $options)
+function wbItemFilter($item, $options, $field = null)
 {
     (isset($item['id']) && !isset($item['_id'])) ? $item['_id'] = $item['id'] : null ;
     isset($options->filter) ? $filter = $options->filter : $filter = $options;
@@ -1637,7 +1637,7 @@ function wbItemFilter($item, $options)
 
     $result = true;
     foreach ((array)$filter as $fld => $expr) {
-        if ((array)$expr !== $expr) {
+        if ((array)$expr !== $expr && substr($fld,0,1) !== '$') {
 					if (is_bool($fields->get($fld)) AND !is_bool($expr)) {
 							if ($expr == 'true') {
 									$expr = true;
@@ -1651,20 +1651,20 @@ function wbItemFilter($item, $options)
         } else {
             if ($fld == '$or') {
                 $result = false;
-                foreach($expr as $key => $orFilter) {
-                    wbItemFilter($item, $orFilter) == true ? $result = true : null;
+                foreach($expr as $field => $orFilter) {
+                    wbItemFilter($item, $orFilter, $field) == true ? $result = true : null;
                 }
             } else if ($fld == '$and') {
                 $result = true;
-                foreach($expr as $andFilter) {
-                    if (wbItemFilter($item, $andFilter) == false) {
+                foreach($expr as $field => $andFilter) {
+                    if (wbItemFilter($item, $andFilter, $field) == false) {
                       $result = false;
                       break;
                     }
                 }
-						} else if (in_array($fld,['$gte','$lte','$gt','$lt','='])) {
-								$fldname = array_key_first($expr);
-								$result = wbItemFilter($item, [$fldname=>[$fld => $expr[$fldname]]]);
+            } else if (in_array($fld,['$gte','$lte','$gt','$lt','='])) {
+                    $field == null ? $fldname = array_key_first($expr) : $fldname = $field;
+                    $result = wbItemFilter($item, [$fldname=>[$fld => $expr]]);
             } else {
                 foreach ($expr as $cond => $val) {
                     $field = $fields->get($fld);
@@ -1687,13 +1687,13 @@ function wbItemFilter($item, $options)
                             if ($field >= $val) {$result;} else $result = false;
                             break;
                         case '$lte':
-														if ($field <= $val) {$result;} else $result = false;
+							if ($field <= $val) {$result;} else $result = false;
                             break;
                         case '$gt':
-														if ($field > $val) {$result;} else $result = false;
+							if ($field > $val) {$result;} else $result = false;
                             break;
                         case '$lt':
-														if ($field < $val) {$result;} else $result = false;
+							if ($field < $val) {$result;} else $result = false;
                             break;
                         case '$nin':
                             if (!in_array($field,$val)) {$result;} else {$result = false;}

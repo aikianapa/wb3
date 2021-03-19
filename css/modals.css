@@ -50,6 +50,10 @@
 .modal.left .modal-dialog.modal-sm {
   max-width: 300px;
 }
+.modal .modal-open .modal.show .modal-dialog {
+  height: 100vh;
+  margin: auto;
+}
 .modal.right .modal-dialog {
   position: absolute;
   top: 0;
@@ -65,4 +69,8 @@
   min-height: 100vh;
   border: 0;
   border-radius: 0;
+}
+.modal-open .modal.show.h-100 .modal-dialog {
+  height: 100vh;
+  margin: auto;
 }

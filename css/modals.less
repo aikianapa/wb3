@@ -67,7 +67,10 @@
                 max-width: 300px;
             }
         }
-    }
+    }.modal-open .modal.show .modal-dialog {
+  height: 100vh;
+  margin: auto;
+}
 
     &.right {
         .modal-dialog {
@@ -91,4 +94,9 @@
     }
 
 
+}
+
+.modal-open .modal.show.h-100 .modal-dialog {
+  height: 100vh;
+  margin: auto;
 }

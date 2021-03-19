@@ -172,7 +172,7 @@ var start = function() {
     }
 
     wbapp.alive = function () {
-        wbapp.get("/ajax/alive", {}, function (data) {
+        wbapp.post("/ajax/alive", {}, function (data) {
             if (data.result == false || data.result == undefined) {
                 console.log("Trigger: session_close");
                 $(document).trigger("session_close");
@@ -1027,6 +1027,14 @@ var start = function() {
                 }
                 window.dispatchEvent(new Event('resize'));
             });
+
+            $(document).delegate(".modal","DOMSubtreeModified",function(){
+                if ($(this).find('.modal-content').height() > $(window).height() - 80) {
+                    $(this).addClass('h-100');
+                } else {
+                    $(this).removeClass('h-100');
+                }
+            })
 
             $(document).delegate(".modal", 'hidden.bs.modal', function () {
                 let zndx = $(this).css("z-index") * 1;

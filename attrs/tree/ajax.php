@@ -36,7 +36,7 @@ class wbAjaxTree
 
         $data = $this->tagTreeForm($app->vars("_post.dict"),$app->vars("_post.data"));
         $data = $app->fromString($data);
-        $data->fetch($app->vars("_post.data"));
+        $data->fetch($app->vars("_post.data.data"));
         if ($app->vars->get("_route.params.1") == "data") {
           echo wb_json_encode(["content"=>$data->outer(),"post"=>$_POST]);
           die;

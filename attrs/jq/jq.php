@@ -6,7 +6,7 @@ class attrJq extends wbDom {
   }
 
   public function attrJq(&$that) {
-            $jqs = explode( ';', $that->params->wb );
+            $jqs = explode( ';', $that->params->jq);
             $dom = &$that;
 
             foreach ((array)$jqs as $i => $jq) {
@@ -18,14 +18,18 @@ class attrJq extends wbDom {
                         $c->fetchNode();
                     }
                     try {
-                        @eval($jq);
+                        @eval($jq.';');
                     } catch (Exception $err) {
                         echo "Unknown result in the tag: ". $tag;
                     }
                     $ch = $dom->children();
                     foreach ($ch as $c) {
                         $c->copy($dom);
-                        $c->fetch();
+                        try {
+                            @$c->fetch();
+                        } catch (\Throwable $th) {
+                            null;
+                        }
                     }
                 } else if ($jq > '') {
                     echo 'Error: wb-jq command was start at $dom->';

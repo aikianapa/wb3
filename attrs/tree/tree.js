@@ -328,7 +328,6 @@ $.fn.getData = function(path=true) {
     // path - return data only
     var tree = $(this).getTree();
     var content = $.parseJSON($(tree).children(".wb-tree-data").text());
-
     if (path === true) {
         eval("var data = content;");
     } else if (path === false) {

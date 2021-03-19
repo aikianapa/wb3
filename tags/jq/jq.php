@@ -15,7 +15,6 @@ class tagJq {
             return;
         }
         $app = $that->app;
-
         $tag = htmlentities( $that->outer() );
         $tag = str_replace( '&amp;gt;', '>', $tag );
         $tag = str_replace( '&gt;&lt;/wb-jq&gt;', '/>', $tag );
@@ -35,24 +34,25 @@ class tagJq {
           $inner->fetch();
         }
         if ( $that->params( 'html' ) ) {
-            $that->parent->find( $that->params( 'html' ) )->html($inner->inner());
+            $that->parents()->find( $that->params( 'html' ) )->html($inner->inner());
         } else if ( $that->params( 'append' ) ) {
-            $that->parent->find( $that->params( 'append' ) )->append($inner->inner());
+            $that->parents()->find( $that->params( 'append' ) )->append($inner->inner());
         } else if ( $that->params( 'prepend' ) ) {
-            $that->parent->find( $that->params( 'prepend' ) )->prepend($inner->inner());
+            $that->parents()->find( $that->params( 'prepend' ) )->prepend($inner->inner());
         } else if ( $that->params( 'after' ) ) {
-            $that->parent->find( $that->params( 'after' ) )->after($inner->inner());
+            $that->parents()->find( $that->params( 'after' ) )->after($inner->inner());
         } else if ( $that->params( 'before' ) ) {
-            $that->parent->find( $that->params( 'before' ) )->before($inner->inner());
+            $that->parents()->find( $that->params( 'before' ) )->before($inner->inner());
         } else if ( $that->params( 'context' ) ) {
             $that->after($inner->find($that->params('context'))->inner());
         } else {
-            $jqs = explode( ';', $that->params->wb );
+            $jqs = explode( ';', $that->params->wb.';' );
             $dom = &$that->parent;
 
             foreach ((array)$jqs as $i => $jq) {
                 $jq = ltrim($jq);
                 if (substr($jq, 0, 6) == '$dom->') {
+                    $jq = '$dom->parents(":root")->'.substr($jq,6);
                     try {
                         @eval($jq.';');
                     } catch (Exception $err) {
@@ -61,7 +61,9 @@ class tagJq {
                     $ch = $dom->children();
                     foreach ($ch as $c) {
                         $c->copy($dom);
-                        $c->fetch();
+                        try {
+                            @$c->fetch();
+                        } catch (\Throwable $th) {null;}
                     }
                 } else if ($jq > '') {
                     echo 'Error: wb-jq command was start at $dom->';

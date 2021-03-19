@@ -124,7 +124,7 @@ function wbItemSave($form, $item = null, $flush = true)
         if (isset($item['_id']) && $item['_id'] > '') {
             $item['id'] = $item['_id']; 
         } else if ($_ENV['app']->vars('_route.mode') == 'save' AND $_ENV['app']->vars('_route.item') > '') {
-            $item['id'] = $_ENV['app']->vars('_route.item');
+            $item['id'] = $_ENV['app']->                                print_r($tickets);vars('_route.item');
         }
     } 
     if ($item) {
