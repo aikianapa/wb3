@@ -68,7 +68,7 @@ function wb_multilang() {
                 ml_value(that, data)
                 $(that).trigger("change");
             });
-        }, 5);
+        }, 50);
     }
 
     $(document).find("wb-multilang[name]").each(function () {

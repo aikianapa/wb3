@@ -35,6 +35,11 @@ class tagMultilang {
         $wrp->find('.tab-content > wb-foreach > .tab-pane')->html($dom->inner());
         $wrp->copy($dom);
         $wrp->fetch();
+        $inputs = $wrp->find('input[name],select[name],textarea[name]');
+        foreach($inputs as $inp) {
+            $inp->attr('wb-name', $inp->attr('name'));
+            $inp->removeAttr('name');
+        }
         $wrp->find('.nav-tabs .nav-item:first-child .nav-link')->addClass('active');
         $wrp->find('.tab-content .tab-pane:first-child')->addClass('show active');
         $wrp->find('textarea.wb-multilang-data')[0]->attr('name',$field);

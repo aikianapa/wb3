@@ -327,19 +327,21 @@ class tagForeach
         $dom->params("table") > "" ? $table = $dom->params->table : $table = "";
 
         isset($dom->params->field) ? $field = $dom->params->field : $field = null;
-
+        $filtered = false;
         if ($table > "" and $dom->params("call") == "") {
             $res = wbItemList($table, $options);
             $list = $res["list"];
             $count = $res["count"];
+            $filtered = true;
         } elseif ($table > "" and $dom->params("call") > "") {
             $list = [];
             $formClass = $this->app->formClass($table);
-            $method = $dom->params("call");
+            $method = $dom->params("ca:ll");
             if (method_exists($formClass, $method)) {
                 $list = $formClass->$method($dom);
             }
             $count = count($list);
+            $filtered = true;
         } elseif ($table == "" and $dom->params("call") > "") {
             $list = (array) wbEval($dom->params("call"));
         }
@@ -399,6 +401,11 @@ class tagForeach
                 $list = $json->get();
             }
         }
+        if (isset($options['filter']) && (array)$list === $list && $filtered == false) {
+            foreach($list as $key => $item) {
+                if (!wbItemFilter((array)$item,$options['filter'])) unset($list[$key]);
+            }
+        }
 
         if ($list && $dom->params("size") > "") {
             $count = count($list);
@@ -420,7 +427,7 @@ class tagForeach
             }
             $ndx = ($page - 1) * $dom->params("size") + 1;
         }
-        if ($dom->params("count") > "") {
+        if ($dom->params('count') > "") {
             $item = $list;
             $list = [];
             $start = 1;
@@ -433,8 +440,14 @@ class tagForeach
                 $count = intval($count);
             }
 
-            for ($i = $start; $i <= $count; $i++) {
-                $list[] = ["_id" => $i,"_value" => $i, "id" => $i];
+            if ($start <= $count) {
+                for ($i = $start; $i <= $count; $i++) {
+                    $list[] = ["_id" => $i,"_value" => $i, "id" => $i];
+                }
+            } else {
+                for ($i = $start; $i >= $count; $i--) {
+                    $list[] = ["_id" => $i,"_value" => $i, "id" => $i];
+                }
             }
         }
         $dom->params("rand") == "true" ? shuffle($list) : null;

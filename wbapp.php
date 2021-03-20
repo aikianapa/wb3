@@ -521,7 +521,7 @@ class wbDom extends DomQuery
         isset($this->item) ? null : $this->item = [];
         $fields = new Dot();
         $fields->setReference($this->item);
-        $inputs = $this->find("[name]:not(done)");
+        $inputs = $this->find("[name]:not([done])");
         foreach ($inputs as $inp) {
                 $name = $inp->attr("name");
                 $value = $fields->get($name);

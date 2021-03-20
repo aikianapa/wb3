@@ -207,6 +207,9 @@ function wbGetToken() {
     function wbApikey($mode = null)
     {
         $app = &$_ENV['app'];
+        if ($app->vars('_sett.api_key_query') !== 'on') {
+            return true;
+        }
         $mode == null ? $mode = $app->vars('_route.mode') : null;
         $token = $app->vars("_sess.token");
         $access = $app->checkToken($app->vars('_req.__token'));
