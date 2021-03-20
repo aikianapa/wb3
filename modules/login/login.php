@@ -43,9 +43,13 @@ class modLogin
     public function signin($dom)
     {
         $app = $dom->app;
-        $app->vars('_route.tpl') ? $out = $app->getTpl($app->vars('_route.tpl')) : $out = $app->fromFile(__DIR__."/signin.php", true);
+        $out = null;
+        $app->vars('_route.tpl') ? $out = $app->getTpl($app->vars('_route.tpl')) : null;
+        !$out ? $out = $app->fromFile(__DIR__."/signin.php", true) : null;
+
         $out->item = $app->vars("_post");
         $out->item["_dir_"] = $out->path;
+
         $out->fetch();
         if (count($app->vars("_post"))) {
             $user = $this->modLoginCheckUser($app->vars("_post.l"), $app->vars("_post.p"));
