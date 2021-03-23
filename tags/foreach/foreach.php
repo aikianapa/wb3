@@ -28,7 +28,14 @@ class tagForeach
 
         $dom->html("");
         $dom->outer = $dom->outer();
-        $dom->parent()->attr("id") > "" ? $this->tid = $dom->parent()->attr("id") : $this->tid = "fe_" . $this->app->newId();
+
+        !isset($this->tid) && $dom->attr("id") > "" ? $this->tid = $dom->attr("id") : null;
+        !isset($this->tid) && $dom->parent()->attr("id") > "" ? $this->tid = $dom->parent()->attr("id") : null;
+        !isset($this->tid) ? $this->tid = "fe_" . $this->app->newId() : null;
+
+        $dom->tid = $this->tid;
+
+
         $dom->params('target') == '' ? $dom->params->target = '#'.$this->tid : null;
         $dom->params("render") == "client" ? $render = $dom->params("render") : $render = "server";
         $dom->params("render", $render);
@@ -120,7 +127,7 @@ class tagForeach
                 $dom->parent()->attr("data-pages", $pages);
                 $dom->parent()->attr("data-page", $pages);
                 $dom->params->count = $count;
-                $dom->params->tpl = $dom->parent()->attr('id');
+                $dom->params->tpl = $dom->tid;
                 $dom->params->page = $page;
                 //$pag = $dom->tagPagination($dom);
                 if (!count((array)$list) or $dom->html() == "") {
@@ -185,19 +192,18 @@ class tagForeach
         foreach ((array) $list as $key => $val) {
             $value = $val;
             $val = (object) $val;
-            $val->_idx = $idx;
-            $val->_ndx = $ndx;
-            $val->_page = $page;
-            $val->_pages = $pages;
-            $val->_val = $value;
-            $val->_parent = &$parent;
             $val->_key = $key;
-            if (!isset($val->_id)) {
-                isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
+            if (!isset($val->__total)) {
+                $val->_page = $page;
+                $val->_pages = $pages;
+                $val->_idx = $idx;
+                $val->_ndx = $ndx;
+                $val->_val = $value;
+                $val->_parent = &$parent;
+                isset($val->_id) ? null : isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
+                $dom->params('table') > "" ? $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$dom->params->table], (array) $val) : null;
             }
-            if ($dom->params('table') > "") {
-                $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$dom->params->table], (array) $val);
-            }
+
             if ($ajax !== false) {
                 $list[$key] = (array) $val;
             } else {
@@ -207,8 +213,10 @@ class tagForeach
                 $line->fetch();
                 $dom->append($line->inner());
             }
-            $idx++;
-            $ndx++;
+            if (!isset($val->__total)) {
+                $idx++;
+                $ndx++;
+            }
         }
 
         $params = $dom->params;
@@ -254,7 +262,7 @@ class tagForeach
                 $dom->parent()->attr("data-pages", $pages);
                 $dom->parent()->attr("data-page", $pages);
                 $dom->params->count = $count;
-                $dom->params->tpl = $dom->parent()->attr('id');
+                $dom->params->tpl = $dom_va->parent()->attr('id');
                 $dom->params->page = $page;
                 $pag = $dom->tagPagination($dom);
                 
@@ -318,7 +326,7 @@ class tagForeach
         $srvpag = false;
 
 
-        $list = $parent = $dom->item;
+        $listTable = $parent = $dom->item;
 
         $dom->params('render') == 'server' && $dom->params('bind') > '' ? $dom->params->tpl = 'true' : null;
         //$this->app->vars('_post.route') == '' and $dom->params('tpl') == 'true' ? $dom->addTpl() : null;
@@ -401,34 +409,9 @@ class tagForeach
                 $list = $json->get();
             }
         }
-        if (isset($options['filter']) && (array)$list === $list && $filtered == false) {
-            foreach($list as $key => $item) {
-                if (!wbItemFilter((array)$item,$options['filter'])) unset($list[$key]);
-            }
-        }
 
-        if ($list && $dom->params("size") > "") {
-            $count = count($list);
-            $dom->params("page") ? $page = $dom->params->page : $page = 1;
-            if ($dom->parent()->attr('id') == '') {
-                $dom->parent()->attr('id', 'fe_' . md5($dom->outer()));
-            }
-            if ($this->app->vars('_post._route') and $this->app->vars('_post._params') and $this->app->vars('_post._tid') == '#' . $dom->parent()->attr('id')) {
-                $page = $this->app->vars('_post._params.page');
-                $srvpag = true;
-            }
-            $list = array_chunk($list, $dom->params->size);
-            $dom->params->pages = $pages = ceil($count / $dom->params->size);
-            if ($page > $pages or $page <= 0) {
-                $list = [];
-            }
-            if ($pages >= 1 && isset($list[$page - 1])) {
-                $list = $list[$page - 1];
-            }
-            $ndx = ($page - 1) * $dom->params("size") + 1;
-        }
         if ($dom->params('count') > "") {
-            $item = $list;
+            isset($list) ? $$item = $list : $item = [];
             $list = [];
             $start = 1;
             $count = $dom->params->count;
@@ -450,12 +433,106 @@ class tagForeach
                 }
             }
         }
+
+        !isset($list) ? $list = [] : null;
+
+        if (isset($options['filter']) && (array)$list === $list && $filtered == false) {
+            foreach($list as $key => $item) {
+                if (!wbItemFilter((array)$item,$options['filter'])) unset($list[$key]);
+            }
+        }
+
+        if ($dom->params('total') OR $dom->params('avg') OR $dom->params('min') OR $dom->params('max')) {
+            $this->avg = wbAttrToArray($this->dom->params('avg'));
+            $this->min = wbAttrToArray($this->dom->params('min'));
+            $this->max = wbAttrToArray($this->dom->params('max'));
+            $this->sum = wbAttrToArray($this->dom->params('total'));
+            
+            $this->flds = array_keys(array_flip(array_merge($this->avg, $this->min, $this->max, $this->sum)));
+
+            $dom->params->size = '';
+            if ($dom->params('group') > '') {
+                $list = $this->group($list);
+            } else {
+                $total = $this->total($list);
+                array_push($list, $total);
+            }
+        }
+
         $dom->params("rand") == "true" ? shuffle($list) : null;
+
+        if ($list && $dom->params("size") > "") {
+            $count = count($list);
+            $dom->params("page") ? $page = $dom->params->page : $page = 1;
+            if ($dom->parent()->attr('id') == '') {
+                $dom->parent()->attr('id', 'fe_' . md5($dom->outer()));
+            }
+            if ($this->app->vars('_post._route') and $this->app->vars('_post._params') and $this->app->vars('_post._tid') == '#' . $dom->parent()->attr('id')) {
+                $page = $this->app->vars('_post._params.page');
+                $srvpag = true;
+            }
+            $list = array_chunk($list, $dom->params->size);
+            $dom->params->pages = $pages = ceil($count / $dom->params->size);
+            if ($page > $pages or $page <= 0) {
+                $list = [];
+            }
+            if ($pages >= 1 && isset($list[$page - 1])) {
+                $list = $list[$page - 1];
+            }
+            $ndx = ($page - 1) * $dom->params("size") + 1;
+        }
+
         if (isset($options['limit'])) {
             $list = array_chunk($list, intval($options['limit']));
             $list = $list[0];
         }
         return [$list, $count, $pages, $page, $srvpag, $options];
+    }
+
+    private function group($list, $flds = null) {
+        $jsonq = new Jsonq();
+        $jsonq = $jsonq->collect($list);
+        $flds == null ? $flds = wbAttrToArray($this->dom->params('group')) : null;
+        $total = $this->total($list);
+        $list = [];
+        if (count($flds)) {
+            $fld = $flds[0];
+            array_shift($flds);
+            $grps = $jsonq->groupBy($fld)->get();
+            foreach($grps as $key => $grp) {
+                count($flds) > 0 ? $grp = $this->group($grp,$flds) : null;
+                $grtot = $this->total($grp, $key);
+                !$this->dom->params('supress') == 'true' ? $list = array_merge($list,$grp) : null;
+                $grtot['_value'] = $key;
+                if ($flds == null) array_push($list, $grtot);
+            }
+        }
+        array_push($list, $total);
+        return $list;
+    }
+
+
+    private function total($list,$grp=null) {
+        $jsonq = new Jsonq();
+        $jsonq = $jsonq->collect($list);
+        $total = ['__total' => 'true'];
+        if ($grp) {
+            $total['_total'] = $grp.'';
+            $total['_class'] = 'group-total';
+        } else {
+            $total['_total'] = '_total';
+            $total['_class'] = 'grand-total';
+        } 
+        $total['_count'] = count($list);
+        $total['__total'] = 'true'; // признак для отключения нумерации в foreach
+        $total['sum'] = $total['avg'] = $total['min'] = $total['max'] = [];
+        foreach($this->flds as $fld) {
+            in_array($fld, $this->sum) ? $total['sum'][$fld] = $jsonq->sum($fld) : null;
+            in_array($fld, $this->avg) ? $total['avg'][$fld] = $jsonq->avg($fld) : null;
+            in_array($fld, $this->min) ? $total['min'][$fld] = $jsonq->min($fld) : null;
+            in_array($fld, $this->max) ? $total['max'][$fld] = $jsonq->max($fld) : null;
+        }
+        return $total;
     }
 
     private function options() {
@@ -508,4 +585,6 @@ class tagForeach
         $_POST['filter'] = $filter;
 
     }
+
+
 }
