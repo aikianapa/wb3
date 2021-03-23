@@ -26,7 +26,7 @@ class attrIf extends wbDom {
           $dom->attr(trim($setattr[0]),$setattr[1]);
         }
       } 
-      if (!$res && !$dom->is('wb-var[else]')) $dom->remove();
+      if (!$res && !$dom->is('wb-var[else]') && !isset($setattr)) $dom->remove();
       
       return $dom;
   }
