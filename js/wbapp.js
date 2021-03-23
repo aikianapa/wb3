@@ -1131,7 +1131,7 @@ var start = function() {
         return wbapp.ajaxSync([{
             url: url,
             type: 'GET',
-            async: false,
+            async: true,
             data: data
         }])[0];
     }

@@ -262,7 +262,7 @@ class tagForeach
                 $dom->parent()->attr("data-pages", $pages);
                 $dom->parent()->attr("data-page", $pages);
                 $dom->params->count = $count;
-                $dom->params->tpl = $dom_va->parent()->attr('id');
+                $dom->params->tpl = $dom->parent()->attr('id');
                 $dom->params->page = $page;
                 $pag = $dom->tagPagination($dom);
                 
