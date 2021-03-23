@@ -20,23 +20,6 @@ function wbInit()
     error_reporting(error_reporting() & ~E_NOTICE);
     date_default_timezone_set('Europe/Moscow');
     wbTrigger('func', __FUNCTION__, 'before');
-    /*
-        if (!isset($_ENV['settings'])) {
-            wbErrorList();
-            wbInitEnviroment($app);
-            wbLoadDriver('default');
-            wbInitSettings($app);
-            wbInitDatabase();
-            wbCheckWorkspace();
-            wbLoadDriver($_ENV["driver"]);
-            wbInitFunctions($app);
-            //wbTableList();
-
-            wbCacheEnvState();
-            if (is_callable("wbAfterInit")) wbAfterInit();
-        }
-        if ($app->vars("_sess.user.lang")) $_SESSION["lang"]=$_ENV["lang"]=$app->vars("_sess.user.lang");
-        */
 }
 
 function wbInitEnviroment()
@@ -2585,9 +2568,10 @@ function wbListTpl()
         $mem = wbFormatBytes($mem, 2);
         $peak = memory_get_peak_usage();
         $peak = wbFormatBytes($peak, 2);
+        $steps = $_ENV['wb_steps'];
 
         $sec = round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 3);
-        echo "<div>Memory usage : {$mem}, Peak: {$peak}, Rendering: {$sec} sec, Cached: {$cache}</div>";
+        echo "<div>Memory usage : {$mem}, Peak: {$peak}, Rendering: {$sec} sec, Cached: {$cache}, Steps: {$steps}</div>";
     }
 
 

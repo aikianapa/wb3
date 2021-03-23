@@ -213,10 +213,7 @@ class wbDom extends DomQuery
     public function fetchNode()
     {
         $this->fetchStrict();
-        if ($this->strict) {
-            return;
-        }
-        if (isset($this->fetched)) {
+        if ($this->strict OR isset($this->fetched)) {
             return;
         }
         $this->fetchParams();
@@ -269,14 +266,13 @@ class wbDom extends DomQuery
 
     public function fetchStrict()
     {
-        if ($this->tagName == "template" or $this->closest("template")->length 
-            or $this->tagName == "code" or $this->closest("code")->length
-            or $this->tagName == "textarea" or $this->closest("textarea")->length) {
+        
+        if (in_array($this->tagName, ['template', 'code','textarea','pre'])) {
             $this->strict = true;
             // set locale for template
-            if (in_array($this->tagName, ['template', 'code','textarea']) && strpos($this->outer(),'_lang.') !== 0) {
+            if (strpos($this->outer(),'_lang.') !== 0) {
                 $locale = $this->app->vars('_env.locale');
-                isset($locale[$_SESSION["lang"]]) ? $locale = $locale[$_SESSION["lang"]] : null;
+                if (isset($locale[$_SESSION["lang"]])) $locale = $locale[$_SESSION["lang"]];
                 $this->addParams(['locale'=>$locale]);
             }
             //isset($_ENV["locales"][$_SESSION["lang"]]) ? $data = ["_lang" => $_ENV["locales"][$_SESSION["lang"]]] : $data = [];
