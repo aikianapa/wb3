@@ -191,6 +191,7 @@ class wbDom extends DomQuery
         $this->fetchStrict();
         $this->fetchLang();
         if ($this->strict OR isset($this->fetched)) return;
+        if (!isset($_ENV['wb_steps'])) {$_ENV['wb_steps'] = 1;} else {$_ENV['wb_steps']++;}
         if ($item == null) $item = $this->item;
         if ($this->tagName == "head") $this->head = $this;
         $this->item = $item;
