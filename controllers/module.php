@@ -12,10 +12,16 @@ class ctrlModule {
       if ($mode == '_settings') {
           $this->settings();
       } else {
-        $aModule=$_ENV["path_app"]."/modules/{$module}/{$module}.php";
-        $eModule=$_ENV["path_engine"]."/modules/{$module}/{$module}.php";
-        if (is_file($aModule)) {require_once($aModule);}
-        elseif (is_file($eModule)) {require_once($eModule);}
+        $modpath = "/modules/{$module}";
+        $aModule=$_ENV["path_app"].$modpath."/{$module}.php";
+        $eModule=$_ENV["path_engine"].$modpath."/{$module}.php";
+        if (is_file($aModule)) {
+          $app->addModule($module, $modpath);
+          require_once($aModule);
+        } else if (is_file($eModule)) {
+          $app->addModule($module, '/engine'.$modpath);
+          require_once($eModule);
+        }
         $class = "mod".ucfirst($module);
         if (class_exists($class)) {
             $out = new $class($app);

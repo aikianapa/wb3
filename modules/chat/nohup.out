@@ -1,0 +1,24 @@
+Workerman[./chatserver.php] start in DEBUG mode
+------------------------------------------- WORKERMAN --------------------------------------------
+Workerman version:4.0.18          PHP version:7.4.3
+-------------------------------------------- WORKERS ---------------------------------------------
+proto   user            worker          listen                      processes    status           
+tcp     blacker         none            websocket://0.0.0.0:8000    1             [OK]            
+--------------------------------------------------------------------------------------------------
+Press Ctrl+C to stop. Start success.
+Worker starting...
+Worker stopped...
+Workerman[chatserver.php] stopping ...
+Workerman[chatserver.php] has been stopped
+Workerman[./chatserver.php] start in DEBUG mode
+------------------------------------------- WORKERMAN --------------------------------------------
+Workerman version:4.0.18          PHP version:7.4.3
+-------------------------------------------- WORKERS ---------------------------------------------
+proto   user            worker          listen                      processes    status           
+tcp     blacker         none            websocket://0.0.0.0:8000    1             [OK]            
+--------------------------------------------------------------------------------------------------
+Press Ctrl+C to stop. Start success.
+Worker starting...
+Worker stopped...
+Workerman[chatserver.php] stopping ...
+Workerman[chatserver.php] has been stopped

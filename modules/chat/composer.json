@@ -1,0 +1,6 @@
+{
+    "require": {
+        "cboden/ratchet": "^0.4.3",
+        "workerman/workerman": "^4.0"
+    }
+}
