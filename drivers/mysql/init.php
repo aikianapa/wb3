@@ -247,6 +247,7 @@ class mysqlDrv
                 $doc['_id'] = $doc['id'] = $doc[$this->keys->$form];
             }
             $doc = $this->app->ItemInit($form, $doc);
+            $this->ItemOconv($doc);
             $doc = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $doc);
             $res = true;
             if (isset($options->filter) or isset($options->context)) {
