@@ -96,11 +96,11 @@ class ctrlAjax
             return json_encode(['login'=>false,'error'=>'Unknown']);
         }
         $user = (object)$user;
-
+		!isset($user->role) ? $user->role = '' : null;
         if (isset($post->password) and isset($user->password) and $app->passwordCheck($post->password, $user->password)) {
             $role = (object)$app->itemRead('users', $user->role);
             $url = '/cms';
-            if (!isset($role->active) or $role->active !== 'on' or $user->active !== 'on') {
+            if ($user->role !== 'admin' and (!isset($role->active) or $role->active !== 'on') or $user->active !== 'on') {
                 return json_encode(['login'=>false,'error'=>'Account is not active']);
             }
             if (isset($role->url_login) and $role->url_login > '') {
