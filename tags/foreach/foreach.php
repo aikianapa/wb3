@@ -200,7 +200,9 @@ class tagForeach
                 $val->_ndx = $ndx;
                 $val->_val = $value;
                 $val->_parent = &$parent;
-                isset($val->_id) ? null : isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
+                if (!isset($val->_id)) {
+                    isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
+                }
                 $dom->params('table') > "" ? $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$dom->params->table], (array) $val) : null;
             }
 
