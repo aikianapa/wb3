@@ -4221,3 +4221,9 @@ Stack trace:
 2021-03-25 10:36:36 pid:164015 Workerman[/var/www/wb3/modules/chat/chatserver.php] status 
 2021-03-25 10:36:55 pid:164044 Workerman[/var/www/wb3/modules/chat/chatserver.php] status 
 2021-03-25 10:37:10 pid:164060 Workerman[/var/www/wb3/modules/chat/chatserver.php] status 
+2021-03-31 01:20:33 pid:22506 Workerman[/var/www/wb3/modules/chat/chatserver.php] status 
+2021-03-31 01:20:33 pid:22506 Workerman[/var/www/wb3/modules/chat/chatserver.php] not run
+2021-03-31 01:20:33 pid:22508 Workerman[/var/www/wb3/modules/chat/chatserver.php] start in DAEMON mode
+2021-03-31 01:20:34 pid:22513 Workerman[/var/www/wb3/modules/chat/chatserver.php] status 
+2021-03-31 11:46:51 pid:22510 Workerman[chatserver.php] stopping ...
+2021-03-31 11:46:51 pid:22510 Workerman[chatserver.php] has been stopped

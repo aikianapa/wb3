@@ -358,7 +358,8 @@ function wbMail(
             $from=array($from,strip_tags($_ENV['settings']['header']));
         }
     }
-    if (!is_array($sent) and is_string($sent) and strpos($sent, ";")) {
+    if (is_string($sent) and strpos($sent, ',')) $sent = explode(',',$sent);
+    if (is_string($sent) and strpos($sent, ";")) {
         $sent=array(explode(";", $sent));
     } elseif (!is_array($sent)) {
         $sent=array(array($sent,$sent));
@@ -369,7 +370,11 @@ function wbMail(
             }
         }
     } elseif (is_array($sent) and !is_array($sent[0]) and !strpos($sent[0], ";")) {
-        $sent=array($sent);
+        foreach ($sent as $k => $s) {
+            if (!is_array($s)) {
+                $sent[$k]=explode(";", $s);
+            }
+        }
     }
 
         require_once __DIR__.'/modules/phpmailer/phpmailer/PHPMailerAutoload.php';
@@ -397,8 +402,10 @@ function wbMail(
             $mail->Password = $sett["password"];
             $mail->SMTPSecure = $sett["secure"];
             intval($sett["port"]) > 0 ? $mail->Port = intval($sett["port"]) : $mail->Port = 587;
-        } else {
+        } else if ($sett["func"]=="sendmail") {
             $mail->isSendmail();
+        } else {
+            $mail->isMail();
         }
         $mail->Timeout  =   20;
         $mail->setFrom($from[0], $from[1]);

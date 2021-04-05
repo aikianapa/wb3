@@ -5,7 +5,7 @@ class modLess {
     $this->minify = false;
     $this->app = $app;
     $this->file = $this->app->route->path_app.$this->app->route->uri;
-    $this->path = dirname($this->file);
+    $this->path();
     $this->name = explode('/', substr($this->file, 0, -5));
     $this->name = array_pop($this->name);
     if (substr($this->file, -9) == '.min.less') {
@@ -17,6 +17,16 @@ class modLess {
     $this->compiler = new lessc;
   }
 
+  function path() {
+        $cfile = md5($this->file);
+        $cdir = $_ENV['dbac'] . '/' . substr($cfile,0,4);
+        is_dir($cdir) ? null : mkdir($cdir, 0755, true);
+        $this->path = dirname($this->file);
+        $this->cpath = $cdir;
+        $this->cfile = $cfile.'.css';
+        $this->cmfile = $cfile.'.min.css';
+  }
+
   function compile() {
     if (is_file($this->file)) {
         $cache = true;
@@ -25,9 +35,8 @@ class modLess {
             isset($cc['no-cache']) ? $cache = false : null;
         }
 
-        $csspath = $this->path;
-        $cssfile = $csspath.'/'.$this->name.'.css';
-        $cssminfile = $csspath.'/'.$this->name.'.min.css';
+        $cssfile = $this->cpath.'/'.$this->cfile;
+        $cssminfile = $this->cpath.'/'.$this->cmfile;
         if ($cache) {
             if ($this->minify && is_file($cssminfile)) {
                 $css = file_get_contents($cssminfile);
