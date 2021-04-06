@@ -293,7 +293,7 @@ function tagTreeUl( &$dom, $Item = array(), $param = null, $srcVal = array() ) {
     if ( !isset( $level ) ) $level = '';
     $dom->html( '' );
     if ( $branch ) {
-        if ( $tree == NULL AND $branch>'' ) {
+        if ( $tree == NULL AND $branch > '' ) {
             $tree = wbTreeFindBranch( $Item['children'], $branch );
         } else {
             $tree = wbTreeFindBranch( $tree, $branch );
