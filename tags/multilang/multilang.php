@@ -43,11 +43,12 @@ class tagMultilang {
         $wrp->find('.nav-tabs .nav-item:first-child .nav-link')->addClass('active');
         $wrp->find('.tab-content .tab-pane:first-child')->addClass('show active');
         $wrp->find('textarea.wb-multilang-data')[0]->attr('name',$field);
-
         $dom->attr("id") > "" ? $tplId = $dom->attr("id") : $tplId='ml_'.wbNewId();
         $dom->attr("id",$tplId);
-        $dom->html($wrp->outer());
+        $outer = $wrp->outer();
+        $dom->inner($outer);
         $dom->append('<script type="wbapp" data-remove="multilang-js">wbapp.loadScripts(["/engine/js/php.js","/engine/tags/multilang/multilang.js"],"multilang-js");</script>'."\n\r");
+        $dom->fetched = true;
     }
 
 

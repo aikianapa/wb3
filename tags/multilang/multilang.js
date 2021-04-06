@@ -11,12 +11,9 @@ function wb_multilang() {
     }
 
     var ml_store = function (that) {
-
         setTimeout(function () {
-
             var data = {};
             var name = $(that).attr("name");
-
             $(that).children(".tab-content").children(".wb-multilang-row").each(function (i) {
                 var multi = $(this).clone();
                 var item = {};
@@ -68,7 +65,7 @@ function wb_multilang() {
                 ml_value(that, data)
                 $(that).trigger("change");
             });
-        }, 50);
+        }, 10);
     }
 
     $(document).find("wb-multilang[name]").each(function () {

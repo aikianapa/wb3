@@ -2,7 +2,7 @@
 
 var wbapp = new Object();
 
-var start = function() {
+var start = function () {
     var data = {};
 
     wbapp.bind = {};
@@ -78,7 +78,7 @@ var start = function() {
             }
         });
 
-        $(document).delegate("[rows=auto]","keydown keyup", function () {
+        $(document).delegate("[rows=auto]", "keydown keyup", function () {
             this.style.overflow = "hidden";
             this.style.height = "1px";
             this.style.height = (this.scrollHeight) + "px";
@@ -109,7 +109,7 @@ var start = function() {
             $(form).removeClass('cursor-wait');
         }
 
-        let signin = function() {
+        let signin = function () {
             if ($(form).attr("action") !== undefined) var url = $(form).attr("action"); else var url = "/api/auth/email";
             wbapp.post(url, data, function (res) {
                 if (res.login) {
@@ -165,7 +165,7 @@ var start = function() {
                 enlink();
             });
         }
-        
+
         dislink();
 
         eval(mode)();
@@ -248,9 +248,9 @@ var start = function() {
             eval(`data.${key} = value`);
             localStorage.setItem(list[0], json_encode(data));
 
-            let checkBind = function(bind, key) {
+            let checkBind = function (bind, key) {
                 if (bind == key) return true;
-                if (key.substr(0,bind.length) == bind) return true;
+                if (key.substr(0, bind.length) == bind) return true;
                 return false;
             }
 
@@ -258,7 +258,7 @@ var start = function() {
                 if (tpl.params.bind !== undefined && checkBind(tpl.params.bind, key) &&
                     tpl.params.render !== undefined && tpl.params.render == 'client') {
                     wbapp.render(tpl.params.target);
-                } else if (tpl.params._params !== undefined && tpl.params._params.bind !== undefined 
+                } else if (tpl.params._params !== undefined && tpl.params._params.bind !== undefined
                     && checkBind(tpl.params._params.bind, key) && tpl.params.render == 'server') {
                     wbapp.render(tpl.params.target);
                 }
@@ -297,87 +297,91 @@ var start = function() {
         if ($(form).parents('.modal.saveclose').length) {
             params.dismiss = $(form).parents('.modal.saveclose').attr('id');
         }
-        data = wbapp.objByForm(form);
-        if (data._idx) delete data._idx;
 
-        if ($(obj).is("input,select,textarea") && params.table && (params.id || params.item)) {
-            let fld = $(obj).attr("name");
-            let value = $(obj).val();
-            let id;
-            if (params.field == undefined && fld > '') params.field = fld;
-            if ($(obj).is(":checkbox") && $(obj).prop("checked")) value = "on";
-            if ($(obj).is(":checkbox") && !$(obj).prop("checked")) value = "";
+        setTimeout(function () {
+            // Задержка для ожидания обработки возможных плагинов
+            data = wbapp.objByForm(form);
+            if (data._idx) delete data._idx;
 
-            if (params.id) {
-                id = params.id;
-            } else if (params.item) id = params.item;
-            if (fld !== undefined) {
-                data = {};
-                data['id'] = id;
-                eval(`data.${fld} = value;`);
-            } else {
-                let tmpId = wbapp.newId();
-                wbapp.storage(tmpId, {
-                    'id': params.item
-                });
-                wbapp.storage(tmpId + '.' + params.field, data);
-                data = wbapp.storage(tmpId);
-            }
-            if (params.url == undefined) params.url = `/api/save/${params.table}`;
-        } else if (params.field !== undefined) {
-            wbapp.storage('tmp' + '.' + params.table + '.' + params.field, data);
-            data = wbapp.storage('tmp' + '.' + params.table);
-        }
+            if ($(obj).is("input,select,textarea") && params.table && (params.id || params.item)) {
+                let fld = $(obj).attr("name");
+                let value = $(obj).val();
+                let id;
+                if (params.field == undefined && fld > '') params.field = fld;
+                if ($(obj).is(":checkbox") && $(obj).prop("checked")) value = "on";
+                if ($(obj).is(":checkbox") && !$(obj).prop("checked")) value = "";
 
-        if ($(obj).data('saved-id') !== undefined) {
-            data['id'] = $(obj).data('saved-id');
-        }
-
-        wbapp.post(params.url, data, function (data) {
-            if (params.callback) eval('params = ' + params.callback + '(params,data)');
-            if (params.data && params.error !== true) {
-                var update = [];
-                var dataname;
-                $.each(data, function (key, value) {
-                    update[key] = value
-                });
-                eval('var checknew = (typeof ' + params.data + ');');
-                if (checknew == "undefined") {
-                    eval(`dataname = str_replace("['` + data._id + `']","","` + params.data + `");`);
-                    eval(dataname + '.push(update)');
+                if (params.id) {
+                    id = params.id;
+                } else if (params.item) id = params.item;
+                if (fld !== undefined) {
+                    data = {};
+                    data['id'] = id;
+                    eval(`data.${fld} = value;`);
                 } else {
-                    eval(params.data + ' = update;');
+                    let tmpId = wbapp.newId();
+                    wbapp.storage(tmpId, {
+                        'id': params.item
+                    });
+                    wbapp.storage(tmpId + '.' + params.field, data);
+                    data = wbapp.storage(tmpId);
                 }
+                if (params.url == undefined) params.url = `/api/save/${params.table}`;
+            } else if (params.field !== undefined) {
+                wbapp.storage('tmp' + '.' + params.table + '.' + params.field, data);
+                data = wbapp.storage('tmp' + '.' + params.table);
             }
 
-            if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
+            if ($(obj).data('saved-id') !== undefined) {
+                data['id'] = $(obj).data('saved-id');
+            }
+
+            wbapp.post(params.url, data, function (data) {
+                if (params.callback) eval('params = ' + params.callback + '(params,data)');
+                if (params.data && params.error !== true) {
+                    var update = [];
+                    var dataname;
+                    $.each(data, function (key, value) {
+                        update[key] = value
+                    });
+                    eval('var checknew = (typeof ' + params.data + ');');
+                    if (checknew == "undefined") {
+                        eval(`dataname = str_replace("['` + data._id + `']","","` + params.data + `");`);
+                        eval(dataname + '.push(update)');
+                    } else {
+                        eval(params.data + ' = update;');
+                    }
+                }
+
+                if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
                 console.log('Update by tpl');
                 $.each(wbapp.template, function (i, tpl) {
-                        if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
-                        if (tpl.params._params && tpl.params._params.bind) tpl.params = tpl.params._params;
+                    if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
+                    if (tpl.params._params && tpl.params._params.bind) tpl.params = tpl.params._params;
 
-                        if (tpl.params.bind && (tpl.params.bind == params.bind || tpl.params.bind == params.update)) {
-                            if (tpl.params.render == 'client') {
+                    if (tpl.params.bind && (tpl.params.bind == params.bind || tpl.params.bind == params.update)) {
+                        if (tpl.params.render == 'client') {
                             // client-side update
-                                if (params.bind) wbapp.storage(params.bind, data);
-                                if (params.update) wbapp.storageUpdate(params.update, data);
-                            } else {
-                                // server-side update
-                                wbapp.renderServer(tpl.params, data);
-                            }
+                            if (params.bind) wbapp.storage(params.bind, data);
+                            if (params.update) wbapp.storageUpdate(params.update, data);
+                        } else {
+                            // server-side update
+                            wbapp.renderServer(tpl.params, data);
                         }
+                    }
                 })
 
 
-            if (data._id !== undefined) $(obj).data('saved-id', data._id);
+                if (data._id !== undefined) $(obj).data('saved-id', data._id);
 
-            console.log("Trigger: wb-save-done");
-            $(obj).trigger("wb-save-done", {
-                params: params,
-                data: data,
+                console.log("Trigger: wb-save-done");
+                $(obj).trigger("wb-save-done", {
+                    params: params,
+                    data: data,
+                });
+
             });
-
-        });
+        }, 100);
     }
 
 
@@ -399,7 +403,7 @@ var start = function() {
                 src = $(this).attr('src');
             } if ($(this).is('[wbapp]')) {
                 src = $(this).attr('wbapp');
-            } 
+            }
             if (src !== null && src > '') {
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', src, true);
@@ -440,13 +444,13 @@ var start = function() {
         return params;
     }
 
-    wbapp.post = async function(url, data = {}, func = null) {
+    wbapp.post = async function (url, data = {}, func = null) {
         if (is_string(data)) {
             data += '&__token=' + wbapp._session.token;
         } else {
             try { data.__token = wbapp._session.token; } catch (error) { null }
         }
-        $.post(url,data).then(function(data){
+        $.post(url, data).then(function (data) {
             if (func !== null) return func(data);
         })
     }
@@ -495,7 +499,7 @@ var start = function() {
                 delete opts.data; // добавил для очистки фильтра
                 params = wbapp.tpl(opts._tid).params;
             }
-            
+
             wbapp.post(params.url, opts, function (data) {
                 if (count(data) == 2 && data.error !== undefined && data.callback !== undefined) {
                     eval(data.callback + '(params,data)');
@@ -616,7 +620,7 @@ var start = function() {
 
     wbapp.storageUpdate = function (key, data) {
         var store = wbapp.storage(key);
-        if (!store) wbapp.storage(key,{});
+        if (!store) wbapp.storage(key, {});
         if (store._id == undefined && (store.result !== undefined || store.params !== undefined) && data !== null && data._id !== undefined) {
             if (data._removed !== undefined && data._removed == true) {
                 if (store.params !== undefined && store.params.render == 'server') {
@@ -624,7 +628,7 @@ var start = function() {
                 } else {
                     try {
                         delete store.result[data._id]
-                    } catch (err) { 
+                    } catch (err) {
                         console.log('Not removed');
                     }
                 }
@@ -863,14 +867,14 @@ var start = function() {
         }
     }
 
-    wbapp.render = function(tid, data) {
+    wbapp.render = function (tid, data) {
         let params = wbapp.template[tid].params;
         if (data == undefined && params.bind == undefined) data = {};
         if (data == undefined) data = wbapp.storage(params.bind);
         if (params.render == undefined) params.render = null;
         switch (params.render) {
             case 'client':
-                wbapp.renderClient(params,data);
+                wbapp.renderClient(params, data);
                 break;
             case 'server':
                 wbapp.renderServer(params, data);
@@ -1009,10 +1013,10 @@ var start = function() {
                     //        minHeight: 175,
                     //        handles: 'n, e, s, w, ne, sw, se, nw',
                     //      })
-                .draggable({
+                    .draggable({
                         handle: '.modal-header',
                         containment: "body"
-                });
+                    });
 
                 wbapp.modalZndx += 10;
                 if (!$(this).closest().is("body")) {
@@ -1023,12 +1027,12 @@ var start = function() {
                 $(that).css("z-index", wbapp.modalZndx);
                 $(that).find("[data-dismiss]").attr("data-dismiss", wbapp.modalZndx);
                 if ($(that).attr("data-backdrop") !== "false") {
-                        $(".modal-backdrop:not([style])").css("z-index", (wbapp.modalZndx - 5));
+                    $(".modal-backdrop:not([style])").css("z-index", (wbapp.modalZndx - 5));
                 }
                 window.dispatchEvent(new Event('resize'));
             });
 
-            $(document).delegate(".modal","DOMSubtreeModified",function(){
+            $(document).delegate(".modal", "DOMSubtreeModified", function () {
                 if ($(this).find('.modal-content').height() > $(window).height() - 80) {
                     $(this).addClass('h-100');
                 } else {
@@ -1038,7 +1042,7 @@ var start = function() {
 
             $(document).delegate(".modal", 'hidden.bs.modal', function () {
                 let zndx = $(this).css("z-index") * 1;
-                $(".modal-backdrop[style*='z-index: " + (zndx - 5)+"']").remove();
+                $(".modal-backdrop[style*='z-index: " + (zndx - 5) + "']").remove();
             })
 
             $(document).delegate(".modal [data-dismiss]", "click", function (event) {
@@ -1102,7 +1106,7 @@ var start = function() {
 
         for (var i = 0; i < ajaxCount; i++) { //append logic to invoke callback function once all the ajax calls are completed, in success handler.
 
-            try {ajaxObjs[i].data.__token = wbapp._session.token;} catch (error) { null }
+            try { ajaxObjs[i].data.__token = wbapp._session.token; } catch (error) { null }
 
             $.ajax(ajaxObjs[i]).done(function (res) {
                 ajaxCount--;
@@ -1145,14 +1149,14 @@ var start = function() {
         }])[0];
     }
 
-    wbapp.trigger = function(trigger, event = null, data = null) {
-        console.log('Trigger: '+trigger);
+    wbapp.trigger = function (trigger, event = null, data = null) {
+        console.log('Trigger: ' + trigger);
         if (event == null) {
             $(document).trigger(trigger, data);
         } else {
             $(event).trigger(trigger, data);
         }
-        
+
     }
 
     wbapp.session = function (e) {
@@ -1243,27 +1247,27 @@ var start = function() {
         });
     }
 
-    wbapp.loadPreload = async function() {
+    wbapp.loadPreload = async function () {
         let preloads = {};
         $('link[rel=preload][as][href]').each(function () {
-            if (preloads[$(this).attr('as')] == undefined) { preloads[$(this).attr('as')] = [];}
+            if (preloads[$(this).attr('as')] == undefined) { preloads[$(this).attr('as')] = []; }
             preloads[$(this).attr('as')].push($(this).attr('href'))
         });
         let preload_max = 0;
         let preload_count = 0;
         if (preloads.script.length > 0) preload_max++;
         if (preloads.style.length > 0) preload_max++;
-        let preload_check = ()=>{
+        let preload_check = () => {
             if (preload_count == preload_max) wbapp.trigger('ready-all');
         }
         console.log(preloads);
-        wbapp.loadScripts(preloads.script,'preloaded-js',()=>{ preload_count++; preload_check() });
-        wbapp.loadStyles(preloads.style, 'preloaded-css',()=>{ preload_count++; preload_check() });
+        wbapp.loadScripts(preloads.script, 'preloaded-js', () => { preload_count++; preload_check() });
+        wbapp.loadStyles(preloads.style, 'preloaded-css', () => { preload_count++; preload_check() });
     }
 
-    wbapp.on = async function (trigger, func = null  ) {
+    wbapp.on = async function (trigger, func = null) {
         if (func == null) func = () => { return true; }
-        $(document).on(trigger,func);
+        $(document).on(trigger, func);
     }
 
     wbapp.furl = function (str) {
@@ -1340,7 +1344,7 @@ var start = function() {
             $(this).data("idx", idx);
 
             if ($(this).is('[type=email]')) {
-                if (($(this).val() > '' && !wbapp.check_email($(this).val())) || ($(this).val() == '' && $(this).prop('required') ) ) {
+                if (($(this).val() > '' && !wbapp.check_email($(this).val())) || ($(this).val() == '' && $(this).prop('required'))) {
                     res = false;
                     $(this).data("error", wbapp._settings.sysmsg.email_correct);
                     console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
@@ -1360,10 +1364,10 @@ var start = function() {
                     console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                     $(form).trigger("wb-verify-false", [this]);
                 } else {
-                     
-                        console.log("trigger: wb-verify-true [" + $(this).attr("name") + "]");
-                        $(form).trigger("wb-verify-true", [this]);
-                    
+
+                    console.log("trigger: wb-verify-true [" + $(this).attr("name") + "]");
+                    $(form).trigger("wb-verify-true", [this]);
+
                 }
             }
             if ($(this).is("[required][type=checkbox]:not(:checked)")) {
@@ -1398,7 +1402,7 @@ var start = function() {
                 if (check.length) {
                     if ($(this).val() !== $(check).val()) {
                         res = false;
-                        
+
                         $(this).data("error", wbapp._settings.sysmsg.pass_match);
                         console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                         $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
@@ -1464,7 +1468,7 @@ var start = function() {
 
         });
         if (res == true) {
-            wbapp.trigger('wb-verify-success',form,[form]);
+            wbapp.trigger('wb-verify-success', form, [form]);
         }
         if (res == false) {
             wbapp.trigger('wb-verify-fail', form, [form]);
@@ -1552,7 +1556,7 @@ var start = function() {
         if (typeof str_replace == 'undefined') {
             wbapp.loadScripts([
                 `/engine/js/php.js`
-//                , `/engine/js/jquery-migrate.min.js`
+                //                , `/engine/js/jquery-migrate.min.js`
                 , `/engine/js/jquery-ui.min.js` // для modal draggable - нужно подумать куда перенести
                 , `/engine/js/jquery.tap.js`
                 , `/engine/js/ractive.js`
@@ -1590,4 +1594,4 @@ if (typeof $ === 'undefined') {
         start();
     }
     document.head.appendChild(script);
-} 
+}
