@@ -4,23 +4,31 @@ use ScssPhp\ScssPhp\OutputStyle;
 use ScssPhp\Server\Server;
 
 //https://scssphp.github.io/scssphp/
+
 class modScss {
-  function __construct($app) {
+  function __construct($obj) {
       require_once __DIR__.'/scssphp/scss.inc.php';
-      $this->minify = false;
-      $this->app = $app;
-      $this->file = $this->app->route->path_app.$this->app->route->uri;
-      $this->path();
-      $this->name = explode('/',substr($this->file, 0, -5));
-      $this->name = array_pop($this->name);
-      if (substr($this->file,-9) == '.min.scss') {
-          $this->name = explode('/', substr($this->file, 0, -9));
-          $this->name = array_pop($this->name);
-          $this->file = substr($this->file, 0, -9).'.scss';
-          $this->minify = true;
-      }
       $this->compiler = new Compiler();
-      $this->compiler->setImportPaths($this->path);
+      if (strtolower(get_class($obj)) == 'wbapp') {
+        $app = &$obj;
+        $this->minify = false;
+        $this->app = $app;
+        $this->file = $this->app->route->path_app.$this->app->route->uri;
+        $this->path();
+        $this->name = explode('/',substr($this->file, 0, -5));
+        $this->name = array_pop($this->name);
+        if (substr($this->file,-9) == '.min.scss') {
+            $this->name = explode('/', substr($this->file, 0, -9));
+            $this->name = array_pop($this->name);
+            $this->file = substr($this->file, 0, -9).'.scss';
+            $this->minify = true;
+        }
+        $this->compiler->setImportPaths($this->path);
+      } else {
+        $app = &$obj->app;
+        $scss = $this->compiler->compile($obj->text());
+        $obj->text($scss);
+      } 
   }
 
 
