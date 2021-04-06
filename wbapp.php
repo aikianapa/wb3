@@ -668,7 +668,7 @@ class wbApp
             return;
         }
         $cid = $this->getCacheId();
-        $sub = substr($cid, 0, 4);
+        $sub = substr($cid, 0, 2);
         $dir = $this->vars('_env.dbac').'/'.$sub;
         $name = $dir.'/'.$cid.'.html';
         if (!strpos(' '.$out, '<!DOCTYPE html>')) {
@@ -693,7 +693,7 @@ class wbApp
             return null;
         }
         $cid = $this->getCacheId();
-        $sub = substr($cid, 0, 4);
+        $sub = substr($cid, 0, 2);
         $dir = $this->vars('_env.dbac').'/'.$sub;
         $name = $dir.'/'.$cid.'.html';
     

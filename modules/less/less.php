@@ -19,7 +19,7 @@ class modLess {
 
   function path() {
         $cfile = md5($this->file);
-        $cdir = $_ENV['dbac'] . '/' . substr($cfile,0,4);
+        $cdir = $_ENV['dbac'] . '/_css';
         is_dir($cdir) ? null : mkdir($cdir, 0755, true);
         $this->path = dirname($this->file);
         $this->cpath = $cdir;
