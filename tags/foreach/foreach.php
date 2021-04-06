@@ -209,6 +209,14 @@ class tagForeach
             if ($ajax !== false) {
                 $list[$key] = (array) $val;
             } else {
+
+                if (isset($val->__total)) {
+                    foreach((array)$val->sum as $k =>$v) {
+                        $val->$k = $v;
+                    }
+                }
+
+
                 $line = $this->app->fromString($dom->tpl,true);
                 $line->copy($dom);
                 $line->item = (array) $val;
