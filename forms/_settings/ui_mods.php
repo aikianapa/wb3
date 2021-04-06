@@ -4,10 +4,13 @@
 </nav>
 
 <div>
-    <wb-foreach wb-call="wbListModules()">
+    <wb-foreach wb="call=wbListModules()&group=liter&total=_idx">
+        
+        <div class="divider-text" wb-if='"{{divider}}">""'>{{divider}}</div>
+        
         <button type="button" class="btn btn-sm btn-light d-inline m-1" wb-if='"{{sett}}" > ""'
-            data-ajax="{'url':'/module/{{id}}/_settings/','html':'#editSettingsForm'}">
-            {{id}}
+           data-ajax="{'url':'/module/{{id}}/_settings/','html':'#editSettingsForm'}">
+           {{id}}
         </button>
     </wb-foreach>
 </div>

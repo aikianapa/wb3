@@ -786,9 +786,10 @@ class wbApp
 
     public function controller($controller = null)
     {
-        if (substr($this->mime($this->route->uri), 0, 6) == 'image/') {
+        if ($this->route->controller !== 'module' && substr($this->mime($this->route->uri), 0, 6) == 'image/') {
             $this->route->controller = 'thumbnails';
         }
+
         !$controller ? $controller = $this->route->controller : null;
 
         if ($controller) {

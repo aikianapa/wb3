@@ -2186,20 +2186,25 @@ function wbListModules()
 {
     $arr = [];
     $p=[$_ENV['path_engine'].'/modules',$_ENV['path_app'].'/modules'];
+    $flag_liter = '';
     foreach ($p as $d) {
-        if (is_dir($d)) {
-            $list = scandir($d);
-        }
+        is_dir($d) ? $list = scandir($d) : null;
         foreach ($list as $e) {
             if (!in_array($e, [".",".."]) and substr($e, 1)!=="_" and !in_array($e, $arr) and is_dir($d.'/'.$e) and is_file($d.'/'.$e.'/'.$e.".php")) {
                 $arr[$e] = [
                     'id' => $e,
                     'module' => $d.'/'.$e.'/'.$e.".php",
                     'path' => $d.'/'.$e,
-                    'sett' => ''
+                    'sett' => '',
+                    'liter' => '',
+                    'divider' => ''
                 ];
                 if (is_file($d.'/'.$e.'/'.$e.'_sett.php')) {
                     $arr[$e]['sett'] = $d.'/'.$e.'/'.$e.'_sett.php';
+                    $arr[$e]['liter'] = strtoupper(substr($e,0,1));
+                    if ($arr[$e]['liter'] > '' AND $flag_liter !== $arr[$e]['liter']) {
+                        $flag_liter = $arr[$e]['divider'] = $arr[$e]['liter'];
+                    }
                 }
             }
         }

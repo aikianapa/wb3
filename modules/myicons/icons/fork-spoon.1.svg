@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
+<g>
+	<g>
+		
+			<path fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
+			M5,21h14c1.105,0,2-0.895,2-2V5c0-1.105-0.895-2-2-2H5C3.895,3,3,3.895,3,5v14C3,20.105,3.895,21,5,21z"/>
+		
+			<line fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="8.666" y1="11.585" x2="8.673" y2="17"/>
+		<g>
+			
+				<path fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
+				M10.333,7v2.723l0-0.043c0,1.052-0.746,1.905-1.667,1.905C7.746,11.585,7,10.732,7,9.68l0,0.043V7"/>
+		</g>
+		
+			<line fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="15.333" y1="11.762" x2="15.333" y2="17"/>
+		<g>
+			
+				<path fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
+				M17,9.857c0,1.052-0.746,1.905-1.667,1.905c-0.92,0-1.667-0.853-1.667-1.905C13.667,8.279,14.413,7,15.333,7
+				C16.254,7,17,8.279,17,9.857z"/>
+		</g>
+	</g>
+	<g>
+		<rect y="0" transform="matrix(-1 -4.486867e-11 4.486867e-11 -1 24 24)" fill="none" width="24" height="24"/>
+	</g>
+</g>
+</svg>

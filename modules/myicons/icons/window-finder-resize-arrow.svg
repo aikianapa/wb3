@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 24.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
+<g>
+	<g>
+		
+			<line fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" x1="8" y1="15" x2="3" y2="20"/>
+		<polyline fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" points="7,20 3,20 
+			3,16 		"/>
+		
+			<line fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" x1="15" y1="8" x2="18" y2="8"/>
+		
+			<line fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" x1="15" y1="12" x2="18" y2="12"/>
+		
+			<line fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" x1="15" y1="16" x2="18" y2="16"/>
+		<path fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M12,4v16h7
+			c1.105,0,2-0.895,2-2V6c0-1.105-0.895-2-2-2H5C3.895,4,3,4.895,3,6v6"/>
+	</g>
+	<g>
+		<path fill="none" d="M0,0h24v24H0V0z"/>
+	</g>
+</g>
+</svg>

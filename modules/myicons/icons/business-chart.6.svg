@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
+<g>
+	<g>
+		
+			<circle fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" cx="12" cy="12" r="8.5"/>
+		<polyline fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" points="20,12 12,12 
+			12,4 		"/>
+		
+			<line fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" x1="6" y1="18" x2="12" y2="12"/>
+	</g>
+	<path fill="none" d="M0,0h24v24H0V0z"/>
+</g>
+</svg>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
+<g>
+	<path fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
+		M20.707,4.707l-1.414-1.414c-0.391-0.391-1.024-0.391-1.414,0L7.293,13.879C7.105,14.066,7,14.321,7,14.586V17h2.414
+		c0.265,0,0.52-0.105,0.707-0.293L20.707,6.121C21.098,5.731,21.098,5.098,20.707,4.707z"/>
+	
+		<line fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="18.914" y1="7.914" x2="16.086" y2="5.086"/>
+	<path fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
+		M21,11v8c0,1.105-0.895,2-2,2H5c-1.105,0-2-0.895-2-2V5c0-1.105,0.895-2,2-2h8"/>
+	<rect fill="none" width="24" height="24"/>
+</g>
+</svg>

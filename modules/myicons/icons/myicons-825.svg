@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
+<g>
+	<rect fill="none" width="24" height="24"/>
+	<g>
+		
+			<line fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="16" y1="2" x2="16" y2="6"/>
+		
+			<line fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="8" y1="2" x2="8" y2="6"/>
+		
+			<line fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="3" y1="9" x2="21" y2="9"/>
+		
+			<path fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
+			M19,4H5C3.895,4,3,4.895,3,6v13c0,1.105,0.895,2,2,2h14c1.105,0,2-0.895,2-2V6C21,4.895,20.105,4,19,4z"/>
+		
+			<path id="Shape_3077_210_" fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
+			M7.013,12.729c-0.138,0-0.25,0.112-0.249,0.25c0,0.138,0.112,0.25,0.25,0.25c0.138,0,0.25-0.112,0.25-0.25
+			C7.264,12.841,7.152,12.729,7.013,12.729"/>
+		
+			<path id="Shape_3077_209_" fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
+			M12.013,12.729c-0.138,0-0.25,0.112-0.249,0.25c0,0.138,0.112,0.25,0.25,0.25c0.138,0,0.25-0.112,0.25-0.25
+			C12.264,12.841,12.152,12.729,12.013,12.729"/>
+		
+			<path id="Shape_3077_208_" fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
+			M17.013,12.729c-0.138,0-0.25,0.112-0.249,0.25c0,0.138,0.112,0.25,0.25,0.25c0.138,0,0.25-0.112,0.25-0.25
+			C17.264,12.841,17.152,12.729,17.013,12.729"/>
+		
+			<path id="Shape_3077_207_" fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
+			M7.013,16.729c-0.138,0-0.25,0.112-0.249,0.25c0,0.138,0.112,0.25,0.25,0.25c0.138,0,0.25-0.112,0.25-0.25
+			C7.264,16.841,7.152,16.729,7.013,16.729"/>
+		
+			<path id="Shape_3077_206_" fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="
+			M12.013,16.729c-0.138,0-0.25,0.112-0.249,0.25c0,0.138,0.112,0.25,0.25,0.25c0.138,0,0.25-0.112,0.25-0.25
+			C12.264,16.841,12.152,16.729,12.013,16.729"/>
+	</g>
+</g>
+</svg>

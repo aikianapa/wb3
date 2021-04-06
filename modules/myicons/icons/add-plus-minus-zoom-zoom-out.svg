@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
+<g>
+	<path fill="none" d="M0,0h24v24H0V0z"/>
+	<g>
+		
+			<line fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" x1="12.444" y1="11.074" x2="12.444" y2="14.037"/>
+		
+			<line fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" x1="13.926" y1="12.556" x2="10.963" y2="12.556"/>
+		
+			<circle fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" cx="12.444" cy="12.556" r="4.444"/>
+		
+			<line fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" x1="4.325" y1="5" x2="5.675" y2="5"/>
+		<path fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M11.217,3.217
+			c0.438-0.062,0.883-0.106,1.339-0.106C17.772,3.111,22,7.34,22,12.556S17.772,22,12.556,22s-9.444-4.228-9.444-9.444
+			c0-0.456,0.043-0.9,0.106-1.339"/>
+		<circle fill="none" stroke="#323232" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" cx="5" cy="5" r="3"/>
+	</g>
+</g>
+</svg>
