@@ -1260,7 +1260,6 @@ var start = function () {
         let preload_check = () => {
             if (preload_count == preload_max) wbapp.trigger('ready-all');
         }
-        console.log(preloads);
         wbapp.loadScripts(preloads.script, 'preloaded-js', () => { preload_count++; preload_check() });
         wbapp.loadStyles(preloads.style, 'preloaded-css', () => { preload_count++; preload_check() });
     }

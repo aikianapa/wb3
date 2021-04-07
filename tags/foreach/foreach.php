@@ -354,7 +354,7 @@ class tagForeach
         } elseif ($table > "" and $dom->params("call") > "") {
             $list = [];
             $formClass = $this->app->formClass($table);
-            $method = $dom->params("ca:ll");
+            $method = $dom->params("call");
             if (method_exists($formClass, $method)) {
                 $list = $formClass->$method($dom);
             }
