@@ -2,7 +2,7 @@
 <div class="chat-wrapper chat-wrapper-two" id="modFormBuilder">
     <div class="chat-sidebar">
 
-        <div class="chat-sidebar-header d-flex align-items-center">
+        <div class="chat-sidebar-header d-flex align-items-center p-3">
             <a data-toggle="tooltip" data-trigger="hover" title="Собеседники"
                 onclick="$('#modFormbuilderPanel').toggleClass('show');">
                 <svg class="mi-legal-friction-talk-users size-20" wb-module="myicons"></svg>

@@ -69,9 +69,11 @@ function savestate() {
 function loadstate() {
 	$this->app->apikey();
 	$cache = $this->app->vars('_env.dbac').'/modFormbuilder/'.md5($this->app->user->_id).'.html';
+	$out = '';
 	if (is_file($cache)) {
 		$out = $this->app->fromFile($cache,true);
-	} else {
+	} 
+	if ($out->html() == '') {
 		$out = $this->app->fromFile(__DIR__ . '/formbuilder_view.php');
 		$this->snipheads($out);
 	} 

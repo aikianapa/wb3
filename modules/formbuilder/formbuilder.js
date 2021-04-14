@@ -261,6 +261,7 @@ var wbModFormBuilder = function() {
 
 			$('#modFormbuilderFormType .list-group-item').off('tap click');
 			$('#modFormbuilderFormType .list-group-item').on('tap click',function(){
+				if (!$iframe.length) return;
 				if ($focus.is('.row') && $(this.snippet).is('.row')) {
 					this.snippet = $(this.snippet).html();
 				}
