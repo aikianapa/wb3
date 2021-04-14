@@ -1504,6 +1504,7 @@ var start = function () {
                 if ($(form).parents(".treeData").length) {
                     data[val["name"]] = htmlentities(data[val["name"]]);
                     data[val["name"]] = str_replace('&quot;', '/"', data[val["name"]]);
+                    data[val["name"]] = str_replace('&amp;quot;', '"', data[val["name"]]);
                 }
             }
         });

@@ -1,5 +1,5 @@
 <?php
-
+use Adbar\Dot;
 class modCodemirror
 {
     public function __construct($dom)
@@ -27,14 +27,17 @@ class modCodemirror
 			} else {
 				$textarea->attr("name", $dom->attr("name"));
 			}
+            $name = $textarea->attr("name");
             if ($dom->attr('id')>'') {
                 $out->attr('id', $dom->attr('id'));
 			} else {
                 $out->attr('id', 'cm_'.wbNewId());
 			}
+            $item = new Dot();
+            $item->setReference($dom->item);
+            $text = $item->get($name);
+            $textarea->text($text);
 
-            $out->data = $dom->data;
-            $out->fetch();
             $out->prop("done",true);
 			$dom->after($out);
 			$dom->remove();

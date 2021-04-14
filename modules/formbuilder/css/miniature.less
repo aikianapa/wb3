@@ -1,0 +1,38 @@
+body[miniature] {
+    width: 1000px;
+    font-size: 25px;
+    padding: 50px;
+    zoom: 0.2;
+    overflow: hidden;
+    &.headers {
+        h1 {
+            font-size: 5rem;
+        }
+        h2 {
+            font-size: 4rem;
+        }
+        h3 {
+            font-size: 3rem;
+        }
+        h4 {
+            font-size: 2rem;
+        }
+        h5 {
+            font-size: 1rem;
+        }
+        h6 {
+            font-size: 0.5rem;
+        }
+    }
+    &.grid {
+        [class*="col-"] {
+            border: 1px #fff solid;
+            background-color: var(--teal);
+            height: 100px;
+        }
+        .container {
+            background-color: var(--teal);
+            height: 100%;
+        }
+    }
+}

@@ -3,78 +3,102 @@
     <div class="chat-sidebar">
 
         <div class="chat-sidebar-header d-flex align-items-center">
-		<a data-toggle="tooltip" data-trigger="hover" title="Собеседники"
-							onclick="$('.chat-sidebar-right').toggle();">
-							<svg class="mi-legal-friction-talk-users size-20" wb-module="myicons"></svg>
-							<span class="tx-medium mg-l-5"></span>
-						</a>
-						<a href="#channelLeave" data-toggle="modal"><span data-toggle="tooltip"
-							data-trigger="hover" title="Выйти из канала">
-							<svg class="mi-interface-essential-282 size-20" wb-module="myicons"></svg>
-							</span></a>
+            <a data-toggle="tooltip" data-trigger="hover" title="Собеседники"
+                onclick="$('#modFormbuilderPanel').toggleClass('show');">
+                <svg class="mi-legal-friction-talk-users size-20" wb-module="myicons"></svg>
+                <span class="tx-medium mg-l-5"></span>
+            </a>
+            <a href="javascript:void(0);"
+                data-ajax="{'url':'/module/formbuilder/_settings/','html':'.chat-content-body'}"><span
+                    data-toggle="tooltip" data-trigger="hover" title="Настройки">
+                    <svg class="mi-settings.2 size-20" wb-module="myicons"></svg>
+                </span></a>
         </div><!-- chat-sidebar-header -->
 
         <!-- start sidebar body -->
         <div class="chat-sidebar-body">
 
 
- <!-- required bootstrap js and fontawesome -->
- <!-- add 'accordion' snippet in css -->
- <div id="modFormbuilderFormType" class="accordion w-100">
-   <div class="card mb-0">
-	 <div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
-	  <a class="cursor-pointer card-title">Заголовки</a>
-	 </div>
-	  <div id="collapseOne" class="card-body collapse" data-parent="#modFormbuilderFormType" >
-		<p></p>
-	  </div>
-	  <div class="card-header collapsed" data-toggle="collapse" data-parent="#modFormbuilderFormType" href="#collapseTwo">
-		<a class="cursor-pointer card-title">Подвалы</a>
-	  </div>
-	  <div id="collapseTwo" class="card-body collapse" data-parent="#modFormbuilderFormType" >
-		<p></p>
-	  </div>
-	  <div class="card-header collapsed" data-toggle="collapse" data-parent="#modFormbuilderFormType" href="#collapseThree">
-		<a class="cursor-pointer card-title">Формы</a>
-	  </div>
-	  <div id="collapseThree" class="collapse" data-parent="#modFormbuilderFormType" >
-		<div class="card-body"></div>
-	  </div>
-   </div>
-</div>
+            <!-- required bootstrap js and fontawesome -->
+            <!-- add 'accordion' snippet in css -->
 
+
+            <div id="modFormbuilderFormType" class="accordion w-100">
+                <div class="card mb-0">
+                    <wb-foreach wb-from="modset.prop.data">
+                        <div class="card-header collapsed" data-toggle="collapse" href="#collapse-{{id}}">
+                            <b class="cursor-pointer card-title">
+                                <svg class="mi-settings.2 size-20" wb-module="myicons"></svg>
+                                {{name}}
+                            </b>
+                        </div>
+                        <div id="collapse-{{id}}" class="card-body collapse p-2" data-parent="#modFormbuilderFormType">
+                            <ul class="list-group {{_parent.id}}">
+                                <wb-foreach wb-from="children">
+                                    <li class="list-group-item" data-toggle="popover"
+                                        data-url="/module/formbuilder/snipview/{{_parent.id}}/{{id}}">
+                                        {{name}}
+                                    </li>
+                                </wb-foreach>
+                            </ul>
+                        </div>
+                    </wb-foreach>
+                </div>
+            </div>
         </div>
-
-
-
     </div><!-- chat-sidebar -->
 
     <div class="chat-content">
         <div class="chat-content-body">
-qerqwertqw
+            <div class="focus-menu position-absolute">
+                <i class="fa fa-level-up" data="uplevel" title="Level Up" data-toggle="tooltip"
+                    data-position="bottom"></i>
+                <i class="fa fa-arrow-circle-up" data="up"></i>
+                <i class="fa fa-arrow-circle-down" data="down"></i>
+                <i class="fa fa-gear" data="sett"></i>
+                <i class="fa fa-edit" data="edit"></i>
+                <i class="fa">|</i>
+                <i class="fa fa-trash" data="trash"></i>
+            </div>
+            <div class="focus-box position-absolute"></div>
+            <div class="hover-box position-absolute"></div>
+            <iframe id="modFormbuilderView" width="100%" frameborder="0" src="/module/formbuilder/loadstate/">
+
+            </iframe>
         </div><!-- chat-content-body -->
 
-        <div class="chat-sidebar-right">
-            <div class="pd-y-20 pd-x-10">
-                <div class="tx-10 tx-uppercase tx-medium tx-color-03 tx-sans tx-spacing-1 pd-l-10">Собеседники</div>
-                <div class="chat-member-list" id="chatRoomUsers">
-                    <wb-foreach wb="from=result&bind=mod.chat.roomusers&render=client">
-                        <a href="#" data-id="{{id}}" class="media">
-                            <div class="avatar avatar-sm avatar-online"><span
-                                    class="avatar-initial rounded-circle">b</span></div>
-                            <div class="media-body mg-l-10">
-                                <h6 class="mg-b-0">{{name}}</h6>
-                            </div><!-- media-body -->
-                        </a>
-                    </wb-foreach>
+        <div class="modal right" data-backdrop="static" role="dialog" id="modFormbuilderEditor">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header py-2">
+                        <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Сохранить</button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body p-0">
+                        <wb-module wb="module=codemirror"></wb-module>
+                    </div>
                 </div>
             </div>
-        </div><!-- chat-sidebar-right -->
+        </div>
+
+        <div class="off-canvas off-canvas-right" id="modFormbuilderPanel">
+            <a href="#" class="close" onclick="$(this).parent().toggleClass('show');"><i class="fa fa-close"></i></a>
+            <div class="pd-25 ht-100p tx-13">
+                <h6 class="tx-inverse mg-t-50 mg-b-25">Здесь будет редактор свойств</h6>
+                <p class="mg-b-25">Royalty free means you just need to pay for rights to use the item once per end
+                    product. You don't need to pay additional or ongoing fees for each person who sees or uses it.</p>
+                <a href="" class="btn btn-primary btn-block">Learn More</a>
+            </div>
+        </div>
     </div><!-- chat-content -->
 </div><!-- chat-wrapper -->
 <script type="wbapp">
-    wbapp.loadScripts(["/engine/modules/formbuilder/formbuilder.js?{{_env.new_id}}"],"formbuilder-js");
-    wbapp.loadStyles(["/engine/modules/formbuilder/formbuilder.less?{{_env.new_id}}"]);
+    wbapp.loadStyles(["/engine/modules/formbuilder/css/formbuilder.less?{{_env.new_id}}"]);
+    wbapp.loadScripts([
+    "/engine/modules/formbuilder/formbuilder.js?{{_env.new_id}}"
+    ],"formbuilder-js");
 </script>
 
 

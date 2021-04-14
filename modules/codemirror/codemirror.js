@@ -1,3 +1,4 @@
+$(document).off("codemirror-js");
 $(document).on("codemirror-js", function() {
   wbapp.loadScripts(['/engine/modules/codemirror/dist/lib/codemirror.js'], 'codemirror-js-ready', function() {
     wbapp.loadStyles([
@@ -18,26 +19,25 @@ $(document).on("codemirror-js", function() {
   });
 });
 
+$(document).off("codemirror-js-addons");
 $(document).on("codemirror-js-addons", function() {
   $('textarea.codemirror').each(function() {
     var that = this;
     var name = $(that).attr("name");
     var form = $(that).parents("form")[0];
-    if ($(that).data("wb-loaded") == undefined) {
-      if ($(that).data("theme") !== undefined) {
-        var theme = $(that).data("theme");
-      } else {
-        var theme = 'cobalt';
-      }
-      if ($(that).data("mode") !== undefined) {
-        var mode = $(that).data("mode");
-      } else {
-        var mode = 'htmlmixed';
-      }
+    if (that.done == undefined) {
+      var theme = 'cobalt';
+      var mode = 'htmlmixed';
+      if ($(that).attr("data-theme") !== undefined) {
+        theme = $(that).attr("data-theme");
+      } 
+      if ($(that).attr("data-mode") !== undefined) {
+        mode = $(that).attr("data-mode");
+      } 
       wbapp.loadStyles(['/engine/modules/codemirror/dist/theme/' + theme + '.css']);
       wbapp.loadScripts(['/engine/modules/codemirror/dist/mode/' + mode + '/' + mode + '.js']);
       // Initialize CodeMirror editor with a nice html5 canvas demo.
-      var editor = CodeMirror.fromTextArea(that, {
+      let editor = CodeMirror.fromTextArea(that, {
         mode: mode,
         theme: theme,
         lineNumbers: true,
@@ -68,8 +68,10 @@ $(document).on("codemirror-js-addons", function() {
           }, 300);
         });
       }
-      $(that).data("wb-loaded", true);
-      $(that).data("editor", editor);
+      this.done = true;
+      this.editor = editor;
+      $(this).data("editor", editor);
+      wbapp.trigger('codemirror-init',this);
     }
   });
 });

@@ -1504,15 +1504,11 @@ function wbPutContents($dir, $contents, $flag = null)
 {
     $parts = explode('/', $dir);
     $file = array_pop($parts);
-    $dir = '';
+    $dir = implode('/',$parts);
     $u=umask();
-    foreach ($parts as $part) {
-        if (!is_dir($dir .= "/$part")) {
-            mkdir($dir, 0755, True);
-        }
-    }
+    is_dir($dir) ? null : mkdir($dir, 0755, true);
     umask($u);
-    return file_put_contents("$dir/$file", $contents, $flag);
+    return file_put_contents("{$dir}/{$file}", $contents, $flag);
 }
 
 function wbRecurseDelete($src)

@@ -43,8 +43,9 @@ class modMyicons
         $svg->find('use')->remove();
         $svg->attr('class', $this->dom->attr('class'));
         if ($this->size) {
-            $svg->attr('width',$this->size);
-            $svg->attr('height',$this->size);
+            $svg->attr('width',24);
+            $svg->attr('height',24);
+            $svg->attr('style','zoom:'.round($this->size / 24 , 4));
         }
         return $svg->outer();
     }

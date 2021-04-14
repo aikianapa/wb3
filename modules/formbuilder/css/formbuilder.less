@@ -1,0 +1,116 @@
+#modFormBuilder {
+    .chat-content {
+        overflow: hidden;
+    }
+
+    .chat-content-body {
+        top: 0;
+        bottom: 0;
+    }
+
+    .focus-menu {
+        position: static;
+        background-color: var(--primary);
+        padding: 5px 15px;
+        color: white;
+        display: none;
+
+        .fa {
+            cursor: pointer;
+            font-size: 1rem;
+
+            &:not(:last-child) {
+                margin-right: 6px;
+            }
+        }
+    }
+
+    .focus-box {
+        position: absolute;
+        display: block;
+        width: 0;
+        height: 0;
+        border: 1px var(--primary) solid;
+        pointer-events: none;
+    }
+
+    .hover-box {
+        position: absolute;
+        background: #ffeb3b30;
+        display: block;
+        width: 0;
+        height: 0;
+        border: 1px var(--secondary) dashed;
+        pointer-events: none;
+    }
+
+    &[preview] {
+
+        [class*="col-"],
+        .row,
+        .container {
+            outline: none!important;
+        }
+
+        #modFormBuilderEditor {
+            display: none!important;
+        }
+
+        .hover-box {
+            display: none!important;
+        }
+
+        .focus-box {
+            display: none!important;
+        }
+
+        .focus-menu {
+            display: none!important;
+        }
+    }
+
+}
+
+body {
+    &[constructor] {
+        width: 99, 5%;
+        position: relative;
+        display: block;
+        margin: 3px 20px;
+        margin-top: 40px;
+        overflow-x: hidden;
+
+        * {
+            cursor: pointer;
+        }
+
+        [focus] {
+            //outline-style: auto;
+            //outline-width: 1px;
+            //outline-color: var(--primary);
+            outline: none;
+            box-shadow: none;
+            cursor: initial;
+
+            * {
+                cursor: initial;
+            }
+        }
+
+        [class*="col-"],
+        .row,
+        .container {
+            outline: 1px var(--light) dashed;
+        }
+
+		&[preview] {
+
+			[class*="col-"],
+			.row,
+			.container {
+				outline: none!important;
+			}
+		}
+
+    }
+}

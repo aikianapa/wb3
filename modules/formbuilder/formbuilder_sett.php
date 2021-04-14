@@ -1,6 +1,11 @@
 <html>
 <div class="formgroup row">
-    <label class="form-control-label col-sm-4">Нет настроек для данного модуля</label>
+    <label class="form-control-label col-sm-4">Снипеты</label>
+
+    <div class="col-12">
+        <input name="prop" wb-tree>
+    </div>
+
 <!--
     <div class="col-sm-8">
         <div class="input-group">
