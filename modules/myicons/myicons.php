@@ -15,7 +15,9 @@ class modMyicons
         } else {
             $this->app = &$obj->app;
             $this->dom = &$obj;
-            $obj->after($this->icon());
+            $icon = $this->icon();
+            if (!$icon) {$icon = '<err>[mi]</err>';}
+            $obj->after($icon);
             $obj->remove();
         } 
     }
@@ -46,6 +48,14 @@ class modMyicons
             $svg->attr('width',24);
             $svg->attr('height',24);
             $svg->attr('style','zoom:'.round($this->size / 24 , 4));
+        }
+        if ($this->dom->attr('stroke') > '') {
+            $stroke = $this->dom->attr('stroke');
+            $svg->find('[stroke]')->attr('stroke',$stroke);
+        }
+        if ($this->dom->attr('fill') > '') {
+            $stroke = $this->dom->attr('fill');
+            $svg->find('[fill]')->attr('fill',$stroke);
         }
         return $svg->outer();
     }

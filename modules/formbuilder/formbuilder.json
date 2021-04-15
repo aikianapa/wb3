@@ -1,0 +1,256 @@
+{"formbuilder": {
+                "prop": {
+                    "data": {
+                        "grid": {
+                            "id": "grid",
+                            "name": "Сетка",
+                            "active": "on",
+                            "__token": "561670b030657a6477d5968c6a7e723d",
+                            "data": {
+                                "snipname": "",
+                                "snipcode": ""
+                            },
+                            "children": {
+                                "col-12": {
+                                    "id": "col-12",
+                                    "name": "1 колонка",
+                                    "active": "on",
+                                    "__token": "561670b030657a6477d5968c6a7e723d",
+                                    "data": {
+                                        "snipcode": "\u003Cdiv class=\u0022row\u0022\u003E\r\n    \u003Cdiv class=\u0022col-sm-12\u0022\u003E\r\n1\r\n    \u003C\/div\u003E\r\n\u003C\/div\u003E\r\n"
+                                    }
+                                },
+                                "col-6": {
+                                    "id": "col-6",
+                                    "name": "2 колонки",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Cdiv class=\u0022row\u0022\u003E\r\n    \u003Cdiv class=\u0022col-sm-6\u0022\u003E\r\n1\r\n    \u003C\/div\u003E\r\n    \u003Cdiv class=\u0022col-sm-6\u0022\u003E\r\n2\r\n    \u003C\/div\u003E  \r\n\u003C\/div\u003E"
+                                    },
+                                    "__token": "561670b030657a6477d5968c6a7e723d"
+                                },
+                                "col-4": {
+                                    "id": "col-4",
+                                    "name": "3 колонки",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Cdiv class=\u0022row\u0022\u003E\r\n    \u003Cdiv class=\u0022col-sm-4\u0022\u003E\r\n1\r\n    \u003C\/div\u003E\r\n    \u003Cdiv class=\u0022col-sm-4\u0022\u003E\r\n2\r\n    \u003C\/div\u003E\r\n    \u003Cdiv class=\u0022col-sm-4\u0022\u003E\r\n3\r\n    \u003C\/div\u003E  \r\n\u003C\/div\u003E"
+                                    },
+                                    "__token": "561670b030657a6477d5968c6a7e723d"
+                                },
+                                "col-3": {
+                                    "id": "col-3",
+                                    "name": "4 колонки",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Cdiv class=\u0022row\u0022\u003E\r\n    \u003Cdiv class=\u0022col-sm-3\u0022\u003E\r\n1\r\n    \u003C\/div\u003E\r\n    \u003Cdiv class=\u0022col-sm-3\u0022\u003E\r\n2\r\n    \u003C\/div\u003E\r\n    \u003Cdiv class=\u0022col-sm-3\u0022\u003E\r\n3\r\n    \u003C\/div\u003E\r\n    \u003Cdiv class=\u0022col-sm-3\u0022\u003E\r\n4\r\n    \u003C\/div\u003E \r\n\u003C\/div\u003E"
+                                    },
+                                    "__token": "35f8e011ae1922f9f9982558a2a7d16d"
+                                },
+                                "col-2": {
+                                    "id": "col-2",
+                                    "name": "6 колонок",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Cdiv class=\u0022row\u0022\u003E\r\n    \u003Cdiv class=\u0022col-sm-2\u0022\u003E\r\n1\r\n    \u003C\/div\u003E\r\n    \u003Cdiv class=\u0022col-sm-2\u0022\u003E\r\n2\r\n    \u003C\/div\u003E\r\n    \u003Cdiv class=\u0022col-sm-2\u0022\u003E\r\n3\r\n    \u003C\/div\u003E\r\n    \u003Cdiv class=\u0022col-sm-2\u0022\u003E\r\n4\r\n    \u003C\/div\u003E\r\n    \u003Cdiv class=\u0022col-sm-2\u0022\u003E\r\n5\r\n    \u003C\/div\u003E \r\n    \u003Cdiv class=\u0022col-sm-2\u0022\u003E\r\n6\r\n    \u003C\/div\u003E \r\n\u003C\/div\u003E"
+                                    },
+                                    "__token": "35f8e011ae1922f9f9982558a2a7d16d"
+                                },
+                                "container": {
+                                    "id": "container",
+                                    "name": "Контейнер",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Cdiv class=\u0022container\u0022\u003E\r\n   \r\n\u003C\/div\u003E"
+                                    },
+                                    "__token": "3d1b42606ce4ed393a59a2f7271f02d9"
+                                }
+                            },
+                            "open": "false"
+                        },
+                        "tags": {
+                            "id": "tags",
+                            "name": "Тэги",
+                            "active": "on",
+                            "__token": "35f8e011ae1922f9f9982558a2a7d16d",
+                            "data": {
+                                "snipcode": ""
+                            },
+                            "open": "false",
+                            "children": {
+                                "h1": {
+                                    "id": "h1",
+                                    "name": "H1",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Ch1\u003E\r\n  Header 1\r\n\u003C\/h1\u003E"
+                                    },
+                                    "__token": "3d1b42606ce4ed393a59a2f7271f02d9"
+                                },
+                                "h2": {
+                                    "id": "h2",
+                                    "name": "H2",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Ch2\u003E\r\n  Header 2\r\n\u003C\/h2\u003E"
+                                    },
+                                    "__token": "ee0142986b661164ae5e54c6423c6f58"
+                                },
+                                "h3": {
+                                    "id": "h3",
+                                    "name": "H3",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Ch3\u003E\r\n  Header 3\r\n\u003C\/h3\u003E"
+                                    },
+                                    "__token": "ee0142986b661164ae5e54c6423c6f58"
+                                },
+                                "p": {
+                                    "id": "p",
+                                    "name": "Paragraph",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Cp\u003E\r\n  Paragraph\r\n\u003C\/p\u003E"
+                                    },
+                                    "__token": "35f8e011ae1922f9f9982558a2a7d16d"
+                                },
+                                "strong": {
+                                    "id": "strong",
+                                    "name": "Strong",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Cstrong\u003E\r\n\tStrong\r\n\u003C\/strong\u003E"
+                                    },
+                                    "__token": "35f8e011ae1922f9f9982558a2a7d16d"
+                                },
+                                "div": {
+                                    "id": "div",
+                                    "name": "Division",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Cdiv\u003E\r\n  Division\r\n\u003C\/div\u003E"
+                                    },
+                                    "__token": "35f8e011ae1922f9f9982558a2a7d16d"
+                                },
+                                "a": {
+                                    "id": "a",
+                                    "name": "Link",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Ca href=\u0022#\u0022\u003ELink\u003C\/a\u003E"
+                                    },
+                                    "__token": "35f8e011ae1922f9f9982558a2a7d16d"
+                                }
+                            }
+                        },
+                        "forms": {
+                            "id": "forms",
+                            "name": "Формы",
+                            "active": "on",
+                            "__token": "561670b030657a6477d5968c6a7e723d",
+                            "data": {
+                                "snipcode": ""
+                            },
+                            "open": "true",
+                            "children": {
+                                "form": {
+                                    "id": "form",
+                                    "name": "Форма (пример)",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Cform\u003E\r\n  \u003Cdiv class=\u0022form-group row\u0022\u003E\r\n    \u003Clabel for=\u0022inputEmail3\u0022 class=\u0022col-sm-3 col-form-label\u0022\u003EEmail\u003C\/label\u003E\r\n    \u003Cdiv class=\u0022col-sm-9\u0022\u003E\r\n      \u003Cinput type=\u0022email\u0022 class=\u0022form-control\u0022 id=\u0022inputEmail3\u0022 placeholder=\u0022Email\u0022\u003E\r\n    \u003C\/div\u003E\r\n  \u003C\/div\u003E\r\n  \u003Cdiv class=\u0022form-group row\u0022\u003E\r\n    \u003Clabel for=\u0022inputPassword3\u0022 class=\u0022col-sm-3 col-form-label\u0022\u003EPassword\u003C\/label\u003E\r\n    \u003Cdiv class=\u0022col-sm-9\u0022\u003E\r\n      \u003Cinput type=\u0022password\u0022 class=\u0022form-control\u0022 id=\u0022inputPassword3\u0022 placeholder=\u0022Password\u0022\u003E\r\n    \u003C\/div\u003E\r\n  \u003C\/div\u003E\r\n  \u003Cfieldset class=\u0022form-group\u0022\u003E\r\n    \u003Cdiv class=\u0022row\u0022\u003E\r\n      \u003Clegend class=\u0022col-form-label col-sm-3 pt-0\u0022\u003ERadios\u003C\/legend\u003E\r\n      \u003Cdiv class=\u0022col-sm-9\u0022\u003E\r\n        \u003Cdiv class=\u0022form-check\u0022\u003E\r\n          \u003Cinput class=\u0022form-check-input\u0022 type=\u0022radio\u0022 name=\u0022gridRadios\u0022 id=\u0022gridRadios1\u0022 value=\u0022option1\u0022 checked\u003E\r\n          \u003Clabel class=\u0022form-check-label\u0022 for=\u0022gridRadios1\u0022\u003E\r\n            First radio\r\n          \u003C\/label\u003E\r\n        \u003C\/div\u003E\r\n        \u003Cdiv class=\u0022form-check\u0022\u003E\r\n          \u003Cinput class=\u0022form-check-input\u0022 type=\u0022radio\u0022 name=\u0022gridRadios\u0022 id=\u0022gridRadios2\u0022 value=\u0022option2\u0022\u003E\r\n          \u003Clabel class=\u0022form-check-label\u0022 for=\u0022gridRadios2\u0022\u003E\r\n            Second radio\r\n          \u003C\/label\u003E\r\n        \u003C\/div\u003E\r\n        \u003Cdiv class=\u0022form-check disabled\u0022\u003E\r\n          \u003Cinput class=\u0022form-check-input\u0022 type=\u0022radio\u0022 name=\u0022gridRadios\u0022 id=\u0022gridRadios3\u0022 value=\u0022option3\u0022 disabled\u003E\r\n          \u003Clabel class=\u0022form-check-label\u0022 for=\u0022gridRadios3\u0022\u003E\r\n            Third disabled radio\r\n          \u003C\/label\u003E\r\n        \u003C\/div\u003E\r\n      \u003C\/div\u003E\r\n    \u003C\/div\u003E\r\n  \u003C\/fieldset\u003E\r\n  \u003Cdiv class=\u0022form-group row\u0022\u003E\r\n    \u003Cdiv class=\u0022col-sm-3\u0022\u003ECheckbox\u003C\/div\u003E\r\n    \u003Cdiv class=\u0022col-sm-9\u0022\u003E\r\n      \u003Cdiv class=\u0022form-check\u0022\u003E\r\n        \u003Cinput class=\u0022form-check-input\u0022 type=\u0022checkbox\u0022 id=\u0022gridCheck1\u0022\u003E\r\n        \u003Clabel class=\u0022form-check-label\u0022 for=\u0022gridCheck1\u0022\u003E\r\n          Example checkbox\r\n        \u003C\/label\u003E\r\n      \u003C\/div\u003E\r\n    \u003C\/div\u003E\r\n  \u003C\/div\u003E\r\n  \u003Cdiv class=\u0022form-group row\u0022\u003E\r\n    \u003Cdiv class=\u0022col-sm-9\u0022\u003E\r\n      \u003Cbutton type=\u0022submit\u0022 class=\u0022btn btn-primary\u0022\u003ESign in\u003C\/button\u003E\r\n    \u003C\/div\u003E\r\n  \u003C\/div\u003E\r\n\u003C\/form\u003E"
+                                    },
+                                    "__token": "35f8e011ae1922f9f9982558a2a7d16d"
+                                },
+                                "field": {
+                                    "id": "field",
+                                    "name": "Поле (input)",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "  \u003Cdiv class=\u0022form-group row\u0022\u003E\r\n    \u003Clabel for=\u0022fld1\u0022 class=\u0022col-sm-3 col-form-label\u0022\u003EField\u003C\/label\u003E\r\n    \u003Cdiv class=\u0022col-sm-9\u0022\u003E\r\n      \u003Cinput type=\u0022text\u0022 class=\u0022form-control\u0022 id=\u0022fld1\u0022 placeholder=\u0022Field\u0022\u003E\r\n    \u003C\/div\u003E\r\n  \u003C\/div\u003E"
+                                    },
+                                    "__token": "35f8e011ae1922f9f9982558a2a7d16d"
+                                },
+                                "textarea": {
+                                    "id": "textarea",
+                                    "name": "Поле (textarea)",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "  \u003Cdiv class=\u0022form-group row\u0022\u003E\r\n    \u003Clabel for=\u0022txt1\u0022 class=\u0022col-sm-3 col-form-label\u0022\u003ETextarea\u003C\/label\u003E\r\n    \u003Cdiv class=\u0022col-sm-9\u0022\u003E\r\n      \u003Ctextarea class=\u0022form-control\u0022 id=\u0022txt1\u0022 placeholder=\u0022Textarea\u0022\u003E\u003C\/textarea\u003E\r\n    \u003C\/div\u003E\r\n  \u003C\/div\u003E"
+                                    },
+                                    "__token": "35f8e011ae1922f9f9982558a2a7d16d"
+                                }
+                            }
+                        },
+                        "bs4": {
+                            "id": "bs4",
+                            "name": "Bootstrap 4",
+                            "active": "on",
+                            "data": {
+                                "snipcode": ""
+                            },
+                            "__token": "35f8e011ae1922f9f9982558a2a7d16d",
+                            "open": "true",
+                            "children": {
+                                "carousel": {
+                                    "id": "carousel",
+                                    "name": "Карусель BS4",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Cdiv id=\u0022carouselExample3\u0022 class=\u0022carousel slide\u0022 data-ride=\u0022carousel\u0022\u003E\r\n            \u003Col class=\u0022carousel-indicators\u0022\u003E\r\n              \u003Cli data-target=\u0022#carouselExample3\u0022 data-slide-to=\u00220\u0022 class=\u0022active\u0022\u003E\u003C\/li\u003E\r\n              \u003Cli data-target=\u0022#carouselExample3\u0022 data-slide-to=\u00221\u0022 class=\u0022\u0022\u003E\u003C\/li\u003E\r\n              \u003Cli data-target=\u0022#carouselExample3\u0022 data-slide-to=\u00222\u0022 class=\u0022\u0022\u003E\u003C\/li\u003E\r\n            \u003C\/ol\u003E\r\n            \u003Cdiv class=\u0022carousel-inner\u0022\u003E\r\n              \u003Cdiv class=\u0022carousel-item active\u0022\u003E\r\n                  \u003Cimg src=\u0022https:\/\/via.placeholder.com\/500x281\u0022 class=\u0022d-block w-100\u0022 alt=\u0022...\u0022\u003E\r\n              \u003C\/div\u003E\r\n              \u003Cdiv class=\u0022carousel-item\u0022\u003E\r\n                \u003Cimg src=\u0022https:\/\/via.placeholder.com\/500x281\u0022 class=\u0022d-block w-100\u0022 alt=\u0022...\u0022\u003E\r\n              \u003C\/div\u003E\r\n              \u003Cdiv class=\u0022carousel-item\u0022\u003E\r\n                \u003Cimg src=\u0022https:\/\/via.placeholder.com\/500x281\u0022 class=\u0022d-block w-100\u0022 alt=\u0022...\u0022\u003E\r\n              \u003C\/div\u003E\r\n            \u003C\/div\u003E\r\n            \u003Ca class=\u0022carousel-control-prev\u0022 href=\u0022#carouselExample3\u0022 role=\u0022button\u0022 data-slide=\u0022prev\u0022\u003E\r\n              \u003Cspan class=\u0022carousel-control-prev-icon\u0022 aria-hidden=\u0022true\u0022\u003E\u003Csvg xmlns=\u0022http:\/\/www.w3.org\/2000\/svg\u0022 width=\u002224\u0022 height=\u002224\u0022 viewBox=\u00220 0 24 24\u0022 fill=\u0022none\u0022 stroke=\u0022currentColor\u0022 stroke-width=\u00222\u0022 stroke-linecap=\u0022round\u0022 stroke-linejoin=\u0022round\u0022 class=\u0022feather feather-chevron-left\u0022\u003E\u003Cpolyline points=\u002215 18 9 12 15 6\u0022\u003E\u003C\/polyline\u003E\u003C\/svg\u003E\u003C\/span\u003E\r\n              \u003Cspan class=\u0022sr-only\u0022\u003EPrevious\u003C\/span\u003E\r\n            \u003C\/a\u003E\r\n            \u003Ca class=\u0022carousel-control-next\u0022 href=\u0022#carouselExample3\u0022 role=\u0022button\u0022 data-slide=\u0022next\u0022\u003E\r\n              \u003Cspan class=\u0022carousel-control-next-icon\u0022 aria-hidden=\u0022true\u0022\u003E\u003Csvg xmlns=\u0022http:\/\/www.w3.org\/2000\/svg\u0022 width=\u002224\u0022 height=\u002224\u0022 viewBox=\u00220 0 24 24\u0022 fill=\u0022none\u0022 stroke=\u0022currentColor\u0022 stroke-width=\u00222\u0022 stroke-linecap=\u0022round\u0022 stroke-linejoin=\u0022round\u0022 class=\u0022feather feather-chevron-right\u0022\u003E\u003Cpolyline points=\u00229 18 15 12 9 6\u0022\u003E\u003C\/polyline\u003E\u003C\/svg\u003E\u003C\/span\u003E\r\n              \u003Cspan class=\u0022sr-only\u0022\u003ENext\u003C\/span\u003E\r\n            \u003C\/a\u003E\r\n          \u003C\/div\u003E"
+                                    },
+                                    "__token": "3d1b42606ce4ed393a59a2f7271f02d9"
+                                },
+                                "accordion": {
+                                    "id": "accordion",
+                                    "name": "Аккордион",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Cdiv class=\u0022accordion\u0022 id=\u0022accordionExample\u0022\u003E\r\n  \u003Cdiv class=\u0022card\u0022\u003E\r\n    \u003Cdiv class=\u0022card-header\u0022 id=\u0022headingOne\u0022\u003E\r\n      \u003Ch2 class=\u0022mb-0\u0022\u003E\r\n        \u003Cbutton class=\u0022btn btn-link btn-block text-left\u0022 type=\u0022button\u0022 data-toggle=\u0022collapse\u0022 data-target=\u0022#collapseOne\u0022 aria-expanded=\u0022true\u0022 aria-controls=\u0022collapseOne\u0022\u003E\r\n          Collapsible Group Item #1\r\n        \u003C\/button\u003E\r\n      \u003C\/h2\u003E\r\n    \u003C\/div\u003E\r\n\r\n    \u003Cdiv id=\u0022collapseOne\u0022 class=\u0022collapse show\u0022 aria-labelledby=\u0022headingOne\u0022 data-parent=\u0022#accordionExample\u0022\u003E\r\n      \u003Cdiv class=\u0022card-body\u0022\u003E\r\n        Some placeholder content for the first accordion panel. This panel is shown by default, thanks to the \u003Ccode\u003E.show\u003C\/code\u003E class.\r\n      \u003C\/div\u003E\r\n    \u003C\/div\u003E\r\n  \u003C\/div\u003E\r\n  \u003Cdiv class=\u0022card\u0022\u003E\r\n    \u003Cdiv class=\u0022card-header\u0022 id=\u0022headingTwo\u0022\u003E\r\n      \u003Ch2 class=\u0022mb-0\u0022\u003E\r\n        \u003Cbutton class=\u0022btn btn-link btn-block text-left collapsed\u0022 type=\u0022button\u0022 data-toggle=\u0022collapse\u0022 data-target=\u0022#collapseTwo\u0022 aria-expanded=\u0022false\u0022 aria-controls=\u0022collapseTwo\u0022\u003E\r\n          Collapsible Group Item #2\r\n        \u003C\/button\u003E\r\n      \u003C\/h2\u003E\r\n    \u003C\/div\u003E\r\n    \u003Cdiv id=\u0022collapseTwo\u0022 class=\u0022collapse\u0022 aria-labelledby=\u0022headingTwo\u0022 data-parent=\u0022#accordionExample\u0022\u003E\r\n      \u003Cdiv class=\u0022card-body\u0022\u003E\r\n        Some placeholder content for the second accordion panel. This panel is hidden by default.\r\n      \u003C\/div\u003E\r\n    \u003C\/div\u003E\r\n  \u003C\/div\u003E\r\n  \u003Cdiv class=\u0022card\u0022\u003E\r\n    \u003Cdiv class=\u0022card-header\u0022 id=\u0022headingThree\u0022\u003E\r\n      \u003Ch2 class=\u0022mb-0\u0022\u003E\r\n        \u003Cbutton class=\u0022btn btn-link btn-block text-left collapsed\u0022 type=\u0022button\u0022 data-toggle=\u0022collapse\u0022 data-target=\u0022#collapseThree\u0022 aria-expanded=\u0022false\u0022 aria-controls=\u0022collapseThree\u0022\u003E\r\n          Collapsible Group Item #3\r\n        \u003C\/button\u003E\r\n      \u003C\/h2\u003E\r\n    \u003C\/div\u003E\r\n    \u003Cdiv id=\u0022collapseThree\u0022 class=\u0022collapse\u0022 aria-labelledby=\u0022headingThree\u0022 data-parent=\u0022#accordionExample\u0022\u003E\r\n      \u003Cdiv class=\u0022card-body\u0022\u003E\r\n        And lastly, the placeholder content for the third and final accordion panel. This panel is hidden by default.\r\n      \u003C\/div\u003E\r\n    \u003C\/div\u003E\r\n  \u003C\/div\u003E\r\n\u003C\/div\u003E"
+                                    },
+                                    "__token": "3d1b42606ce4ed393a59a2f7271f02d9"
+                                },
+                                "modal": {
+                                    "id": "modal",
+                                    "name": "Модаль",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Cdiv class=\u0022modal d-block position-relative\u0022 tabindex=\u0022-1\u0022 role=\u0022dialog\u0022\u003E\r\n  \u003Cdiv class=\u0022modal-dialog\u0022 role=\u0022document\u0022\u003E\r\n    \u003Cdiv class=\u0022modal-content\u0022\u003E\r\n      \u003Cdiv class=\u0022modal-header\u0022\u003E\r\n        \u003Ch5 class=\u0022modal-title\u0022\u003EModal title\u003C\/h5\u003E\r\n        \u003Cbutton type=\u0022button\u0022 class=\u0022close\u0022 data-dismiss=\u0022modal\u0022 aria-label=\u0022Close\u0022\u003E\r\n          \u003Cspan aria-hidden=\u0022true\u0022\u003E×\u003C\/span\u003E\r\n        \u003C\/button\u003E\r\n      \u003C\/div\u003E\r\n      \u003Cdiv class=\u0022modal-body\u0022\u003E\r\n        \u003Cp\u003EModal body text goes here.\u003C\/p\u003E\r\n      \u003C\/div\u003E\r\n      \u003Cdiv class=\u0022modal-footer\u0022\u003E\r\n        \u003Cbutton type=\u0022button\u0022 class=\u0022btn btn-secondary\u0022 data-dismiss=\u0022modal\u0022\u003EClose\u003C\/button\u003E\r\n        \u003Cbutton type=\u0022button\u0022 class=\u0022btn btn-primary\u0022\u003ESave changes\u003C\/button\u003E\r\n      \u003C\/div\u003E\r\n    \u003C\/div\u003E\r\n  \u003C\/div\u003E\r\n\u003C\/div\u003E"
+                                    },
+                                    "__token": "ee0142986b661164ae5e54c6423c6f58"
+                                },
+                                "card1": {
+                                    "id": "card1",
+                                    "name": "Карточка 1",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Cdiv class=\u0022card text-center\u0022\u003E\r\n  \u003Cdiv class=\u0022card-header\u0022\u003E\r\n    Featured\r\n  \u003C\/div\u003E\r\n  \u003Cdiv class=\u0022card-body\u0022\u003E\r\n    \u003Ch5 class=\u0022card-title\u0022\u003ESpecial title treatment\u003C\/h5\u003E\r\n    \u003Cp class=\u0022card-text\u0022\u003EWith supporting text below as a natural lead-in to additional content.\u003C\/p\u003E\r\n    \u003Ca href=\u0022#\u0022 class=\u0022btn btn-primary\u0022\u003EGo somewhere\u003C\/a\u003E\r\n  \u003C\/div\u003E\r\n  \u003Cdiv class=\u0022card-footer text-muted\u0022\u003E\r\n    2 days ago\r\n  \u003C\/div\u003E\r\n\u003C\/div\u003E"
+                                    },
+                                    "__token": "35f8e011ae1922f9f9982558a2a7d16d"
+                                },
+                                "card2": {
+                                    "id": "card2",
+                                    "name": "Карточка 2",
+                                    "active": "on",
+                                    "data": {
+                                        "snipcode": "\u003Cdiv class=\u0022card\u0022\u003E\r\n  \u003Cimg class=\u0022card-img-top\u0022 data-src=\u0022holder.js\/100px180\/?text=Image cap\u0022 alt=\u0022Image cap [100%x180]\u0022 src=\u0022data:image\/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22286%22%20height%3D%22180%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20286%20180%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_178cd7e608c%20text%20%7B%20fill%3Argba(255%2C255%2C255%2C.75)%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A14pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_178cd7e608c%22%3E%3Crect%20width%3D%22286%22%20height%3D%22180%22%20fill%3D%22%23777%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%2299.4375%22%20y%3D%2296.3%22%3EImage%20cap%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E\u0022 data-holder-rendered=\u0022true\u0022 style=\u0022height: 180px; width: 100%; display: block;\u0022\u003E\r\n  \u003Cdiv class=\u0022card-body\u0022\u003E\r\n    \u003Ch5 class=\u0022card-title\u0022\u003ECard title\u003C\/h5\u003E\r\n    \u003Cp class=\u0022card-text\u0022\u003ESome quick example text to build on the card title and make up the bulk of the card\u0027s content.\u003C\/p\u003E\r\n  \u003C\/div\u003E\r\n  \u003Cul class=\u0022list-group list-group-flush\u0022\u003E\r\n    \u003Cli class=\u0022list-group-item\u0022\u003ECras justo odio\u003C\/li\u003E\r\n    \u003Cli class=\u0022list-group-item\u0022\u003EDapibus ac facilisis in\u003C\/li\u003E\r\n    \u003Cli class=\u0022list-group-item\u0022\u003EVestibulum at eros\u003C\/li\u003E\r\n  \u003C\/ul\u003E\r\n  \u003Cdiv class=\u0022card-body\u0022\u003E\r\n    \u003Ca href=\u0022#\u0022 class=\u0022card-link\u0022\u003ECard link\u003C\/a\u003E\r\n    \u003Ca href=\u0022#\u0022 class=\u0022card-link\u0022\u003EAnother link\u003C\/a\u003E\r\n  \u003C\/div\u003E\r\n\u003C\/div\u003E"
+                                    },
+                                    "__token": "35f8e011ae1922f9f9982558a2a7d16d"
+                                }
+                            }
+                        }
+                    },
+                    "dict": [
+                        {
+                            "name": "snipcode",
+                            "label": {
+                                "en": "Source code",
+                                "ru": "Исходный код"
+                            },
+                            "type": "source",
+                            "value": ""
+                        }
+                    ]
+                }
+            }
+    }

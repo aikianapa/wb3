@@ -3,16 +3,19 @@
     <div class="chat-sidebar">
 
         <div class="chat-sidebar-header d-flex align-items-center p-3">
-            <a data-toggle="tooltip" data-trigger="hover" title="Собеседники"
-                onclick="$('#modFormbuilderPanel').toggleClass('show');">
-                <svg class="mi-legal-friction-talk-users size-20" wb-module="myicons"></svg>
-                <span class="tx-medium mg-l-5"></span>
+            <a href="javascript:void(0);" class="mr-2"
+                data-toggle="tooltip" data-trigger="hover" title="Настройки"
+                data-ajax="{'url':'/module/formbuilder/_settings/','html':'.chat-content-body'}">
+                    <svg class="mi-settings-switches-square-2 size-26" wb-module="myicons"></svg>
+                </a>
+
+            <a href="javascript:void(0);" data-ajax="{
+                    'url':'/module/formbuilder/',
+                    'html':'.content-body'
+                    }" data-toggle="tooltip" data-trigger="hover" title="Дизайнер">
+                    <svg class="mi-design-47 size-26" wb-module="myicons"></svg>
             </a>
-            <a href="javascript:void(0);"
-                data-ajax="{'url':'/module/formbuilder/_settings/','html':'.chat-content-body'}"><span
-                    data-toggle="tooltip" data-trigger="hover" title="Настройки">
-                    <svg class="mi-settings.2 size-20" wb-module="myicons"></svg>
-                </span></a>
+
         </div><!-- chat-sidebar-header -->
 
         <!-- start sidebar body -->
@@ -71,7 +74,8 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header py-2">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Сохранить</button>
+                        <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-save"></i>
+                            Сохранить</button>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

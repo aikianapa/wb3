@@ -19,7 +19,6 @@ var start = function () {
     wbapp.eventsInit = function () {
         $(document).delegate("[data-ajax]:not(input,select)", "click", function (e, tid) {
             if (!$(this).is("input,select")) {
-                e.preventDefault();
                 let params = wbapp.parseAttr($(this).attr("data-ajax"));
                 if (Object.keys(params)[0] == $(this).attr("data-ajax")) {
                     // ajax string only
@@ -35,11 +34,13 @@ var start = function () {
                         }
                     }
                 }
+                if ($(this).is('[data-toggle=tooltip]')) {$(this).tooltip('hide');} // fix tooltips
                 params._event = e;
                 if (tid !== undefined) params._tid = tid;
                 wbapp.ajax(params);
                 console.log("Trigger: data-ajax");
                 $(document).trigger("data-ajax", params);
+                e.preventDefault();
             }
         })
 
@@ -507,6 +508,7 @@ var start = function () {
                 }
 
                 if (params.target && params.target > '#') $(document).find(params.target).html($(data).find(params.target).html());
+                if (params.source && params.source > '' ) data = $(data).find(params.source).html();
 
                 if (params.html) $(document).find(params.html).html(data);
                 if (params.append) $(document).find(params.append).append(data);

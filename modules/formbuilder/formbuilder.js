@@ -126,6 +126,9 @@ var wbModFormBuilder = function() {
 					$parent.next().prepend($focus);
 				}
 				break;
+			case 'sett': 
+				$('#modFormbuilderPanel').toggleClass('show');
+				break;
 			case 'edit':
 				$editor.modal('show');
 				let $text = $focus.clone();
