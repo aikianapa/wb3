@@ -680,6 +680,7 @@ class wbApp
         file_put_contents($name, $out, LOCK_EX);
         $lastModified=filemtime($name);
     }
+    
 
     public function getCache()
     {
@@ -742,6 +743,35 @@ class wbApp
         $fields = new Dot();
         $fields->setReference($item);
         return $fields->get($fld);
+    }
+
+    public function login($user) {
+        is_object($user) ? null : $user = $this->arrayToObj($user);
+        isset($user->avatar) ? null : $user->avatar = "/engine/tpl/img/person.svg";;
+        if ($user->avatar > "") {
+            if (isset($user->avatar[0]) && $user->avatar[0] > '') { 
+                $user->avatar = $user->avatar[0];
+            } else {
+                $user->avatar="/uploads/users/{$user->id}/{$user->avatar->img}";
+            }
+        }
+        $user->group = wbArrayToObj(wbItemRead("users", $user->role));
+        if (!$user->group OR $user->group->active !== 'on' OR $user->active !== 'on') {
+            return false;
+        }
+        if ($user->group->url_logout == "") {
+            $user->group->url_logout = "/";
+        }
+        if ($user->group->url_login == "") {
+            $user->group->url_login = "/";
+        }
+        unset($user->password);
+        $arr = $this->objToArray($user);
+        $this->vars("_sess.user", $arr);
+        $this->vars("_env.user", $arr);
+        setcookie("user", $user->id, time()+3600);
+        $this->user = $user;
+        return $user;
     }
 
     public function initApp()
@@ -1047,7 +1077,7 @@ class wbApp
 
     public function settings()
     {
-        $this->settings=$_ENV["settings"];
+        $this->settings = &$_ENV["settings"];
         return $this->settings;
     }
 
@@ -1069,7 +1099,7 @@ class wbApp
 
     public function getRoute()
     {
-        $this->route = $_ENV["route"];
+        $this->route = &$_ENV["route"];
         return $this->route;
     }
 

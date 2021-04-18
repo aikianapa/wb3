@@ -85,10 +85,30 @@ class ctrlAjax
             return json_encode(['login'=>false,'error'=>false,'redirect'=>$url,'user'=>[],'role'=>[]]);
         }
 
-        if (!in_array($fld, ['email','phone','login']) or !isset($post->login)) {
+        if (!in_array($fld, ['email','phone','login','id']) or !isset($post->login)) {
             return json_encode(['login'=>false,'error'=>'Unknown']);
         }
 
+        $user = $app->checkUser($post->login, $fld, $post->password);
+        $role = &$user->group;
+
+        if ($user) {
+            $url = '/cms';
+            if ($user->role !== 'admin' and (!isset($role->active) or $role->active !== 'on') or $user->active !== 'on') {
+                return json_encode(['login'=>false,'error'=>'Account is not active']);
+            }
+            if (isset($role->url_login) and $role->url_login > '') {
+                $url = $role->url_login;
+            }
+            $app->login($user);
+            return json_encode(['login'=>true,'error'=>false,'redirect'=>$url,'user'=>$user,'role'=>$user->role]);
+        } else {
+            return json_encode(['login'=>false,'error'=>'Unknown']);
+        }
+
+
+
+        die;
         $user = $app->itemList('users', ['filter'=> [$fld => $post->login ], 'limit'=>1 ]);
         if (intval($user['count']) > 0) {
             $user = array_shift($user['list']);
@@ -106,8 +126,8 @@ class ctrlAjax
             if (isset($role->url_login) and $role->url_login > '') {
                 $url = $role->url_login;
             }
-            $_SESSION['user'] = (array)$user;
-            $_SESSION['userole'] = (array)$role;
+            $user->group = &$role;
+            $app->login($user);
             return json_encode(['login'=>true,'error'=>false,'redirect'=>$url,'user'=>$user,'role'=>$role]);
         } else {
             return json_encode(['login'=>false,'error'=>'Wrong password']);

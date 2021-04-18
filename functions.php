@@ -85,7 +85,8 @@ function wbInitSettings(&$app)
     if (isset($_COOKIE['user']) && !isset($_SESSION['user'])) {
         $_SESSION['user'] = $app->ItemRead("users", $_COOKIE['user']);
     }
-    if (isset($_SESSION['user']) AND $_SESSION['user'] !== null AND isset($_SESSION['user']['active']) AND $_SESSION['user']['active'] = 'on') {
+    
+    if ($app->vars('_sess.user') !== null AND $app->vars('_sess.user.active') == 'on') {
         $_ENV["user"] = &$_SESSION['user'];
         $_SESSION['user_role'] = $_SESSION['user']['role'];
         $app->user = (object)$_ENV["user"];
@@ -106,6 +107,7 @@ function wbInitSettings(&$app)
             if (isset($v['var']) AND $v['var'] > '') $variables[$v['var']] = $v['value'];
         }
     }
+
     $_ENV['variables'] = array_merge((array)$_ENV['variables'], $variables);
     $settings = array_merge($settings, $variables);
     $_ENV['settings'] = &$settings;
@@ -123,22 +125,15 @@ function wbInitSettings(&$app)
 
     $app->lang = $_ENV['settings']['locale'] = $_SESSION['lang'] = $_ENV['lang'] = substr($lang, 0, 2);
 
-    if (isset($_ENV['settings']['path_tpl']) and $_ENV['settings']['path_tpl'] > '') {
-        $_ENV['base']=$_ENV['settings']['path_tpl'];
+    if ($app->vars('_sett.path_tpl') > '') {
+        $_ENV['base'] = $app->vars('_sett.path_tpl');
         $_ENV['path_tpl'] = $_ENV['path_app'].$_ENV['base'];
     }
-    if (isset($_ENV['settings']['thumb_width']) and $_ENV['settings']['thumb_width'] > '0') {
-        $_ENV['thumb_width'] = $_ENV['settings']['thumb_width'];
-    }
-    if (isset($_ENV['settings']['thumb_height']) and $_ENV['settings']['thumb_height'] > '0') {
-        $_ENV['thumb_height'] = $_ENV['settings']['thumb_height'];
-    }
-    if (isset($_ENV['settings']['intext_width']) and $_ENV['settings']['intext_width'] > '0') {
-        $_ENV['intext_width'] = $_ENV['settings']['intext_width'];
-    }
-    if (isset($_ENV['settings']['intext_height']) and $_ENV['settings']['intext_height'] > '0') {
-        $_ENV['intext_height'] = $_ENV['settings']['intext_height'];
-    }
+    
+    $app->vars('_sett.thumb_width') > '0' ? $_ENV['thumb_width'] = $app->vars('_sett.thumb_width') : null;
+    $app->vars('_sett.thumb_height') > '0' ? $_ENV['thumb_height'] = $app->vars('_sett.thumb_height') : null;
+    $app->vars('_sett.intext_width') > '0' ? $_ENV['intext_width'] = $app->vars('_sett.intext_width') : null;
+    $app->vars('_sett.intext_height') > '0' ? $_ENV['intext_height'] = $app->vars('_sett.intext_height') : null;
 
     if (isset($settings['page_size']) AND $settings['page_size'] > '') {
         $_ENV['page_size'] = $settings['page_size'];
@@ -1931,10 +1926,7 @@ function wbAuthPostContents($url, $post=null, $username=null, $password=null)
 
 function wbPasswordCheck($str, $pass)
 {
-    $res=false;
-    if (wbPasswordMake($str) == $pass) {
-        $res=true;
-    }
+    wbPasswordMake($str) == $pass ? $res=true : $res = false;
     return $res;
 }
 
@@ -1992,6 +1984,28 @@ function wbGetWords($str, $w = 100)
 
     return $res;
 }
+
+function wbCheckUser($login, $type = 'email', $pass = null) {
+    $users = wbItemList("users", ['filter' => [
+        $type => $login,
+        'isgroup' => ['$ne'=>'on'],
+        'active' => 'on'
+    ]]);
+    if (!count($users['list'])) {
+        return false;
+    }
+    $user = array_shift($users['list']);
+    $user['group'] = wbItemRead("users", $user['role']);
+    $user = wbArrayToObj($user);
+        if ($pass == null) {
+        return $user;
+    } else if ($user->group->active == "on" and wbPasswordCheck($pass, $user->password)) {
+        return $user;
+    }
+    return false;
+}
+
+
 
 function wbPhoneFormat($phoneNumber) {
     $phoneNumber = preg_replace('/[^0-9]/','',$phoneNumber);

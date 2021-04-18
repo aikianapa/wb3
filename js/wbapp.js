@@ -719,10 +719,9 @@ var start = function () {
     }
 
     wbapp.toast = function (title, text, params = {}) {
-        if ($(document).find('.content-toasts').length) {
-            var target = '.content-toasts';
-        } else {
-            var target = 'body';
+        var target = '.content-toasts';
+        if (!$(document).find(target).length) {
+            $('body').prepend('<div class="content-toasts position-fixed t-0" style="z-index:999999;right:0;"></div>');
         }
 
         let options = {
@@ -750,6 +749,7 @@ var start = function () {
             $tpl.find('.toast-header h6').addClass('tx-' + params.txcolor).removeClass('tx-inverse');
         }
         $tpl.attr('data-delay', options.delay);
+        
         let toast = Ractive({
             el: options.target,
             append: true,
@@ -761,9 +761,10 @@ var start = function () {
             }
         });
 
-        $(options.target)
-            .find(".toast")
+        $(document).find(options.target)
+            .find(".toast:last-child")
             .toast('show')
+            .off('hidden.bs.toast')
             .on('hidden.bs.toast', function (e) {
                 $(e.currentTarget).remove();
             });
