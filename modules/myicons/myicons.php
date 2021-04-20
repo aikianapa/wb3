@@ -3,7 +3,7 @@ class modMyicons
 {
     public function __construct($obj)
     {
-        $this->size = null;
+        $this->size = 24;
         $this->path = __DIR__ . '/icons/';
         if (get_class($obj) == 'wbApp') {
             $this->app = &$obj;

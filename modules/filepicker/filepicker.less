@@ -4,7 +4,20 @@
         padding: 10px;
     }
 
-    .card-body {
-        padding: 0.25rem;
+    .card {
+        .card-body {
+            padding: 0.25rem;
+        }
+        img {
+            width:200px;
+            height:200px;
+        }
+        > i {
+            font-size: 200px;
+        }
+        img[loading] {
+            background: url(/engine/modules/filepicker/assets/img/loader.gif) 50% 50% no-repeat;
+            background-size: contain;
+        }
     }
 }

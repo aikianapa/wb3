@@ -17,22 +17,22 @@ $(document).on("filepicker-js", function() {
 });
 
 $(document).on("filepicker-init", function() {
-      var selector = ".filepicker:not([done])";
+      var selector = ".filepicker";
       var uploader = "/engine/modules/filepicker/uploader/index.php";
       var size = 200;
       var width = size*1;
       var height = size*1;
 
       $(document).find(selector).each(function(){
+            if (this.done !== undefined) return;
+            this.done = true;
             let $filepicker = $(this);
             let $listview = $(this).find(".listview");
             let input = $filepicker.find(".filepicker-data");
-            let inpfile = $filepicker.find("input[type=file]");
+            var inpfile = $filepicker.find("input[type=file]");
             let save;
             let field = "images";
             var path = $filepicker.find("[name=upload_url]").val();
-
-            $filepicker.attr("done",true);
 
             var getparams = function() {
               let params = {};
@@ -200,7 +200,7 @@ $(document).on("filepicker-init", function() {
                     setdata();
                   }
                   console.log('Trigger: mod-filepicker-done');
-                  $filepicker.trigger('mod-filepicker-done');
+                  $filepicker.trigger('mod-filepicker-done',$filepicker.list);
                 }).on('cropsave.filepicker', function (e,file) {
                     let thumb = getthumb(file.url,true);
                     $filepicker.find(".listview .card img[data-src='"+file.url+"']").attr("src",thumb);
@@ -227,7 +227,7 @@ $(document).on("filepicker-init", function() {
                     $filepicker.find(".listview img[data-img='"+data.files[0].name+"']")
                         .attr("src","/engine/modules/filepicker/assets/img/error.png")
                         .attr("title","Error")
-                        .on("click",function(){$(this).parent(".card").remove();});
+                        .on("tap click",function(){$(this).parent(".card").remove();});
                   }).on('uploadfallback.filepicker', function(e,data){
                       console.log(data);
                   });
@@ -237,7 +237,7 @@ $(document).on("filepicker-init", function() {
                 var fp = $filepicker.filePicker();
 
 
-                $filepicker.delegate("a.delete","click",function(e){
+                $filepicker.delegate("a.delete","tap click",function(e){
                     e.preventDefault();
                     var card = $(this).closest(".card");
                     var file = $(card).find("img").attr("data-src");
@@ -264,7 +264,7 @@ $(document).on("filepicker-init", function() {
                     return false;
                 });
 
-                $filepicker.delegate("a.crop","click",function(e){
+                $filepicker.delegate("a.crop","tap click",function(e){
                     e.preventDefault();
                     var card = $(this).closest(".card");
                     var file = $(card).find("img").attr("data-src");
@@ -274,12 +274,9 @@ $(document).on("filepicker-init", function() {
                     return false;
                 });
 
-                $filepicker.delegate('.card','click',function(e){
-                    e.preventDefault();
-                    $(inpfile).trigger('click');
+                $filepicker.delegate('.card','tap click',function(e){
+                    $(this).parents('.filepicker').find('input[type=file]').trigger('click');
                 });
-
-
 
                 $listview.delegate("img","load",function(){
                   $(this).removeAttr("loading")

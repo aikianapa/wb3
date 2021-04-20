@@ -1,5 +1,3 @@
-<html>
-<script type="wbapp">wbapp.loadScripts(["/engine/modules/filepicker/filepicker.js"],"filepicker-js")</script>
 <div class="filepicker">
   <textarea type="json" name class="d-none filepicker-data"></textarea>
   <!-- Button Bar -->
@@ -115,18 +113,5 @@ choose = "Files"
 camera = "Камера"
 choose = "Файлы"
 </wb-lang>
-<style>
-.filepicker .card img {
-    width:200px;
-    height:200px;
-}
-.filepicker .card > i {
-    font-size: 200px;
-}
-.filepicker .card img[loading] {
-    background: url(/engine/modules/filepicker/assets/img/loader.gif) 50% 50% no-repeat;
-    background-size: contain;
-}
-</style>
+<script type="wbapp">wbapp.loadScripts(["/engine/modules/filepicker/filepicker.js"],"filepicker-js")</script>
 </div>
-</html>

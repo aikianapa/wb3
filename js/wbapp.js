@@ -809,6 +809,7 @@ var start = function () {
             if ($(this).attr("data-params") !== undefined) {
                 try {
                     params = wbapp.parseAttr($(this).attr("data-params"));
+                    params['target'] = tid;
                 } catch (error) { null }
             }
 
@@ -871,6 +872,7 @@ var start = function () {
     }
 
     wbapp.render = function (tid, data) {
+        if (tid == undefined) return;
         let params = wbapp.template[tid].params;
         if (data == undefined && params.bind == undefined) data = {};
         if (data == undefined) data = wbapp.storage(params.bind);

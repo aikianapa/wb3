@@ -42,6 +42,13 @@
     </div>
 
     <div class="form-group row">
+      <label class="col-sm-4 form-control-label">{{_lang.devmode}}</label>
+      <div class="col-sm-8">
+          <wb-module wb="module=switch" name="devmode" />
+      </div>
+    </div>
+
+    <div class="form-group row">
       <label class="col-sm-3 form-control-label">{{_lang.showstats}}</label>
       <div class="col-sm-9">
         <input wb="module=switch" name="showstats" />
@@ -108,6 +115,7 @@ pagesize = "Page size (default)"
 cachelt = "Cache lifetime (sec.)"
 showstats = "Statistics at bottom"
 locales = Localizations
+devmode = Developer mode
 [ru]
 header = "Общие настройки"
 save = "Сохранить"
@@ -122,5 +130,6 @@ pagesize = "Размер страниц (по-умолчанию)"
 cachelt = "Время жизни кэша (сек.)"
 showstats = "Показывать статистику"
 locales = Локализации
+devmode = Режим разработчика
 </wb-lang>
 </html>

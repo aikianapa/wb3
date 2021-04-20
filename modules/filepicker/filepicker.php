@@ -13,13 +13,14 @@ class modFilepicker
         }
 
         if ($dom->params("mode") == "single") {
-            $out=$app->fromFile(__DIR__ ."/filepicker_ui_single.php", true);
+            $out=$app->fromFile(__DIR__ ."/filepicker_ui_single.php");
         } else if ($dom->params("mode") == "button") {
-            $out=$app->fromFile(__DIR__ ."/filepicker_ui_button.php", true);
+            $out=$app->fromFile(__DIR__ ."/filepicker_ui_button.php");
         } else {
-            $out=$app->fromFile(__DIR__ ."/filepicker_ui_multi.php", true);
+            $out=$app->fromFile(__DIR__ ."/filepicker_ui_multi.php");
         }
         $out->copy($dom);
+        $out->addClass($dom->attr('class'));
         if ($dom->params("name")) {
             $out
             ->find(".filepicker-data")
