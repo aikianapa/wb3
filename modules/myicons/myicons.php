@@ -68,11 +68,13 @@ class modMyicons
         if (!$sprite) return false;
         substr($this->stroke,0,1) !== '#' ? $this->stroke = '#'.$this->stroke : null;
         $id = $sprite->attr('id');
+/*
         if ($id == '') {
             $id = 'Layer';
             $sprite->attr('id', $id);
             file_put_contents($file,$sprite->outer());
         }
+*/
         $svg = $app->fromFile(__DIR__.'/myicon_ui.php');
         $svg->find('[viewBox]')->removeAttr('viewBox');
         $svg->find('use')->attr('href', $file.'#'.$id);
