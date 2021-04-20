@@ -1570,7 +1570,7 @@ var start = function () {
         } else {
             $(document).trigger("wbapp-go");
         }
-    }, 1500);
+    }, 10);
 
     var alive = setInterval(function () {
         wbapp.alive();
