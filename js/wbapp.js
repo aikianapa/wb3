@@ -1345,7 +1345,7 @@ var start = function () {
 
             $(this).data("idx", idx);
 
-            if ($(this).is('[type=email]')) {
+            if ($(this).is('[type=email]:visible')) {
                 if (($(this).val() > '' && !wbapp.check_email($(this).val())) || ($(this).val() == '' && $(this).prop('required'))) {
                     res = false;
                     $(this).data("error", wbapp._settings.sysmsg.email_correct);
