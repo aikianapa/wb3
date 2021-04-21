@@ -683,22 +683,26 @@ class wbApp
     
 
     public function getCache()
-    {   
-        if ($this->vars('_sett.devmode') == 'on') return null;
-        if (isset($_SERVER['HTTP_CACHE_CONTROL'])) {
+    {          
+        $this->vars('_sett.devmode') == 'on' ? $cache = null : $cache = true;
+        if ($cache && isset($_SERVER['HTTP_CACHE_CONTROL'])) {
             parse_str($_SERVER['HTTP_CACHE_CONTROL'], $cc);
-            if (isset($cc['no-cache'])) {
-                return null;
-            }
+            isset($cc['no-cache']) ? $cache = null : null; 
         }
-        if (((!count($_POST) and isset($_GET['update']) and count($_GET) == 1) or count($_POST) or count($_GET))) {
+        $cache && ((!count($_POST) and isset($_GET['update']) and count($_GET) == 1) or count($_POST) or count($_GET)) ? $cache = null : null;
+
+        if ($cache == null) {
+            header("Cache-Control: no-cache, no-store, must-revalidate"); 
+            header("Pragma: no-cache");
             return null;
         }
+
         $cid = $this->getCacheId();
         $sub = substr($cid, 0, 2);
         $dir = $this->vars('_env.dbac').'/'.$sub;
         $name = $dir.'/'.$cid.'.html';
     
+        
         header("Cache-control: public");
         header("Pragma: cache");
         header("Expires: " . gmdate("D, d M Y H:i:s", time()+$this->vars('_sett.cache')) . " GMT");

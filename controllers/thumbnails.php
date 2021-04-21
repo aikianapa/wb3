@@ -59,6 +59,7 @@ class ctrlThumbnails
             $p='https';
         }
 
+        if ($app->vars('_sett.devmode') == 'on') $cache=false;
         if (isset($_SERVER['HTTP_CACHE_CONTROL'])) {
             parse_str($_SERVER['HTTP_CACHE_CONTROL'], $cc);
             if (isset($cc['no-cache']) OR isset($query['nocache'])) {
