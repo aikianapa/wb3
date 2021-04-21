@@ -683,7 +683,8 @@ class wbApp
     
 
     public function getCache()
-    {
+    {   
+        if ($this->vars('_sett.devmode') == 'on') return null;
         if (isset($_SERVER['HTTP_CACHE_CONTROL'])) {
             parse_str($_SERVER['HTTP_CACHE_CONTROL'], $cc);
             if (isset($cc['no-cache'])) {
