@@ -2,6 +2,14 @@
 
 var wbapp = new Object();
 
+var get_cookie = function(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+wbapp.devmode = get_cookie('devmode');
+
 var start = function () {
     var data = {};
 
@@ -1182,8 +1190,9 @@ var start = function () {
         scripts.forEach(function (src) {
             //    let name = src.split("/");
             //    name = name[name.length-1];
+            if (wbapp.devmode > 0  && src.indexOf('?') == -1) src += '?' + wbapp.devmode;
             let name = src;
-            if (wbapp.loadedScripts.indexOf(name) !== -1) {
+            if (wbapp.loadedScripts.indexOf(src) !== -1) {
                 i++;
                 if (i >= scripts.length) {
                     if (func !== null) return func(scripts);
@@ -1230,6 +1239,7 @@ var start = function () {
                     }
                 }
             } else {
+                if (wbapp.devmode && src.indexOf('?') == -1) src += '?' + wbapp.devmode;
                 var style = document.createElement('link');
                 wbapp.loadedStyles.push(src);
                 style.href = src;
@@ -1306,8 +1316,6 @@ var start = function () {
             return false;
         }
     }
-
-
 
     var array_column = function (list, column, indice) {
         var result, key;

@@ -42,8 +42,8 @@
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label">{{_lang.devmode}}</label>
-      <div class="col-sm-8">
+      <label class="col-sm-3 form-control-label">{{_lang.devmode}}</label>
+      <div class="col-sm-9">
           <wb-module wb="module=switch" name="devmode" />
       </div>
     </div>
