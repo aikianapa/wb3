@@ -210,7 +210,7 @@ class wbDom extends DomQuery
         $this->app->vars("_env.locale", $tmp);
         if ($this->app->vars('_sett.devmode') == 'on' && $this->is('[rel=preload]')) {
             $href = $this->attr('href');
-            if (!strpos('?',$href)) {
+            if (!strpos('?',$href) && isset($_COOKIE['devmode'])) {
                 $this->attr('href',$href.'?'.$_COOKIE['devmode']);
             }
         }
