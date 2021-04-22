@@ -10,8 +10,6 @@ class modScss {
       require_once __DIR__.'/scssphp/scss.inc.php';
       $this->compiler = new Compiler();
       if (strtolower(get_class($obj)) == 'wbapp') {
-        echo 123;
-        die;
         $app = &$obj;
         $this->minify = false;
         $this->app = $app;
