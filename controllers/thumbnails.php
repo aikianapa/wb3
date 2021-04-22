@@ -17,6 +17,9 @@ class ctrlThumbnails
         $_POST = $app->vars('_post');
 
         $params=$app->vars('_route.params');
+        
+        
+        $this->browser = (object)$this->getInfoBrowser();
 
         if ($app->vars('_get')) {
             $app->vars('_get', []);
@@ -45,6 +48,16 @@ class ctrlThumbnails
         $this->thumbnail_view($app);
         die;
     }
+    
+	private function getInfoBrowser(){
+        $agent = $_SERVER['HTTP_USER_AGENT'];
+        preg_match("/(MSIE|Opera|Firefox|Chrome|Safari|Chromium|Version)(?:\/| )([0-9.]+)/", $agent, $bInfo);
+        $browserInfo = array();
+        $browserInfo['name'] = ($bInfo[1]=="Version") ? "Safari" : $bInfo[1];
+        $browserInfo['version'] = $bInfo[2];     
+        return $browserInfo;
+}
+    
 
     public function thumbnail_view($app)
     {
@@ -108,7 +121,7 @@ class ctrlThumbnails
                 $image = str_replace('<svg ','<svg width="'.$app->vars('_route.w').'" height="'.$app->vars('_route.h').'" ',$image);
 								$destination = $file;
             } else {
-								in_array($ext,['jpg','jpeg','png']) ? $ext = 'webp' : null;
+								$this->browser->name !== 'Safari' && in_array($ext,['jpg','jpeg','png']) ? $ext = 'webp' : null;
 								switch($ext) {
 									case 'jpg':
 										$options = ['jpeg_quality'=>80];
