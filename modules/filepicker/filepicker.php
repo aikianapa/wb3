@@ -32,9 +32,9 @@ class modFilepicker
             ->attr("name", $dom->attr("name"));
         }
         if ($dom->params("path")) {
-            $out
-            ->find("input[name=upload_url]")
-            ->attr("value", $dom->params->path);
+            $out->find("input[name=upload_url]")->attr("value", $dom->params->path);
+        } else {
+            $out->find("input[name=upload_url]")->attr("value", '%auto%');
         }
         if ($dom->params("ext")) {
             $out

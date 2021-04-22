@@ -25,19 +25,25 @@ $handler = new Handler($uploader);
 // Configuration
 
 $config['debug'] = true;
-$config['upload_url'] = '/uploads';
+
 
 $app->vars('_sess.user_role') == 'admin' ? $config['accept_file_types_regex'] = '/.*/' : null;
 
+isset($_POST["file"]) ? $file = $_POST["file"] : $file = wbNewId("img");
+
 if ($app->vars("_req.upload_ext") > "") $config['accept_file_types'] = $app->vars("_req.upload_ext");
-if ($app->vars("_req.upload_url") > "") $config['upload_url'] = $app->vars("_req.upload_url");
+if ($app->vars('_req.upload_url') == '%auto%') {
+    $config['upload_url'] = '/uploads/'.substr(md5($file),0,2);
+} else {
+    $config['upload_url'] = $app->vars("_req.upload_url");
+}
 
 $config['script_url'] = $app->vars("_route.host").'/engine/modules/filepicker/uploader/index.php';
 $config['overwrite'] = true;
 $config['max_file_size'] = $app->vars("_sett.max_upload_size");
 $config['auto_orient'] = true;
 $config['image_file_types'] = 'gif|jpg|jpeg|png|webp';
-$config['inline_file_types'] = 'gif|jpg|jpeg|png|webp|pdf|doc|docx|xls|xlsx|zip|rar|gzip';
+$config['inline_file_types'] = 'gif|jpg|jpeg|png|webp|pdf|doc|docx|xls|xlsx|zip|rar|gzip|css|scss|less|txt|log';
 
 if (isset($_POST["_method"])) {
     isset($_POST["file"]) ? $file = $_POST["file"] : null;
@@ -45,11 +51,7 @@ if (isset($_POST["_method"])) {
     $dir = explode("/",$file);
     $_POST["file"] = array_pop($dir);
     $config['upload_url'] = implode("/",$dir);
-} else {
-  isset($_POST["file"]) ? $file = $_POST["file"] : $file = wbNewId("img");
-  substr($config['upload_url'],0,8) == '/uploads' ? $config['upload_url'] .= "/".substr(md5($file),0,2) : null;
-}
-
+} 
 $config['upload_dir'] = wbNormalizePath($_SERVER["DOCUMENT_ROOT"].$config['upload_url']);
 
 if (!is_dir($config['upload_dir'])) mkdir($config['upload_dir'],0755);
