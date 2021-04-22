@@ -47,7 +47,7 @@ if (isset($_POST["_method"])) {
     $config['upload_url'] = implode("/",$dir);
 } else {
   isset($_POST["file"]) ? $file = $_POST["file"] : $file = wbNewId("img");
-  $config['upload_url'] .= "/".substr(md5($file),0,2);
+  substr($config['upload_url'],0,8) == '/uploads' ? $config['upload_url'] .= "/".substr(md5($file),0,2) : null;
 }
 
 $config['upload_dir'] = wbNormalizePath($_SERVER["DOCUMENT_ROOT"].$config['upload_url']);
