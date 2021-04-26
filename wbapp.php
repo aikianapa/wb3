@@ -757,6 +757,7 @@ class wbApp
     }
 
     public function login($user) {
+        is_string($user) ? $user = $this->itemRead('users',$user) : null;
         is_object($user) ? null : $user = $this->arrayToObj($user);
         isset($user->avatar) ? null : $user->avatar = "/engine/tpl/img/person.svg";;
         if ($user->avatar > "") {

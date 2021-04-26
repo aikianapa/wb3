@@ -117,6 +117,8 @@ function wbInitSettings(&$app)
         unset($_ENV['lang']);
     }
 
+    $app->vars('_sett.devmode') == 'on' ? null : ini_set('display_errors', 0);
+
     isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'] : $lang = 'en';
     isset($settings['lang']) ? $lang = $settings['lang'] : $lang = substr($lang, 0, 2);
     isset($_SESSION['lang']) ? $lang = $_SESSION['lang'] : null ;
