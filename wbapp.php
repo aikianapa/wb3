@@ -463,15 +463,17 @@ class wbDom extends DomQuery
         if (!$this->attributes) {
             return $this;
         }
-        if ($Item == null) {
-            $Item = $this->item;
-        }
-        if (is_object($Item)) {
-            $Item=wbObjToArray($Item);
-        }
+        $Item == null ? $Item = $this->item : null;
+        is_object($Item) ? $Item=wbObjToArray($Item) : null;
+
         foreach ($this->attributes as $at) {
             $atname = $at->name;
             $atval = $at->value;
+            if (substr($atname,0,1) == "_" && strpos($atname,".")) {
+                $this->removeAttr($atname);
+                $atname = $this->app->vars($atname);
+                if ($atname == '') break;
+            }
             if (strpos($atname, "}}")) {
                 unset($this->attributes[$atname]);
                 $atname = wbSetValuesStr($atname, $Item);
