@@ -765,6 +765,15 @@ function wbDotFix($data = [])
     return $dot->get();
 }
 
+function wbGetDomain($url, $deep = 2) {
+    $parseUrl = parse_url(trim($url)); 
+    $parseUrl['host'] == '' ? $parseUrl['host'] = $_SERVER['HTTP_HOST'] : null;
+    $domain = trim($parseUrl['host'] ? $parseUrl['host'] : array_shift(explode('/', $parseUrl['path'], 2))); 
+    $domain = array_slice(explode('.',$domain),-1 * $deep);
+    $domain = implode('.',$domain);
+    return $domain;
+} 
+
 function wbGetDataWbFrom($Item, $str)
 {
     $str = trim($str);
@@ -1519,7 +1528,7 @@ function wbRecurseDelete($src)
     if (is_resource($dir)) {
         while (false !== ($file = readdir($dir))) {
             if (('.' !== $file) && ('..' !== $file)) {
-                if (is_dir($src.'/'.$file)) {
+                if (!is_link($src.'/'.$file) && is_dir($src.'/'.$file)) {
                     wbRecurseDelete($src.'/'.$file);
                 } else {
                     unlink($src.'/'.$file);
