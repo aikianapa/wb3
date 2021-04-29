@@ -400,7 +400,9 @@ class wbDom extends DomQuery
     {
         if ($this->params('allow') > "") {
             $allow = wbArrayAttr($this->params->allow);
-            if ($allow && !in_array($this->app->vars("_sess.user.role"), $allow)) {
+            if (trim($this->params('allow')) == "*") {
+                $this->params->allow = true;
+            } else if ($allow && !in_array($this->app->vars("_sess.user.role"), $allow)) {
                 $this->params->allow = false;
                 $this->remove();
             } else {
@@ -409,22 +411,26 @@ class wbDom extends DomQuery
         }
         if ($this->params('disallow') > "") {
             $disallow = wbArrayAttr($this->params->disallow);
-            if ($disallow && !in_array($this->app->vars("_sess.user.role"), $disallow)) {
+            if (trim($this->params('disallow')) == "*") {
+                $this->params->allow = false;
+                $this->remove();
+            } else if ($disallow && !in_array($this->app->vars("_sess.user.role"), $disallow)) {
                 $this->params->allow = true;
             } else {
                 $this->params->allow = false;
                 $this->remove();
             }
+            $this->disallow = $disallow;
         }
         if ($this->params('disabled') > "") {
             $disabled = wbArrayAttr($this->params->disabled);
-            if ($disabled && in_array($this->app->vars("_sess.user.role"), $disabled)) {
+            if ($disabled && in_array($this->app->vars("_sess.user.role"), $disabled) OR trim($this->params('disabled')) == '*') {
                 $this->attr("disabled", true);
             }
         }
         if ($this->params('enabled') > "") {
             $enabled = wbArrayAttr($this->params->enabled);
-            if ($enabled && !in_array($this->app->vars("_sess.user.role"), $enabled)) {
+            if ($enabled && !in_array($this->app->vars("_sess.user.role"), $enabled) OR trim($this->params('enabled')) == '*') {
                 $this->attr("disabled", true);
             }
         }

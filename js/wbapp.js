@@ -48,7 +48,9 @@ var start = function () {
                 wbapp.ajax(params);
                 console.log("Trigger: data-ajax");
                 $(document).trigger("data-ajax", params);
-                e.preventDefault();
+                if ($(this).attr('href').substr(0,1) == '#') {
+                    document.location.anchor = $(this).attr('href');
+                }
             }
         })
 

@@ -44,17 +44,20 @@ class ctrlModule {
 
   function settings() {
       $app = $this->app;
-      if ($app->vars('_sess.user_role') !== 'admin') {
-          echo $app->vars('_env.sysmsg.disallow');
-          die;
-      }
       $modules = $app->listModules();
       $module = $modules[$app->route->module];
       $tpl = $app->getForm('_settings','ui_mods');
       $tpl = $app->fromString($tpl->find('#modSettingsWrapper')->inner());
       $out = $app->fromFile($module['sett']);
-      $tpl->find("form > div")->html($out->outer());
       $tpl->fetch(['module'=>$module['id']]);
+      $out->fetch();
+      $tpl->find("form > div")->html($out->outer());
+      isset($out->params->allow) && $out->params->allow == true ? $allow = $out->params->allow : $allow = null;
+      if ($app->vars('_sess.user_role') !== 'admin' AND $allow !== true) {
+        echo $app->vars('_env.sysmsg.disallow');
+        die;
+      }
+
       echo $tpl->outer();
   }
 }
