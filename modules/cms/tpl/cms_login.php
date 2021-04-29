@@ -44,7 +44,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="ri-lock-unlock-line"></i></span>
                             </div>
-                            <input name="password" class="form-control" type="password" placeholder="Пароль">
+                            <input name="password" class="form-control" type="password" placeholder="Пароль" onchange="$('.btn-primary').trigger('click');">
                         </div>
                     </div>
                 </form>
