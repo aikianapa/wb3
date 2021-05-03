@@ -20,6 +20,8 @@ var start = function () {
         spinner_sm_grow: '<span class="spinner-grow spinner-grow-sm" role="status"></span>'
     };
 
+    wbapp.evClick = 'tap click touchstart';
+
     wbapp.lazyload = function () {
         $("[data-src]:not([src])").lazyload();
     }
@@ -315,7 +317,8 @@ var start = function () {
             data = wbapp.objByForm(form);
             if (data._idx) delete data._idx;
 
-            if ($(obj).is("input,select,textarea") && params.table && (params.id || params.item)) {
+            //if ($(obj).is("input,select,textarea,button,img,a") && params.table && (params.id || params.item)) {
+            if (params.table && (params.id || params.item)) {
                 let fld = $(obj).attr("name");
                 let value = $(obj).val();
                 let id;
@@ -333,9 +336,14 @@ var start = function () {
                 } else {
                     let tmpId = wbapp.newId();
                     wbapp.storage(tmpId, {
-                        'id': params.item
+                        'id': id
                     });
-                    wbapp.storage(tmpId + '.' + params.field, data);
+                    if (params.field !== undefined) {
+                        wbapp.storage(tmpId + '.' + params.field, data);
+                    } else {
+                        data['id'] = id;
+                        wbapp.storage(tmpId, data);
+                    }
                     data = wbapp.storage(tmpId);
                 }
                 if (params.url == undefined) params.url = `/api/save/${params.table}`;
@@ -343,7 +351,6 @@ var start = function () {
                 wbapp.storage('tmp' + '.' + params.table + '.' + params.field, data);
                 data = wbapp.storage('tmp' + '.' + params.table);
             }
-
             if ($(obj).data('saved-id') !== undefined) {
                 data['id'] = $(obj).data('saved-id');
             }
@@ -1288,7 +1295,7 @@ var start = function () {
     }
 
     wbapp.furl = function (str) {
-        str = str.replace(/[^а-яА-Яa-zA-Z0-9_-]{1,}/gm, "_");
+        str = str.replace(/[^\/а-яА-Яa-zA-Z0-9_-]{1,}/gm, "_");
         str = str.replace(/[__]{1,}/gm, "_");
         str = wbapp.transilt(str);
         return str;
