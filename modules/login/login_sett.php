@@ -1,3 +1,4 @@
+<html>
   <div class="formgroup row">
           <label class="form-control-label col-sm-4">{{_lang.loginby}}</label>
           <div class="col-sm-8">
@@ -63,3 +64,4 @@
   status = "Активировать без потдверждения"
   group = "Роль пользователя по-умолчанию"
 </wb-lang>
+</html>

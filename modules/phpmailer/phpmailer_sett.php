@@ -1,4 +1,4 @@
-
+<html>
   <div class="row form-group">
     <label class="col-sm-4 control-label" title="Set system mail function">Mail function</label>
     <div class="col-sm-8">
@@ -75,3 +75,4 @@
     settings = "Настройки"
     ready = "Готово"
   </wb-lang>
+  </html>

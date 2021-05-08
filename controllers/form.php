@@ -68,7 +68,7 @@ class ctrlForm
             $_ENV["cache_used"] = true;
             echo $cache;
         }
-        if ($app->vars('_sett.showstats') == 'on') echo wbUsageStat();
+        if ($app->vars('_sett.showstats') == 'on')  echo wbUsageStat();
         die;
     }
 

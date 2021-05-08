@@ -427,13 +427,7 @@ class ctrlApi
                     $item[1] = $sarr;
                 } elseif ($item[0] == 'return') {
                     $item[0] = 'projection';
-                    $sarr = [];
-                    $sort = explode(',', $item[1]);
-                    foreach ($sort as $key => $fld) {
-                        $fld = explode(',', $sort[$key]);
-                        $sarr[trim($fld[0])] = 1;
-                    }
-                    $item[1] = $sarr;
+                    $item[1] = explode(',', $item[1]);
                 } else if (isset($item[1]) && is_numeric($item[1])) {
                         $item[1] = $item[1] * 1;
                 }

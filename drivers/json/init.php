@@ -274,9 +274,9 @@ class jsonDrv
                     $tmp = [
                         '_id' => $item['_id'],
                     ];
-                    foreach ($options->projection as $fld => $v) {
-                        $v = $dot->get($fld);
-                        isset($v) ? $tmp[$fld] = $v : null;
+                    foreach ($options->projection as $fld) {
+                        $val = $dot->get($fld);
+                        isset($val) ? $tmp[$fld] = $val : $tmp[$fld] = null;
                     }
                     $item = $tmp;
                 }

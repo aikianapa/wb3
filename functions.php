@@ -36,12 +36,10 @@ function wbInitEnviroment()
     $dir=explode("/", __DIR__);
     array_pop($dir);
     $dir=implode("/", $dir);
-    if (!isset($_ENV["driver"])) {
-        $_ENV["driver"] = "json";
-    }
-    if (!isset($_ENV["base"])) {
-        $_ENV['base'] = "/tpl/";
-    }
+
+    !isset($_ENV["driver"]) ? $_ENV["driver"] = "json" : null;
+    !isset($_ENV["base"]) ? $_ENV['base'] = "/tpl/" : null;
+
     $_ENV['path_app'] = ($_SERVER['DOCUMENT_ROOT']>"") ? $_SERVER['DOCUMENT_ROOT'] : $dir ;
     $_ENV['path_engine'] = $_ENV['path_app'].'/engine';
     $_ENV['dir_engine'] = __DIR__;
@@ -1619,13 +1617,20 @@ function wbQuery($sql)
     return $table['data'];
 }
 
+function wbArrayFilter($list,$options) {
+    foreach((array)$list as $key => $item) {
+        if (!wbItemFilter($item, (object)$options)) unset($list[$key]);
+    }
+    return $list;
+}
+
+
 function wbItemFilter($item, $options, $field = null)
 {
     (isset($item['id']) && !isset($item['_id'])) ? $item['_id'] = $item['id'] : null ;
     isset($options->filter) ? $filter = $options->filter : $filter = $options;
     isset($options->context) ? $context = wbAttrToArray($options->context) : $context = ['_id','header','text','articul'];
     isset($item['_form']) ? $item = wbTrigger('form', __FUNCTION__, 'beforeItemFilter', [$item['_form']] , $item) : null;
-
 
     $fields = new Dot();
     $fields->setReference($item);

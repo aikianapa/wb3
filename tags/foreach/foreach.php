@@ -200,9 +200,7 @@ class tagForeach
                 $val->_ndx = $ndx;
                 $val->_val = $value;
                 $val->_parent = &$parent;
-                if (!isset($val->_id)) {
-                    isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
-                }
+                !isset($val->_id) AND isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
                 $dom->params('table') > "" ? $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$dom->params->table], (array) $val) : null;
             }
 
@@ -393,6 +391,7 @@ class tagForeach
             } else {
                 $list = $dom->getField($dom->params->from);
             }
+            if ($dom->params('filter')) $list = $dom->app->arrayFilter($list,$dom->params('filter'));
             if (isset($options["sort"]) and (array) $options["sort"] === $options["sort"]) {
                 foreach ((array) $options["sort"] as $key => $fld) {
                     if (!((array) $fld === $fld)) {

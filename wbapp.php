@@ -836,6 +836,8 @@ class wbApp
 
     public function controller($controller = null)
     {
+        if (is_callable('customRoute')) customRoute($this->route);
+        
         if ($this->route->controller !== 'module' && substr($this->mime($this->route->uri), 0, 6) == 'image/') {
             $this->route->controller = 'thumbnails';
         }
