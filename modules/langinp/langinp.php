@@ -8,8 +8,8 @@ class modLanginp
     }
     public function init($dom)
     {
-        if ($dom->tagName !== 'input') return;
-        $dom->prop('done', true);
+        if ($dom->tagName !== 'input' OR isset($dom->done)) return;
+        $dom->done = true;
         $out = $dom->app->fromFile(__DIR__ ."/langinp_ui.php");
         $attrs = $dom->attributes;
         $inp = $out->find('input.mod-langinp');
@@ -18,8 +18,9 @@ class modLanginp
             $at->name == 'class' ? $inp->addClass($at->value) : $inp->attr($at->name, $at->value);
         }
         $txt->attr('name', $inp->attr('name'));
-        $inp->removeAttr('name');
         $out->copy($dom);
+        $inp->removeAttr('name');
+        $inp->removeAttr('wb');
         $out->fetch();
         $name = $txt->attr('name');
         if (isset($dom->item[$name])) {

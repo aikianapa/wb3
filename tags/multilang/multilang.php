@@ -47,7 +47,7 @@ class tagMultilang {
         $dom->attr("id",$tplId);
         $outer = $wrp->outer();
         $dom->inner($outer);
-        $dom->append('<script type="wbapp" data-remove="multilang-js">wbapp.loadScripts(["/engine/js/php.js","/engine/tags/multilang/multilang.js"],"multilang-js");</script>'."\n\r");
+        $dom->append('<script wb-app data-remove="multilang-js">wbapp.loadScripts(["/engine/js/php.js","/engine/tags/multilang/multilang.js"],"multilang-js");</script>'."\n\r");
         $dom->fetched = true;
     }
 

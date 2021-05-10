@@ -209,7 +209,7 @@ var start = function () {
             return key
         }
 
-        if (value == undefined) {
+        if (value === undefined) {
             // get data
             let list = key.split(".");
             var res;
@@ -259,7 +259,11 @@ var start = function () {
                     eval(`data.${key} = {}`);
                 }
             })
-            eval(`data.${key} = value`);
+            if (value === null) {
+                eval(`delete data.${key}`);
+            } else {
+                eval(`data.${key} = value`);
+            }
             localStorage.setItem(list[0], json_encode(data));
 
             let checkBind = function (bind, key) {

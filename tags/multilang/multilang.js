@@ -61,15 +61,15 @@ function wb_multilang() {
                     });
                     data[lid] = item;
                 }
-
                 ml_value(that, data)
                 $(that).trigger("change");
             });
         }, 10);
     }
 
-    $(document).find("wb-multilang[name]").each(function () {
+    $(document).find("wb-multilang").each(function () {
         if (this.done == undefined) {
+            if ($(this).attr('name') == undefined) $(this).attr('name', 'lang')
             var that = this;
 
             $(that).find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -86,13 +86,13 @@ function wb_multilang() {
             });
             ml_store(that);
             $(this).find("input:visible:first").trigger("change"); // important
-            this.done = true;
             $(this).removeAttr("name");
+            this.done = true;
         }
     });
 }
 
-$(document).on("multilang-js", function () {
+$(document).on('multilang-js',function(){
     wb_multilang();
-    $(document).find("[data-remove=multilang-js]").remove();
-});
+    $(document).find('[data-remove="multilang-js"]').remove();
+})

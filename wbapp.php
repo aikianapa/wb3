@@ -1,4 +1,5 @@
 <?php
+// Author: oleg_frolov@mail.ru
 use Nahid\JsonQ\Jsonq;
 use Adbar\Dot;
 use DQ\DomQuery;
