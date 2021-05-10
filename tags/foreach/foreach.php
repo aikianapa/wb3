@@ -391,7 +391,7 @@ class tagForeach
             } else {
                 $list = $dom->getField($dom->params->from);
             }
-            if ($dom->params('filter')) $list = $dom->app->arrayFilter($list,$dom->params('filter'));
+            if ($dom->params('filter') AND !$dom->params->table) $list = $dom->app->arrayFilter($list,$dom->params('filter'));
             if (isset($options["sort"]) and (array) $options["sort"] === $options["sort"]) {
                 foreach ((array) $options["sort"] as $key => $fld) {
                     if (!((array) $fld === $fld)) {
