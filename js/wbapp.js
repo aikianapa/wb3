@@ -319,6 +319,7 @@ var start = function () {
         setTimeout(function () {
             // Задержка для ожидания обработки возможных плагинов
             data = wbapp.objByForm(form);
+
             if (data._idx) delete data._idx;
 
             //if ($(obj).is("input,select,textarea,button,img,a") && params.table && (params.id || params.item)) {
@@ -333,6 +334,9 @@ var start = function () {
                 if (params.id) {
                     id = params.id;
                 } else if (params.item) id = params.item;
+
+                if (data.id !== undefined && data.id > '') id = data.id;
+
                 if (fld !== undefined) {
                     data = {};
                     data['id'] = id;
@@ -350,6 +354,9 @@ var start = function () {
                     }
                     data = wbapp.storage(tmpId);
                 }
+                data['id'] = id;
+
+
                 if (params.url == undefined) params.url = `/api/save/${params.table}`;
             } else if (params.field !== undefined) {
                 wbapp.storage('tmp' + '.' + params.table + '.' + params.field, data);
