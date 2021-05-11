@@ -18,7 +18,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">{{_route.host}}/</span>
                             </div>
-                            <input type="text" name="id" class="form-control" placeholder="Страница">
+                            <input type="text" name="_id" class="form-control" placeholder="Страница">
                         </div>
                     </div>
 
