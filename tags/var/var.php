@@ -38,8 +38,6 @@ class tagVar
                 break;
             }
         }
-
-
         $dom->remove();
     }
 }

@@ -29,6 +29,9 @@ class tagForeach
         $dom->html("");
         $dom->outer = $dom->outer();
 
+        $dom->parent()->attr("id") > "" ? $pid = $dom->parent()->attr("id") : $pid = "fp_" . $this->app->newId();
+        $dom->parent()->attr("id", $pid);
+ 
         !isset($this->tid) && $dom->attr("id") > "" ? $this->tid = $dom->attr("id") : null;
         !isset($this->tid) && $dom->parent()->attr("id") > "" ? $this->tid = $dom->parent()->attr("id") : null;
         !isset($this->tid) ? $this->tid = "fe_" . $this->app->newId() : null;
@@ -548,8 +551,10 @@ class tagForeach
         $dom = &$this->dom;
         $options = [];
         $options['filter'] = [];
-        $dom->parent()->attr("id") > "" ? $pid = $dom->parent()->attr("id") : $pid = "fp_" . $this->app->newId();
-        $dom->parent()->attr("id". $pid);
+        
+        // Перенесено выше - иначе не всегда срабатывало
+        //$dom->parent()->attr("id") > "" ? $pid = $dom->parent()->attr("id") : $pid = "fp_" . $this->app->newId();
+        //$dom->parent()->attr("id", $pid);
 
         if ($this->app->vars('_post.filter') > '' && $this->app->vars('_post.target') == '#'.$pid) {
             $this->filter_prepare();
