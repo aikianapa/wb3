@@ -28,7 +28,7 @@
 
 
       <div class="form-group">
-        <button class="btn btn-success" type="submit" data-ajax="{'url':'/cms/ajax/form/pages/edit/_new','html':'.pages-edit-modal'}">{{_lang.create}}</button>
+        <button class="btn btn-success" type="button" data-ajax="{'url':'/cms/ajax/form/pages/edit/_new','html':'.pages-edit-modal'}">{{_lang.create}}</button>
       </div>
     </form>
   </div>
