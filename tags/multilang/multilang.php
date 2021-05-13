@@ -30,8 +30,10 @@ class tagMultilang {
         foreach((array)$langs as $l) {
             $data[$l] = [];
         }
-        $dom->item['lang'] = array_merge($data, (array)$dom->getField($field));
-        
+
+        $dom->getField($field) ? $fld = (array)$dom->getField($field) : $fld = [];
+        $dom->item['lang'] = array_merge($data, $fld);
+
         $wrp->find('.tab-content > wb-foreach > .tab-pane')->html($dom->inner());
         $wrp->copy($dom);
         $wrp->fetch();

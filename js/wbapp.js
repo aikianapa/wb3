@@ -411,7 +411,7 @@ var start = function () {
                 });
 
             });
-        }, 100);
+        }, 50);
     }
 
 
@@ -885,8 +885,8 @@ var start = function () {
 
 
     wbapp.tpl = function (tid, data = null) {
-        if (data == null) {
-            if (wbapp.template[tid].params.locale !== undefined) {
+        if (data == null && wbapp.template[tid] !== undefined) {
+            if (wbapp.template[tid].params !== undefined && wbapp.template[tid].params.locale !== undefined) {
                 let tpl = wbapp.template[tid].html;
                 let loc = wbapp.template[tid].params.locale;
                 $.each(loc, function (key, val) {
@@ -900,7 +900,7 @@ var start = function () {
         }
     }
 
-    wbapp.render = function (tid, data) {
+    wbapp.render = async function (tid, data) {
         if (tid == undefined) return;
         let params = wbapp.template[tid].params;
         if (data == undefined && params.bind == undefined) data = {};
@@ -908,20 +908,21 @@ var start = function () {
         if (params.render == undefined) params.render = null;
         switch (params.render) {
             case 'client':
-                wbapp.renderClient(params, data);
+                await wbapp.renderClient(params, data);
                 break;
             case 'server':
-                wbapp.renderServer(params, data);
+                await wbapp.renderServer(params, data);
                 break;
             case null:
-                var profileMenu = Ractive({
+                var profileMenu = await Ractive({
                     'target': tid,
                     'template': wbapp.template[tid].html,
                     'data': () => { return data; }
                 });
                 break;
         }
-        wbapp.lazyload()
+        wbapp.lazyload();
+        wbapp.trigger('wb-render-done',tid,data);
     }
 
     wbapp.renderServer = function (params, data = {}) {
@@ -1539,6 +1540,8 @@ var start = function () {
                     data[val["name"]] = htmlentities(data[val["name"]]);
                     data[val["name"]] = str_replace('&quot;', '/"', data[val["name"]]);
                     data[val["name"]] = str_replace('&amp;quot;', '"', data[val["name"]]);
+                } else {
+                    data[val["name"]] = $(form).find("textarea[name='" + val["name"] + "']").text();
                 }
             }
         });
