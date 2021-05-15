@@ -1541,7 +1541,7 @@ var start = function () {
                     data[val["name"]] = str_replace('&quot;', '/"', data[val["name"]]);
                     data[val["name"]] = str_replace('&amp;quot;', '"', data[val["name"]]);
                 } else {
-                    data[val["name"]] = $(form).find("textarea[name='" + val["name"] + "']").text();
+                    data[val["name"]] = $(form).find("textarea[name='" + val["name"] + "']").val();
                 }
             }
         });

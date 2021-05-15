@@ -29,7 +29,7 @@ class tagForeach
         $dom->html("");
         $dom->outer = $dom->outer();
 
-        $dom->parent()->attr("id") > "" ? $pid = $dom->parent()->attr("id") : $pid = "fp_" . $this->app->newId();
+        $dom->parent()->attr("id") > '' ? $pid = $dom->parent()->attr("id") : $pid = "fp_" . $this->app->newId();
         $dom->parent()->attr("id", $pid);
  
         !isset($this->tid) && $dom->attr("id") > "" ? $this->tid = $dom->attr("id") : null;
@@ -41,7 +41,7 @@ class tagForeach
 
         $dom->params('target') == '' ? $dom->params->target = '#'.$this->tid : null;
         $dom->params("render") == "client" ? $render = $dom->params("render") : $render = "server";
-        $dom->params("render", $render);
+        $dom->params->render = $render;
 
         $this->$render($dom);
         $dom->rendered = true;
