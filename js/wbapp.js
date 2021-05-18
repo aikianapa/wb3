@@ -536,7 +536,13 @@ var start = function () {
                     if (func !== null) return func(params, data);
                 }
 
-                if (params.target && params.target > '#') $(document).find(params.target).html($(data).find(params.target).html());
+                if (params.target && params.target > '#') {
+                    if ($(data).is(params.target)) {
+                        $(document).find(params.target).html($(data).html());
+                    } else {
+                        $(document).find(params.target).html($(data).find(params.target).html());
+                    }
+                }
                 if (params.source && params.source > '' ) data = $(data).find(params.source).html();
 
                 if (params.html) $(document).find(params.html).html(data);

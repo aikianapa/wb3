@@ -41,7 +41,8 @@ class tagForeach
 
         $dom->params('target') == '' ? $dom->params->target = '#'.$this->tid : null;
         $dom->params("render") == "client" ? $render = $dom->params("render") : $render = "server";
-        $dom->params->render = $render;
+
+//        $dom->params->render = $render;
 
         $this->$render($dom);
         $dom->rendered = true;
@@ -233,6 +234,10 @@ class tagForeach
         $params = $dom->params;
 
         if ($ajax !== false OR isset($params->table) && $params->table > '') {
+            if ($dom->app->vars('_post.route') > '' AND $dom->app->vars('_post._tid') )  {
+                
+            } else {
+
             $params->target = '#'.$this->tid;
             $locale = $dom->locale;
             if ( isset($locale[$_SESSION["lang"]]) ) {
@@ -240,11 +245,12 @@ class tagForeach
                 $params->locale = $locale;
             } 
             $params->route = $dom->app->route;
-            $params = json_encode($params);
 
             $dom->params("from") > "" ? $from = $dom->params->from : $from = 'result';
+
             if ($ajax !== false) {
                 $dom->append("<template id = \"{$this->tid}\" >\n{{#each {$from}}}\n" . $dom->tpl . "\n{{/each}}</template>\n");
+                $dom->params->render = 'client';
             } else {
                 $tpl = $dom->app->fromString($dom->outer);
                 $tpl->append($dom->tpl);
@@ -252,9 +258,12 @@ class tagForeach
             }
             
             $ajax !== false ? $dom->find("template[id='{$this->tid}']")->attr('data-ajax', $dom->attr("data-ajax")) : null;
+
+            $params = json_encode($params);
             $params > '' ? $dom->find("template[id='{$this->tid}']")->addParams($params) : null;
 
             $dom->find("template[id=\"{$this->tid}\"] .pagination")->attr("data-tpl", $this->tid);
+        }
         } 
             if ($dom->params("size") > "") {
                 $size = $dom->params("size");

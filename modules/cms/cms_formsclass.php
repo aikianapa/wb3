@@ -13,6 +13,7 @@ class cmsFormsClass {
     }
 
     function list() {
+        header('Content-Type: text/html; charset=utf-8');
         $app = $this->app;
         $form = $this->app->getForm($this->form, "list");
         if (!$form) {
@@ -29,6 +30,7 @@ class cmsFormsClass {
 
     function methodForm($method) {
         // edit, role
+        header('Content-Type: text/html; charset=utf-8');
         $app = $this->app;
         $form = $this->app->getForm($this->form,$method);
         if ($form) {
