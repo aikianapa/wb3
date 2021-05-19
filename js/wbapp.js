@@ -684,12 +684,12 @@ var start = function () {
     }
 
 
-    wbapp.loading = function () {
-
+    wbapp.loading = function(selector = 'body') {
+        $(selector).addClass('loading');
     }
 
-    wbapp.unloading = function () {
-
+    wbapp.unloading = function(selector = 'body') {
+        $(selector).removeClass('loading');
     }
 
     wbapp.fetch = function (selector, data, ret) {
