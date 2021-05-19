@@ -88,11 +88,16 @@ class ctrlThumbnails
             }
         }
 
+        $formats = ['gif','png','jpg','svg','jpeg','webp','webm','mp3','mp4','pdf','doc','docx','xls','xlsx','zip','rar'];
+        $danger = ['php','js','c','sh','py'];
+        $imgext = ['gif','png','jpg','svg','jpeg','webp'];
+
         if ($remote) {
             if (!isset($url)) {
                 $url=$p.substr($app->vars('_route.uri'), strpos($app->vars('_route.uri'), '://'));
             }
             $ext = pathinfo($url, PATHINFO_EXTENSION);
+            if (!in_array($ext,$formats) OR in_array($ext,$danger)) return; // дабы не загрузили на сервак бяку
             $file=$_ENV['path_app'].'/uploads/_remote/'.md5($url).'.'.$ext;
             if (!is_file($file) or !$cache) {
                 $image=file_get_contents($url);
@@ -100,10 +105,16 @@ class ctrlThumbnails
             }
         } else {
             $file=urldecode($_ENV['path_app'].'/'.$_GET['src']);
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
         }
 
-        if (!is_file($file)) {
-            $file = $app->vars('_env.path_engine').'/uploads/__system/image.svg';
+
+        if (!is_file($file) OR !in_array($ext,$imgext)) {
+            if (is_file($app->vars('_env.path_engine').'/lib/fileicons/'.$ext.'.svg')) {
+                $file = $app->vars('_env.path_engine').'/lib/fileicons/'.$ext.'.svg';
+            } else {
+                $file = $app->vars('_env.path_engine').'/uploads/__system/image.svg';
+            }
         }
         if (is_file($file)) {
             list($width, $height, $type) = $size = getimagesize($file);

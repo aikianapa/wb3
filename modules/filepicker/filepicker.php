@@ -22,24 +22,26 @@ class modFilepicker
         $out->copy($dom);
         $out->addClass($dom->attr('class'));
         if ($dom->params("name")) {
-            $out
-            ->find(".filepicker-data")
-            ->attr("name", $dom->params->name);
+            $out->find(".filepicker-data")
+                ->attr("name", $dom->params->name);
         }
         if ($dom->attr("name") >"") {
-            $out
-            ->find(".filepicker-data")
-            ->attr("name", $dom->attr("name"));
+            $out->find(".filepicker-data")
+                ->attr("name", $dom->attr("name"));
         }
         if ($dom->params("path")) {
             $out->find("input[name=upload_url]")->attr("value", $dom->params->path);
         } else {
-            $out->find("input[name=upload_url]")->attr("value", '%auto%');
+            $out->find("input[name=upload_url]")->attr("value", '_auto_');
         }
         if ($dom->params("ext")) {
+            $out->find("input[name=upload_url]")
+                ->after("<input type='hidden' name='upload_ext' value='{$dom->params->ext}'>");
+        }
+        if ($dom->params("original")) {
             $out
               ->find("input[name=upload_url]")
-              ->after("<input type='hidden' name='upload_ext' value='{$dom->params->ext}'>");
+              ->after("<input type='hidden' name='original' value='{$dom->params->original}'>");
         }
         $out->fetch();
         if ($dom->tagName == 'input') {

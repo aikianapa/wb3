@@ -32,7 +32,7 @@ $app->vars('_sess.user_role') == 'admin' ? $config['accept_file_types_regex'] = 
 isset($_POST["file"]) ? $file = $_POST["file"] : $file = wbNewId("img");
 
 if ($app->vars("_req.upload_ext") > "") $config['accept_file_types'] = $app->vars("_req.upload_ext");
-if ($app->vars('_req.upload_url') == '%auto%') {
+if ($app->vars('_req.upload_url') == '_auto_') {
     $config['upload_url'] = '/uploads/'.substr(md5($file),0,2);
 } else {
     $config['upload_url'] = $app->vars("_req.upload_url");
@@ -71,8 +71,11 @@ $config['image_versions.thumb'] = array(
  * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
  */
 $handler->on('upload.before', function ($file) {
-    $_ENV["original"] = $file->getClientOriginalName();
-    if (isset($_POST["rename"]) && $_POST["rename"] == "false") {
+    $_ENV['original'] = $file->getClientOriginalName();
+    $rename = true;
+    if (isset($_POST['original']) && ($_POST['original'] == '1' OR $_POST['original'] == 'true') ) $rename = false;
+    if (isset($_POST["rename"]) && $_POST["rename"] == "false") $rename = false;
+    if (!$rename) {
         $name = $file->getClientOriginalName();
         $name = explode('.', $name);
         count($name) > 1 ? array_pop($name) : null;

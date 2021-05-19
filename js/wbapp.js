@@ -195,7 +195,7 @@ var start = function () {
         });
     }
 
-    wbapp.storage = function (key, value = undefined) {
+    wbapp.storage = function (key, value = undefined, binds = true) {
         function getKey(list) {
             key = "";
             $(list).each(function (i, k) {
@@ -272,22 +272,21 @@ var start = function () {
                 return false;
             }
 
-            $.each(wbapp.template, function (i, tpl) {
-                if (tpl.params.bind !== undefined && checkBind(tpl.params.bind, key) &&
-                    tpl.params.render !== undefined && tpl.params.render == 'client') {
-                    wbapp.render(tpl.params.target);
-                } else if (tpl.params._params !== undefined && tpl.params._params.bind !== undefined
-                    && checkBind(tpl.params._params.bind, key) && tpl.params.render == 'server') {
-                    wbapp.render(tpl.params.target);
-                }
-            });
-
-
-
-            $(document).trigger("bind", { key: key, data: value });
-            console.log("Trigger: bind [" + key + "]");
-            $(document).trigger("bind-" + key, value);
-            console.log("Trigger: bind-" + key);
+            if (binds == true) {
+                $.each(wbapp.template, function (i, tpl) {
+                    if (tpl.params.bind !== undefined && checkBind(tpl.params.bind, key) &&
+                        tpl.params.render !== undefined && tpl.params.render == 'client') {
+                        wbapp.render(tpl.params.target);
+                    } else if (tpl.params._params !== undefined && tpl.params._params.bind !== undefined
+                        && checkBind(tpl.params._params.bind, key) && tpl.params.render == 'server') {
+                        wbapp.render(tpl.params.target);
+                    }
+                });
+                $(document).trigger("bind", { key: key, data: value });
+                console.log("Trigger: bind [" + key + "]");
+                $(document).trigger("bind-" + key, value);
+                console.log("Trigger: bind-" + key);
+            }
             return data;
         }
     }
@@ -319,7 +318,6 @@ var start = function () {
         setTimeout(function () {
             // Задержка для ожидания обработки возможных плагинов
             data = wbapp.objByForm(form);
-
             if (data._idx) delete data._idx;
 
             //if ($(obj).is("input,select,textarea,button,img,a") && params.table && (params.id || params.item)) {
@@ -345,12 +343,12 @@ var start = function () {
                     let tmpId = wbapp.newId();
                     wbapp.storage(tmpId, {
                         'id': id
-                    });
+                    }, false);
                     if (params.field !== undefined) {
-                        wbapp.storage(tmpId + '.' + params.field, data);
+                        wbapp.storage(tmpId + '.' + params.field, data, false);
                     } else {
                         data['id'] = id;
-                        wbapp.storage(tmpId, data);
+                        wbapp.storage(tmpId, data, false);
                     }
                     data = wbapp.storage(tmpId);
                 }
@@ -359,7 +357,7 @@ var start = function () {
 
                 if (params.url == undefined) params.url = `/api/save/${params.table}`;
             } else if (params.field !== undefined) {
-                wbapp.storage('tmp' + '.' + params.table + '.' + params.field, data);
+                wbapp.storage('tmp' + '.' + params.table + '.' + params.field, data, false);
                 data = wbapp.storage('tmp' + '.' + params.table);
             }
             if ($(obj).data('saved-id') !== undefined) {
@@ -388,7 +386,6 @@ var start = function () {
                 $.each(wbapp.template, function (i, tpl) {
                     if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
                     if (tpl.params._params && tpl.params._params.bind) tpl.params = tpl.params._params;
-
                     if (tpl.params.bind && (tpl.params.bind == params.bind || tpl.params.bind == params.update)) {
                         if (tpl.params.render == 'client') {
                             // client-side update
@@ -396,6 +393,7 @@ var start = function () {
                             if (params.update) wbapp.storageUpdate(params.update, data);
                         } else {
                             // server-side update
+                            tpl.params.update = tpl.params.bind;
                             wbapp.renderServer(tpl.params, data);
                         }
                     }
@@ -540,7 +538,7 @@ var start = function () {
                     if ($(data).is(params.target)) {
                         $(document).find(params.target).html($(data).html());
                     } else {
-                        $(document).find(params.target).html($(data).find(params.target).html());
+                        $(document).find(params.target).html($(data).find(params.target+':first').html());
                     }
                 }
                 if (params.source && params.source > '' ) data = $(data).find(params.source).html();
@@ -550,7 +548,8 @@ var start = function () {
                 if (params.prepend) $(document).find(params.prepend).prepend(data);
                 if (params.replace) $(document).find(params.replace).replaceWith(data);
                 //if (params.form) wbapp.formByObj(params.form,data);
-                if (params.bind) wbapp.storage(params.bind, data);
+                
+                if (params.bind && typeof data == "object") wbapp.storage(params.bind, data);
                 if (params.update && typeof data == "object") wbapp.storageUpdate(params.update, data);
                 if (params._trigger !== undefined && params._trigger == "remove") eval('delete ' + params.data); // ???
                 if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
@@ -656,8 +655,10 @@ var start = function () {
     }
 
     wbapp.storageUpdate = function (key, data) {
+
         var store = wbapp.storage(key);
         if (!store) wbapp.storage(key, {});
+
         if (store._id == undefined && (store.result !== undefined || store.params !== undefined) && data !== null && data._id !== undefined) {
             if (data._removed !== undefined && data._removed == true) {
                 if (store.params !== undefined && store.params.render == 'server') {
@@ -873,6 +874,8 @@ var start = function () {
                     template: wbapp.template[tid].html,
                     data: () => { return wbapp.storage(params.bind); }
                 });
+            } else if (params.bind && params.render == 'server') {
+                wbapp.storage(params.bind, params);
             }
             if ($(this).prop("visible") == undefined) $(this).remove();
         });
@@ -1239,7 +1242,7 @@ var start = function () {
                     console.log("Script loaded: " + name);
                     wbapp.loadedScripts.push(name);
                     if (i >= scripts.length) {
-                        if (trigger !== null) {
+                        if (trigger > '') {
                             $(document).find("script#" + trigger + "-remove").remove();
                             console.log("Trigger: " + trigger);
                             $(document).trigger(trigger);
@@ -1547,8 +1550,13 @@ var start = function () {
                     data[val["name"]] = str_replace('&quot;', '/"', data[val["name"]]);
                     data[val["name"]] = str_replace('&amp;quot;', '"', data[val["name"]]);
                 } else {
-                    data[val["name"]] = $(form).find("textarea[name='" + val["name"] + "']").val();
+                    let value = $(form).find("textarea[name='" + val["name"] + "']").val();
+                    let text = $(form).find("textarea[name='" + val["name"] + "']").text();
+                    if (value == 'null') {
+                        data[val["name"]] = text;
+                    } else {data[val["name"]] = value;}
                 }
+                
             }
         });
 
