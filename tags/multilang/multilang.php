@@ -19,7 +19,7 @@ class tagMultilang {
         if ($dom->params("lang") > '') {
             $langs = wbArrayAttr($dom->params("lang"));
         } else if ($dom->params("langs") > '') {
-            $langs = wbArrayAttr($dom->params("lang"));
+            $langs = wbArrayAttr($dom->params("langs"));
         } else if (isset($_ENV['locale'])) {
             $langs = (array)$_ENV['locale'];
             $langs = array_keys($langs);

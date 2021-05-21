@@ -426,10 +426,12 @@ var start = function () {
     wbapp.wbappScripts = function () {
         var done = [];
         $(document).find("script[type=wbapp],script[wbapp]").each(function () {
+            if (this.done !== undefined) return;
+            this.done = true;
             let src = null;
             if ($(this).is('[src]')) {
                 src = $(this).attr('src');
-            } if ($(this).is('[wbapp]')) {
+            } else if ($(this).is('[wbapp]')) {
                 src = $(this).attr('wbapp');
             }
             if (src !== null && src > '') {
@@ -446,8 +448,8 @@ var start = function () {
                     eval(script);
                     done.push(hash);
                 }
-                if ($(this).attr("visible") == undefined) $(this).remove();
             }
+            if ($(this).attr("remove") !== undefined) $(this).remove();
         });
     }
 
@@ -1552,6 +1554,7 @@ var start = function () {
                 } else {
                     let value = $(form).find("textarea[name='" + val["name"] + "']").val();
                     let text = $(form).find("textarea[name='" + val["name"] + "']").text();
+                    console.log(text,value);
                     if (value == 'null') {
                         data[val["name"]] = text;
                     } else {data[val["name"]] = value;}

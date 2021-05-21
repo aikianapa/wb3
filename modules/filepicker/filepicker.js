@@ -88,6 +88,7 @@ $(document).on("filepicker-init", function() {
                   });
               });
               input.html(json_encode(data));
+              input.trigger('change');
               //$filepicker.find("[name=prevent_img]").val("");
               //$filepicker.find("[name=upload_url]").val("");
             }

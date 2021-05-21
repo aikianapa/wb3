@@ -7,6 +7,7 @@ function wb_multilang() {
             return data;
         } else {
             $(that).children("textarea").text(json_encode(data));
+            $(that).children("textarea").trigger("change");
         }
     }
 
@@ -62,7 +63,6 @@ function wb_multilang() {
                     data[lid] = item;
                 }
                 ml_value(that, data)
-                $(that).trigger("change");
             });
         }, 10);
     }

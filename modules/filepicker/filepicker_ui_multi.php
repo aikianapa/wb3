@@ -113,5 +113,5 @@ choose = "Files"
 camera = "Камера"
 choose = "Файлы"
 </wb-lang>
-<script type="wbapp">wbapp.loadScripts(["/engine/modules/filepicker/filepicker.js"],"filepicker-js")</script>
+<script wb-app>wbapp.loadScripts(["/engine/modules/filepicker/filepicker.js"],"filepicker-js")</script>
 </div>

@@ -1,30 +1,27 @@
-function wb_tagsinput() {
-    $(".wb-tagsinput").each(function () {
-        if ($(this).data("wb-tagsinput") == undefined) {
-            $(this).tagsInput({
-                // min/max number of characters
-                minChars: 0,
-                maxChars: null,
-                // max number of tags
-                limit: null,
-                // RegExp
-                validationPattern: null,
-                // duplicate validation
-                unique: true
-            });
-            $(this).removeClass('wb-tagsinput');
-            $(this).next(".tagsinput").addClass($(this).attr('class'));
-            $(this).data("wb-tagsinput", true);
-            $(this).on("change",function(){
-                $(this).attr("value",$(this).val());
-            });
-        }
-    });
-
-}
 $(document).off("tagsinput-js");
 $(document).on("tagsinput-js", function () {
-  setTimeout(function(){
+    var wb_tagsinput = function() {
+        $(".wb-tagsinput").each(function () {
+            if (this.done == undefined) {
+                this.done = true;
+                let placeholder = $(this).attr('placeholder');
+                $(this).tagsInput({
+                    minChars: 0,
+                    maxChars: null,
+                    limit: null,
+                    placeholder: placeholder,
+                    validationPattern: null,
+                    unique: true
+                });
+                $(this).removeClass('wb-tagsinput');
+                $(this).next(".tagsinput").addClass($(this).attr('class'));
+                $(this).on("change",function(){
+                    $(this).attr("value",$(this).val());
+                });
+            }
+        });
+    }
+    setTimeout(function(){
       wb_tagsinput();
   },10);
 

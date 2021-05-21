@@ -5,4 +5,7 @@
     <input type="hidden" name="rename" value="false" class="wb-unsaved">
     <script type="wbapp">wbapp.loadScripts(["/engine/modules/filepicker/filepicker.js"],"filepicker-js")</script>
 </div>
+<script wb-app>
+  wbapp.loadScripts(["/engine/modules/filepicker/filepicker.js"],"filepicker-js")
+</script>
 </html>
