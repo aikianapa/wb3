@@ -535,13 +535,18 @@ class wbDom extends DomQuery
         $fields->setReference($this->item);
         $inputs = $this->find("[name]:not([done])");
         foreach ($inputs as $inp) {
+                $inp->copy($this);
+                $inp->fetchParams();
                 $name = $inp->attr("name");
                 $value = $fields->get($name);
                 ((array)$value === $value and $inp->tagName !== "select") ? $value = wb_json_encode($value) : null;
                 if ($value > '')$value = str_replace('&amp;quot;', '"', $value); // борьба с ковычками в атрибутах тэгов
             if (in_array($inp->tagName, ["input","textarea","select"]) && !$inp->closest("template")->length) {
                 if ($inp->tagName == "textarea") {
-                    if ($inp->attr('type') == 'json') {
+                    if ($inp->params('oconv') > '') {
+                        $oconv = $inp->params('oconv');
+                        $inp->text(@$oconv($value));
+                    } else if ($inp->attr('type') == 'json') {
                         $inp->text($value);
                     } else {
                         $inp->text(htmlentities($value));
