@@ -20,23 +20,32 @@ $(document).on("filepicker-init", function() {
       var selector = ".filepicker";
       var uploader = "/engine/modules/filepicker/uploader/index.php";
       var size = 200;
-      var width = size*1;
-      var height = size*1;
-
       $(document).find(selector).each(function(){
             if (this.done !== undefined) return;
             this.done = true;
+            let width = size*1;
+            let height = size*1;
+
             let $filepicker = $(this);
             let $listview = $(this).find(".listview");
             let input = $filepicker.find(".filepicker-data");
+            let dpar = json_decode(input.attr('data-params'));
+            input.removeAttr('data-params')
+            if (dpar.width !== undefined) width = dpar.width * 1;
+            if (dpar.height !== undefined) height = dpar.height * 1;
+            $(this).removeAttr('data-params')
             var inpfile = $filepicker.find("input[type=file]");
             let save;
             let field = "images";
             var path = $filepicker.find("[name=upload_url]").val();
-
             var getparams = function() {
+              $form = $("<form/>");
+              $form.append($filepicker.find('.fileinput').clone());
+              $form.find('[wb-name]').each(function(){
+                  $(this).attr('name',$(this).attr('wb-name'));
+              })
               let params = {};
-              $filepicker.find("input[type=hidden]").each(function(i){
+              $form.find("input[type=hidden]").each(function(i){
                   params[$(this).attr("name")] = $(this).val();
               });
               $filepicker.params = params;

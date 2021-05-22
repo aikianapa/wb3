@@ -35,7 +35,7 @@ function wb_multilang() {
                         var name = $(this).attr("name");
                         $(this).attr("wb-name", name).removeAttr("name");
                     });
-                    var inputs = $(multi).find("input,select,textarea");
+                    var inputs = $(multi).find("input:not(.wb-unsaved),select:not(.wb-unsaved),textarea:not(.wb-unsaved)");
                     if ($(inputs).length == 1 && $(inputs).is("input")) {
                         mono = true;
                     }

@@ -1542,6 +1542,7 @@ var start = function () {
             $(this).removeAttr("name");
         });
         var branch = $(form).serializeArray();
+
         $(branch).each(function (i, val) {
             data[val["name"]] = val["value"];
             if ($(form).find("textarea[type=json][name='" + val["name"] + "']").length && strpos(data[val["name"]], "}")) {

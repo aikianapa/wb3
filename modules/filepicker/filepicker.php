@@ -27,7 +27,8 @@ class modFilepicker
         }
         if ($dom->attr("name") >"") {
             $out->find(".filepicker-data")
-                ->attr("name", $dom->attr("name"));
+                ->attr("name", $dom->attr("name"))
+                ->attr('data-params',json_encode($dom->params));
         }
         if ($dom->params("path")) {
             $out->find("input[name=upload_url]")->attr("value", $dom->params->path);

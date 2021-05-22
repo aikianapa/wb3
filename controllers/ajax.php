@@ -191,7 +191,7 @@ class ctrlAjax
     {
         header('Content-Type: text/html; charset=utf-8');
         $app = &$this->app;
-        if (is_array($app->vars('_route.params'))) {
+        if (count($app->vars('_route.params')) > 1) {
             $tpl = implode('/', $app->vars('_route.params'));
             $path = true;
         } else {
