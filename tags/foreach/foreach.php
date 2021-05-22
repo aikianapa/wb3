@@ -557,10 +557,9 @@ class tagForeach
         $dom = &$this->dom;
         $options = [];
         $options['filter'] = [];
-        
-        // Перенесено выше - иначе не всегда срабатывало
-        //$dom->parent()->attr("id") > "" ? $pid = $dom->parent()->attr("id") : $pid = "fp_" . $this->app->newId();
-        //$dom->parent()->attr("id", $pid);
+        // Нужно для работы фильтра
+        $dom->parent()->attr("id") > "" ? $pid = $dom->parent()->attr("id") : $pid = "fp_" . $this->app->newId();
+        $dom->parent()->attr("id", $pid);
 
         if ($this->app->vars('_post.filter') > '' && $this->app->vars('_post.target') == '#'.$pid) {
             $this->filter_prepare();
