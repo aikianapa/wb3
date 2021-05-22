@@ -31,18 +31,20 @@ class modFilepicker
                 ->attr('data-params',json_encode($dom->params));
         }
         if ($dom->params("path")) {
-            $out->find("input[name=upload_url]")->attr("value", $dom->params->path);
+            $out->item['upload_url'] = $dom->params->path;
         } else {
-            $out->find("input[name=upload_url]")->attr("value", '_auto_');
+            $out->item['upload_url'] = '_auto_';
         }
+
         if ($dom->params("ext")) {
+            $out->item['upload_ext'] = $dom->params->ext;
             $out->find("input[name=upload_url]")
-                ->after("<input type='hidden' name='upload_ext' value='{$dom->params->ext}'>");
+                ->after("<input type='hidden' name='upload_ext'>");
         }
         if ($dom->params("original")) {
-            $out
-              ->find("input[name=upload_url]")
-              ->after("<input type='hidden' name='original' value='{$dom->params->original}'>");
+            $out->item['original'] = $dom->params->original;
+            $out->find("input[name=upload_url]")
+                ->after("<input type='hidden' name='original'>");
         }
         $out->fetch();
         if ($dom->tagName == 'input') {
