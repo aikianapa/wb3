@@ -29,7 +29,7 @@ class tagForeach
         $dom->html("");
         $dom->outer = $dom->outer();
 
-        $dom->parent()->attr("id") > '' ? $pid = $dom->parent()->attr("id") : $pid = "fp_" . $this->app->newId();
+        $dom->parent()->attr("id") > '' ? $pid = $dom->parent()->attr("id") : $pid = "fp_" . md5($dom->tpl);
         $dom->parent()->attr("id", $pid);
  
         !isset($this->tid) && $dom->attr("id") > "" ? $this->tid = $dom->attr("id") : null;
@@ -485,6 +485,7 @@ class tagForeach
             if ($dom->parent()->attr('id') == '') {
                 $dom->parent()->attr('id', 'fe_' . md5($dom->outer()));
             }
+
             if ($this->app->vars('_post._route') and $this->app->vars('_post._params') and $this->app->vars('_post._tid') == '#' . $dom->parent()->attr('id')) {
                 $page = $this->app->vars('_post._params.page');
                 $srvpag = true;
@@ -557,6 +558,7 @@ class tagForeach
         $dom = &$this->dom;
         $options = [];
         $options['filter'] = [];
+        
         // Нужно для работы фильтра
         $dom->parent()->attr("id") > "" ? $pid = $dom->parent()->attr("id") : $pid = "fp_" . $this->app->newId();
         $dom->parent()->attr("id", $pid);

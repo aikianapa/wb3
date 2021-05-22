@@ -576,17 +576,12 @@ var start = function () {
                     } else {
                         var pagert = params.target;
                     }
-                    if (data.pos == 'top') {
-                        $(pagert).prev('nav').remove();
-                        $(pagert).before(data.pag);
-                    }
-                    if (data.pos == 'bottom') {
-                        $(pagert).next('nav').remove();
-                        $(pagert).after(data.pag);
-                    }
+
+                    $(document).find('.pagination[data-tpl="'+params.target+'"]').parents('nav').remove();
+
+                    if (data.pos == 'top') $(pagert).before(data.pag);
+                    if (data.pos == 'bottom') $(pagert).after(data.pag);
                     if (data.pos == 'both') {
-                        $(pagert).next('nav').remove();
-                        $(pagert).prev('nav').remove();
                         $(pagert).after(data.pag);
                         $(pagert).before(data.pag);
                     }
