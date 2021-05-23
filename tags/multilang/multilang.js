@@ -58,8 +58,12 @@ function wb_multilang() {
                                 item[field] = "";
                             }
                         }
+                        if ($(this).is('input[type=radio]:checked')) {
+                            item[field] = value;
+                        }
                         $(this).attr("wb-name", name).removeAttr("name");
                     });
+                    console.log(item);
                     data[lid] = item;
                 }
                 ml_value(that, data)

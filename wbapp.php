@@ -684,7 +684,6 @@ class wbApp
 
     public function setCache($out = '')
     {
-        echo "setcache";
         if (!isset($_GET['update']) and (count($_GET) or count($_POST))) {
             return;
         }

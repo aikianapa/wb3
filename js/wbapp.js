@@ -1537,7 +1537,6 @@ var start = function () {
             $(this).removeAttr("name");
         });
         var branch = $(form).serializeArray();
-
         $(branch).each(function (i, val) {
             data[val["name"]] = val["value"];
             if ($(form).find("textarea[type=json][name='" + val["name"] + "']").length && strpos(data[val["name"]], "}")) {
@@ -1550,7 +1549,6 @@ var start = function () {
                 } else {
                     let value = $(form).find("textarea[name='" + val["name"] + "']").val();
                     let text = $(form).find("textarea[name='" + val["name"] + "']").text();
-                    console.log(text,value);
                     if (value == 'null') {
                         data[val["name"]] = text;
                     } else {data[val["name"]] = value;}
