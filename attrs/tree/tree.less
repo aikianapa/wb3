@@ -10,7 +10,6 @@ ol.wb-tree {
     padding-inline-start: 25px;
 }
 
-.wb-tree .dd-item {}
 
 .wb-tree-menu {
     position: absolute;
@@ -61,17 +60,38 @@ ol.wb-tree {
     color: @color_gray;
 }
 
-.wb-tree .dd-item > button::before {
-    content: "\EA0F";
-    font-family: remixicon !important;
-    font-weight: normal;
-    font-size: 18px;
-    color: @color_blue;
+.wb-tree {
+    .wb-tree-item {
+        button[data-action]:before {
+            font-family: remixicon !important;
+            font-weight: normal;
+            font-size: 18px;
+            color: @color_blue;
+        }
+        button[data-action=expand]:before {
+            content: "\EA0F";                
+        }
+        button[data-action=collapse]:before {
+            content: "\EB84";                
+        }
+
+        &.wb-tree-collapsed {
+            .dd-collapse {
+                display: none;
+            }
+            .dd-expand {
+                display: block;
+            }
+        }
+        &.wb-tree-collapsed {
+            >ol {
+                display: none;
+            }
+        }
+    }
 }
 
-.wb-tree .dd-item > button[data-action="collapse"]:before {
-    content: "\EB84";
-}
+
 
 .wb-tree .dd3-handle {
     position: absolute;
