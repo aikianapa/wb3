@@ -718,8 +718,8 @@ class wbApp
         $dir = $this->vars('_env.dbac').'/'.$sub;
         $name = $dir.'/'.$cid.'.html';
 
-        if (is_file($name) && intval($this->vars('_sett.cache')) > 0) {
-            if ((time() - filectime($name)) > intval($this->vars('_sett.cache'))) {
+        if (is_file($name)) {
+            if ($this->vars('_sett.cache') > ''  AND ((time() - filectime($name)) >= intval($this->vars('_sett.cache')))) {
                 // Делаем асинхронный запрос с обновлением кэша
                 header("Cache-Control: no-cache, no-store, must-revalidate");
                 header("Pragma: no-cache");
