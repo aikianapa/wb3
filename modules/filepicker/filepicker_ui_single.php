@@ -49,7 +49,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <span class="close" data-dismiss="modal">&times;</span>
+          <span class="close crop-hide" data-dismiss="modal">&times;</span>
           <h4 class="modal-title">Make a selection</h4>
         </div>
         <div class="modal-body">
@@ -71,7 +71,7 @@
               <i class="fa fa-repeat"></i>
             </button>
           </div>
-          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-default crop-hide pull-left" data-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-success crop-save" data-loading-text="Saving...">Save</button>
         </div>
       </div>

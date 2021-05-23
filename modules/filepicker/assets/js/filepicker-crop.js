@@ -268,6 +268,7 @@
         }
 
         if (this.isModal()) {
+            this.options.container.appendTo('body');
             this.options.container.modal('show', e);
         } else {
             this.options.container.show();
@@ -309,13 +310,14 @@
     /**
      * Hide crop container / modal.
      */
-    Crop.prototype.hide = function () {
+    Crop.prototype.hide = function (e) {
+        if (e == undefined) return;
+        e.stopPropagation();
         if (this.isModal()) {
-            this.options.container.modal('hide');
+            $(this.options.container).modal('hide');
         } else {
             this.options.container.hide();
         }
-
         this.options._preview.html('');
     };
 

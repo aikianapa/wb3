@@ -9,10 +9,10 @@ $(document).on("filepicker-js", function() {
 
   wbapp.loadScripts([
     "/engine/modules/filepicker/assets/js/cropper.min.js",
-    "/engine/modules/filepicker/assets/js/filepicker.js",
-    "/engine/modules/filepicker/assets/js/filepicker-drop.js",
-    "/engine/modules/filepicker/assets/js/filepicker-crop.js",
-    "/engine/modules/filepicker/assets/js/filepicker-camera.js"
+    "/engine/modules/filepicker/assets/js/filepicker.min.js",
+    "/engine/modules/filepicker/assets/js/filepicker-drop.min.js",
+    "/engine/modules/filepicker/assets/js/filepicker-camera.min.js",
+    "/engine/modules/filepicker/assets/js/filepicker-crop.min.js",
   ],"filepicker-init");
 });
 
@@ -171,7 +171,7 @@ $(document).on("filepicker-init", function() {
                                   .removeAttr("loading");
                               setTimeout(function(){
                                   $card.remove();
-                              },2000)
+                              },1000)
                               return;
                           }
                           j++;
@@ -248,7 +248,7 @@ $(document).on("filepicker-init", function() {
 
 
                 $filepicker.delegate("a.delete","tap click",function(e){
-                    e.preventDefault();
+                    e.stopPropagation();
                     var card = $(this).closest(".card");
                     var file = $(card).find("img").attr("data-src");
                     if (file == "") {
@@ -275,7 +275,7 @@ $(document).on("filepicker-init", function() {
                 });
 
                 $filepicker.delegate("a.crop","tap click",function(e){
-                    e.preventDefault();
+                    e.stopPropagation();
                     var card = $(this).closest(".card");
                     var file = $(card).find("img").attr("data-src");
                     $filepicker.find("[name=prevent_img]").val(getimg(file));
