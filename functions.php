@@ -159,7 +159,7 @@ function wbInitSettings(&$app)
     } else {
         setcookie('devmode', null, time()+3600, '/');
     }
-    if (!($app->vars('_sett.cache') > "")) $app->vars('_sett.cache',1);
+    if (!($app->vars('_sett.cache') > "")) $app->vars('_sett.cache',0);
     if (in_array($app->vars('_route.controller'),['thumbnails','file'])) {
           if ($app->vars('_sett.user')) {
               $app->vars('_sett.user.group', $app->ItemRead('users', $app->vars('_sett.user.role')));

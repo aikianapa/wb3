@@ -678,12 +678,13 @@ class wbApp
     public function getCacheId()
     {
         $uri = $this->route->uri;
-        $lang = $this->vars('_sett.lang');
+        $lang = $this->vars('_sess.lang');
         return md5($uri.'_'.$lang);
     }
 
     public function setCache($out = '')
     {
+        echo "setcache";
         if (!isset($_GET['update']) and (count($_GET) or count($_POST))) {
             return;
         }
@@ -691,14 +692,10 @@ class wbApp
         $sub = substr($cid, 0, 2);
         $dir = $this->vars('_env.dbac').'/'.$sub;
         $name = $dir.'/'.$cid.'.html';
-        if (!strpos(' '.$out, '<!DOCTYPE html>')) {
-            $out = '<!DOCTYPE html>'.$out;
-        }
-        if (!is_dir($dir)) {
-            mkdir($dir, 0777, true);
-        }
+        strpos(' '.$out, '<!DOCTYPE html>') ? null : $out = '<!DOCTYPE html>'.$out;
+        is_dir($dir) ? null : mkdir($dir, 0777, true);
         file_put_contents($name, $out, LOCK_EX);
-        $lastModified=filemtime($name);
+        $lastModified = filemtime($name);
     }
     
 
@@ -710,7 +707,6 @@ class wbApp
             isset($cc['no-cache']) ? $cache = null : null; 
         }
         $cache && ((!count($_POST) and isset($_GET['update']) and count($_GET) == 1) or count($_POST) or count($_GET)) ? $cache = null : null;
-
         if ($cache == null) {
             header("Cache-Control: no-cache, no-store, must-revalidate"); 
             header("Pragma: no-cache");
@@ -721,17 +717,19 @@ class wbApp
         $sub = substr($cid, 0, 2);
         $dir = $this->vars('_env.dbac').'/'.$sub;
         $name = $dir.'/'.$cid.'.html';
-    
-        
-        header("Cache-control: public");
-        header("Pragma: cache");
-        header("Expires: " . gmdate("D, d M Y H:i:s", time()+$this->vars('_sett.cache')) . " GMT");
-        header("Cache-Control: max-age=".$this->vars('_sett.cache'));
 
-        if (is_file($name)) {
-            if ((time() - filectime($name)) > $this->vars('_sett.cache')) {
+        if (is_file($name) && intval($this->vars('_sett.cache')) > 0) {
+            if ((time() - filectime($name)) > intval($this->vars('_sett.cache'))) {
                 // Делаем асинхронный запрос с обновлением кэша
-                $this->shadow($this->route->uri);
+                header("Cache-Control: no-cache, no-store, must-revalidate");
+                header("Pragma: no-cache");
+                return null;
+//                $this->shadow($this->route->uri);
+            } else {
+                header("Cache-control: public");
+                header("Pragma: cache");
+                header("Expires: " . gmdate("D, d M Y H:i:s", time()+$this->vars('_sett.cache')) . " GMT");
+                header("Cache-Control: max-age=".$this->vars('_sett.cache'));
             }
             return file_get_contents($name);
         }
@@ -742,14 +740,14 @@ class wbApp
     public function shadow($uri)
     {
         // отправка url запроса без ожидания ответа
-        $fp = stream_socket_client("tcp://{$this->route->hostname}:{$this->route->port}", $errno, $errstr, 30);
+        $fp = stream_socket_client("tcp://{$this->route->hostname}:{$this->route->port}", $errno, $errstr, 120,STREAM_CLIENT_ASYNC_CONNECT|STREAM_CLIENT_CONNECT);
         if (!$fp) {
             echo "$errstr ($errno)<br />\n";
             wbLog("func", __FUNCTION__, $errno, $errstr);
 
         } else {
-            strpos($uri, '?') ? $uri .= '&update' : $uri .= '?update';
-            fwrite($fp, "GET {$uri} HTTP/1.0\r\nHost: {$this->route->hostname} \r\nAccept: */*\r\n\r\n");
+            //strpos($uri, '?') ? $uri .= '&update' : $uri .= '?update';
+            fwrite($fp, "GET {$uri} HTTP/1.0\r\nHost: {$this->route->hostname}\r\nCache-Control: no-cache\r\nAccept: */*\r\n\r\n");
             fclose($fp);
         }
     }
