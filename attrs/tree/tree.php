@@ -258,35 +258,24 @@ function tagTreeUl( &$dom, $Item = array(), $param = null, $srcVal = array() ) {
     $tree = $Item;
     $parent_id = '';
     $pardis = 0;
-    isset( $dom->params->branch ) ? $branch = $dom->params->branch : $branch = null;
-    isset( $dom->params->limit ) ? $limit = intval( $dom->params->limit ) : $limit = -1;
-    if ( isset( $dom->params->parent ) && $dom->params->parent == 'false' ) {
-        $parent = 0;
-    } else {
-        $parent = 1;
-    }
-    if ( isset( $dom->params->children ) && $dom->params->children == 'false' ) {
-        $children = 0;
-    } else {
-        $children = 1;
-    }
-    if ( isset( $dom->params->rand ) && $dom->params->rand == 'true' ) {
-        $rand = true;
-    } else {
-        $rand = false;
-    }
+
+    $dom->params('branch') > '' ? $branch = $dom->params('branch') : $branch = null;
+    $dom->params('limit') > '' ? $limit = intval( $dom->params('limit') ) : $limit = -1;
+    $dom->params('parent') == 'false' ? $parent = 0 : $parent = 1;
+    $dom->params('children') == 'false' ? $children = 0 : $children = 1;
+    $dom->params('rand') == 'true' ? $rand = true : $rand = false;
 
     $srcItem = $Item;
     $tag = $dom->tagName;
     if ( $param == null ) {
-        isset( $dom->params->name ) ? $name  = $dom->params->name : $name = $dom->attr( 'name' );
-        if ( isset( $from ) ) $name = $from;
-        if ( isset( $call ) AND $call > '' AND is_callable( $call ) ) $tree = @$call();
-        if ( isset( $rand ) AND $rand == 'true' ) {
-            $rand = true;
-        }
+        $dom->params->name > '' ? $name  = $dom->params('name') : $name = $dom->attr( 'name' );
+        $dom->params('from') > '' ? $name = $dom->params('from') : null;
         $tpl = $dom->inner();
-        $tree = $Item;
+        $tree = &$Item;
+        if ( $dom->params('call') > '') {
+            $call = $dom->params('call');
+            $tree = @$call();
+        }
     } else {
         foreach ( $param as $k =>$val ) $$k = $val;
     }
@@ -300,6 +289,7 @@ function tagTreeUl( &$dom, $Item = array(), $param = null, $srcVal = array() ) {
         }
     }
     $idx = 0;
+
     if ( ( array )$tree === $tree ) {
         if ( $rand == true ) shuffle( $tree );
         foreach ( $tree as $i => $item ) {

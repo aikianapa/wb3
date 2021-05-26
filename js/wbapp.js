@@ -1619,6 +1619,13 @@ var start = function () {
         wbapp.alive();
     }, 84600);
 
+    wbapp.init = function(){
+        wbapp.wbappScripts();
+        wbapp.tplInit();
+        wbapp.modalsInit();
+    }
+
+
     $(document).on("wbapp-go", function () {
         wbapp.eventsInit();
         wbapp.wbappScripts();

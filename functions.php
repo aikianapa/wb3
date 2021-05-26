@@ -1188,6 +1188,8 @@ function wbTrigger($type, $name, $trigger, $args = [], $data = null)
     case 'form':
         $form = $args[0];
         $class = wbFormClass($form);
+        $call = '_'.$trigger;
+        if (is_callable($call)) $data = $call($data, $args);
         if ($class && method_exists($class,$trigger)) {
             if ($trigger == 'beforeItemRemove') {
                 $data = wbItemRead($args[0],$args[1]);

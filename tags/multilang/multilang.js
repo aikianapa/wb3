@@ -63,7 +63,6 @@ function wb_multilang() {
                         }
                         $(this).attr("wb-name", name).removeAttr("name");
                     });
-                    console.log(item);
                     data[lid] = item;
                 }
                 ml_value(that, data)
@@ -91,6 +90,7 @@ function wb_multilang() {
             ml_store(that);
             $(this).find("input:visible:first").trigger("change"); // important
             $(this).removeAttr("name");
+            wbapp.init();
             this.done = true;
         }
     });

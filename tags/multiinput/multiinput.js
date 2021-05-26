@@ -12,13 +12,14 @@ function wb_multiinput_init() {
     $multi.undelegate(".wb-multiinput-del", "click");
     $multi.delegate(".wb-multiinput-del", "click", function(e) {
       var line = $(this).parent(".wb-multiinput-row");
-      console.log("Trigger: before_remove");
-      $multi.trigger("before_remove", line);
+      wbapp.trigger("multiinput_before_remove", line);
       $(line).remove();
       if (!$multi.find(".wb-multiinput-row").length) {
         $multi.prepend(wbapp.template["#" + $multi.attr("id")].html);
       }
       $multi.store();
+      wbapp.init();
+      wbapp.trigger("multiinput_after_remove", $multi);
       return false;
     });
 
@@ -27,9 +28,8 @@ function wb_multiinput_init() {
       var line = $(this).parent(".wb-multiinput-row");
       $(line).after(wbapp.template["#" + $multi.attr("id")].html);
       $multi.store();
-      console.log("Trigger: after_add");
-      $multi.trigger("after_add", line);
-      //wb_plugins();
+      wbapp.init();
+      wbapp.trigger("multiinput_after_add", line);
       return false;
     });
 
@@ -105,6 +105,7 @@ function wb_multiinput_init() {
     });
     //console.log(data);
     $(this).value(data).trigger("change");
+    $(this).children(".wb-multiinput-data").trigger('change');
   }
 }
 

@@ -368,7 +368,7 @@ class tagForeach
             $count = count($list);
             $filtered = true;
         } elseif ($table == "" and $dom->params("call") > "") {
-            $list = (array) wbEval($dom->params("call"));
+            $list = (array)wbEval($dom->params("call")."()");
         }
 
         if ($dom->params('ajax') AND $dom->params('render') == 'server') {
