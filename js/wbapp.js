@@ -530,6 +530,10 @@ var start = function () {
                 params = wbapp.tpl(opts._tid).params;
             }
 
+            if (params.html) wbapp.loading(params.html);
+            if (params._tid) wbapp.loading(params._tid);
+            if (params.target) wbapp.loading(params.target);
+
             wbapp.post(params.url, opts, function (data) {
                 if (count(data) == 2 && data.error !== undefined && data.callback !== undefined) {
                     eval(data.callback + '(params,data)');
@@ -600,6 +604,12 @@ var start = function () {
                 wbapp.tplInit();
                 wbapp.lazyload();
                 wbapp.ajaxAuto();
+
+
+                if (params.html) wbapp.unloading(params.html);
+                if (params._tid) wbapp.unloading(params._tid);
+                if (params.target) wbapp.unloading(params.target);
+                
                 //console.log("Trigger: wb-ajax-done");
                 if (data.result == undefined) params['data'] = data;
                 if (params.form !== undefined) {
@@ -682,11 +692,11 @@ var start = function () {
 
 
     wbapp.loading = function(selector = 'body') {
-        $(selector).addClass('loading');
+        $(document).find(selector).addClass('loading');
     }
 
     wbapp.unloading = function(selector = 'body') {
-        $(selector).removeClass('loading');
+        $(document).find(selector).removeClass('loading');
     }
 
     wbapp.fetch = function (selector, data, ret) {
