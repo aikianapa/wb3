@@ -1551,7 +1551,8 @@ var start = function () {
         
         $(branch).each(function (i, val) {
             data[val["name"]] = val["value"];
-            if ($(form).find("textarea[type=json][name='" + val["name"] + "']").length && strpos(data[val["name"]], "}")) {
+            if ($(form).find("textarea[type=json][name='" + val["name"] + "']").length) {
+                data[val["name"]] = $(form).find("textarea[type=json][name='" + val["name"] + "']").text();
                 if (in_array(data[val["name"]],['null','','{}'])) {
                     data[val["name"]] = '';
                 } else {
