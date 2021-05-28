@@ -35,17 +35,21 @@ class ctrlForm
                 isset($app->route->table) ? $table = $app->route->table : null;
                 $item = $app->itemRead($table, $app->route->item);
                 $item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], $item);
-                if (isset($item['template']) and $item['template'] > '' and $item['active'] == 'on') {
-                    $dom = $app->getTpl($item['template']);
-                } elseif (isset($app->route->tpl)) {
-                    $dom = $app->getTpl($app->route->tpl);
-                } else {
-                    // последняя попытка
-                    $app->route->tpl = $table.'-show.php';
-                    $dom = $app->getTpl($app->route->tpl);
-                    !$dom ? $dom = $this->get404() : null;
+                if ($item['active'] == 'on') {
+                    if ($app->vars('_route.tpl') > '') {
+                        $dom = $app->getTpl($app->vars('_route.tpl'));
+                    } elseif (isset($item['template']) and $item['template'] > '') {
+                        $dom = $app->getTpl($item['template']);
+                    } elseif (isset($app->route->tpl)) {
+                        $dom = $app->getTpl($app->route->tpl);
+                    } else {
+                        // последняя попытка
+                        $app->route->tpl = $table.'-show.php';
+                        $dom = $app->getTpl($app->route->tpl);
+                        !$dom ? $dom = $this->get404() : null;
+                    }
+                    $dom ? $dom->item = $item : null;
                 }
-                $dom ? $dom->item = $item : null;
             }
             if (!$dom or (isset($item['active']) and $item['active'] !== 'on')) {
                 $dom = $this->get404();

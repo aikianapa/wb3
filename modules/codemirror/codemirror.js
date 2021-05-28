@@ -55,7 +55,8 @@ $(document).on("codemirror-js-addons", function () {
           $(that).html(htmlentities(editor.getValue()));
           setTimeout(function () {
             editor.refresh();
-          }, 100);
+            $(that).trigger('change');
+          }, 300);
         });
         this.done = true;
         this.editor = editor;

@@ -1547,10 +1547,15 @@ var start = function () {
             $(this).removeAttr("name");
         });
         var branch = $(form).serializeArray();
+        
         $(branch).each(function (i, val) {
             data[val["name"]] = val["value"];
             if ($(form).find("textarea[type=json][name='" + val["name"] + "']").length && strpos(data[val["name"]], "}")) {
-                data[val["name"]] = json_decode(data[val["name"]]);
+                if (in_array(data[val["name"]],['null','','{}'])) {
+                    data[val["name"]] = '';
+                } else {
+                    data[val["name"]] = json_decode(data[val["name"]]);
+                }
             } else if ($(form).find("textarea[name='" + val["name"] + "']").length) {
                 if ($(form).parents(".treeData").length) {
                     data[val["name"]] = htmlentities(data[val["name"]]);
@@ -1566,7 +1571,6 @@ var start = function () {
                 
             }
         });
-
         var check = $(form).find('input[name][type=checkbox]');
         // fix unchecked values
         $.each(check, function () {
@@ -1584,6 +1588,7 @@ var start = function () {
             $(this).attr("name", $(this).attr("wb-tmp-name"));
             $(this).removeAttr("wb-tmp-name");
         });
+       
         return data;
     }
 
