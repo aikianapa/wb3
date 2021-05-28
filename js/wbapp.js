@@ -340,7 +340,7 @@ var start = function () {
                     data['id'] = id;
                     eval(`data.${fld} = value;`);
                 } else {
-                    let tmpId = wbapp.newId();
+                    let tmpId = 'tmp.'+wbapp.newId();
                     wbapp.storage(tmpId, {
                         'id': id
                     }, false);
@@ -351,6 +351,7 @@ var start = function () {
                         wbapp.storage(tmpId, data, false);
                     }
                     data = wbapp.storage(tmpId);
+                    wbapp.storage(tmpId, null);
                 }
                 data['id'] = id;
 
