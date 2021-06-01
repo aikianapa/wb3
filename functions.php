@@ -1967,6 +1967,13 @@ function wbRouterGet($requestedUrl = null)
     return wbRouter::getRoute($requestedUrl);
 }
 
+function wbRouterAdd($route = null, $destination = null)
+{
+    if (null == $route) { // Роутинг по-умолчанию
+        $route = wbRouterRead();
+    }
+    wbRouter::addRoute($route, $destination);
+}
 
 function wbAttrToArray($attr)
 {
