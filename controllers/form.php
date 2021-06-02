@@ -30,6 +30,7 @@ class ctrlForm
         if (!$cache) {
             $_ENV["cache_used"] = false;
             isset($app->route->form) ? $dom = $app->getForm($app->route->form, $app->route->mode) : null;
+            if ($dom->error) $dom = null;
             if (isset($app->route->item)) {
                 $table = $app->route->form;
                 isset($app->route->table) ? $table = $app->route->table : null;

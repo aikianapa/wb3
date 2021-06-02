@@ -1638,8 +1638,13 @@ function wbItemFilter($item, $options, $field = null)
     $fields->setReference($item);
     if (count($context)) {
         $text = [];
-        foreach ($context as $c) $text[] = $fields->get($c);
-        $item['_context'] = strtolower(trim(implode(' ', $text)));
+        foreach ($context as $c) {
+            $val = $fields->get($c);
+            (array)$val === $val ? $fld = json_encode($val) : null;
+            $text[] = $val;
+        }
+        $item['_context'] = @implode(' ', $text);
+        strtolower(trim($item['_context']));
     }
 
     $result = true;
@@ -2506,7 +2511,6 @@ function wbListTpl()
         } catch (\Throwable $th) {
             $res = false;
         }
-        
         return $res;
     }
 

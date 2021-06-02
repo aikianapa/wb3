@@ -1138,6 +1138,7 @@ class wbApp
     public function getForm($form = null, $mode = null, $engine = null)
     {
         $_ENV['error'][__FUNCTION__] = '';
+        $error = null;
         null == $form ? $form = $this->vars->get("_route.form") : 0;
         null == $mode ? $mode = $this->vars->get("_route.mode") : 0;
         $form == '_settings' ? $formname = substr($form, 1) : $formname = $form;
@@ -1183,7 +1184,7 @@ class wbApp
             //unset($form);
             if ('' == $current) {
                     strtolower(substr($mode, -4)) == '.php' ? $arg = $modename : $arg = $aCall;
-                    $out = wbError('func', __FUNCTION__, 1012, [$arg]);
+                    $out = $error = wbError('func', __FUNCTION__, 1012, [$arg]);
             } else {
                 if ($ini) {
                     $out = file_get_contents($current);
@@ -1198,7 +1199,7 @@ class wbApp
         } else {
             $out = $this->fromString('<html>'.$out.'</html>');
         }
-
+        $out->error = $error;
         return $out;
     }
 

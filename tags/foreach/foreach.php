@@ -341,7 +341,7 @@ class tagForeach
         $count = 0;
         $page = $pages = 1;
         $srvpag = false;
-
+        $call = $dom->params("call");
 
         $listTable = $parent = $dom->item;
 
@@ -353,22 +353,23 @@ class tagForeach
 
         isset($dom->params->field) ? $field = $dom->params->field : $field = null;
         $filtered = false;
-        if ($table > "" and $dom->params("call") == "") {
+        if ($table > "" and $call == "") {
             $res = wbItemList($table, $options);
             $list = $res["list"];
             $count = $res["count"];
             $filtered = true;
-        } elseif ($table > "" and $dom->params("call") > "") {
+        } elseif ($table > "" and $call > "") {
             $list = [];
             $formClass = $this->app->formClass($table);
-            $method = $dom->params("call");
+            $method = $call;
             if (method_exists($formClass, $method)) {
                 $list = $formClass->$method($dom);
             }
             $count = count($list);
             $filtered = true;
-        } elseif ($table == "" and $dom->params("call") > "") {
-            $list = (array)wbEval($dom->params("call")."()");
+        } elseif ($table == "" and $call > "") {
+            substr($call,-1) == ')' ? null : $call.='()';
+            $list = (array)wbEval($call);
         }
 
         if ($dom->params('ajax') AND $dom->params('render') == 'server') {
