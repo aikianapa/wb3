@@ -386,18 +386,19 @@ var start = function () {
                 console.log('Update by tpl');
                 $.each(wbapp.template, function (i, tpl) {
                     if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
-                    if (tpl.params._params && tpl.params._params.bind) tpl.params = tpl.params._params;
-                    if (tpl.params.bind && (tpl.params.bind == params.bind || tpl.params.bind == params.update)) {
                         if (tpl.params.render == 'client') {
                             // client-side update
-                            if (params.bind) wbapp.storage(params.bind, data);
-                            if (params.update) wbapp.storageUpdate(params.update, data);
+                            if (tpl.params._params && tpl.params._params.bind) tpl.params = tpl.params._params;
+                            if (tpl.params.bind && (tpl.params.bind == params.bind || tpl.params.bind == params.update)) {
+                                if (params.bind) wbapp.storage(params.bind, data);
+                                if (params.update) wbapp.storageUpdate(params.update, data);
+                            }
                         } else {
                             // server-side update
                             tpl.params.update = tpl.params.bind;
+                            console.log(tpl.params);
                             wbapp.renderServer(tpl.params, data);
                         }
-                    }
                 })
 
 
@@ -584,11 +585,11 @@ var start = function () {
 
                     $(document).find('.pagination[data-tpl="'+params.target+'"]').parents('nav').remove();
 
-                    if (data.pos == 'top') $(pagert).before(data.pag);
-                    if (data.pos == 'bottom') $(pagert).after(data.pag);
+                    if (data.pos == 'top') $(pagert).parent().before(data.pag);
+                    if (data.pos == 'bottom') $(pagert).parent().after(data.pag);
                     if (data.pos == 'both') {
-                        $(pagert).after(data.pag);
-                        $(pagert).before(data.pag);
+                        $(pagert).parent().after(data.pag);
+                        $(pagert).parent().before(data.pag);
                     }
 
                     if ($(params.target).is('tbody')) {
@@ -856,7 +857,6 @@ var start = function () {
                     params['target'] = tid;
                 } catch (error) { null }
             }
-
             let html = $(this).html();
             html = html.replace(/<template\b[^<]*(?:(?!<\/template>)<[^<]*)*<\/template>/gi, "");
 
@@ -884,6 +884,8 @@ var start = function () {
                 });
             } else if (params.bind && params.render == 'server') {
                 wbapp.storage(params.bind, params);
+            } else if (params._params && params._params.bind && params._params.render == 'server') {
+                wbapp.storage(params._params.bind, params);
             }
             if ($(this).prop("visible") == undefined) $(this).remove();
         });
