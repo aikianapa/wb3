@@ -385,7 +385,7 @@ var start = function () {
                 if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
                 console.log('Update by tpl');
                 $.each(wbapp.template, function (i, tpl) {
-                    if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
+                        if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
                         if (tpl.params.render == 'client') {
                             // client-side update
                             if (tpl.params._params && tpl.params._params.bind) tpl.params = tpl.params._params;
@@ -395,8 +395,7 @@ var start = function () {
                             }
                         } else {
                             // server-side update
-                            tpl.params.update = tpl.params.bind;
-                            console.log(tpl.params);
+                            if (tpl.params.bind !== undefined) tpl.params.update = tpl.params.bind;
                             wbapp.renderServer(tpl.params, data);
                         }
                 })
@@ -556,9 +555,10 @@ var start = function () {
                 if (params.prepend) $(document).find(params.prepend).prepend(data);
                 if (params.replace) $(document).find(params.replace).replaceWith(data);
                 //if (params.form) wbapp.formByObj(params.form,data);
-                
-                if (params.bind && typeof data == "object") wbapp.storage(params.bind, data);
-                if (params.update && typeof data == "object") wbapp.storageUpdate(params.update, data);
+                if (params.render == 'client') {
+                    if (params.bind && typeof data == "object") wbapp.storage(params.bind, data);
+                    if (params.update && typeof data == "object") wbapp.storageUpdate(params.update, data);
+                }
                 if (params._trigger !== undefined && params._trigger == "remove") eval('delete ' + params.data); // ???
                 if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
                 if (params.render !== undefined && params.render == 'client') wbapp.renderClient(params, data);
@@ -571,10 +571,18 @@ var start = function () {
                     let res = $(data).find(params.target).html();
                     $(document).find(params.target).html(res);
                 } else if (params.render == undefined || params.render == 'server') {
-                    if (data.html !== undefined) {
+                    if (data.html !== undefined && params.target !== undefined) {
                         $(document).find(params.target).html(data.html);
+                    } else if (params.update !== undefined) {
+                        $.each(wbapp.template, function (i, tpl) {
+                            if (tpl.params && tpl.params.bind && tpl.params.bind == params.update) {
+                                wbapp.renderServer(tpl.params, data);
+                            } else if (tpl.params && tpl.params._params && tpl.params._params.bind && tpl.params._params.bind == params.update) {
+                                wbapp.renderServer(tpl.params._params, data);
+                            }
+                        })
                     }
-
+                    
                     $(document).find(params.target).children('template').remove();
 
                     if ($(document).find(params.target).children(':first-child').is('tr')) {
@@ -857,6 +865,7 @@ var start = function () {
                     params['target'] = tid;
                 } catch (error) { null }
             }
+
             let html = $(this).html();
             html = html.replace(/<template\b[^<]*(?:(?!<\/template>)<[^<]*)*<\/template>/gi, "");
 
