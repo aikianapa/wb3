@@ -574,8 +574,10 @@ var start = function () {
                     if (data.html !== undefined && params.target !== undefined) {
                         $(document).find(params.target).html(data.html);
                     } else if (params.update !== undefined) {
+                        let rendparam;
                         $.each(wbapp.template, function (i, tpl) {
                             if (tpl.params && tpl.params.bind && tpl.params.bind == params.update) {
+                                rendparam = tpl.params;
                                 wbapp.renderServer(tpl.params, data);
                             } else if (tpl.params && tpl.params._params && tpl.params._params.bind && tpl.params._params.bind == params.update) {
                                 wbapp.renderServer(tpl.params._params, data);
@@ -965,6 +967,8 @@ var start = function () {
             }
             if (check) {
                 delete params.data;
+                delete params.bind;
+                delete params.update;
                 params._tid = params.target;
                 wbapp.ajax(params, function (data) {
                     var inner = '<wb>' + data.data + '</wb>';
