@@ -41,9 +41,8 @@ class tagForeach
 
         $dom->params('target') == '' ? $dom->params->target = '#'.$this->tid : null;
         $dom->params("render") == "client" ? $render = $dom->params("render") : $render = "server";
-
 //        $dom->params->render = $render;
-
+        $dom->render = $render;
         $this->$render($dom);
         $dom->rendered = true;
     }
@@ -134,10 +133,7 @@ class tagForeach
                 $dom->params->tpl = $dom->tid;
                 $dom->params->page = $page;
                 //$pag = $dom->tagPagination($dom);
-                if (!count((array)$list) or $dom->html() == "") {
-                    $dom->inner($empty->inner());
-                }
-
+                !count((array)$list) or $dom->html() == "" ? $dom->inner($empty->inner()) : null;
                 isset($dom->params->pos) ? $pos = $dom->params->pos : $pos = 'bottom';
 
                 if ($srvpag or ($this->app->route->controller == 'ajax' and $this->app->vars('_post._params') > "")) {
@@ -198,14 +194,16 @@ class tagForeach
             $val = (object) $val;
             $val->_key = $key;
             if (!isset($val->__total)) {
+                $table = $dom->params('table');
                 $val->_page = $page;
                 $val->_pages = $pages;
                 $val->_idx = $idx;
                 $val->_ndx = $ndx;
                 $val->_val = $value;
                 $val->_parent = &$parent;
+                isset($val->_table) && $table == '' ? $table = $val->_table : null;
                 !isset($val->_id) AND isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
-                $dom->params('table') > "" ? $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$dom->params->table], (array) $val) : null;
+                $table > "" ? $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], (array) $val) : null;
             }
 
             if ($ajax !== false) {
@@ -283,10 +281,7 @@ class tagForeach
                 $dom->params->page = $page;
                 $pag = $dom->tagPagination($dom);
                 
-                if (!count((array)$list) or $dom->html() == "") {
-                    $dom->inner($empty->inner());
-                }
-
+                !count((array)$list) or $dom->html() == "" ? $dom->inner($empty->inner()) : null;
                 isset($dom->params->pos) ? $pos = $dom->params->pos : $pos = 'bottom';
 
                 if ($srvpag 
