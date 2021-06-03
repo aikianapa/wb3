@@ -15,6 +15,7 @@ class modMyicons
             isset($this->app->route->query->size) ? $this->size = $this->app->route->query->size : $this->size = null;
             isset($this->app->route->query->stroke) ? $this->stroke = $this->app->route->query->stroke : $this->stroke = null;
             isset($this->app->route->query->fill) ? $this->fill = $this->app->route->query->fill : $this->fill = null;
+            $this->parseURL();
             header('Content-Type: image/svg+xml');
             echo $this->icon();
             die;
@@ -28,6 +29,19 @@ class modMyicons
             $obj->after($icon);
             $obj->remove();
         } 
+    }
+
+
+    public function parseURL() {
+        if (count($this->app->route->params) == 2) {
+            $this->size = $this->app->route->mode;
+            $this->stroke = $this->app->route->params[0];
+            $this->icon = $this->app->route->params[1];
+        } else {
+            isset($this->app->route->query->size) ? $this->size = $this->app->route->query->size : $this->size = null;
+            isset($this->app->route->query->stroke) ? $this->stroke = $this->app->route->query->stroke : $this->stroke = null;
+            isset($this->app->route->query->fill) ? $this->fill = $this->app->route->query->fill : $this->fill = null;
+        }
     }
 
     public function init() {
@@ -62,7 +76,7 @@ class modMyicons
     public function icon() {
         $app = &$this->app;
         $params = $this->dom->params;
-        $icon = $this->name();
+        isset($this->icon) ? $icon = $this->icon : $icon = $this->name();
         $file = $this->path.$icon;
         $sprite = $app->fromFile($file);
         if (!$sprite) return false;

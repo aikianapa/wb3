@@ -49,8 +49,9 @@ class ctrlModule {
       $tpl = $app->getForm('_settings','ui_mods');
       $tpl = $app->fromString($tpl->find('#modSettingsWrapper')->inner());
       $out = $app->fromFile($module['sett']);
+      $data = $app->vars('_sett.modules');
       $tpl->fetch(['module'=>$module['id']]);
-      $out->fetch();
+      $out->fetch($data[$module['id']]);
       $tpl->find("form > div")->html($out->outer());
       isset($out->params->allow) && $out->params->allow == true ? $allow = $out->params->allow : $allow = null;
       if ($app->vars('_sess.user_role') !== 'admin' AND $allow !== true) {
