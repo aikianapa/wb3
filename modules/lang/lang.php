@@ -13,14 +13,19 @@ class modLang
 		$lang = $langs[0];
 		$p = $app->vars('_route.mode');
 		in_array($p, $langs) ? $lang = $p : null;
-		$_SESSION["lang"] = $_ENV["lang"] = $lang;
-        $check=explode("/", $_SERVER["HTTP_REFERER"]);
-        if (isset($check[3]) && in_array($check[3],$langs)) {
-            $check[3] = $lang;
+		$_SESSION["lang"] = $_ENV["lang"] = $_COOKIE["lang"] = $lang;
+        if ($app->vars('_route.params.0') == 'set') {
+            $redirect = $_SERVER["HTTP_REFERER"];
         } else {
-            $check = $this->array_insert($check, 3, $lang);
+            $check=explode("/", $_SERVER["HTTP_REFERER"]);
+            if (isset($check[3]) && in_array($check[3],$langs)) {
+                $check[3] = $lang;
+            } else {
+                $check = $this->array_insert($check, 3, $lang);
+            }
+            $redirect = implode($check, '/');
         }
-        $redirect = implode($check, '/');
+        
 		session_write_close();
         Header("HTTP/1.0 200 OK");
         header("Refresh:0; url=".$redirect);

@@ -22,8 +22,8 @@ class modLanginp
         $inp->removeAttr('name');
         $inp->removeAttr('wb');
         
-        if ($dom->app->vars('_sett.locales') > '') {
-            $l = wbAttrToArray($dom->app->vars('_sett.locales'));
+        $l = wbListLocales($dom->app);
+        if (count($l)) {
             $locales = [];
             foreach($l as $v) {
                 $locales[$v] = $v;
