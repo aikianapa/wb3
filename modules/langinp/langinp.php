@@ -21,7 +21,17 @@ class modLanginp
         $out->copy($dom);
         $inp->removeAttr('name');
         $inp->removeAttr('wb');
-        $out->fetch();
+        
+        if ($dom->app->vars('_sett.locales') > '') {
+            $l = wbAttrToArray($dom->app->vars('_sett.locales'));
+            $locales = [];
+            foreach($l as $v) {
+                $locales[$v] = $v;
+            }
+        } else {
+            $locales = $dom->app->vars('_env.locale');
+        }
+        $out->fetch(['_locales'=>$locales]);
         $name = $txt->attr('name');
         if (isset($dom->item[$name])) {
             foreach ((array)$dom->item[$name] as $k => $v) {
