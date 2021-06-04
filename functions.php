@@ -2297,7 +2297,7 @@ function wbListLocales(&$app = null)
 {
     !$app ? $app = new wbApp() : null;
     isset($_ENV['settings']['locales']) ? $langs = wbAttrToArray($_ENV['settings']['locales']) : $langs = [];
-    !count($langs) ? $langs = ['en','ru'] : null;
+    count($langs) ? null : $langs = ['en','ru'];
     return $langs;
 /*
     $out = $app->getForm("admin", "common.ini", true);

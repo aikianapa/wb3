@@ -47,6 +47,8 @@ $(document).on("filepicker-init", function() {
               let params = {};
               $form.find("input[type=hidden]").each(function(i){
                   params[$(this).attr("name")] = $(this).val();
+                  params[$(this).attr("wb-name")] = $(this).val();
+                  params[$(this).attr("wb-tmp-name")] = $(this).val();
               });
               $filepicker.params = params;
               return params;

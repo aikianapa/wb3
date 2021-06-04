@@ -31,7 +31,8 @@ class modLanginp
         } else {
             $locales = $dom->app->vars('_env.locale');
         }
-        $out->fetch(['_locales'=>$locales]);
+        $out->item['_locales'] = $locales;
+        $out->fetch();
         $name = $txt->attr('name');
         if (isset($dom->item[$name])) {
             foreach ((array)$dom->item[$name] as $k => $v) {

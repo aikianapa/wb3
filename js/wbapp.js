@@ -957,15 +957,15 @@ var start = function () {
 
     wbapp.renderServer = function (params, data = {}) {
         if (params.target !== undefined && params.target > '#' && $(document).find(params.target).length) {
-            let check = true;
             if (data._table !== undefined) {
                 if (params.table !== undefined && params.table !== data._table) {
-                    check = false;
+                    return;
                 } else if (params._params !== undefined && params._params.table !== undefined && params._params.table !== data._table) {
-                    check = false;
+                    return;
+                } else if (params.data == undefined && params.bind == undefined && params.update == undefined) {
+                    return;
                 }
             }
-            if (check) {
                 delete params.data;
                 delete params.bind;
                 delete params.update;
@@ -975,7 +975,6 @@ var start = function () {
                     inner = $(inner).find(params.target).html();
                     $(params.target).html(inner);
                 });
-            }
         }
     }
 
@@ -1571,7 +1570,12 @@ var start = function () {
                 if (in_array(data[val["name"]],['null','','{}'])) {
                     data[val["name"]] = '';
                 } else {
-                    data[val["name"]] = json_decode(data[val["name"]]);
+                    try {
+                        data[val["name"]] = json_decode(data[val["name"]]);    
+                    } catch (error) {
+                        console.log('Unknown error!');
+                    }
+                    
                 }
             } else if ($(form).find("textarea[name='" + val["name"] + "']").length) {
                 if ($(form).parents(".treeData").length) {

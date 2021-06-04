@@ -230,7 +230,6 @@ class wbDom extends DomQuery
         }
         $this->fetch();
         $this->fetched = true;
-        return $this;
     }
 
     public function fetchLang()
