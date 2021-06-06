@@ -620,9 +620,7 @@ class wbApp
             $this->settings->$key = $val;
         }
 
-        if (!isset($this->settings->driver)) {
-            $this->settings->driver = null;
-        }
+        !isset($this->settings->driver) ? $this->settings->driver = null : null;
 
         $this->router = new wbRouter();
         $this->vars = new Dot();
@@ -643,7 +641,8 @@ class wbApp
           '_form' => &$_ENV['route']['form'],
           '_item' => &$_ENV['route']['item'],
           '_param'=> &$_ENV['route']['param'],
-          '_locale'=> &$_ENV['locale']
+          '_locale'=> &$_ENV['locale'],
+          '_lang'   => &$this->lang
       ];
         $this->vars->setReference($vars);
         $this->initApp();

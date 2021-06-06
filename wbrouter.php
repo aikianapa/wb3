@@ -83,6 +83,8 @@ final class wbRouter {
         if (isset($bc[0]) && in_array($bc[0],['ru','en','uk','us','fr','de','jp'])) {
             self::$lang = $bc[0];
             array_shift($bc);
+        } else if (isset($_COOKIE['lang']) && $_COOKIE['lang'] > '') {
+            self::$lang = $_COOKIE['lang'];
         } else if (isset($_SESSION['lang']) && $_SESSION['lang'] > '') {
             self::$lang = $_SESSION['lang'];
         }

@@ -109,7 +109,10 @@ function wbInitSettings(&$app)
     $_ENV['variables'] = array_merge((array)$_ENV['variables'], $variables);
     $settings = array_merge($settings, $variables);
     $_ENV['settings'] = &$settings;
-    if (isset($_ENV['settings']['driver'])) $app->settings->driver = $_ENV['settings']['driver'];
+
+
+    $app->vars('_sett.driver') > '' ? $app->settings->driver = $app->vars('_sett.driver') : null;
+    $app->vars('_sett.lang') > '' ? $lang = $app->vars('_sett.lang') : null;
 
     if ($_SERVER['REQUEST_URI']=='/engine/') {
         unset($_ENV['lang']);
@@ -117,13 +120,15 @@ function wbInitSettings(&$app)
 
     $app->vars('_sett.devmode') == 'on' ? null : ini_set('display_errors', 0);
 
-    isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'] : $lang = 'en';
-    isset($settings['lang']) ? $lang = $settings['lang'] : $lang = substr($lang, 0, 2);
-    isset($_SESSION['lang']) ? $lang = $_SESSION['lang'] : null ;
+    isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'] : $lang = 'ru';
+
+    $app->vars('_sett.lang') > '' ? $lang = $app->vars('_sett.lang') : null;
+    $app->vars('_cook.lang') > '' ? $lang = $app->vars('_cook.lang') : null;
+    $app->vars('_sess.lang') > '' ? $lang = $app->vars('_sess.lang') : null;
     $app->vars('_sess.user.lang') > '' ? $lang = $app->vars('_sess.user.lang') : null;
     $app->vars('_route.lang') > '' ? $lang = $app->vars('_route.lang') : null;
 
-    $app->lang = $_ENV['settings']['locale'] = $_SESSION['lang'] = $_ENV['lang'] = substr($lang, 0, 2);
+    $app->lang = $_ENV['settings']['locale'] = $_COOKIE['lang'] = $_SESSION['lang'] = $_ENV['lang'] = substr($lang, 0, 2);
 
     if ($app->vars('_sett.path_tpl') > '') {
         $_ENV['base'] = $app->vars('_sett.path_tpl');
@@ -135,14 +140,14 @@ function wbInitSettings(&$app)
     $app->vars('_sett.intext_width') > '0' ? $_ENV['intext_width'] = $app->vars('_sett.intext_width') : null;
     $app->vars('_sett.intext_height') > '0' ? $_ENV['intext_height'] = $app->vars('_sett.intext_height') : null;
 
-    if (isset($settings['page_size']) AND $settings['page_size'] > '') {
-        $_ENV['page_size'] = $settings['page_size'];
+    if ($app->vars('_sett.page_size') > '') {
+        $_ENV['page_size'] = $app->vars('_sett.page_size');
     } else {
         $settings['page_size'] =  $_ENV['page_size'];
     }
 
-    if (isset($_ENV['settings']['base']) and $_ENV['settings']['base'] > "") {
-        $_ENV['base'] = $_ENV['settings']['base'];
+    if ($app->vars('_sett.base') > "") {
+        $_ENV['base'] = $app->vars('_sett.base');
         $_ENV['path_tpl'] = str_replace("//", "/", $_ENV['path_app']."/".$_ENV['base']);
     }
     if ($app->vars("_env.settings.editor") == "") {
@@ -252,15 +257,13 @@ function wbMaxUplSize()
 
 function wbGetSysMsg()
 {
-    $locale=array();
+    $locale = [];
     if (is_file($_ENV["path_app"]."/forms/common/system_messages.ini")) {
-        $locale=parse_ini_file($_ENV["path_app"]."/forms/common/system_messages.ini", true);
+        $locale = (array)parse_ini_file($_ENV["path_app"]."/forms/common/system_messages.ini", true);
     } elseif (is_file($_ENV["path_engine"]."/forms/common/system_messages.ini")) {
-        $locale=parse_ini_file($_ENV["path_engine"]."/forms/common/system_messages.ini", true);
+        $locale = (array)parse_ini_file($_ENV["path_engine"]."/forms/common/system_messages.ini", true);
     }
-    if (isset($locale[$_ENV["lang"]])) {
-        $locale=$locale[$_ENV["lang"]];
-    }
+    isset($locale[$_ENV["lang"]]) ? $locale = $locale[$_ENV["lang"]] : $locale = array_pop($locale);
     return $locale;
 }
 
@@ -2297,7 +2300,7 @@ function wbListLocales(&$app = null)
 {
     !$app ? $app = new wbApp() : null;
     isset($_ENV['settings']['locales']) ? $langs = wbAttrToArray($_ENV['settings']['locales']) : $langs = [];
-    count($langs) ? null : $langs = ['en','ru'];
+    count($langs) ? null : $langs = ['ru','en'];
     return $langs;
 /*
     $out = $app->getForm("admin", "common.ini", true);
