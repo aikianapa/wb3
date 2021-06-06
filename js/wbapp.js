@@ -1,6 +1,7 @@
 "use strict"
 
 var wbapp = new Object();
+wbapp.loader = true;
 
 var get_cookie = function(name) {
     const value = `; ${document.cookie}`;
@@ -12,9 +13,7 @@ wbapp.devmode = get_cookie('devmode');
 
 var start = function () {
     var data = {};
-
     wbapp.bind = {};
-
     wbapp.ui = {
         spinner_sm: '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>',
         spinner_sm_grow: '<span class="spinner-grow spinner-grow-sm" role="status"></span>'
@@ -186,7 +185,7 @@ var start = function () {
     }
 
     wbapp.alive = function () {
-        wbapp.post("/ajax/alive", {}, function (data) {
+        $.post("/ajax/alive", {}, function (data) {
             if (data.result == false || data.result == undefined) {
                 console.log("Trigger: session_close");
                 $(document).trigger("session_close");
@@ -481,7 +480,9 @@ var start = function () {
         } else {
             try { data.__token = wbapp._session.token; } catch (error) { null }
         }
+        wbapp.loading();
         $.post(url, data).then(function (data) {
+            wbapp.unloading();
             if (func !== null) return func(data);
         })
     }
@@ -492,11 +493,14 @@ var start = function () {
         } else {
             try { data.__token = wbapp._session.token; } catch (error) { null }
         }
+        wbapp.loading();
         $.get(url, data)
             .then(function (data) {
+                wbapp.unloading();
                 if (func !== null) return func(data);
             })
             .fail(function (data) {
+                wbapp.unloading();
                 if (func !== null) return func(false);
             })
     }
@@ -530,12 +534,9 @@ var start = function () {
                 delete opts.data; // добавил для очистки фильтра
                 params = wbapp.tpl(opts._tid).params;
             }
-
-            if (params.html) wbapp.loading(params.html);
-            if (params._tid) wbapp.loading(params._tid);
-            if (params.target) wbapp.loading(params.target);
-
+            wbapp.loading();
             wbapp.post(params.url, opts, function (data) {
+                wbapp.unloading();
                 if (count(data) == 2 && data.error !== undefined && data.callback !== undefined) {
                     eval(data.callback + '(params,data)');
                     if (func !== null) return func(params, data);
@@ -617,11 +618,6 @@ var start = function () {
                 wbapp.lazyload();
                 wbapp.ajaxAuto();
 
-
-                if (params.html) wbapp.unloading(params.html);
-                if (params._tid) wbapp.unloading(params._tid);
-                if (params.target) wbapp.unloading(params.target);
-                
                 //console.log("Trigger: wb-ajax-done");
                 if (data.result == undefined) params['data'] = data;
                 if (params.form !== undefined) {
@@ -703,12 +699,19 @@ var start = function () {
     }
 
 
-    wbapp.loading = function(selector = 'body') {
-        $(document).find(selector).addClass('loading');
+    wbapp.loading = function() {
+        if (wbapp.loader !== true) return;
+        $(document).find('body').addClass('loading');
+        if (topbar) {
+            topbar.hide();
+            topbar.show();
+        }
     }
 
-    wbapp.unloading = function(selector = 'body') {
-        $(document).find(selector).removeClass('loading');
+    wbapp.unloading = function() {
+        if (wbapp.loader !== true) return;
+        $(document).find('body').removeClass('loading');
+        if (topbar) topbar.hide();
     }
 
     wbapp.fetch = function (selector, data, ret) {
@@ -1161,19 +1164,16 @@ var start = function () {
 
     wbapp.ajaxSync = function (ajaxObjs, fn) {
         if (!ajaxObjs) return;
+        wbapp.loading();
         var data = [];
         var ajaxCount = ajaxObjs.length;
-
         if (fn == undefined) {
             var fn = function (data) {
                 return data;
             }
         }
-
         for (var i = 0; i < ajaxCount; i++) { //append logic to invoke callback function once all the ajax calls are completed, in success handler.
-
             try { ajaxObjs[i].data.__token = wbapp._session.token; } catch (error) { null }
-
             $.ajax(ajaxObjs[i]).done(function (res) {
                 ajaxCount--;
                 if (ajaxObjs.length > 0) {
@@ -1182,6 +1182,7 @@ var start = function () {
                     data = res;
                 }
             }).fail(function () {
+                wbapp.unloading();
                 ajaxCount--;
                 if (ajaxObjs.length > 0) {
                     data.push(false);
@@ -1193,6 +1194,7 @@ var start = function () {
         while (ajaxCount > 0) {
             // wait all done
         }
+        wbapp.unloading();
         return fn(data);
     }
 
@@ -1644,6 +1646,7 @@ var start = function () {
                 , `/engine/js/jquery-ui.min.js` // для modal draggable - нужно подумать куда перенести
                 , `/engine/js/jquery.tap.js`
                 , `/engine/js/ractive.js`
+                , `/engine/js/topbar.min.js`
                 , `/engine/js/lazyload.js`
             ], "wbapp-go");
         } else {
