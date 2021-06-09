@@ -59,6 +59,17 @@ class ctrlApi
         }
     }
 
+    public function read() {
+        $app = &$this->app;
+        $json = $app->itemRead($app->route->table, $app->route->item);
+        if ($json == null) {
+            wbError("", "", 1006, [$app->route->table, $app->route->item]);
+            return $app->jsonEncode(['error'=>true,'msg'=>$_ENV["last_error"]]);
+        } else {
+            return $app->jsonEncode($json);
+        }
+    }
+
     public function update() {
         $app = &$this->app;
         $item = $app->itemRead($app->route->table, $app->route->item);
@@ -73,9 +84,9 @@ class ctrlApi
         }
     }
 
-    public function read() {
+    public function delete() {
         $app = &$this->app;
-        $json = $app->itemRead($app->route->table, $app->route->item);
+        $json = $app->itemRemove($app->route->table, $app->route->item);
         if ($json == null) {
             wbError("", "", 1006, [$app->route->table, $app->route->item]);
             return $app->jsonEncode(['error'=>true,'msg'=>$_ENV["last_error"]]);
@@ -107,7 +118,6 @@ class ctrlApi
         return $app->jsonEncode($item);
     }
 
-
     public function catalog()
     {
         $app = &$this->app;
@@ -122,7 +132,12 @@ class ctrlApi
         $app = &$this->app;
         $class = $app->formClass($app->route->form);
         $call = $app->route->call;
-        return $class->$call();
+        if (method_exists($class,$call)) {
+            return $class->$call();
+        } else {
+            return $app->jsonEncode(['error'=>true, 'msg'=>"Method {$call} not exists in {$app->route->form}"]);
+        }
+        
     }
 
     public function query()

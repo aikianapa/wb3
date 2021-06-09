@@ -235,20 +235,18 @@ class tagForeach
 
             $params->target = '#'.$this->tid;
             $locale = $dom->locale;
-            if ( isset($locale[$_SESSION["lang"]]) ) {
-                $locale = $locale[$_SESSION["lang"]];
+            if ( isset($locale[$dom->app->lang]) ) {
+                $locale = $locale[$dom->app->lang];
                 $params->locale = $locale;
             } 
             $params->route = $dom->app->route;
 
             $dom->params("from") > "" ? $from = $dom->params->from : $from = 'result';
-
             if ($ajax !== false) {
                 $dom->append("<template id = \"{$this->tid}\" >\n{{#each {$from}}}\n" . $dom->tpl . "\n{{/each}}</template>\n");
                 $params->render = 'client';
             } else if (!$dom->app->vars('_post.update')) {
-                $tpl = $dom->app->fromString($dom->outer);
-                $tpl->append($dom->tpl);
+                $tpl = $dom->app->fromString($dom->tpl);
                 $dom->append("<template id = \"{$this->tid}\" >\n" . $tpl->outer() . "\n</template>\n");
             }
             
