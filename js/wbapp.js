@@ -555,10 +555,10 @@ var start = function () {
                 if (params.prepend) $(document).find(params.prepend).prepend(data);
                 if (params.replace) $(document).find(params.replace).replaceWith(data);
                 //if (params.form) wbapp.formByObj(params.form,data);
-
+                if (params.render == 'client') {
                     if (params.bind && typeof data == "object") wbapp.storage(params.bind, data);
                     if (params.update && typeof data == "object") wbapp.storageUpdate(params.update, data);
-
+                }
                 if (params._trigger !== undefined && params._trigger == "remove") eval('delete ' + params.data); // ???
                 if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
                 if (params.render !== undefined && params.render == 'client') wbapp.renderClient(params, data);
@@ -566,7 +566,6 @@ var start = function () {
                     // $inp = $(params._event.target).parent();
                     // тут нужна обработка значений на клиенте
                 }
-
                 if (params.render == 'client') {
                     let res = $(data).find(params.target).html();
                     $(document).find(params.target).html(res);
@@ -957,7 +956,7 @@ var start = function () {
 
     wbapp.renderServer = function (params, data = {}) {
         if (params.target !== undefined && params.target > '#' && $(document).find(params.target).length) {
-                delete params.data;
+                //delete params.data;
                 delete params.bind;
 
                 params._tid = params.target;
