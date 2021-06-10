@@ -231,6 +231,8 @@ class tagForeach
 
         $params = $dom->params;
 
+        if ($this->app->vars('_post.route') > '' && $this->app->vars('_post._tid') !== '')  $tpl = false; else $tpl = true;
+if ($tpl) {
         if ($ajax !== false OR isset($params->table) && $params->table > '') {
 
             $params->target = '#'.$this->tid;
@@ -257,6 +259,7 @@ class tagForeach
             $dom->find("template[id=\"{$this->tid}\"] .pagination")->attr("data-tpl", $this->tid);
 
         } 
+}
             if ($dom->params("size") > "") {
                 $size = $dom->params("size");
                 !isset($count) ? $count = null : null;

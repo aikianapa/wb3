@@ -282,9 +282,8 @@ var start = function () {
                     }
                 });
                 $(document).trigger("bind", { key: key, data: value });
-                console.log("Trigger: bind [" + key + "]");
                 $(document).trigger("bind-" + key, value);
-                console.log("Trigger: bind-" + key);
+                console.log("Trigger: bind [" + key + "]");
             }
             return data;
         }
@@ -556,10 +555,10 @@ var start = function () {
                 if (params.prepend) $(document).find(params.prepend).prepend(data);
                 if (params.replace) $(document).find(params.replace).replaceWith(data);
                 //if (params.form) wbapp.formByObj(params.form,data);
-                if (params.render == 'client') {
+
                     if (params.bind && typeof data == "object") wbapp.storage(params.bind, data);
                     if (params.update && typeof data == "object") wbapp.storageUpdate(params.update, data);
-                }
+
                 if (params._trigger !== undefined && params._trigger == "remove") eval('delete ' + params.data); // ???
                 if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
                 if (params.render !== undefined && params.render == 'client') wbapp.renderClient(params, data);
@@ -574,14 +573,12 @@ var start = function () {
                 } else if (params.render == undefined || params.render == 'server') {
                     if (data.html !== undefined && params.target !== undefined) {
                         $(document).find(params.target).html(data.html);
-                    } else if (params.update !== undefined) {
-                        let rendparam;
+                    } else if (params.update !== undefined || params.update !== undefined) {
                         $.each(wbapp.template, function (i, tpl) {
                             if (tpl.params && tpl.params.bind && tpl.params.bind == params.update) {
-                                rendparam = tpl.params;
-                                wbapp.renderServer(tpl.params, data);
+                                if (typeof tpl.params == 'object' && typeof data == 'object') wbapp.renderServer(tpl.params, data);
                             } else if (tpl.params && tpl.params._params && tpl.params._params.bind && tpl.params._params.bind == params.update) {
-                                wbapp.renderServer(tpl.params._params, data);
+                                if (typeof tpl.params._params == 'object' && typeof data == 'object') wbapp.renderServer(tpl.params._params, data);
                             }
                         })
                     }
@@ -933,7 +930,7 @@ var start = function () {
         }
     }
 
-    wbapp.render = async function (tid, data) {
+    wbapp.render = function (tid, data) {
         if (tid == undefined) return;
         let params = wbapp.template[tid].params;
         if (data == undefined && params.bind == undefined) data = {};
@@ -941,13 +938,13 @@ var start = function () {
         if (params.render == undefined) params.render = null;
         switch (params.render) {
             case 'client':
-                await wbapp.renderClient(params, data);
+                wbapp.renderClient(params, data);
                 break;
             case 'server':
-                await wbapp.renderServer(params, data);
+                wbapp.renderServer(params, data);
                 break;
             case null:
-                var profileMenu = await Ractive({
+                new Ractive({
                     'target': tid,
                     'template': wbapp.template[tid].html,
                     'data': () => { return data; }
@@ -960,18 +957,9 @@ var start = function () {
 
     wbapp.renderServer = function (params, data = {}) {
         if (params.target !== undefined && params.target > '#' && $(document).find(params.target).length) {
-            if (data._table !== undefined) {
-                if (params.table !== undefined && params.table !== data._table) {
-                    return;
-                } else if (params._params !== undefined && params._params.table !== undefined && params._params.table !== data._table) {
-                    return;
-                } else if (params.data == undefined && params.bind == undefined && params.update == undefined) {
-                    return;
-                }
-            }
                 delete params.data;
                 delete params.bind;
-                delete params.update;
+
                 params._tid = params.target;
                 wbapp.ajax(params, function (data) {
                     var inner = '<wb>' + data.data + '</wb>';
@@ -1676,6 +1664,7 @@ var start = function () {
         wbapp.modalsInit();
         $(document).scrollTop(0);
     });
+
     function is_object(val) { return val instanceof Object; }
     function is_callable(t, n, o) { var e = "", r = {}, i = ""; if ("string" == typeof t) r = window, e = i = t; else { if (!(t instanceof Array && 2 === t.length && "object" == typeof t[0] && "string" == typeof t[1])) return !1; r = t[0], i = t[1], e = (r.constructor && r.constructor.name) + "::" + i } return !(!n && "function" != typeof r[i]) && (o && (window[o] = e), !0) }
 }
