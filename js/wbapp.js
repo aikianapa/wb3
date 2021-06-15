@@ -942,12 +942,12 @@ var start = function () {
         }
     }
 
-    wbapp.render = function (tid, data = {}) {
+    wbapp.render = function (tid, data) {
         if (tid == undefined) return;
         let params = wbapp.template[tid].params;
         if (data == undefined && params.bind == undefined) data = {};
         if (data == undefined) data = wbapp.storage(params.bind);
-        if (params.render == undefined) params.render = 'server';
+        if (params.render == undefined) params.render = null; // для рендера не списковых данных
         switch (params.render) {
             case 'client':
                 wbapp.renderClient(params, data);
