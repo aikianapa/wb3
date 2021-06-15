@@ -506,7 +506,22 @@ var start = function () {
 
     wbapp.ajax = async function (params, func = null) {
         if (!params.url && !params.tpl && !params.target) return;
-        if (params.url !== undefined) {
+        let opts = Object.assign({}, params);
+        let token;
+        delete opts._event;
+
+        if (params.request_type == 'remove_item') {
+            wbapp.post(params.url, opts, function (data) {
+                if (data._removed !== undefined && data._removed == true && params.update !== undefined) {
+                    $.each(wbapp.template, function (i, tpl) {
+                        let rend = false;
+                        if (tpl.params !== undefined && tpl.params.bind !== undefined && tpl.params.bind == params.update) rend = true;
+                        if (tpl.params !== undefined && tpl.params._params !== undefined && tpl.params._params.bind !== undefined && tpl.params._params.bind == params.update) rend = true;
+                        if (rend) wbapp.renderServer(tpl.params);
+                    });
+                }
+            });
+        } else if (params.url !== undefined) {
             if (params.form !== undefined) {
                 params.formdata = wbapp.objByForm(params.form);
                 params.formflds = {};
@@ -525,14 +540,12 @@ var start = function () {
                     }
                 })
             }
-            let opts = Object.assign({}, params);
-            let token;
-            delete opts._event;
 
             if (opts._tid !== undefined && opts._tid > '') {
                 delete opts.data; // добавил для очистки фильтра
                 params = wbapp.tpl(opts._tid).params;
             }
+
             wbapp.loading();
             wbapp.post(params.url, opts, function (data) {
                 wbapp.unloading();
@@ -929,12 +942,12 @@ var start = function () {
         }
     }
 
-    wbapp.render = function (tid, data) {
+    wbapp.render = function (tid, data = {}) {
         if (tid == undefined) return;
         let params = wbapp.template[tid].params;
         if (data == undefined && params.bind == undefined) data = {};
         if (data == undefined) data = wbapp.storage(params.bind);
-        if (params.render == undefined) params.render = null;
+        if (params.render == undefined) params.render = 'server';
         switch (params.render) {
             case 'client':
                 wbapp.renderClient(params, data);

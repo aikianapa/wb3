@@ -23,7 +23,7 @@
 		  <div class="modal-footer">
 			<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> {{_lang.cancel}}</button>
 			<button type="button" class="btn btn-danger" data-dismiss="modal"
-					   data-ajax="{'url':'/ajax/rmitem/{{_form}}/{{_item}}?_confirm'}">
+					   data-ajax="{'url':'/ajax/rmitem/{{_form}}/{{_item}}?_confirm','request_type':'remove_item'}">
 					 <span class="fa fa-trash"></span> {{_lang.remove}}
 			</button>
 		  </div>

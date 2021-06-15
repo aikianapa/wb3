@@ -153,7 +153,7 @@ var modChat = function (project = 'test', room = null) {
     }
 
     //wbapp.storage('mod.chat', {});
-    if ($(document).data('moddChat')) conn = $(document).data('modChat');
+    if ($(document).data('modChat')) conn = $(document).data('modChat');
     if (!conn || !conn.OPEN) conn = chat_connect()
 
 
