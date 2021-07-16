@@ -8,7 +8,6 @@ class tagInclude {
     if ($dom->is(":root")) $dom->rootError();
     if ($dom->params('src') == '' && $dom->attr('src') > '') $dom->params->src = $dom->attr('src');
     if ($dom->params('src') == '' && $dom->attr('file') > '') $dom->params->src = $dom->attr('file');
-
     if ($dom->params('src')) {
         $src = realpath($dom->path . '/' . $dom->params("src"));
         if (substr($dom->params("src"),0,2) == './' && $dom->path > '') $src = $dom->path . '/' . $dom->params("src");
