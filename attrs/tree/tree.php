@@ -74,8 +74,8 @@ function tagTree( &$dom, $Item = null ) {
         } else {
             isset( $Item[$field]['dict'] ) ? $tree['dict'] = $Item[$field]['dict'] : $tree['dict'] = [];
             $Item = $Item[$field]['data'];
-            unset( $Item['data'] );
-            unset( $Item['dict'] );
+            if (isset($Item['data'])) unset( $Item['data'] );
+            if (isset($Item['dict'])) unset( $Item['dict'] );
         }
     }
 
