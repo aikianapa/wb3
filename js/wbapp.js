@@ -880,8 +880,14 @@ var start = function () {
                 } catch (error) { null }
             }
 
+
+
             let html = $(this).html();
+
             html = html.replace(/<template\b[^<]*(?:(?!<\/template>)<[^<]*)*<\/template>/gi, "");
+            html = str_replace('%7B%7B','{{',html);
+            html = str_replace('%7D%7D','}}',html);
+
 
             $(this).removeAttr("data-params");
             if ($(this).attr("data-ajax") !== undefined) {

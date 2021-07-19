@@ -2607,7 +2607,7 @@ function wbListTpl()
     }
 
     function wbLiteralOnly($str) {
-        $str = preg_replace('/[^A-Za-z0-9?\_\-[:space:]]/ui', '', $str);
+        $str = preg_replace('/[^a-zA-Zа-яА-Я0-9?\_\-[:space:]]/ui', '', $str);
         $str = preg_replace( '/\s+/', ' ', $str);
         return $str;
     }

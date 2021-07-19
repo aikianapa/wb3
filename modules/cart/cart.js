@@ -8,7 +8,6 @@ $(document).on('cart-mod-js',function(){
     $("[id^='cartlist_']").each(function(i){
         let cid = $(this).attr('id');
         let tpl = wbapp.tpl('#'+cid).html;
-
         mod_cart_list[i] = new Ractive({
             'target' : '#'+cid,
             'template' : tpl,
@@ -60,7 +59,6 @@ $(document).on('cart-mod-js',function(){
         data.list = list;
         data.total = total;
         wbapp.storage(mod_cart_bind,data);
-        console.log(wbapp.storage(mod_cart_bind))
         modCartTotals();
     }
  
@@ -117,8 +115,10 @@ $(document).delegate('.mod-cart-add','tab click', async function(e){
     let form = $(this).closest('form');
     let ajax = $(this).attr('data-ajax');
     let cart = [];
-        console.log(ajax);
-    if (form == undefined && ajax == undefined) {
+    let data = $(this).data();
+    if (data.id !== undefined) {
+        cart = array_merge(cart,data);
+    } else if (!form.length && ajax == undefined) {
         wbapp.toast("Ошибка","Нет формы для добавления");
         return;
     } else if (form !== undefined) {
@@ -127,15 +127,14 @@ $(document).delegate('.mod-cart-add','tab click', async function(e){
             wbapp.toast("Ошибка","Требуется id записи");
             return;
         }
-        
     }
     if (cart.qty == undefined) cart.qty = 1;
     if (ajax !== undefined) {
-        var data = await wbapp.getSync(ajax);
+        let data = await wbapp.getSync(ajax);
         cart = array_merge(data,cart);
     }
     if ($(this).is('[mod-cart-data]')) {
-        var data = wbapp.parseAttr($(this).attr('mod-cart-data'));
+        let data = wbapp.parseAttr($(this).attr('mod-cart-data'));
         cart = array_merge(cart,data);
     }
     updateCart(cart);

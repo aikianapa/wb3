@@ -10,7 +10,7 @@ class modCart {
       $dom->after('<script type="wbapp" removable>wbapp.loadScripts(["/engine/modules/cart/cart.js"],"cart-mod-js");</script>');
       if (!$dom->params) $dom->params = ['list'=>'list'];
       if (isset($dom->params->list)) {
-            $dom->params->list = 'list';
+            $dom->params->list > '' ? null : $dom->params->list = 'list';
             $this->list();    
       } else if (isset($dom->params->remove)) {
           $dom->addClass('mod-cart-remove');
@@ -36,7 +36,7 @@ class modCart {
         $cid = $dom->attr('id');
       }
       if ($cid == '') {
-          $cid = wbNewId('_','cartlist');
+          $cid = 'cartlist_'.$dom->params->list;
           if ($dom->tagName == 'wb-module') {
               $dom->parent()->attr('id', $cid);
           } else {
@@ -45,7 +45,7 @@ class modCart {
       }
       $inner = $app->fromString($dom->inner());
       $inner->addClass('mod-cart-item');
-      $dom->after('<template data-target="'.$cid.'">{{#'.$dom->params->list.': index, key}}'."\n".$inner->outer()."\n".'{{/'.$dom->params->list.'}}</template>');
+      $dom->after('<template data-target="'.$cid.'">{{#list: index, key}}'."\n".$inner->outer()."\n".'{{/list}}</template>');
       if ($dom->tagName == 'wb-module') $dom->remove();
   }
   
