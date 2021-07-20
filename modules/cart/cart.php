@@ -15,13 +15,9 @@ class modCart {
       } else if (isset($dom->params->remove)) {
           $dom->addClass('mod-cart-remove');
       } else if (isset($dom->params->add)) {
-          if ($dom->params("ajax") > "") {
-              $dom->attr("data-ajax",$dom->params("ajax"));
-          }
-          if ($dom->params("data") > "") {
-              $dom->attr("mod-cart-data",json_encode($dom->params("data")));
-          }
-          $dom->addClass('mod-cart-add');
+        $dom->params("ajax") > "" ? $dom->attr("data-ajax",$dom->params("ajax")) : null;
+        $dom->params("data") > "" ? $dom->attr("mod-cart-data",json_encode($dom->params("data"))) : null;
+        $dom->addClass('mod-cart-add');
       }
       //$dom->remove();
   }
@@ -29,7 +25,7 @@ class modCart {
   public function list() {
       $app = &$this->dom->app;
       $dom = &$this->dom;
-      $tpl = $dom->inner();
+
       if ($dom->tagName == 'wb-module') {
         $cid = $dom->parent()->attr('id'); 
       } else {
@@ -43,9 +39,11 @@ class modCart {
               $dom->attr('id', $cid);
           }
       }
+      $sum = $dom->params->sum;
       $inner = $app->fromString($dom->inner());
       $inner->addClass('mod-cart-item');
-      $dom->after('<template data-target="'.$cid.'">{{#list: index, key}}'."\n".$inner->outer()."\n".'{{/list}}</template>');
+      $tpl = $inner->outer();
+      $dom->after('<template data-target="'.$cid.'">{{#list: index, key}}'."\n".$tpl."\n".'{{/list}}<meta name="sum" value="'.$sum.'"></template>');
       if ($dom->tagName == 'wb-module') $dom->remove();
   }
   

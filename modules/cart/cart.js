@@ -4,10 +4,14 @@
 $(document).on('cart-mod-js',function(){
     var mod_cart_bind = 'mod.cart';
     var mod_cart_list = [];
+    var mod_cart_sum = ("qty*price").split(/\s|\b/);
 
     $("[id^='cartlist_']").each(function(i){
         let cid = $(this).attr('id');
         let tpl = wbapp.tpl('#'+cid).html;
+        let sum = $("<wb>"+tpl+"</wb>").find("meta[name=sum]").attr("value");
+        if (sum > "") mod_cart_sum = sum.split(/\s|\b/);
+        
         mod_cart_list[i] = new Ractive({
             'target' : '#'+cid,
             'template' : tpl,
@@ -15,9 +19,23 @@ $(document).on('cart-mod-js',function(){
             'data' : () => {return wbapp.storage(mod_cart_bind)}
         });
     });
-    
-    var updateCart = function(cart = null) {
 
+    var calcSum = function(cart) {
+        let formula = 'cart.sum = ';
+        $(mod_cart_sum).each(function(i,val){
+            if (cart[val] !== undefined) {
+                if ((cart[val])) val += '*1';
+                formula += 'cart.'+val;
+            } else {
+                formula += val;
+            }
+        })
+        eval(formula);
+        return cart.sum;
+    }
+
+
+    var updateCart = function(cart = null) {
         var data = modCartGet();
         var list = data.list;
         var total = {};
@@ -26,9 +44,7 @@ $(document).on('cart-mod-js',function(){
             if (index == undefined) {
                 list.splice(index, 1);
             } else if (cart !== null && item.id === cart.id) {
-                    if (cart.price !== undefined && cart.qty !== undefined) {
-                        cart.sum = (cart.price *1) * (cart.qty *1);
-                    }
+                    cart.sum = calcSum(cart);
                     list[index] = cart;
                     res = true;
             }
@@ -44,7 +60,7 @@ $(document).on('cart-mod-js',function(){
         
         if (!res && cart !== null) {
             if (cart.price !== undefined && cart.qty !== undefined) {
-                cart.sum = (cart.price *1) * (cart.qty *1);
+                cart.sum = cart.sum = calcSum(cart);
             }
             Object.entries(cart).forEach(function(a,b) {
                 if (is_numeric(a[1]) && a[1]+'') {
@@ -100,11 +116,9 @@ $(document).delegate('.mod-cart-remove','tab click',function(){
     modCartTotals();
 });
     
-$(document).delegate('.mod-cart-qty','change blur',function(){
+$(document).delegate('.mod-cart-item :input','change blur',function(){
     let index = $(this).closest('.mod-cart-item').index();
     let list = wbapp.storage(mod_cart_bind+'.list');
-    list[index]['qty'] = $(this).val();
-    wbapp.storage(mod_cart_bind+'.list',list);
     updateCart(list[index]);
     modCartTotals();
 });
@@ -142,7 +156,7 @@ $(document).delegate('.mod-cart-add','tab click', async function(e){
 
 
 $(document).on("bind", function (e, res) {
-    if (res.key == mod_cart_bind || res.key.substr(0,9) == mod_cart_bind + '.') {
+    if (res.key == mod_cart_bind || res.key.substr(0,14) == mod_cart_bind + '.') {
         let data = wbapp.storage(mod_cart_bind);
         $(mod_cart_list).each(function(i,cart){
             cart.set(data);

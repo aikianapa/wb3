@@ -535,7 +535,7 @@ class wbDom extends DomQuery
         $inputs = $this->find("[name]:not([done])");
         foreach ($inputs as $inp) {
                 $inp->copy($this);
-                $inp->fetchParams();
+                if (!$inp->parents("template")) $inp->fetchParams();
                 $name = $inp->attr("name");
                 $value = $fields->get($name);
                 ((array)$value === $value and $inp->tagName !== "select") ? $value = wb_json_encode($value) : null;

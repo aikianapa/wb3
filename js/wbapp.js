@@ -888,7 +888,6 @@ var start = function () {
             html = str_replace('%7B%7B','{{',html);
             html = str_replace('%7D%7D','}}',html);
 
-
             $(this).removeAttr("data-params");
             if ($(this).attr("data-ajax") !== undefined) {
                 let prms = wbapp.parseAttr($(this).attr("data-ajax"));
