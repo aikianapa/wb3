@@ -41,6 +41,11 @@ $(document).on("datatimepicker-js",function() {
               options.viewSelect = 'hour';
               options.todayBtn = false;
             }
+
+            if ($(picker).data('date-start') !== undefined) options.startDate = $(picker).data('date-start');
+            if ($(picker).data('date-end') !== undefined) options.endDate = $(picker).data('date-end');
+            
+
             if (lang !== undefined) {
                 wbapp.loadScripts(["/engine/modules/datetimepicker/datetimepicker/locales/bootstrap-datetimepicker." + lang + ".js"],null,function(){
                   datetimepicker_start();

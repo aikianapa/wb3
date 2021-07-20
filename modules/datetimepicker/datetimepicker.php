@@ -39,6 +39,10 @@ class modDatetimepicker
         }
         $inph->attr("wb-params", json_encode($dom->params));
         $inpv->removeAttr('wb');
+
+        if ($inpv->attr("data-date-start")>"") $inpv->attr("data-date-start", date('Y-m-d H:i:s',strtotime($inpv->attr("data-date-start"))));
+        if ($inpv->attr("data-date-end")>"") $inpv->attr("data-date-end", date('Y-m-d H:i:s',strtotime($inpv->attr("data-date-end"))));
+
         $out->copy($dom);
         $dom->after($out);
         $dom->remove();
