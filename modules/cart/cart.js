@@ -2,9 +2,26 @@
 
 
 $(document).on('cart-mod-js',function(){
-    var mod_cart_bind = 'mod.cart';
+    
+    var uid;
+    if (!wbapp._session.user || !wbapp._session.user.id || wbapp._session.user.id < ' ') {
+        uid = 'unknown';
+    } else { 
+        uid = wbapp._session.user.id;
+    }
+    
+    var mod_cart = 'mod.cart';
+    var mod_cart_bind = mod_cart+'.'+uid;
     var mod_cart_list = [];
     var mod_cart_sum = ("qty*price").split(/\s|\b/);
+    var unk_cart = wbapp.storage(mod_cart + '.unknown');
+
+    if (uid !== 'unknown' && unk_cart) {
+        wbapp.storage(mod_cart_bind, unk_cart);
+        wbapp.storage(mod_cart + '.unknown',null);
+    }
+
+
 
     $("[id^='cartlist_']").each(function(i){
         let cid = $(this).attr('id');

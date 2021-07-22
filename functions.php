@@ -2658,6 +2658,12 @@ function wbListTpl()
         return preg_replace('=<br */?>=i', 'n', $str);
     }
 
+    function wbDate($format,$date = null,$offset='') {
+        $date == null ? $date = 'now' : null;
+        return date($format,strtotime($date.$offset));
+    }
+
+
     function wbCheckPhpCode($code)
     {
         $file=$_ENV["path_app"]."/uploads/".wbNewId().".php";
