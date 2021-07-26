@@ -1599,6 +1599,11 @@ var start = function () {
                 
             }
         });
+        let multi = $(form).find('select[name][multiple]');
+        $.each(multi, function () {
+            data[this.name] = $(this).val();
+        });
+
         var check = $(form).find('input[name][type=checkbox]');
         // fix unchecked values
         $.each(check, function () {
@@ -1616,7 +1621,6 @@ var start = function () {
             $(this).attr("name", $(this).attr("wb-tmp-name"));
             $(this).removeAttr("wb-tmp-name");
         });
-       
         return data;
     }
 

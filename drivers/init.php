@@ -73,10 +73,10 @@ function wbItemRead($form = null, $id = null)
             } else {
                 $item["_form"] = $item["_table"] = $form;
             }
-            $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
         } else {
             $item = wbTrigger('form', __FUNCTION__, 'emptyItemRead', func_get_args(), $item);
         }
+        $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
     }
     $_ENV['cache'][$cid] = $item;
     return $item;

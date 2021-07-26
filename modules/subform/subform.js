@@ -24,7 +24,7 @@ var mod_subform = function() {
         $(sub).children('.mod-subform-inner').delegate('[name],[wb-msf]','change', function () {
             let form = $(this).parents('.mod-subform-inner');
             let data = getdata(form);
-            $(sub).children('textarea').val(data);
+            $(sub).children('textarea').text(data);
             sub.data = json_decode(data);
         });
     }
