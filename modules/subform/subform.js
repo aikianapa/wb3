@@ -1,7 +1,7 @@
 var mod_subform = function() {
     
     let n2m = function(el) {
-        $(el).find('[name]').each(function () {
+        $(el).find('[name]:not(.wb-unsaved)').each(function () {
             $(this).attr('wb-msf', $(this).attr('name')).removeAttr('name');
         })
     }
