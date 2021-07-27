@@ -747,7 +747,7 @@ function wbItemToArray(&$Item = array(), $convid = true)
         $tmp = json_decode($Item, true);
         (array)$tmp === $tmp ? $Item = wbItemToArray($tmp, $convid) : null;
     }
-    unset($Item['__token']);
+    if (isset($Item['__token'])) unset($Item['__token']);
     return $Item;
 }
 
