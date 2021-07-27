@@ -550,6 +550,8 @@ var start = function () {
                     }
                 })
             }
+            let opts = Object.assign({}, params);
+            delete opts._event;
 
             if (opts._tid !== undefined && opts._tid > '') {
                 delete opts.data; // добавил для очистки фильтра
