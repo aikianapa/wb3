@@ -86,8 +86,10 @@ function wbItemRemove($form = null, $id = null, $flush = true)
 {
     $res = false;
     $db = wbSetDb($form);
-    wbTrigger('form', __FUNCTION__, 'beforeItemRemove', func_get_args());
-    $res = $db->itemRemove($form, $id, $flush);
+    $item = $db->itemRead($form, $id);
+    $item ? null : $item = ['id'=>$id, '_id' => $id, '_form' => $form, '_table' => $form];
+    wbTrigger('form', __FUNCTION__, 'beforeItemRemove', func_get_args(), $item);
+    $res = $db->itemRemove($item['_form'], $item['_id'], $flush);
     $res !== false ? $res["_removed"] = true : null;
     wbTrigger('form', __FUNCTION__, 'afterItemRemove', func_get_args(), $res);
     return $res;

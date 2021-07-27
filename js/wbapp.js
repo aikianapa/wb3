@@ -364,7 +364,17 @@ var start = function () {
             }
 
             wbapp.post(params.url, data, function (data) {
+                if (data.error == true) {
+                    $(obj).trigger("wb-save-error", {
+                        params: params,
+                        data: data,
+                    });
+                    return null;
+                }
+
+
                 if (params.callback) eval('params = ' + params.callback + '(params,data)');
+               
                 if (params.data && params.error !== true) {
                     var update = [];
                     var dataname;
@@ -1415,7 +1425,7 @@ var start = function () {
 
             $(this).data("idx", idx);
 
-            if ($(this).is('[type=email]:visible')) {
+            if ($(this).is('[type=email]')) {
                 if (($(this).val() > '' && !wbapp.check_email($(this).val())) || ($(this).val() == '' && $(this).prop('required'))) {
                     res = false;
                     $(this).data("error", wbapp._settings.sysmsg.email_correct);
@@ -1425,12 +1435,12 @@ var start = function () {
                     console.log("trigger: wb-verify-true [" + $(this).attr("name") + "]");
                     $(form).trigger("wb-verify-true", [this]);
                 }
-            } else if ($(this).is("[required]:visible:not(select)") && $(this).val() == "") {
+            } else if ($(this).is("[required]:not(select)") && $(this).val() == "") {
                 res = false;
                 $(this).data("error", wbapp._settings.sysmsg.required + ucfirst(label));
                 console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                 $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
-            } else if ($(this).is(":not([disabled],[readonly],[min],[max],[maxlength],[type=checkbox]):visible")) {
+            } else if ($(this).is(":not([disabled],[readonly],[min],[max],[maxlength],[type=checkbox])")) {
                 if ($(this).val() == "") {
                     res = false;
                     console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
@@ -1484,7 +1494,7 @@ var start = function () {
                     }
                 }
             }
-            if ($(this).is("[min]:not([readonly],[disabled]):visible") && $(this).val() > "") {
+            if ($(this).is("[min]:not([readonly],[disabled])") && $(this).val() > "") {
                 let min = $(this).attr("min") * 1;
                 let minstr = $(this).val() * 1;
                 if (minstr < min) {
@@ -1495,7 +1505,7 @@ var start = function () {
                 }
             }
 
-            if ($(this).is("[max]:not([readonly],[disabled]):visible") && $(this).val() > "") {
+            if ($(this).is("[max]:not([readonly],[disabled])") && $(this).val() > "") {
                 let max = $(this).attr("max") * 1;
                 let maxstr = $(this).val() * 1;
                 if (maxstr > max) {
@@ -1506,7 +1516,7 @@ var start = function () {
                 }
             }
 
-            if ($(this).is("[minlength]:not([readonly],[disabled]):visible") && $(this).val() > "") {
+            if ($(this).is("[minlength]:not([readonly],[disabled])") && $(this).val() > "") {
                 let minlen = $(this).attr("minlength") * 1;
                 let lenstr = strlen($(this).val());
                 if (lenstr < minlen) {
@@ -1517,7 +1527,7 @@ var start = function () {
                 }
             }
 
-            if ($(this).is('select[required]:visible')) {
+            if ($(this).is('select[required]')) {
                 let val = $(this).find('option:selected').attr('value');
                 if (val == undefined || val == '') {
                     res = false;

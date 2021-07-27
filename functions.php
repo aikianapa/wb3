@@ -747,6 +747,7 @@ function wbItemToArray(&$Item = array(), $convid = true)
         $tmp = json_decode($Item, true);
         (array)$tmp === $tmp ? $Item = wbItemToArray($tmp, $convid) : null;
     }
+    unset($Item['__token']);
     return $Item;
 }
 
@@ -1150,6 +1151,7 @@ function wbItemInit($table, $item = null)
 
     $item['_lastdate'] = date('Y-m-d H:i:s');
     $item['_lastuser'] = $app->vars("_sess.user.id");
+    if (isset($item['__token'])) unset($item['__token']);
     return $item;
 }
 
@@ -1194,9 +1196,6 @@ function wbTrigger($type, $name, $trigger, $args = [], $data = null)
         $call = '_'.$trigger;
         if (is_callable($call)) $data = $call($data, $args);
         if ($class && method_exists($class,$trigger)) {
-            if ($trigger == 'beforeItemRemove') {
-                $data = wbItemRead($args[0],$args[1]);
-            }
             $class->$trigger($data);
         }
         return $data;
@@ -1967,6 +1966,16 @@ function wbPasswordMake($str)
         return passwordMake($str);
     } else {
         return md5($str);
+    }
+}
+
+function wbPasswordGenerate($length = 8)
+{
+    if (is_callable('passwordGenerate')) {
+        return passwordGenerate($length);
+    } else {
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        return substr(str_shuffle($chars),0,$length);
     }
 }
 

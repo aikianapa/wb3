@@ -62,7 +62,31 @@ setTimeout(function () {
             $("#userProfileMenu").data("ractive").set(params.data);
             wbapp.lazyload();
         }
-        if (params.params.silent == undefined || params.params.silent !== 'true') wbapp.toast("Сохранение!", "Данные успешно сохранены", { target: '.content-toasts', 'bgcolor': 'success', 'txcolor': 'white' });
+        let msg;
+        let head = wbapp._settings.sysmsg.save_success;
+        if (params.data.msg !== undefined) {
+            msg = params.data.msg;
+        } else {
+            msg = wbapp._settings.sysmsg.save_success_msg;
+        }
+        if (params.params.silent == undefined || params.params.silent !== 'true') wbapp.toast(head, msg, { target: '.content-toasts', 'bgcolor': 'success', 'txcolor': 'white' });
+    })
+
+    $(document).on("wb-save-error", function (e, params) {
+        if ($(e.target).is("button.cms") && $(e.target).find(".spinner-border").length) {
+            $(e.target).find(".spinner-border").remove();
+            $(e.target).find("i").removeClass("d-none");
+            $(e.target).prop("disabled", false);
+        }
+        let msg;
+        let head = wbapp._settings.sysmsg.save_failed;
+        if (params.data.msg !== undefined) {
+            msg = params.data.msg;
+        } else {
+            msg = wbapp._settings.sysmsg.save_failed_msg;
+        }
+        
+        if (params.params.silent == undefined || params.params.silent !== 'true') wbapp.toast(head, msg, { target: '.content-toasts', 'bgcolor': 'danger', 'txcolor': 'white' });
     })
 
     $(document).on("wb-ajax-done", function (e, params) {
