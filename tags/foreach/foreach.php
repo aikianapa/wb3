@@ -505,14 +505,12 @@ if ($tpl) {
     }
 
     private function group($list, $flds = null) {
-        $jsonq = new Jsonq();
-        $jsonq = $jsonq->collect($list);
+        $jsonq = $this->app->json($list);
         $flds == null ? $flds = wbAttrToArray($this->dom->params('group')) : null;
         $total = $this->total($list);
         $list = [];
         if (count($flds)) {
-            $fld = $flds[0];
-            array_shift($flds);
+            $fld = array_shift($flds);
             $grps = $jsonq->groupBy($fld)->get();
             foreach($grps as $key => $grp) {
                 count($flds) > 0 ? $grp = $this->group($grp,$flds) : null;
@@ -528,8 +526,7 @@ if ($tpl) {
 
 
     private function total($list,$grp=null) {
-        $jsonq = new Jsonq();
-        $jsonq = $jsonq->collect($list);
+        $jsonq = $this->app->json($list);
         $total = ['__total' => 'true'];
         if ($grp) {
             $total['_total'] = $grp.'';

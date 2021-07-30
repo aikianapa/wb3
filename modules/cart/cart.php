@@ -7,7 +7,7 @@ class modCart {
 
   public function init(&$dom) {
       $app = &$dom->app;
-      $dom->after('<script type="wbapp" removable>wbapp.loadScripts(["/engine/modules/cart/cart.js"],"cart-mod-js");</script>');
+      $dom->after('<script type="wbapp" removable>setTimeout(function(){wbapp.loadScripts(["/engine/modules/cart/cart.js"],"cart-mod-js");},200);</script>');
       if (!$dom->params) $dom->params = ['list'=>'list'];
       if (isset($dom->params->list)) {
             $dom->params->list > '' ? null : $dom->params->list = 'list';

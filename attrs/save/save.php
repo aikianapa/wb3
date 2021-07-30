@@ -9,9 +9,10 @@ class attrSave extends wbDom
 
     public function attrSave(&$dom)
     {
+
         if (is_string($dom->params->save)) $dom->params->save = $dom->app->attrToValue($dom->params->save);
         $params = wbArrayToObj($dom->params->save);
-        unset($params->role);
+        $dom->params = &$params;
         if (!isset($params->method)) {
             $params->method = "ajax";
         } else {
@@ -33,24 +34,22 @@ class attrSave extends wbDom
 
         isset($params->field) ? $params->url .= '/' . $params->field : null;
 
-        $callback = "wbapp.save($(this),".json_encode($params).");";
-
         if (!$dom->is("[contenteditable]") && !$dom->is("input,select,textarea")) {
             if ($params->method == "ajax") {
                 $callback .= "return false;";
             }
-            $dom->attr("onClick", $callback);
+            $dom->params('trigger') > '' ? $trigger = $dom->params('trigger') : $trigger = 'onClick';
         } elseif ($dom->is("input,textarea,select")) {
+            $dom->params('trigger') > '' ? $trigger = $dom->params('trigger') : $trigger = 'onKeyUp1';
             $callback = "wbapp.save($(this),".json_encode($params).");";
-            $dom->attr("onKeyup", $callback);
         } else {
             $dom->addClass("contenteditable");
             $params->editor_id = $id;
             $callback = "wbapp.save($(this),".json_encode($params).");";
             if ($dom->is("input,textarea,select") || $params->editor>"") {
-                $dom->attr("onChange", $callback);
+                $dom->params('trigger') > '' ? $trigger = $dom->params('trigger') : $trigger = 'onChange';
             } else {
-                $dom->attr("onBlur", $callback);
+                $dom->params('trigger') > '' ? $trigger = $dom->params('trigger') : $trigger = 'onBlur';
             }
             if ($params->editor) {
                 $dom->addClass($params->editor)->removeAttr("contenteditable");
@@ -58,6 +57,8 @@ class attrSave extends wbDom
                 $dom->append('<script type="wbapp">wbapp.loadScripts('.$scripts.',"'.$params->editor.'-js");</script>');
             }
         }
+        $callback = "wbapp.save($(this),".json_encode($params).");";
+        $dom->attr($trigger, $callback);
         $dom->removeAttr("wb-save");
     }
 }

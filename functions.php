@@ -2253,21 +2253,20 @@ function wbListModules()
                     'module' => $d.'/'.$e.'/'.$e.".php",
                     'path' => $d.'/'.$e,
                     'sett' => '',
-                    'liter' => '',
+                    'liter' => strtoupper(substr($e,0,1)),
                     'divider' => ''
                 ];
-                if (is_file($d.'/'.$e.'/'.$e.'_sett.php')) {
-                    $arr[$e]['sett'] = $d.'/'.$e.'/'.$e.'_sett.php';
-                    $arr[$e]['liter'] = strtoupper(substr($e,0,1));
-                    if ($arr[$e]['liter'] > '' AND $flag_liter !== $arr[$e]['liter']) {
-                        $flag_liter = $arr[$e]['divider'] = $arr[$e]['liter'];
-                    }
-                }
+                if (is_file($d.'/'.$e.'/'.$e.'_sett.php')) $arr[$e]['sett'] = $d.'/'.$e.'/'.$e.'_sett.php';
             }
         }
     }
-    $arr = wbArraySort($arr,['id'=>'a']);
-    return $arr;
+    $list = wbArraySort($arr,['id'=>'a']);
+    foreach($list as &$arr) {
+        if ($arr['liter'] > '' and $flag_liter !== $arr['liter'] and $arr['sett']> '') {
+            $flag_liter = $arr['divider'] = $arr['liter'];
+        }
+    }
+    return $list;
 }
 
 function wbListTags()
