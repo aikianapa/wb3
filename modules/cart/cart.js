@@ -21,7 +21,7 @@ $(document).on('cart-mod-js',function(){
         wbapp.storage(mod_cart + '.unknown',null);
     }
 
-
+    wbapp.tplInit();
 
     $("[id^='cartlist_']").each(function(i){
         let cid = $(this).attr('id');
