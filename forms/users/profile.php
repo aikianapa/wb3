@@ -10,7 +10,6 @@
 
 <div class="col-12 p-2">
 <form id="userProfile" autocomplete="off">
-
 <div class="row">
 <div class="col-sm-8">
 

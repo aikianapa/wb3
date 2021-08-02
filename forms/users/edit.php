@@ -59,7 +59,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fa fa-phone"></i></span>
               </div>
-              <input type="text" name="phone" class="form-control" placeholder="Телефон">
+              <input type="tel" wb-mask="+9 (999) 999-99-99" name="phone" class="form-control" placeholder="Телефон">
             </div>
           </div>
 
