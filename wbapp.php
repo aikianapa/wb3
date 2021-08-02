@@ -1062,6 +1062,27 @@ class wbApp
         }
     }
 
+    public function module()
+    {
+
+        $args = func_get_args();
+        if (!isset($args[0])) return null;
+        $mod = $args[0];
+        unset($args[0]);
+        if (!count($args)) $args[]=$this;
+        $class = 'mod' . ucfirst($mod);
+        if (is_file($this->vars('_env.path_app')."/modules/{$mod}/{$mod}.php")) {
+            require $this->vars('_env.path_app')."/modules/{$mod}/{$mod}.php";
+        } else if (is_file($this->vars('_env.path_engine')."/modules/{$mod}/{$mod}.php")) {
+            require $this->vars('_env.path_engine')."/modules/{$mod}/{$mod}.php";
+        } else {
+            return null;
+        }
+        $rc = new ReflectionClass($class);
+        return $rc->newInstanceArgs($args);
+    }
+
+
     public function json($data)
     {
         $json = new Jsonq();
