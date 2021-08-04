@@ -37,6 +37,7 @@ class tagMultilang {
         $wrp->find('.tab-content > wb-foreach > .tab-pane')->html($dom->inner());
         $wrp->copy($dom);
         $wrp->fetch();
+        if ($dom->params("flags") == "false") $wrp->find(".nav-link img.mod-multilang-flag")->remove();
         $inputs = $wrp->find('input[name],select[name],textarea[name]');
         foreach($inputs as $inp) {
             $inp->attr('wb-name', $inp->attr('name'));

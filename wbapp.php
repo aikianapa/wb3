@@ -1064,7 +1064,6 @@ class wbApp
 
     public function module()
     {
-
         $args = func_get_args();
         if (!isset($args[0])) return null;
         $mod = $args[0];
@@ -1081,7 +1080,6 @@ class wbApp
         $rc = new ReflectionClass($class);
         return $rc->newInstanceArgs($args);
     }
-
 
     public function json($data)
     {
