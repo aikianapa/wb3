@@ -4,7 +4,7 @@
     <wb-foreach wb-from='lang'>
     <li class="nav-item">
         <a class="nav-link nobr" id="{{_var.lid}}-{{_key}}-tab" data-toggle="tab" href="#{{_var.lid}}-{{_key}}" role="tab" aria-selected="true">
-            {{_key}}&nbsp;&nbsp;<img src='/engine/lib/fonts/flag-icon-css/flags/4x3/{{_key}}.svg' class="border" width='16' height="12">
+            {{_origkey._origkey}}&nbsp;&nbsp;<img src='/engine/lib/fonts/flag-icon-css/flags/4x3/{{_key}}.svg' class="mod-multilang-flag border" width='16' height="12">
         </a>
     </li>
     </wb-foreach>

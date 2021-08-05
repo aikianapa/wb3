@@ -15,7 +15,8 @@ class tagMultilang {
         $dom->params("name") > "" ? $field = $dom->params("name") : null;
         $dom->attr("name",$field);
         $dom->params->name = $field;
-
+        $keys = array_keys($dom->item);
+        if (in_array('scalar',$keys) && in_array('_parent',$keys) && in_array('_key',$keys)) {$dom->item = $dom->item['_parent'];}
         if ($dom->params("lang") > '') {
             $langs = wbArrayAttr($dom->params("lang"));
         } else if ($dom->params("langs") > '') {
@@ -28,11 +29,15 @@ class tagMultilang {
         }
         $data = [];
         foreach((array)$langs as $l) {
-            $data[$l] = [];
+            $data[wbTranslit($l)] = ['_origkey'=>$l];
         }
 
         $dom->getField($field) ? $fld = (array)$dom->getField($field) : $fld = [];
         $dom->item['lang'] = array_merge($data, $fld);
+        foreach($dom->item['lang'] as $key => &$line) {
+            $line['_origkey'] = $data[$key];
+            if (!isset($data[$key])) unset($dom->item['lang'][$key]);
+        }
 
         $wrp->find('.tab-content > wb-foreach > .tab-pane')->html($dom->inner());
         $wrp->copy($dom);
