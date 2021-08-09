@@ -6,13 +6,15 @@ class tagForeach
 {
     public function __construct($dom)
     {
-        if (!isset($dom->role)) return;
+        if (!isset($dom->role)) {
+            return;
+        }
         unset($dom->role);
         $dom->is(":root") ? $dom->rootError() : null;
         $this->foreach($dom);
     }
 
-    function foreach($dom)
+    public function foreach($dom)
     {
         !$dom->app ? $dom->app = new wbApp() : null;
         $this->app = &$dom->app;
@@ -48,7 +50,8 @@ class tagForeach
     }
 
 
-    private function client(&$dom) {
+    private function client(&$dom)
+    {
         $empty = &$this->empty;
         $render = 'client';
         $parent = $dom->item;
@@ -59,13 +62,15 @@ class tagForeach
         unset($dom->params->tpl);
 
         if ($dom->params("table") > "") {
-            if ($dom->params("size") == '') $dom->params->size = 999999999;
+            if ($dom->params("size") == '') {
+                $dom->params->size = 999999999;
+            }
             $ajax = '/api/query/' . $dom->params("table") . '/';
             $ajax .= '?&__options=size='.$dom->params("size");
             $dom->params->ajax = $ajax;
             $dom->attr("data-ajax", '{"url":"' . $dom->params("ajax") . '"}');
             $table = null;
-        } else if ($dom->params("ajax") > "") {
+        } elseif ($dom->params("ajax") > "") {
             $dom->attr("data-ajax", '{"url":"' . $dom->params("ajax") . '"}');
         }
 
@@ -103,22 +108,22 @@ class tagForeach
             $ndx++;
         }
         // create template
-            $params = $dom->params;
-            $params->target = '#'.$this->tid;
-            $dom->params("from") > "" ? $from = $dom->params->from : $from = $dom->params->from = 'result';
-            $params = json_encode($params);
-            $dom->append("<template id = \"{$this->tid}\" >\n{{#each {$from}}}\n" . $dom->tpl . "\n{{/each}}</template>\n");
-            $ajax !== false ? $dom->find("template[id='{$this->tid}']")->attr('data-ajax', $dom->attr("data-ajax")) : null;
-            $params > '' ? $dom->find("template[id='{$this->tid}']")->attr('data-params', $params) : null;
-            $dom->find("template[id=\"{$this->tid}\"] .pagination")->attr("data-tpl", $this->tid);
+        $params = $dom->params;
+        $params->target = '#'.$this->tid;
+        $dom->params("from") > "" ? $from = $dom->params->from : $from = $dom->params->from = 'result';
+        $params = json_encode($params);
+        $dom->append("<template id = \"{$this->tid}\" >\n{{#each {$from}}}\n" . $dom->tpl . "\n{{/each}}</template>\n");
+        $ajax !== false ? $dom->find("template[id='{$this->tid}']")->attr('data-ajax', $dom->attr("data-ajax")) : null;
+        $params > '' ? $dom->find("template[id='{$this->tid}']")->attr('data-params', $params) : null;
+        $dom->find("template[id=\"{$this->tid}\"] .pagination")->attr("data-tpl", $this->tid);
         //
 
-            if ($dom->params("size") > "" AND $ajax = false) {
-                $size = $dom->params("size");
-                !isset($count) ? $count = null : null;
-                $dom->parent()->attr(
-                    "data-pagination",
-                    json_encode(
+        if ($dom->params("size") > "" and $ajax = false) {
+            $size = $dom->params("size");
+            !isset($count) ? $count = null : null;
+            $dom->parent()->attr(
+                "data-pagination",
+                json_encode(
                         [
                         'count' => $count,
                         'pages' => $pages,
@@ -126,58 +131,58 @@ class tagForeach
                         'size' => $size,
                     ]
                     )
-                );
-                $dom->parent()->attr("data-pages", $pages);
-                $dom->parent()->attr("data-page", $pages);
-                $dom->params->count = $count;
-                $dom->params->tpl = $dom->tid;
-                $dom->params->page = $page;
-                //$pag = $dom->tagPagination($dom);
-                !count((array)$list) or $dom->html() == "" ? $dom->inner($empty->inner()) : null;
-                isset($dom->params->pos) ? $pos = $dom->params->pos : $pos = 'bottom';
+            );
+            $dom->parent()->attr("data-pages", $pages);
+            $dom->parent()->attr("data-page", $pages);
+            $dom->params->count = $count;
+            $dom->params->tpl = $dom->tid;
+            $dom->params->page = $page;
+            //$pag = $dom->tagPagination($dom);
+            !count((array)$list) or $dom->html() == "" ? $dom->inner($empty->inner()) : null;
+            isset($dom->params->pos) ? $pos = $dom->params->pos : $pos = 'bottom';
 
-                if ($srvpag or ($this->app->route->controller == 'ajax' and $this->app->vars('_post._params') > "")) {
-                    // При вызове из data-ajax требуется второе условие
-                    $res = [
+            if ($srvpag or ($this->app->route->controller == 'ajax' and $this->app->vars('_post._params') > "")) {
+                // При вызове из data-ajax требуется второе условие
+                $res = [
                     'html' => $dom->inner(),
                     'route' => $this->app->route,
                     'params' => $dom->params,
                     'pag' => $pag->outer(),
                     'pos' => $pos
                 ];
-                    header('Content-Type: charset=utf-8');
-                    header('Content-Type: application/json');
-                    echo json_encode($res);
-                    die;
-                }
-            } elseif (!$dom->children()->length) {
-                $dom->inner($empty->inner());
+                header('Content-Type: charset=utf-8');
+                header('Content-Type: application/json');
+                echo json_encode($res);
+                die;
             }
+        } elseif (!$dom->children()->length) {
+            $dom->inner($empty->inner());
+        }
 
 
 
 
-            if (isset($this->placeholder)) {
-                if ($this->opt) {
-                    $this->opt->attr('value', '');
-                    $this->opt->inner($this->placeholder);
-                    $this->opt->setAttributes([]);
-                    $dom->prepend($this->opt->outer());
-                } else {
-                    $dom->prepend('<option value="">'.$this->placeholder.'</option>');
-                }
+        if (isset($this->placeholder)) {
+            if ($this->opt) {
+                $this->opt->attr('value', '');
+                $this->opt->inner($this->placeholder);
+                $this->opt->setAttributes([]);
+                $dom->prepend($this->opt->outer());
+            } else {
+                $dom->prepend('<option value="">'.$this->placeholder.'</option>');
             }
+        }
 
         $dom->before($dom->inner());
         $dom->remove();
     }
 
-    private function server(&$dom) {
-
+    private function server(&$dom)
+    {
         $empty = &$this->empty;
         $render = "server";
 
-         $idx = 0;
+        $idx = 0;
         $ndx = 1;
 
         $parent = $dom->item;
@@ -202,22 +207,21 @@ class tagForeach
                 $val->_val = $value;
                 $val->_parent = &$parent;
                 isset($val->_table) && $table == '' ? $table = $val->_table : null;
-                !isset($val->_id) AND isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
+                !isset($val->_id) and isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
                 $table > "" ? $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], (array) $val) : null;
             }
 
             if ($ajax !== false) {
                 $list[$key] = (array) $val;
             } else {
-
                 if (isset($val->__total)) {
-                    foreach((array)$val->sum as $k =>$v) {
+                    foreach ((array)$val->sum as $k =>$v) {
                         $val->$k = $v;
                     }
                 }
 
 
-                $line = $this->app->fromString($dom->tpl,true);
+                $line = $this->app->fromString($dom->tpl, true);
                 $line->copy($dom);
                 $line->item = (array) $val;
                 $line->fetch();
@@ -231,41 +235,43 @@ class tagForeach
 
         $params = $dom->params;
 
-        if ($this->app->vars('_post.route') > '' && $this->app->vars('_post._tid') !== '')  $tpl = false; else $tpl = true;
-if ($tpl) {
-        if ($ajax !== false OR isset($params->table) && $params->table > '') {
+        if ($this->app->vars('_post.route') > '' && $this->app->vars('_post._tid') !== '') {
+            $tpl = false;
+        } else {
+            $tpl = true;
+        }
+        if ($tpl) {
+            if ($ajax !== false or $dom->params('table') > '' or $dom->params('from') > '') {
+                $params->target = '#'.$this->tid;
+                $locale = $dom->locale;
+                if (isset($locale[$dom->app->lang])) {
+                    $locale = $locale[$dom->app->lang];
+                    $params->locale = $locale;
+                }
+                $params->route = $dom->app->route;
 
-            $params->target = '#'.$this->tid;
-            $locale = $dom->locale;
-            if ( isset($locale[$dom->app->lang]) ) {
-                $locale = $locale[$dom->app->lang];
-                $params->locale = $locale;
-            } 
-            $params->route = $dom->app->route;
-
-            $dom->params("from") > "" ? $from = $dom->params->from : $from = 'result';
-            if ($ajax !== false) {
-                $dom->append("<template id = \"{$this->tid}\" >\n{{#each {$from}}}\n" . $dom->tpl . "\n{{/each}}</template>\n");
-                $params->render = 'client';
-            } else if (!$dom->app->vars('_post.update')) {
-                $tpl = $dom->app->fromString($dom->tpl);
-                $dom->append("<template id = \"{$this->tid}\" >\n" . $tpl->outer() . "\n</template>\n");
-            }
+                $dom->params("from") > "" ? $from = $dom->params->from : $from = 'result';
+                if ($ajax !== false) {
+                    $dom->append("<template id = \"{$this->tid}\" >\n{{#each {$from}}}\n" . $dom->tpl . "\n{{/each}}</template>\n");
+                    $params->render = 'client';
+                } elseif (!$dom->app->vars('_post.update')) {
+                    $tpl = $dom->app->fromString($dom->tpl);
+                    $dom->append("<template id = \"{$this->tid}\" >\n" . $tpl->outer() . "\n</template>\n");
+                }
             
-            $ajax !== false ? $dom->find("template[id='{$this->tid}']")->attr('data-ajax', $dom->attr("data-ajax")) : null;
-            $params = json_encode($params);
-            $params > '' ? $dom->find("template[id='{$this->tid}']")->addParams($params) : null;
+                $ajax !== false ? $dom->find("template[id='{$this->tid}']")->attr('data-ajax', $dom->attr("data-ajax")) : null;
+                $params = json_encode($params);
+                $params > '' ? $dom->find("template[id='{$this->tid}']")->addParams($params) : null;
 
-            $dom->find("template[id=\"{$this->tid}\"] .pagination")->attr("data-tpl", $this->tid);
-
-        } 
-}
-            if ($dom->params("size") > "") {
-                $size = $dom->params("size");
-                !isset($count) ? $count = null : null;
-                $dom->parent()->attr(
-                    "data-pagination",
-                    json_encode(
+                $dom->find("template[id=\"{$this->tid}\"] .pagination")->attr("data-tpl", $this->tid);
+            }
+        }
+        if ($dom->params("size") > "") {
+            $size = $dom->params("size");
+            !isset($count) ? $count = null : null;
+            $dom->parent()->attr(
+                "data-pagination",
+                json_encode(
                         [
                         'count' => $count,
                         'pages' => $pages,
@@ -273,61 +279,61 @@ if ($tpl) {
                         'size' => $size,
                     ]
                     )
-                );
-                $dom->parent()->attr("data-pages", $pages);
-                $dom->parent()->attr("data-page", $pages);
-                $dom->params->count = $count;
-                $dom->params->tpl = $dom->parent()->attr('id');
-                $dom->params->page = $page;
-                $pag = $dom->tagPagination($dom);
+            );
+            $dom->parent()->attr("data-pages", $pages);
+            $dom->parent()->attr("data-page", $pages);
+            $dom->params->count = $count;
+            $dom->params->tpl = $dom->parent()->attr('id');
+            $dom->params->page = $page;
+            $pag = $dom->tagPagination($dom);
                 
-                !count((array)$list) or $dom->html() == "" ? $dom->inner($empty->inner()) : null;
-                isset($dom->params->pos) ? $pos = $dom->params->pos : $pos = 'bottom';
+            !count((array)$list) or $dom->html() == "" ? $dom->inner($empty->inner()) : null;
+            isset($dom->params->pos) ? $pos = $dom->params->pos : $pos = 'bottom';
 
-                if ($srvpag 
+            if ($srvpag
                     or ($this->app->route->controller == 'ajax' and $this->app->vars('_post._params') > "")
                     or ($this->app->route->mode == 'ajax' and $this->app->vars('_post._params') > "")
                     ) {
+                if (!count((array)$list) or $dom->html() == "") {
+                    $html = $empty->inner();
+                    $pag = "";
+                } else {
+                    $html = $dom->html();
+                    $pag = $pag->outer();
+                }
 
-                    if (!count((array)$list) or $dom->html() == "") {
-                        $html = $empty->inner();
-                        $pag = "";
-                    } else {
-                        $html = $dom->html();
-                        $pag = $pag->outer();
-                    }
-
-                    $res = [
+                $res = [
                     'html' => $html,
                     'route' => $this->app->route,
                     'params' => $dom->params,
                     'pag' => $pag,
                     'pos' => $pos
                 ];
-                    header('Content-Type: charset=utf-8');
-                    header('Content-Type: application/json');
-                    echo json_encode($res);
-                    die;
-                }
-            } elseif (!$dom->children()->length) {
-                $dom->inner($empty->inner());
+                header('Content-Type: charset=utf-8');
+                header('Content-Type: application/json');
+                echo json_encode($res);
+                die;
             }
+        } elseif (!$dom->children()->length) {
+            $dom->inner($empty->inner());
+        }
 
-            if (isset($this->placeholder)) {
-                if ($this->opt) {
-                    $this->opt->attr('value', '');
-                    $this->opt->inner($this->placeholder);
-                    $this->opt->setAttributes([]);
-                    $dom->prepend($this->opt->outer());
-                } else {
-                    $dom->prepend('<option value="">'.$this->placeholder.'</option>');
-                }
+        if (isset($this->placeholder)) {
+            if ($this->opt) {
+                $this->opt->attr('value', '');
+                $this->opt->inner($this->placeholder);
+                $this->opt->setAttributes([]);
+                $dom->prepend($this->opt->outer());
+            } else {
+                $dom->prepend('<option value="">'.$this->placeholder.'</option>');
             }
+        }
         $dom->before($dom->inner());
         $dom->remove();
     }
 
-    private function list() {
+    private function list()
+    {
         $dom = &$this->dom;
 
         $dom->filterStrict();
@@ -363,13 +369,15 @@ if ($tpl) {
             $count = count($list);
             $filtered = true;
         } elseif ($table == "" and $call > "") {
-            substr($call,-1) == ')' ? null : $call.='()';
+            substr($call, -1) == ')' ? null : $call.='()';
             $list = (array)wbEval($call);
         }
 
-        if ($dom->params('ajax') AND $dom->params('render') == 'server') {
+        if ($dom->params('ajax') and $dom->params('render') == 'server') {
             $ajax = $dom->params('ajax');
-            if ($dom->params("size") == '') $dom->params->size = 999999999;
+            if ($dom->params("size") == '') {
+                $dom->params->size = 999999999;
+            }
             $url = parse_url($ajax);
             if (!isset($url['scheme'])) {
                 if ($this->app->vars('_sett.api_key_query') == 'on' and !isset($url['__token'])) {
@@ -377,10 +385,10 @@ if ($tpl) {
                     $ajax .= '__token='.$this->app->vars('_sess.token');
                 }
             }
-                $ajax = $this->app->vars('_route.host').$ajax;
-                $list = json_decode(str_replace("'", '"', wbAuthPostContents($ajax)), true);
-                !$list ? $list = [] : null;
-                $count = count($list);
+            $ajax = $this->app->vars('_route.host').$ajax;
+            $list = json_decode(str_replace("'", '"', wbAuthPostContents($ajax)), true);
+            !$list ? $list = [] : null;
+            $count = count($list);
         }
 
         if ($dom->params('json')) {
@@ -389,14 +397,16 @@ if ($tpl) {
         }
 
         if ($dom->params('from')) {
-            if ($dom->app->vars($dom->params->from) > '') { 
+            if ($dom->app->vars($dom->params->from) > '') {
                 $list = $dom->app->vars($dom->params->from);
-            } else if (isset($list[$dom->params->from])) {
+            } elseif (isset($list[$dom->params->from])) {
                 $list = $list[$dom->params->from];
             } else {
                 $list = $dom->getField($dom->params->from);
             }
-            if ($dom->params('filter') AND !$dom->params->table) $list = $dom->app->arrayFilter($list,$dom->params('filter'));
+            if ($dom->params('filter') and !$dom->params->table) {
+                $list = $dom->app->arrayFilter($list, $dom->params('filter'));
+            }
             if (isset($options["sort"]) and (array) $options["sort"] === $options["sort"]) {
                 foreach ((array) $options["sort"] as $key => $fld) {
                     if (!((array) $fld === $fld)) {
@@ -429,7 +439,7 @@ if ($tpl) {
             $list = [];
             $start = 1;
             $count = $dom->params->count;
-            if (strpos($count,';')) {
+            if (strpos($count, ';')) {
                 $count = explode(';', $count);
                 $start = intval($count[0]);
                 $count = intval($count[1]);
@@ -451,12 +461,14 @@ if ($tpl) {
         !isset($list) ? $list = [] : null;
 
         if (isset($options['filter']) && (array)$list === $list && $filtered == false) {
-            foreach($list as $key => $item) {
-                if (!wbItemFilter((array)$item,$options['filter'])) unset($list[$key]);
+            foreach ($list as $key => $item) {
+                if (!wbItemFilter((array)$item, $options['filter'])) {
+                    unset($list[$key]);
+                }
             }
         }
 
-        if ($dom->params('total') OR $dom->params('avg') OR $dom->params('min') OR $dom->params('max')) {
+        if ($dom->params('total') or $dom->params('avg') or $dom->params('min') or $dom->params('max')) {
             $this->avg = wbAttrToArray($this->dom->params('avg'));
             $this->min = wbAttrToArray($this->dom->params('min'));
             $this->max = wbAttrToArray($this->dom->params('max'));
@@ -504,7 +516,8 @@ if ($tpl) {
         return [$list, $count, $pages, $page, $srvpag, $options];
     }
 
-    private function group($list, $flds = null) {
+    private function group($list, $flds = null)
+    {
         $jsonq = $this->app->json($list);
         $flds == null ? $flds = wbAttrToArray($this->dom->params('group')) : null;
         $total = $this->total($list);
@@ -512,12 +525,14 @@ if ($tpl) {
         if (count($flds)) {
             $fld = array_shift($flds);
             $grps = $jsonq->groupBy($fld)->get();
-            foreach($grps as $key => $grp) {
-                count($flds) > 0 ? $grp = $this->group($grp,$flds) : null;
+            foreach ($grps as $key => $grp) {
+                count($flds) > 0 ? $grp = $this->group($grp, $flds) : null;
                 $grtot = $this->total($grp, $key);
-                !$this->dom->params('supress') == 'true' ? $list = array_merge($list,$grp) : null;
+                !$this->dom->params('supress') == 'true' ? $list = array_merge($list, $grp) : null;
                 $grtot['_value'] = $key;
-                if ($flds == null) array_push($list, $grtot);
+                if ($flds == null) {
+                    array_push($list, $grtot);
+                }
             }
         }
         array_push($list, $total);
@@ -525,7 +540,8 @@ if ($tpl) {
     }
 
 
-    private function total($list,$grp=null) {
+    private function total($list, $grp=null)
+    {
         $jsonq = $this->app->json($list);
         $total = ['__total' => 'true'];
         if ($grp) {
@@ -534,11 +550,11 @@ if ($tpl) {
         } else {
             $total['_total'] = '_total';
             $total['_class'] = 'grand-total';
-        } 
+        }
         $total['_count'] = count($list);
         $total['__total'] = 'true'; // признак для отключения нумерации в foreach
         $total['sum'] = $total['avg'] = $total['min'] = $total['max'] = [];
-        foreach($this->flds as $fld) {
+        foreach ($this->flds as $fld) {
             in_array($fld, $this->sum) ? $total['sum'][$fld] = $jsonq->sum($fld) : null;
             in_array($fld, $this->avg) ? $total['avg'][$fld] = $jsonq->avg($fld) : null;
             in_array($fld, $this->min) ? $total['min'][$fld] = $jsonq->min($fld) : null;
@@ -547,7 +563,8 @@ if ($tpl) {
         return $total;
     }
 
-    private function options() {
+    private function options()
+    {
         $dom = &$this->dom;
         $options = [];
         $options['filter'] = [];
@@ -570,22 +587,25 @@ if ($tpl) {
         return $options;
     }
 
-    function filter_prepare() {
+    public function filter_prepare()
+    {
         $filter = $this->app->vars('_post.filter');
         if (!((array)$filter === $filter)) {
             return;
         }
-        foreach($filter as $fld => $val) {
+        foreach ($filter as $fld => $val) {
             if (substr($fld, -7) == '__range') {
                 $range = explode(';', $val);
                 unset($filter[$fld]);
-                $fld = substr($fld,0,-7);
-                if (!isset($range[1])) $range[1] = $range[0];
+                $fld = substr($fld, 0, -7);
+                if (!isset($range[1])) {
+                    $range[1] = $range[0];
+                }
                 $filter[$fld] = ['$gte'=>$range[0] , '$lte'=>$range[1]];
 
-                //$filter[$fld.'_min'] = ['$gte'=>$range[0]];
+            //$filter[$fld.'_min'] = ['$gte'=>$range[0]];
                 //$filter[$fld.'_max'] = ['$lte'=>$range[1]];
-            } else if (substr($fld, -8) == '__minmax') {
+            } elseif (substr($fld, -8) == '__minmax') {
                 $range = explode(';', $val);
                 unset($filter[$fld]);
                 $fld = substr($fld, 0, -8);
@@ -597,8 +617,5 @@ if ($tpl) {
             }
         }
         $_POST['filter'] = $filter;
-
     }
-
-
 }
