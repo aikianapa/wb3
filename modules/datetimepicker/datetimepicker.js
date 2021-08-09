@@ -64,6 +64,7 @@ $(document).on("datatimepicker-js",function() {
                   } else if ($(picker).attr("type")=="timepicker") {
                       $(input).attr("value",$(picker).val());
                   }
+                  $(input).trigger('change');
               });
             }
 

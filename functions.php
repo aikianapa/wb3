@@ -224,7 +224,7 @@ function wbGetToken() {
         return true;
     }
 
-function wbCheckToken($token) {
+function wbCheckToken($token = null) {
     $app = &$_ENV['app'];
     $apikey = $app->vars('_sett.api_key');
     $role = $app->vars('_sess.user.role');
@@ -232,6 +232,7 @@ function wbCheckToken($token) {
     !$user ? $user = microtime() : null;
     !$role ? $role = microtime() : null;
     $valid = md5($app->route->host.session_id().$apikey.$role.$user);
+    $token == null ? $token = $app->vars('_req.__token') : null;
     $token == $valid ? $res = true : $res = false;
     return $res;
 }
