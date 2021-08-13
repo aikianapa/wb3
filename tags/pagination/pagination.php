@@ -142,10 +142,10 @@ class tagPagination
             }
 
             if ($dom->params("more") == '' and ($dom->params("pos") == 'top' or $dom->params("pos") == 'both')) {
-                $target->parent()->before($pag);
+                $target->parent()->parent()->length ? $target->parent()->before($pag) : $target->before($pag);
             }
             if ($dom->params("pos") !== 'top') {
-                $target->parent()->after($pag);
+                $target->parent()->parent()->length ? $target->parent()->after($pag) : $target->after($pag);
             }
         }
         $dom->find("[data-page='{$page}']")->addClass('active');

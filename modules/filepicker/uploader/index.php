@@ -31,7 +31,11 @@ $app->vars('_sess.user_role') == 'admin' ? $config['accept_file_types_regex'] = 
 
 isset($_POST["file"]) ? $file = $_POST["file"] : $file = wbNewId("img");
 
-if ($app->vars("_req.upload_ext") > "") $config['accept_file_types'] = $app->vars("_req.upload_ext");
+if ($app->vars("_req.upload_ext") > "") {
+    $tmp = $app->vars("_req.upload_ext");
+    $tmp = implode('|',$app->attrToArray($tmp));
+    $config['accept_file_types'] = $tmp;
+}
 if ($app->vars('_req.upload_url') == '_auto_') {
     $config['upload_url'] = '/uploads/'.substr(md5($file),0,2);
 } else {
@@ -42,8 +46,8 @@ $config['script_url'] = $app->vars("_route.host").'/engine/modules/filepicker/up
 $config['overwrite'] = true;
 $config['max_file_size'] = $app->vars("_sett.max_upload_size");
 $config['auto_orient'] = true;
-$config['image_file_types'] = 'gif|jpg|jpeg|png|webp';
-$config['inline_file_types'] = 'gif|jpg|jpeg|png|webp|pdf|doc|docx|xls|xlsx|zip|rar|gzip|css|scss|less|txt|log';
+$config['image_file_types'] = 'gif|jpg|jpeg|png';
+$config['inline_file_types'] = 'webp|svg|pdf|doc|docx|xls|xlsx|zip|rar|gzip|css|scss|less|txt|log';
 
 if (isset($_POST["_method"])) {
     isset($_POST["file"]) ? $file = $_POST["file"] : null;

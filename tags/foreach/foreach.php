@@ -187,6 +187,8 @@ class tagForeach
 
         $parent = $dom->item;
 
+
+        ($dom->params('tpl') == false) ? $ttt = false : $ttt  = true;
         //$this->app->vars('_post.route') == '' and $dom->params('tpl') == 'true' ? $dom->addTpl() : null;
 
         list($list, $count, $pages, $page, $srvpag, $options) = $this->list();
@@ -240,7 +242,7 @@ class tagForeach
         } else {
             $tpl = true;
         }
-        if ($tpl) {
+        if ($tpl && $ttt !== false) {
             if ($ajax !== false or $dom->params('table') > '' or $dom->params('from') > '') {
                 $params->target = '#'.$this->tid;
                 $locale = $dom->locale;

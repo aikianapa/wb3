@@ -117,7 +117,7 @@ class WEProcessor {
 							$res = $_ENV["locale"][$res];
 						}
 					}
-					if (!in_array($res,$_ENV['locale'])) {$res = array_shift($_ENV['locale']);}
+					if (!in_array($res,(array)$_ENV['locale'])) {$res = array_shift($_ENV['locale']);}
 					break;
 				}
 				case '_ENV':		$res = $_ENV;  break;

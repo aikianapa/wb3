@@ -91,10 +91,15 @@ var start = function () {
             }
         });
 
-        $(document).delegate("[rows=auto]", "keydown keyup", function () {
+        $(document).delegate("[rows=auto]", "keydown keyup focus", function () {
             this.style.overflow = "hidden";
             this.style.height = "1px";
             this.style.height = (this.scrollHeight) + "px";
+        });
+
+        $(document).delegate("[rows=auto]", "focusout", function () {
+            this.style.overflow = "hidden";
+            this.style.height = "auto";
         });
 
 

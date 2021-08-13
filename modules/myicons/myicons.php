@@ -33,10 +33,10 @@ class modMyicons
 
 
     public function parseURL() {
-        if (count($this->app->route->params) == 2) {
+        if (isset($this->app->route->params) && is_array($this->app->route->params) && count($this->app->route->params) == 2) {
             $this->size = $this->app->route->mode;
-            $this->stroke = $this->app->route->params[0];
-            $this->icon = $this->app->route->params[1];
+            isset($this->app->route->params[0]) ? $this->stroke = $this->app->route->params[0] : null;
+            isset($this->app->route->params[1]) ? $this->icon = $this->app->route->params[1] : null;
         } else {
             isset($this->app->route->query->size) ? $this->size = $this->app->route->query->size : $this->size = null;
             isset($this->app->route->query->stroke) ? $this->stroke = $this->app->route->query->stroke : $this->stroke = null;
