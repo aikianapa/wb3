@@ -1239,16 +1239,6 @@ var start = function () {
         }])[0];
     }
 
-    wbapp.trigger = function (trigger, event = null, data = null) {
-        console.log('Trigger: ' + trigger);
-        if (event == null) {
-            $(document).trigger(trigger, data);
-        } else {
-            $(event).trigger(trigger, data);
-        }
-
-    }
-
     wbapp.session = function (e) {
         if (wbapp._session == undefined) wbapp._session = wbapp.postSync("/ajax/getsess/");
         wbapp.trigger('wb-getsess', e, wbapp._session);
@@ -1360,6 +1350,17 @@ var start = function () {
         if (func == null) func = () => { return true; }
         $(document).on(trigger, func);
     }
+
+    wbapp.trigger = function (trigger, event = null, data = null) {
+        console.log('Trigger: ' + trigger);
+        if (event == null) {
+            $(document).trigger(trigger, data);
+        } else {
+            $(document).trigger(trigger, event, data);
+            //$(event).trigger(trigger, data);
+        }
+    }
+
 
     wbapp.furl = function (str) {
         str = str.replace(/[^\/а-яА-Яa-zA-Z0-9_-]{1,}/gm, "_");

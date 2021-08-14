@@ -127,10 +127,11 @@ $(document).on('cart-mod-js',function(){
 $(document).delegate('.mod-cart-remove','tab click',function(){
     let index = $(this).closest('.mod-cart-item').index();
     let list = wbapp.storage(mod_cart_bind+'.list');
-    list.splice(index, 1);
+    let removed = list.splice(index, 1);
     wbapp.storage(mod_cart_bind+'.list',list);
     updateCart();
     modCartTotals();
+    wbapp.trigger('mod-cart-remove',removed);
 });
     
 $(document).delegate('.mod-cart-item :input','change blur',function(){
@@ -138,6 +139,7 @@ $(document).delegate('.mod-cart-item :input','change blur',function(){
     let list = wbapp.storage(mod_cart_bind+'.list');
     updateCart(list[index]);
     modCartTotals();
+    wbapp.trigger('mod-cart-change',list[index]);
 });
 
 $(document).delegate('.mod-cart-add','tab click', async function(e){
@@ -169,6 +171,7 @@ $(document).delegate('.mod-cart-add','tab click', async function(e){
         cart = array_merge(cart,data);
     }
     updateCart(cart);
+    wbapp.trigger('mod-cart-add',data);
 });
 
 
