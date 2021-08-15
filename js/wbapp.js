@@ -218,7 +218,7 @@ var start = function () {
             let list = key.split(".");
             var res;
             data = localStorage.getItem(list[0]);
-            if (data !== null) data = json_decode(data);
+            if (data !== null) data = JSON.parse(data);
             if (list.length) {
                 key = getKey(list);
                 try {
@@ -234,7 +234,7 @@ var start = function () {
             var path, branch, type;
             var list = key.split(".");
             var last = list.length;
-
+            var lastkey = list[last-1];
             $(list).each(function (i, k) {
                 if (i == 0) {
                     key = k;
@@ -243,7 +243,7 @@ var start = function () {
                         data = {}
                     } else {
                         try {
-                            data = json_decode(data);
+                            data = JSON.parse(data);
                         } catch (err) {
                             data = {}
                         }
@@ -266,7 +266,7 @@ var start = function () {
             if (value === null) {
                 eval(`delete data.${key}`);
             } else {
-                eval(`data.${key} = value`);
+                eval(`data.${key} = Object.assign({}, value)`);
             }
             localStorage.setItem(list[0], json_encode(data));
 
@@ -1591,7 +1591,11 @@ var start = function () {
         $(branch).each(function (i, val) {
             data[val["name"]] = val["value"];
             if ($(form).find("textarea[type=json][name='" + val["name"] + "']").length) {
-                data[val["name"]] = $(form).find("textarea[type=json][name='" + val["name"] + "']").val();
+                let _val = $(form).find("textarea[type=json][name='" + val["name"] + "']").val();
+                let _text = $(form).find("textarea[type=json][name='" + val["name"] + "']").text();
+
+                _val == 'null' ? data[val["name"]] = _text : data[val["name"]] = _val;
+
                 if (in_array(data[val["name"]],['null','','{}'])) {
                     data[val["name"]] = '';
                 } else {
