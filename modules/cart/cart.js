@@ -58,11 +58,10 @@ $(document).on('cart-mod-js',function(){
         var res = false;
         !res && cart !== null ? data.list[cart.id] = cart : null;
 
-        Object.entries(data.list).forEach(function(item,index) {
-            if (cart !== null ) {
-                        cart.sum = calcSum(cart);
-                        data.list[cart.id] = cart;
-            }
+        $.each(data.list,function(id,item) {
+            item.sum = calcSum(item);
+            data.list[id] = item;
+            console.log(item);
         });
 
         $.each(data.list,function(id,item){
@@ -114,17 +113,50 @@ $(document).delegate('.mod-cart-remove','tab click',function(e){
     let id = array_keys(data.list)[index];
     wbapp.storage(mod_cart_bind+`.list.${id}`,null);
     updateCart();
-    modCartTotals();
     wbapp.trigger('mod-cart-remove',index);
     e.stopPropagation();
 });
     
 $(document).delegate('.mod-cart-item :input','change blur',function(){
+    let name = $(this).attr('name');
+    if (name == undefined || name == '') return;
     let index = $(this).closest('.mod-cart-item').index();
-    let list = wbapp.storage(mod_cart_bind+'.list');
-    updateCart(list[index]);
-    modCartTotals();
+    let data = wbapp.storage(mod_cart_bind);
+    let id = array_keys(data.list)[index];
+    wbapp.storage(mod_cart_bind+`.list.${id}.${name}`,$(this).val()*1);
+    updateCart();
 });
+
+$(document).delegate('.mod-cart-inc, .mod-cart-dec',wbapp.evClick,function(e){
+    e.preventDefault();
+    var $button = $(this);
+    var $inp = $button.parent().find('input');
+    var oldValue = $inp.val();
+    if ($inp.attr('enum') !== undefined) {
+        let vals = $inp.attr('enum').split(',');
+        let indx = parseFloat(array_search($inp.val(),vals));
+        var newVal = vals[indx];
+        if ($button.hasClass('mod-cart-inc')) {
+            if (indx < vals.length-1) newVal = vals[indx + 1];
+        } else {
+            if (indx > 0) newVal = vals[indx - 1];
+        }
+    } else {
+        if ($button.hasClass('mod-cart-inc')) {
+            var newVal = parseFloat(oldValue) + 1;
+        } else {
+            // Don't allow decrementing below zero
+            if (oldValue > 1) {
+                var newVal = parseFloat(oldValue) - 1;
+            } else {
+                newVal = 1;
+            }
+        }
+    }
+    $inp.val(newVal);
+    $inp.trigger('change');
+});
+
 
 $(document).delegate('.mod-cart-add','tab click', async function(e){
     e.preventDefault();

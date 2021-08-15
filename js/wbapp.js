@@ -263,10 +263,13 @@ var start = function () {
                     eval(`data.${key} = {}`);
                 }
             })
+            var tmpValue = value;
             if (value === null) {
                 eval(`delete data.${key}`);
-            } else {
-                eval(`data.${key} = Object.assign({}, value)`);
+            } else if (value !== {}) {
+                eval(`tmpValue = Object.assign({}, value)`);
+                Object.entries(tmpValue).length == 0 ? null : value = tmpValue;
+                eval(`data.${key} = value`);
             }
             localStorage.setItem(list[0], json_encode(data));
 
