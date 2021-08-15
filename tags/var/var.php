@@ -32,7 +32,8 @@ class tagVar
                     } else {
                         $atval = null;
                     }
-                } 
+                }
+                $dom->app->isJson($atval) ? $atval=json_decode($atval,true) : null;
                 $dom->app->vars("_var.{$atname}", $atval);
                 $parent->variables[$atname] = $atval;
                 break;

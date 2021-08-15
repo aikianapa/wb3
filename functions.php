@@ -2439,6 +2439,12 @@ function wbClearValues($out, $rep='')
     return $out;
 }
 
+function wbIsJson($string) {
+    json_decode($string);
+    return (json_last_error() == JSON_ERROR_NONE);
+}
+
+
 function wbListTpl()
 {
     if (isset($_ENV["list_tpl"])) {

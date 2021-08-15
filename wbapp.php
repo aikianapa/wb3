@@ -576,8 +576,6 @@ class wbDom extends DomQuery
                     $inp->attr("value", $value);
                     $inp->attr("done", "");
             }
-            
-
         }
         $unset = $this->find("template,textarea,code,pre");
         foreach ($unset as $t) {
@@ -1334,12 +1332,8 @@ class wbRender extends WEProcessor
 
     public function exec($item = null)
     {
-        if (!isset($this->item)) {
-            $this->item = [];
-        }
-        if ($item == null) {
-            $item = $this->item;
-        }
+        !isset($this->item) ? $this->item = [] : null;
+        $item == null ? $item = $this->item : null;
         return $this->substitute($this->inner);
     }
 }
