@@ -54,42 +54,26 @@ $(document).on('cart-mod-js',function(){
 
     var updateCart = function(cart = null) {
         var data = modCartGet();
-        var list = data.list;
         var total = {};
         var res = false;
-        list.forEach(function(item,index) {
-            if (index == undefined) {
-                list.splice(index, 1);
-            } else if (cart !== null && item.id === cart.id) {
-                    cart.sum = calcSum(cart);
-                    list[index] = cart;
-                    res = true;
+        !res && cart !== null ? data.list[cart.id] = cart : null;
+
+        Object.entries(data.list).forEach(function(item,index) {
+            if (cart !== null ) {
+                        cart.sum = calcSum(cart);
+                        data.list[cart.id] = cart;
             }
-            Object.entries(list[index]).forEach(function(a,b) {
-                if (is_numeric(a[1]) && a[1]+'') {
-                    if (undefined == total[a[0]]) {
-                        total[a[0]] = 0;
-                    }
-                    total[a[0]] += a[1]*1;
-                }
-            })
         });
-        
-        if (!res && cart !== null) {
-            if (cart.price !== undefined && cart.qty !== undefined) {
-                cart.sum = cart.sum = calcSum(cart);
+
+        $.each(data.list,function(id,item){
+            $.each(item,function(fld,val){
+            if (is_numeric(val) && val+'') {
+                undefined == total[fld] ? total[fld] = 0 : null;
+                total[fld] += val*1;
             }
-            Object.entries(cart).forEach(function(a,b) {
-                if (is_numeric(a[1]) && a[1]+'') {
-                    if (undefined == total[a[0]]) {
-                        total[a[0]] = 0;
-                    }
-                    total[a[0]] += a[1]*1;
-                }
-            })
-            list.push(cart);
-        }
-        data.list = list;
+        })
+        })
+
         data.total = total;
         wbapp.storage(mod_cart_bind,data);
         modCartTotals();
@@ -98,10 +82,10 @@ $(document).on('cart-mod-js',function(){
     
     var modCartGet = function() {
         var cart = wbapp.storage(mod_cart_bind);
-        var list = [];
+        var list = {};
         var total = {};
         if (cart == undefined) {
-            cart = {'list':[],'total':{}};
+            cart = {'list':{},'total':{}};
         } else {
             if (cart.list !== undefined) list = cart.list;
             if (cart.total !== undefined) total = cart.total;
@@ -114,24 +98,25 @@ $(document).on('cart-mod-js',function(){
     var modCartTotals = function() {
         var cart = modCartGet();
         $(document).find(".mod-cart-count").text(cart.list.length);
-        $.each(cart.total,function(fld,value) {
-            $(document).find('.mod-cart-total-'+fld).text(value);
+        $(document).find('[class*="mod-cart-total-"]').text(0);
+        Object.entries(cart.total).forEach(function(fld,i) {
+            $(document).find('.mod-cart-total-'+fld[0]).text(fld[1]);
         });
     }
-    
     
     wbapp.lazyload();
     modCartTotals();
 
 
-$(document).delegate('.mod-cart-remove','tab click',function(){
+$(document).delegate('.mod-cart-remove','tab click',function(e){
     let index = $(this).closest('.mod-cart-item').index();
-    let list = wbapp.storage(mod_cart_bind+'.list');
-    let removed = list.splice(index, 1);
-    wbapp.storage(mod_cart_bind+'.list',list);
+    let data = wbapp.storage(mod_cart_bind);
+    let id = array_keys(data.list)[index];
+    wbapp.storage(mod_cart_bind+`.list.${id}`,null);
     updateCart();
     modCartTotals();
-    wbapp.trigger('mod-cart-remove',removed);
+    wbapp.trigger('mod-cart-remove',index);
+    e.stopPropagation();
 });
     
 $(document).delegate('.mod-cart-item :input','change blur',function(){
@@ -139,7 +124,6 @@ $(document).delegate('.mod-cart-item :input','change blur',function(){
     let list = wbapp.storage(mod_cart_bind+'.list');
     updateCart(list[index]);
     modCartTotals();
-    wbapp.trigger('mod-cart-change',list[index]);
 });
 
 $(document).delegate('.mod-cart-add','tab click', async function(e){
@@ -168,7 +152,8 @@ $(document).delegate('.mod-cart-add','tab click', async function(e){
     }
     if ($(this).is('[mod-cart-data]')) {
         let data = wbapp.parseAttr($(this).attr('mod-cart-data'));
-        cart = array_merge(cart,data);
+        let id = data.id;
+        cart = array_merge(cart,{id:data});
     }
     updateCart(cart);
     wbapp.trigger('mod-cart-add',data);
