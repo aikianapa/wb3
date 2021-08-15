@@ -61,7 +61,6 @@ $(document).on('cart-mod-js',function(){
         $.each(data.list,function(id,item) {
             item.sum = calcSum(item);
             data.list[id] = item;
-            console.log(item);
         });
 
         $.each(data.list,function(id,item){

@@ -10,7 +10,7 @@ class attrMask {
       }
       $dom->removeAttr("wb-mask")->addClass("wb-mask");
       $script = "
-        <script type='wbapp'>
+        <script type='wbapp' remove>
             wbapp.loadScripts(['/engine/lib/js/maskedinput/maskedinput.min.js'],'MaskedInput',function(){
                 $(document).find('.wb-mask').each(function(){
                     let mask = $(this).attr('data-mask');
@@ -18,7 +18,6 @@ class attrMask {
                     $(this).inputmask(mask);
                 });
             });
-
         </script>
       ";
       $dom->after($script);
