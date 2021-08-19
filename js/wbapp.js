@@ -223,6 +223,7 @@ var start = function () {
                 key = getKey(list);
                 try {
                     eval(`res = data.${key}`);
+                    if (typeof res == 'object') res = Object.assign({}, res);
                     return res;
                 } catch (err) {
                     return undefined
@@ -258,6 +259,7 @@ var start = function () {
                 }
                 try {
                     eval(`branch = data.${key}`);
+                    if (typeof branch == 'object') branch = Object.assign({}, branch);
                     if (i + 1 < last && typeof branch !== "object") eval(`data.${key} = {}`);
                 } catch (err) {
                     eval(`data.${key} = {}`);
@@ -269,6 +271,7 @@ var start = function () {
             } else if (value !== {}) {
                 eval(`tmpValue = Object.assign({}, value)`);
                 Object.entries(tmpValue).length == 0 ? null : value = tmpValue;
+                if (typeof value == 'object') value = Object.assign({}, value);
                 eval(`data.${key} = value`);
             }
             localStorage.setItem(list[0], json_encode(data));
