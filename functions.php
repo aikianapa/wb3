@@ -2439,7 +2439,8 @@ function wbClearValues($out, $rep='')
     return $out;
 }
 
-function wbIsJson($string) {
+function wbIsJson($string = '') {
+    if ((array)$string === $string) return false;
     json_decode($string);
     return (json_last_error() == JSON_ERROR_NONE);
 }
