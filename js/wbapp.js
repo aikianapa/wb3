@@ -674,6 +674,7 @@ var start = function () {
                 target.target = params.target;
                 if (target.filter == undefined) target.filter = {};
                 if (target._params == undefined) target._params = {};
+                let clearval = null;
                 $.each(params, function (key, val) {
                     if (key == 'filter') {
                         if (val == 'clear') {
@@ -682,6 +683,9 @@ var start = function () {
                             target.filter = val;
                         }
                     }
+                    if (key == 'filter_clear') {
+                        clearval = val;
+                    }
                     if (key == 'filter_remove' && target.filter[val] !== undefined) delete target.filter[val];
                     if (key == 'filter_add') {
                         $.each(val, function (k, v) {
@@ -689,7 +693,13 @@ var start = function () {
                         })
                     }
                 });
-
+                if (clearval !== null) {
+                    $(clearval).each(function(k,v){
+                        $(target.filter).each(function(tk,tv){
+                            json_encode(tv) == json_encode( v) ? target.filter = {} : null;
+                        })
+                    })
+                }
                 if (target._params && target._params.page !== undefined) target._params.page = 1
                 if (target._params && target._params.pages !== undefined) delete target._params.pages
                 if (target._params && target._params.count !== undefined) delete target._params.count
