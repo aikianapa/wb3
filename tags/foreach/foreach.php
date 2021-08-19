@@ -268,7 +268,7 @@ class tagForeach
                 $dom->find("template[id=\"{$this->tid}\"] .pagination")->attr("data-tpl", $this->tid);
             }
         }
-        if ($dom->params("size") > "") {
+        if ($dom->params("size") > "" OR $this->app->vars('_post._params.tpl') == 'true') {
             $size = $dom->params("size");
             !isset($count) ? $count = null : null;
             $dom->parent()->attr(
@@ -303,7 +303,7 @@ class tagForeach
                     $html = $dom->html();
                     $pag = $pag->outer();
                 }
-
+                if ($this->app->vars('_post._params.tpl') == 'true' && $size == '' ) $pag = '';
                 $res = [
                     'html' => $html,
                     'route' => $this->app->route,
