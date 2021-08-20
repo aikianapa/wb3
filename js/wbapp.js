@@ -943,6 +943,7 @@ var start = function () {
                     template: wbapp.template[tid].html,
                     data: () => { return wbapp.storage(params.bind); }
                 });
+                wbapp.render(tid,wbapp.storage(params.bind));
             } else if (params.bind && params.render == 'server') {
                 wbapp.storage(params.bind, params);
             } else if (params._params && params._params.bind && params._params.render == 'server') {
