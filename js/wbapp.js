@@ -894,6 +894,7 @@ var start = function () {
                 params: {}
             });
         }
+        setTimeout(function(){
         $(document).find("template").each(function () {
             var tid
             if (tid == undefined && $(this).is("template[id]")) tid = $(this).attr("id");
@@ -952,6 +953,7 @@ var start = function () {
             if ($(this).prop("visible") == undefined) $(this).remove();
         });
         wbapp.wbappScripts();
+        },10);
     }
 
     wbapp.getForm = function (form, mode, data = {}) {
