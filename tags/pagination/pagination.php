@@ -14,12 +14,11 @@ class tagPagination
 
         ini_set('max_execution_time', 900);
         ini_set('memory_limit', '1024M');
-        $pages = ceil($dom->params->count/$dom->params->size);
+        $pages = intval(ceil($dom->params->count/$dom->params->size));
         $page = $dom->params->page;
 
-        if (!$page) {
-            $page = 1;
-        }
+        !$page ? $page = 1 : null;
+        !is_numeric($pages) ? $pages = 0 : null;
 
         $dom->pages = $pages;
 
