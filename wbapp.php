@@ -510,15 +510,16 @@ class wbDom extends DomQuery
     public function setSeo()
     {
         isset($this->item['header']) ? $header = $this->item['header'] : $header = $this->app->vars('_sett.header');
-        $this->find('title')->text($header);
+        $title = $this->find('title');
+        if ($title->text() == '') $title->text($header);
         $seo = $this->app->ItemRead('_settings', 'seo');
         if ($seo and isset($seo['seo']) and $seo['seo'] == 'on') {
-            $this->find('title')->text($seo['title']);
+            $title->text($seo['title']);
             $this->find('meta[name="keywords"]')->attr('content', $seo['meta_keywords']);
             $this->find('meta[name="description"]')->attr('content', $seo['meta_description']);
         }
         if (isset($this->item['seo']) and $this->item['seo'] == 'on') {
-            $this->find('title')->text($this->item['title']);
+            $title->text($this->item['title']);
             $this->find('meta[name="keywords"]')->attr('content', $this->item['meta_keywords']);
             $this->find('meta[name="description"]')->attr('content', $this->item['meta_description']);
         }

@@ -64,9 +64,7 @@ class ctrlForm
                 $out = $dom->outer();
             }
             
-            if (!strpos(' '.$out, '<!DOCTYPE html>')) {
-                $out = '<!DOCTYPE html>'.$out;
-            }
+            !strpos(' '.trim($out), '<!DOCTYPE') ? $out = '<!DOCTYPE html>'.$out : null;
             echo $out;
             $app->setCache($out);
         } else {
