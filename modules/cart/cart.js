@@ -27,7 +27,7 @@ $(document).on('cart-mod-js',function(){
         let cid = $(this).attr('id');
         let tpl = wbapp.tpl('#'+cid).html;
         let sum = $("<wb>"+tpl+"</wb>").find("meta[name=sum]").attr("value");
-        if (sum > "") mod_cart_sum = sum.split(/\s|\b/);
+        if (sum > "") mod_cart_sum = sum.split(/(\*|\/|\+|-)/);
         
         mod_cart_list[i] = new Ractive({
             'target' : '#'+cid,
@@ -40,9 +40,21 @@ $(document).on('cart-mod-js',function(){
     var calcSum = function(cart) {
         let formula = 'cart.sum = ';
         $(mod_cart_sum).each(function(i,val){
-            if (cart[val] !== undefined) {
-                if ((cart[val])) val += '*1';
-                formula += 'cart.'+val;
+            if (cart[val] !== undefined || strpos(val,']')) {
+                if (strpos(val,']')) {
+                    let tmp;
+                    if (!strpos(val,"']")) {
+                        tmp = 'cart.'+str_replace('[','[1*cart.',val);
+                    } else {
+                        tmp = 'cart.'+val;
+                    }
+                    eval('tmp = '+tmp);
+                    tmp !== undefined ? formula += tmp : formula += '1';
+                } else if (cart[val]) {
+                    formula += 'cart.'+val+'*1';
+                } else {
+                    formula += '1';
+                }
             } else {
                 formula += val;
             }

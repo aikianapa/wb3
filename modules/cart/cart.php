@@ -9,6 +9,7 @@ class modCart {
       $app = &$dom->app;
       $dom->after('<script type="wbapp" remove>wbapp.loadScripts(["/engine/modules/cart/cart.js"],"cart-mod-js");</script>');
       if (!$dom->params) $dom->params = ['list'=>'list'];
+      if (!$dom->params->list) $dom->params->list = 'list';
       if (isset($dom->params->list)) {
             $dom->params->list > '' ? null : $dom->params->list = 'list';
             $this->list();    
