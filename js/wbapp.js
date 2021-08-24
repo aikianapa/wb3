@@ -406,7 +406,6 @@ var start = function () {
                 $.each(wbapp.template, function (i, tpl) {
                         if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
                         if (tpl.params.render == 'client') {
-                            console.log(params);
                             // client-side update
                             if (tpl.params._params && tpl.params._params.bind) tpl.params = tpl.params._params;
                             if (tpl.params.bind && (tpl.params.bind == params.bind || strpos(' '+tpl.params.bind, params.update)) == 1) {
