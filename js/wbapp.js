@@ -365,7 +365,7 @@ var start = function () {
                 data['id'] = id;
 
 
-                if (params.url == undefined) params.url = `/api/save/${params.table}`;
+            if (params.url == undefined) params.url = `/api/save/${params.table}`;
             } else if (params.field !== undefined) {
                 wbapp.storage('tmp' + '.' + params.table + '.' + params.field, data, false);
                 data = wbapp.storage('tmp' + '.' + params.table);
@@ -406,9 +406,10 @@ var start = function () {
                 $.each(wbapp.template, function (i, tpl) {
                         if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
                         if (tpl.params.render == 'client') {
+                            console.log(params);
                             // client-side update
                             if (tpl.params._params && tpl.params._params.bind) tpl.params = tpl.params._params;
-                            if (tpl.params.bind && (tpl.params.bind == params.bind || tpl.params.bind == params.update)) {
+                            if (tpl.params.bind && (tpl.params.bind == params.bind || strpos(' '+tpl.params.bind, params.update)) == 1) {
                                 if (params.bind) wbapp.storage(params.bind, data);
                                 if (params.update) wbapp.storageUpdate(params.update, data);
                             }
@@ -585,7 +586,6 @@ var start = function () {
                     }
                 }
                 if (params.source && params.source > '' ) data = $(data).find(params.source).html();
-
                 if (params.html) $(document).find(params.html).html(data);
                 if (params.append) $(document).find(params.append).append(data);
                 if (params.prepend) $(document).find(params.prepend).prepend(data);

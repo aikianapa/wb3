@@ -48,8 +48,12 @@ $(document).on('cart-mod-js',function(){
                     } else {
                         tmp = 'cart.'+val;
                     }
-                    eval('tmp = '+tmp);
-                    tmp !== undefined ? formula += tmp : formula += '1';
+                    try {
+                        eval('tmp = '+tmp);
+                        tmp !== undefined ? formula += tmp : formula += '1';
+                    } catch (error) {
+                        // null
+                    }
                 } else if (cart[val]) {
                     formula += 'cart.'+val+'*1';
                 } else {
