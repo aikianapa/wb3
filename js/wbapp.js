@@ -858,6 +858,7 @@ wbapp.start = function () {
             }
 
             wbapp.loading();
+            if (params.filter !== undefined) opts.filter = params.filter ;
             wbapp.post(params.url, opts, function (data) {
                 wbapp.unloading();
                 if (count(data) == 2 && data.error !== undefined && data.callback !== undefined) {

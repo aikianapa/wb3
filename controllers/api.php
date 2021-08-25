@@ -150,9 +150,8 @@ class ctrlApi
             $app->route->method == 'POST' ? $query = array_merge($query, $app->vars('_post')) : null;
             $app->route->query = (object)$query;
         }
-
         $options = $this->prepQuery($app->route->query);
-
+        if (isset($_POST['filter'])) $options['filter'] = $_POST['filter'];
         if (isset($app->route->item)) {
             $json = $app->itemRead($table, $app->route->item);
             if (isset($app->route->field)) {

@@ -67,6 +67,7 @@ class tagForeach
             }
             $ajax = '/api/query/' . $dom->params("table") . '/';
             $ajax .= '?&__options=size='.$dom->params("size");
+            $dom->params('limit') > '' ? $ajax .= ';limit='.$dom->params('limit') : null;
             $dom->params->ajax = $ajax;
             $dom->attr("data-ajax", '{"url":"' . $dom->params("ajax") . '"}');
             $table = null;
