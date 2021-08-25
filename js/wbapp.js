@@ -26,7 +26,8 @@ wbapp.start = function () {
         spinner_sm: '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>',
         spinner_sm_grow: '<span class="spinner-grow spinner-grow-sm" role="status"></span>'
     };
-
+    wbapp.session();
+    wbapp.settings();
 
     setTimeout(function () {
         wbapp.loadScripts([
@@ -39,15 +40,13 @@ wbapp.start = function () {
         ], "wbapp-go",function () {
             wbapp.eventsInit();
             wbapp.wbappScripts();
-            wbapp.session();
-            wbapp.settings();
             wbapp.tplInit();
             wbapp.ajaxAuto();
             wbapp.lazyload();
             wbapp.modalsInit();
             $(document).scrollTop(0);
         });
-    }, 1000);
+    }, 0);
 
 
     $.fn.verify = function () {
@@ -72,25 +71,25 @@ wbapp.start = function () {
                 if (($(this).val() > '' && !wbapp.check_email($(this).val())) || ($(this).val() == '' && $(this).prop('required'))) {
                     res = false;
                     $(this).data("error", wbapp._settings.sysmsg.email_correct);
-                    console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
+                    wbapp.console("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                     $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
                 } else {
-                    console.log("trigger: wb-verify-true [" + $(this).attr("name") + "]");
+                    wbapp.console("trigger: wb-verify-true [" + $(this).attr("name") + "]");
                     $(form).trigger("wb-verify-true", [this]);
                 }
             } else if ($(this).is("[required]:not(select)") && $(this).val() == "") {
                 res = false;
                 $(this).data("error", wbapp._settings.sysmsg.required + ucfirst(label));
-                console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
+                wbapp.console("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                 $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
             } else if ($(this).is(":not([disabled],[readonly],[min],[max],[maxlength],[type=checkbox])")) {
                 if ($(this).val() == "") {
                     res = false;
-                    console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
+                    wbapp.console("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                     $(form).trigger("wb-verify-false", [this]);
                 } else {
     
-                    console.log("trigger: wb-verify-true [" + $(this).attr("name") + "]");
+                    wbapp.console("trigger: wb-verify-true [" + $(this).attr("name") + "]");
                     $(form).trigger("wb-verify-true", [this]);
     
                 }
@@ -98,7 +97,7 @@ wbapp.start = function () {
             if ($(this).is("[required][type=checkbox]:not(:checked)")) {
                 res = false;
                 $(this).data("error", wbapp._settings.sysmsg.required + ucfirst(label));
-                console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
+                wbapp.console("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                 $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
             }
             if ($(this).is("[type=radio]") && $(this).is(":not(:checked)")) {
@@ -112,7 +111,7 @@ wbapp.start = function () {
                     });
                 }
                 if (!res) {
-                    console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
+                    wbapp.console("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                     $(form).trigger("wb-verify-false", [this]);
                 }
             }
@@ -129,7 +128,7 @@ wbapp.start = function () {
                         res = false;
     
                         $(this).data("error", wbapp._settings.sysmsg.pass_match);
-                        console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
+                        wbapp.console("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                         $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
                         $(form).trigger("wb-verify-false", [check, $(check).data("error")]);
                     } else {
@@ -143,7 +142,7 @@ wbapp.start = function () {
                 if (minstr < min) {
                     res = false;
                     $(this).data("error", ucfirst(label) + " " + wbapp._settings.sysmsg.min_val + ": " + min);
-                    console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
+                    wbapp.console("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                     $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
                 }
             }
@@ -154,7 +153,7 @@ wbapp.start = function () {
                 if (maxstr > max) {
                     res = false;
                     $(this).data("error", ucfirst(label) + " " + wbapp._settings.sysmsg.max_val + ": " + max);
-                    console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
+                    wbapp.console("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                     $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
                 }
             }
@@ -165,7 +164,7 @@ wbapp.start = function () {
                 if (lenstr < minlen) {
                     res = false;
                     $(this).data("error", ucfirst(label) + " " + wbapp._settings.sysmsg.min_length + ": " + minlen);
-                    console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
+                    wbapp.console("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                     $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
                 }
             }
@@ -175,7 +174,7 @@ wbapp.start = function () {
                 if (val == undefined || val == '') {
                     res = false;
                     $(this).data("error", wbapp._settings.sysmsg.required + ucfirst(label));
-                    console.log("trigger: wb-verify-false [" + $(this).attr("name") + "]");
+                    wbapp.console("trigger: wb-verify-false [" + $(this).attr("name") + "]");
                     $(form).trigger("wb-verify-false", [this, $(this).data("error")]);
                 }
             }
@@ -237,7 +236,7 @@ wbapp.start = function () {
                     try {
                         data[val["name"]] = json_decode(data[val["name"]]);
                     } catch (error) {
-                        console.log('Unknown error!');
+                        wbapp.console('Unknown error!');
                     }
     
                 }
@@ -334,7 +333,7 @@ wbapp.start = function () {
                 params._event = e;
                 if (tid !== undefined) params._tid = tid;
                 wbapp.ajax(params);
-                console.log("Trigger: data-ajax");
+                wbapp.console("Trigger: data-ajax");
                 $(document).trigger("data-ajax", params);
                 let href = $(this).attr('href');
                 if (href !== undefined && href.substr(0, 1) == '#') {
@@ -418,11 +417,11 @@ wbapp.start = function () {
             if ($(form).attr("action") !== undefined) var url = $(form).attr("action"); else var url = "/api/auth/email";
             wbapp.post(url, data, function (res) {
                 if (res.login) {
-                    console.log("Trigger: wb-signin-success");
+                    wbapp.console("Trigger: wb-signin-success");
                     $(document).trigger('wb-signin-success');
                     if (res.redirect) document.location.href = res.redirect;
                 } else {
-                    console.log("Trigger: wb-signin-error");
+                    wbapp.console("Trigger: wb-signin-error");
                     $(document).trigger('wb-signin-error');
                     $(form).find('.is-valid').removeClass('is-valid');
                     $(form)[0].reset();
@@ -436,14 +435,14 @@ wbapp.start = function () {
             if ($(form).attr("action") !== undefined) var url = $(form).attr("action"); else var url = "/api/auth/signup";
             wbapp.post(url, data, function (res) {
                 if (res.signup) {
-                    console.log("Trigger: wb-signup-success");
+                    wbapp.console("Trigger: wb-signup-success");
                     $(document).trigger('wb-signup-success');
                     $(form).find('.signup-success').removeClass('d-none');
                     $(form).find(".signup-error, .signup-form").remove();
                     if (res.redirect) document.location.href = res.redirect;
                 } else {
                     $(form).find('.is-valid').removeClass('is-valid');
-                    console.log("Trigger: wb-signup-error");
+                    wbapp.console("Trigger: wb-signup-error");
                     $(document).trigger('wb-signup-error');
                     $(form).find('.signup-error').removeClass('d-none');
                 }
@@ -457,13 +456,13 @@ wbapp.start = function () {
 
             wbapp.post(url, data, function (res) {
                 if (res.recover) {
-                    console.log("Trigger: wb-signrc-success");
+                    wbapp.console("Trigger: wb-signrc-success");
                     $(document).trigger('wb-signrc-success');
                     $(form).find(".recover-success").removeClass('d-none');
                     $(form).find(".recover-error, .recover-form").remove();
                 } else {
                     $(form).find('.is-valid').removeClass('is-valid');
-                    console.log("Trigger: wb-signrc-error");
+                    wbapp.console("Trigger: wb-signrc-error");
                     $(document).trigger('wb-signrc-error');
                     $(form).find(".recover-error").removeClass('d-none');
                 }
@@ -479,7 +478,7 @@ wbapp.start = function () {
     wbapp.alive = function () {
         $.post("/ajax/alive", {}, function (data) {
             if (data.result == false || data.result == undefined) {
-                console.log("Trigger: session_close");
+                wbapp.console("Trigger: session_close");
                 $(document).trigger("session_close");
                 clearInterval(alive);
             }
@@ -581,14 +580,14 @@ wbapp.start = function () {
                 });
                 $(document).trigger("bind", { key: key, data: value });
                 $(document).trigger("bind-" + key, value);
-                console.log("Trigger: bind [" + key + "]");
+                wbapp.console("Trigger: bind [" + key + "]");
             }
             return data;
         }
     }
 
     wbapp.save = function (obj, params, event) {
-        console.log("Trigger: wb-save-start");
+        wbapp.console("Trigger: wb-save-start");
         $(obj).trigger("wb-save-start", params);
         let that = this;
         let data, form, result;
@@ -689,7 +688,7 @@ wbapp.start = function () {
                 }
 
                 if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
-                console.log('Update by tpl');
+                wbapp.console('Update by tpl');
                 $.each(wbapp.template, function (i, tpl) {
                     if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
                     if (tpl.params.render == 'client') {
@@ -709,7 +708,7 @@ wbapp.start = function () {
 
                 if (data._id !== undefined) $(obj).data('saved-id', data._id);
 
-                console.log("Trigger: wb-save-done");
+                wbapp.console("Trigger: wb-save-done");
                 $(obj).trigger("wb-save-done", {
                     params: params,
                     data: data,
@@ -938,7 +937,7 @@ wbapp.start = function () {
                 wbapp.lazyload();
                 wbapp.ajaxAuto();
 
-                //console.log("Trigger: wb-ajax-done");
+                //wbapp.console("Trigger: wb-ajax-done");
                 if (data.result == undefined) params['data'] = data;
                 if (params.form !== undefined) {
                     $(params.form).trigger("wb-ajax-done", params);
@@ -956,7 +955,7 @@ wbapp.start = function () {
                 var target = wbapp.template[params.target].params;
             }
             if (!target) {
-                console.log("Template not found: " + params.target);
+                wbapp.console("Template not found: " + params.target);
                 return;
             } else {
                 target.target = params.target;
@@ -1012,7 +1011,7 @@ wbapp.start = function () {
                     try {
                         delete store.result[data._id]
                     } catch (err) {
-                        console.log('Not removed');
+                        wbapp.console('Not removed');
                     }
                 }
             } else if (data._renamed !== undefined && data._renamed == true) {
@@ -1467,7 +1466,7 @@ wbapp.start = function () {
 
         $(document).off("wb-ajax-done");
         $(document).on("wb-ajax-done", function () {
-            console.log("Trigger: wb-ajax-done");
+            wbapp.console("Trigger: wb-ajax-done");
             if (wbapp !== undefined) {
                 wbapp.tplInit();
                 wbapp.wbappScripts();
@@ -1560,6 +1559,12 @@ wbapp.start = function () {
         return wbapp._settings;
     }
 
+    wbapp.console = function(text) {
+        if (wbapp._settings == undefined || wbapp._settings.devmode == 'on') {
+            console.log(text);
+        }
+    }
+
     wbapp.loadScripts = function (scripts = [], trigger = null, func = null) {
         if (wbapp.loadedScripts == undefined) wbapp.loadedScripts = [];
         let ready = [];
@@ -1571,7 +1576,7 @@ wbapp.start = function () {
             if (wbapp.devmode > 0 && src.indexOf('?') == -1) src += '?' + wbapp.devmode;
             let name = src;
             if (wbapp.loadedScripts.indexOf(src) !== -1) {
-                console.log("Script loaded: " + name);
+                wbapp.console("Script loaded: " + name);
                 stop +=1;
                 if (stop >= count) {
                     if (trigger > '') {
@@ -1586,7 +1591,7 @@ wbapp.start = function () {
                 script.async = false;
                 script.onload = function () {
                     wbapp.loadedScripts.push(name);
-                    console.log("Script loaded: " + script.src);
+                    wbapp.console("Script loaded: " + name);
                     stop +=1;
                     if (stop >= count) {
                         if (trigger > '') {
@@ -1610,7 +1615,7 @@ wbapp.start = function () {
                 if (i >= styles.length) {
                     if (func !== null) return func(styles);
                     if (trigger !== null) {
-                        console.log("Trigger: " + trigger);
+                        wbapp.console("Trigger: " + trigger);
                         $(document).find("script#" + trigger + "-remove").remove();
                         $(document).trigger(trigger);
                     }
@@ -1630,7 +1635,7 @@ wbapp.start = function () {
                         if (trigger !== null) {
                             $(document).find("script#" + trigger + "-remove").remove();
                             $(document).trigger(trigger);
-                            console.log("Trigger: " + trigger);
+                            wbapp.console("Trigger: " + trigger);
                         }
                     }
                 }
@@ -1662,7 +1667,7 @@ wbapp.start = function () {
     }
 
     wbapp.trigger = function (trigger, event = null, data = null) {
-        console.log('Trigger: ' + trigger);
+        wbapp.console('Trigger: ' + trigger);
         if (event == null) {
             $(document).trigger(trigger, data);
         } else {
