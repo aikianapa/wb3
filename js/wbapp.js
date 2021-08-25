@@ -1571,7 +1571,7 @@ wbapp.start = function () {
             if (wbapp.devmode > 0 && src.indexOf('?') == -1) src += '?' + wbapp.devmode;
             let name = src;
             if (wbapp.loadedScripts.indexOf(src) !== -1) {
-                console.log("Script loaded: " + script.src);
+                console.log("Script loaded: " + name);
                 stop +=1;
                 if (stop >= count) {
                     if (trigger > '') {
