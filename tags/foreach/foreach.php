@@ -289,7 +289,7 @@ class tagForeach
             $dom->params->tpl = $dom->parent()->attr('id');
             $dom->params->page = $page;
             $pag = $dom->tagPagination($dom);
-                
+
             !count((array)$list) or $dom->html() == "" ? $dom->inner($empty->inner()) : null;
             isset($dom->params->pos) ? $pos = $dom->params->pos : $pos = 'bottom';
 
@@ -331,6 +331,7 @@ class tagForeach
                 $dom->prepend('<option value="">'.$this->placeholder.'</option>');
             }
         }
+        !count((array)$list) ? $dom->inner($empty->inner()) : null;
         $dom->before($dom->inner());
         $dom->remove();
     }
