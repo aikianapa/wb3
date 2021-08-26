@@ -201,12 +201,12 @@ class wbDom extends DomQuery
         if ($this->is(":root")) {
             if ($this->func or $this->funca) $this->fetchFunc(); // так нужно для рутовых тэгов
         } 
-
         $childrens = $this->children();
         foreach ($childrens as $wb) {
             $wb->copy($this);
             $wb->fetchNode();
         }
+
         $this->setValues();
         $this->app->vars("_env.locale", $tmp);
         if ($this->app->vars('_sett.devmode') == 'on' && $this->is('[rel=preload]')) {

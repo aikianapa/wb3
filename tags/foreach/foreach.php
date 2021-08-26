@@ -471,6 +471,25 @@ class tagForeach
             }
         }
 
+        if ($dom->params('minimal') > '0') {
+            $min = $dom->params('minimal')*1;
+            $lmt = $dom->params('limit')*1;
+            $cnt = count($list);
+            if ($cnt > 0) {
+                if ($cnt < $min) {
+                    $last = array_pop($list);
+                    $add = $min - $cnt;
+                    for ($i=0;$i<=$add;$i++) {
+                        $list[]=$last;
+                    }
+                }
+                if ($lmt < $min) {
+                    $dom->params->limit = $min;
+                    $options['limit'] = $min;
+                }
+            }
+        }
+
         if ($dom->params('total') or $dom->params('avg') or $dom->params('min') or $dom->params('max')) {
             $this->avg = wbAttrToArray($this->dom->params('avg'));
             $this->min = wbAttrToArray($this->dom->params('min'));
