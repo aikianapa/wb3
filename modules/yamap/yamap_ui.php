@@ -16,8 +16,8 @@
   </wb-multiinput>
   <div class="yamap_canvas"></div>
 </div>
-<script type="wbapp">
-  wbapp.loadScripts(["/engine/modules/yamap/yamap.js"],"yamap-js");
+<script type="wbapp" remove>
+    wbapp.loadScripts(["/engine/modules/yamap/yamap.js"],"yamap-js");
 </script>
 <style>
   .yamap .yamap_canvas {

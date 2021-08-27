@@ -41,8 +41,8 @@ $(document).on("yandex-map-js", function () {
 
       $(canvas).data("props", {});
       if (!$(yamap).find(".wb-multiinput-data").length) {
-        if ($(yamap).find('geopos').length) {
-          $(yamap).find('geopos').each(function (i) {
+        if ($(yamap).find('geopos[data]').length) {
+          $(yamap).find('geopos[data]').each(function (i) {
             try {
               var geo = json_decode($(this).attr("data"));
               if ($(this).html().trim() > " ") {
@@ -55,11 +55,10 @@ $(document).on("yandex-map-js", function () {
             $(this).remove();
           });
           epoints = json_encode(epoints);
-        } else {
+        } else if (!$(yamap).find('geopos').length) {
             epoints = $(this).html();
             $(this).html("");
         }
-
       } else if ($(yamap).find(".yamap_editor").length) {
         editor = true;
         epoints = $(yamap).find(".yamap_editor").find(".wb-multiinput-data").text();
@@ -70,10 +69,8 @@ $(document).on("yandex-map-js", function () {
       } catch (error) {
         epoints = [];
       }
-
       if ($(this).attr("geopos") > "") var ll = yamap_pos($(this).attr("geopos"));
       if ($(this).attr("center") > "") var cc = yamap_pos($(this).attr("center"));
-
       if ($(this).attr("width") > "") $(this).width($(this).attr("width"));
       if ($(this).attr("name") > "") $(this).find(".yamap_data").attr("name", $(this).attr("name"));
 
@@ -102,8 +99,8 @@ $(document).on("yandex-map-js", function () {
           }
         });
       } else {
-        if ($(this).find("geopos").length) {
-          $(this).find("geopos").each(function (i) {
+        if ($(yamap).find("geopos").length) {
+          $(yamap).find("geopos").each(function (i) {
             var point = {
               pos: yamap_pos($(this).attr("value")),
               content: $(this).html(),
