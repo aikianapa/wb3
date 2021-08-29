@@ -375,7 +375,7 @@ class ctrlApi
         if (!$out) {
             $out = $app->fromString('<html></html>');
             foreach($_POST as $label => $value) {
-                substr($label,0,1) == '_' ? null : $out->append("<p><b>{$label}</b>: {$value}<br>");
+                substr($label,0,1) == '_' || is_numeric($label) ? null : $out->append("<p><b>{$label}</b>: {$value}<br>");
             }
         } 
         !isset($_POST["email"]) ? $_POST["email"]=$_ENV["route"]["mode"]."@".$_ENV["route"]["hostname"] : null;
