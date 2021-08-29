@@ -351,12 +351,7 @@ class ctrlApi
     {
         $app = &$this->app;
         $attachments=[];
-        if (!isset($_POST["_subject"])) {
-            $_POST["_subject"]=$_ENV['sysmsg']["mail_from_site"];
-        }
-        if (!isset($_POST["subject"])) {
-            $_POST["subject"]=$_POST["_subject"];
-        }
+        !isset($_POST["_subject"]) ? $_POST["_subject"]=$_ENV['sysmsg']["mail_from_site"] : null;
         if (isset($_POST['formdata'])) {
             foreach ($_POST['formdata'] as $key => $val) {
                 $_POST[$key] = $val;
@@ -378,22 +373,19 @@ class ctrlApi
             $out = $app->getTpl("mail.php");
         }
         if (!$out) {
-            $out = $app->fromString('<html>{{message}}</html>');
-        }
-        if (!isset($_POST["email"])) {
-            $_POST["email"]=$_ENV["route"]["mode"]."@".$_ENV["route"]["hostname"];
-        }
-        if (!isset($_POST["name"])) {
-            $_POST["name"]="Site Mailer";
-        }
-        if (isset($_POST["_mailto"])) {
-            $mailto=$_POST["_mailto"];
-        } else {
-            $mailto = $_ENV["settings"]["email"];
-        }
+            $out = $app->fromString('<html></html>');
+            foreach($_POST as $label => $value) {
+                substr($label,0,1) == '_' ? null : $out->append("<p><b>{$label}</b>: {$value}<br>");
+            }
+        } 
+        !isset($_POST["email"]) ? $_POST["email"]=$_ENV["route"]["mode"]."@".$_ENV["route"]["hostname"] : null;
+        !isset($_POST["name"]) ? $_POST["name"]="Site Mailer" : null;
+        isset($_POST["_mailto"]) ? $mailto=$_POST["_mailto"] : $mailto = $_ENV["settings"]["email"];
+
         $out->item = $_POST;
         $out->fetch();
         $out=$out->outer();
+
         $res=wbMail("{$_POST["email"]};{$_POST["name"]}", "{$mailto};{$_ENV["settings"]["header"]}", $_POST["subject"], $out, $attachments);
         if (!$res) {
             $result=json_encode(array("error"=>true,"msg"=>$_ENV['sysmsg']["mail_sent_error"].": ".$_ENV["error"]['wbMail']));
