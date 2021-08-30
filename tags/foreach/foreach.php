@@ -341,7 +341,7 @@ class tagForeach
         $dom = &$this->dom;
 
         $dom->filterStrict();
-        $options = $this->options();
+        $options = &$this->options();
 
         $count = 0;
         $page = $pages = 1;
@@ -411,31 +411,7 @@ class tagForeach
             if ($dom->params('filter') and !$dom->params->table) {
                 $list = $dom->app->arrayFilter($list, $dom->params('filter'));
             }
-            if (isset($options["sort"]) and (array) $options["sort"] === $options["sort"]) {
-                foreach ((array) $options["sort"] as $key => $fld) {
-                    if (!((array) $fld === $fld)) {
-                        $fld = explode(":", $fld);
-                        if (!isset($fld[1])) {
-                            $fld[1] = 1;
-                        } elseif (in_array(strtolower($fld[1]), ['a', 'asc', '1'])) {
-                            $fld[1] = '';
-                        } elseif (in_array(strtolower($fld[1]), ['d', 'desc', '-1'])) {
-                            $fld[1] = 'desc';
-                        }
-                        $params['sort'][$fld[0]] = $fld[1];
-                    } else {
-                        $params['sort'][$key] = $fld;
-                    }
-                }
-                $json = new Jsonq();
-                $json = $json->collect($list);
-                if (count($params['sort'])) {
-                    foreach ($params['sort'] as $fld => $order) {
-                        $json->sortBy($fld, $order);
-                    }
-                }
-                $list = $json->get();
-            }
+            $this->sort($list);
         }
 
         if ($dom->params('count') > "") {
@@ -537,6 +513,36 @@ class tagForeach
             $list = $list[0];
         }
         return [$list, $count, $pages, $page, $srvpag, $options];
+    }
+
+
+    private function sort(&$list) {
+        $options = $this->options;
+        if (isset($options["sort"]) and (array) $options["sort"] === $options["sort"]) {
+            foreach ((array) $options["sort"] as $key => $fld) {
+                if (!((array) $fld === $fld)) {
+                    $fld = explode(":", $fld);
+                    if (!isset($fld[1])) {
+                        $fld[1] = 1;
+                    } elseif (in_array(strtolower($fld[1]), ['a', 'asc', '1'])) {
+                        $fld[1] = '';
+                    } elseif (in_array(strtolower($fld[1]), ['d', 'desc', '-1'])) {
+                        $fld[1] = 'desc';
+                    }
+                    $params['sort'][$fld[0]] = $fld[1];
+                } else {
+                    $params['sort'][$key] = $fld;
+                }
+            }
+            $json = new Jsonq();
+            $json = $json->collect($list);
+            if (count($params['sort'])) {
+                foreach ($params['sort'] as $fld => $order) {
+                    $json->sortBy($fld, $order);
+                }
+            }
+            $list = $json->get();
+        }
     }
 
     private function group($list, $flds = null)
