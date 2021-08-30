@@ -491,7 +491,7 @@ class tagForeach
             }
         }
 
-        if ($dom->params('total') or $dom->params('avg') or $dom->params('min') or $dom->params('max')) {
+        if ($dom->params('group') or $dom->params('total') or $dom->params('avg') or $dom->params('min') or $dom->params('max')) {
             $this->avg = wbAttrToArray($this->dom->params('avg'));
             $this->min = wbAttrToArray($this->dom->params('min'));
             $this->max = wbAttrToArray($this->dom->params('max'));
@@ -499,7 +499,7 @@ class tagForeach
             
             $this->flds = array_keys(array_flip(array_merge($this->avg, $this->min, $this->max, $this->sum)));
 
-            $dom->params->size = '';
+            if ($dom->params('size') == '') $dom->params->size = '';
             if ($dom->params('group') > '') {
                 $list = $this->group($list);
             } else {

@@ -264,13 +264,12 @@ function tagTreeUl( &$dom, $Item = array(), $param = null, $srcVal = array() ) {
     $dom->params('parent') == 'false' ? $parent = 0 : $parent = 1;
     $dom->params('children') == 'false' ? $children = 0 : $children = 1;
     $dom->params('rand') == 'true' ? $rand = true : $rand = false;
-
     $srcItem = $Item;
     $tag = $dom->tagName;
     if ( $param == null ) {
         $dom->params->name > '' ? $name  = $dom->params('name') : $name = $dom->attr( 'name' );
         $dom->params('from') > '' ? $name = $dom->params('from') : null;
-        $tpl = $dom->inner();
+        $tpl = '<wb>'.$dom->inner().'</wb>';
         $tree = &$Item;
         if ( $dom->params('call') > '') {
             $call = $dom->params('call');
@@ -335,6 +334,7 @@ function tagTreeUl( &$dom, $Item = array(), $param = null, $srcVal = array() ) {
 
             }
         }
+        $dom->find('wb')->unwrap('wb');
     }
 }
 
