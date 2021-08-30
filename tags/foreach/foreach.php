@@ -411,8 +411,9 @@ class tagForeach
             if ($dom->params('filter') and !$dom->params->table) {
                 $list = $dom->app->arrayFilter($list, $dom->params('filter'));
             }
-            $this->sort($list);
         }
+        $this->options = $options;
+        $this->sort($list);
 
         if ($dom->params('count') > "") {
             isset($list) ? $$item = $list : $item = [];
@@ -555,6 +556,7 @@ class tagForeach
             $fld = array_shift($flds);
             $grps = $jsonq->groupBy($fld)->get();
             foreach ($grps as $key => $grp) {
+                $this->sort($grp);
                 count($flds) > 0 ? $grp = $this->group($grp, $flds) : null;
                 $grtot = $this->total($grp, $key);
                 !$this->dom->params('supress') == 'true' ? $list = array_merge($list, $grp) : null;
