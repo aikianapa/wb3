@@ -22,6 +22,7 @@ $(document).on("datatimepicker-js",function() {
             var options = {
               autoclose: true,
               todayBtn: true,
+              pickerPosition: 'bottom-left',
               setDate: new Date(),
               initialDate: $(this).val(),
               language: lang,
@@ -44,7 +45,7 @@ $(document).on("datatimepicker-js",function() {
 
             if ($(picker).data('date-start') !== undefined) options.startDate = $(picker).data('date-start');
             if ($(picker).data('date-end') !== undefined) options.endDate = $(picker).data('date-end');
-            
+            if ($(picker).data('position') !== undefined) options.pickerPosition = 'bottom-' + $(picker).data('position');
 
             if (lang !== undefined) {
                 wbapp.loadScripts(["/engine/modules/datetimepicker/datetimepicker/locales/bootstrap-datetimepicker." + lang + ".js"],null,function(){
