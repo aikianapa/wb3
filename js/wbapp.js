@@ -1645,7 +1645,7 @@ wbapp.start = function () {
         });
     }
 
-    wbapp.loadPreload = async function () {
+    wbapp.loadPreload = async function (trigger = null, func = null) {
         let preloads = {};
         $('link[rel=preload][as][href]').each(function () {
             if (preloads[$(this).attr('as')] == undefined) { preloads[$(this).attr('as')] = []; }
@@ -1656,7 +1656,14 @@ wbapp.start = function () {
         if (preloads.script.length > 0) preload_max++;
         if (preloads.style.length > 0) preload_max++;
         let preload_check = () => {
-            if (preload_count == preload_max) wbapp.trigger('ready-all');
+            if (preload_count == preload_max) {
+                if (func !== null) return func(styles);
+                if (trigger !== null) {
+                    $(document).trigger(trigger);
+                    wbapp.console("Trigger: " + trigger);
+                }
+                wbapp.trigger('ready-all');
+            }
         }
         wbapp.loadScripts(preloads.script, 'preloaded-js', () => { preload_count++; preload_check() });
         wbapp.loadStyles(preloads.style, 'preloaded-css', () => { preload_count++; preload_check() });
