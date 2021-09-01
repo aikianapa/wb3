@@ -226,6 +226,14 @@ function wbGetToken() {
 
 function wbCheckToken($token = null) {
     $app = &$_ENV['app'];
+    $form = null;
+    $app->vars('_route.form') > '' ? $form = $app->vars('_route.form') : null;
+    $app->vars('_route.table') > '' ? $form = $app->vars('_route.table') : null;
+    $frm = $app->formClass($form);
+    if (method_exists($frm,'checkToken')) {
+        $res = $frm->checkToken();
+        if ($res === true OR $res === false) return $res;
+    }
     $apikey = $app->vars('_sett.api_key');
     $app->vars('_sess.user.id') == '' ? $user = microtime() : $user = $app->vars('_sess.user.id');
     $app->vars('_sess.user.role') == '' ? $role = microtime() : $role = $app->vars('_sess.user.role');
