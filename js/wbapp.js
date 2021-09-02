@@ -48,6 +48,13 @@ wbapp.start = function () {
         });
     }, 0);
 
+    $.fn.disableSelection = function() {
+        return this
+                 .attr('unselectable', 'on')
+                 .css('user-select', 'none')
+                 .on('selectstart', false);
+    };
+
 
     $.fn.verify = function () {
         var form = this;
@@ -555,10 +562,14 @@ wbapp.start = function () {
             if (value === null) {
                 eval(`delete data.${key}`);
             } else if (value !== {}) {
-                eval(`tmpValue = Object.assign({}, value)`);
-                Object.entries(tmpValue).length == 0 ? null : value = tmpValue;
-                if (typeof value == 'object') value = Object.assign({}, value);
-                eval(`data.${key} = value`);
+                if (typeof value == 'string') {
+                    eval(`data.${key} = value`);    
+                } else {
+                    eval(`tmpValue = Object.assign({}, value)`);
+                    Object.entries(tmpValue).length == 0 ? null : value = tmpValue;
+                    if (typeof value == 'object') value = Object.assign({}, value);
+                    eval(`data.${key} = value`);
+                }
             }
             localStorage.setItem(list[0], json_encode(data));
 

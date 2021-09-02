@@ -118,10 +118,11 @@ $(document).on('cart-mod-js', function () {
         }
     });
 
-
-    wbapp.tplInit();
-    wbapp.lazyload();
-    modCartTotals();
+    setTimeout(() => {
+        wbapp.tplInit();
+        wbapp.lazyload();
+        modCartTotals();
+    }, 0);
 
 
     $(document).delegate('.mod-cart-remove', 'tab click', function (e) {
