@@ -22,7 +22,6 @@ class tagForeach
         $this->empty = $dom->find("wb-empty")[0];
         $dom->find("wb-empty")->remove();
         $dom->tpl = "<html>".$dom->inner()."</html>";
-
         if ($dom->parent()->is("select[placeholder]")) {
             $this->opt = $dom->find('option', 0)->clone();
             $this->placeholder = $dom->parent()->attr("placeholder");
@@ -39,6 +38,10 @@ class tagForeach
         !isset($this->tid) ? $this->tid = "fe_" . $this->app->newId() : null;
 
         $dom->tid = $this->tid;
+
+        if (!$dom->params->length && $dom->attr('data-ajax') > '') {
+            $dom->params = (object)wbAttrToValue($dom->attr('data-ajax'));
+        }
 
 
         $dom->params('target') == '' ? $dom->params->target = '#'.$this->tid : null;
@@ -119,7 +122,7 @@ class tagForeach
         $dom->find("template[id=\"{$this->tid}\"] .pagination")->attr("data-tpl", $this->tid);
         //
 
-        if ($dom->params("size") > "" and $ajax = false) {
+        if ($dom->params("size") > "" and $ajax == false) {
             $size = $dom->params("size");
             !isset($count) ? $count = null : null;
             $dom->parent()->attr(

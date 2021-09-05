@@ -37,7 +37,7 @@
 <wb-var filter='{{_post.filter}}' wb-if="'{{_post.filter}}'>''" else="{}" />
 <div class="list-group m-2" id="{{_form}}List">
  
-  <wb-foreach wb="{'ajax':'/api/query/pages/','filter':{{_var.filter}},'sort':'id','bind':'cms.list.{{_form}}','render':'client','size':'{{_sett.page_size}}'}">
+<wb-foreach data-ajax="{'url':'/ajax/form/pages/list/','size':'{{_sett.page_size}}','filter':{ 'active': { '$ne': '-' } },'bind':'cms.list.users','render':'client'}">
     <div class="list-group-item d-flex align-items-center">
       <div>
         <a href="javascript:" data-ajax="{'url':'/cms/ajax/form/pages/edit/{{_id}}','html':'.pages-edit-modal'}"
@@ -65,8 +65,8 @@
           <i class="fa fa-ellipsis-v"></i>
         </a>
         <div class="dropdown-menu">
-          <a class="dropdown-item" href="#" data-ajax="{'url':'/cms/ajax/form/pages/edit/{{_id}}','html':'.pages-edit-modal'}">{{_lang.edit}}</a>
-          <a class="dropdown-item" href="javascript:" data-ajax="{'url':'/ajax/rmitem/{{_form}}/{{_id}}','update':'cms.list.{{_form}}','html':'.{{_form}}-edit-modal'}">{{_lang.remove}}</a>
+          <a class="dropdown-item" href="#" data-ajax="{'url':'/cms/ajax/form/pages/edit/{{_id}}','html':'.pages-edit-modal'}">Изменить</a>
+          <a class="dropdown-item" href="javascript:" data-ajax="{'url':'/ajax/rmitem/{{_form}}/{{_id}}','update':'cms.list.{{_form}}','html':'.{{_form}}-edit-modal'}">Удалить</a>
         </div>
       </div>
     </div>
@@ -75,26 +75,26 @@
     <wb-snippet wb-name="pagination"/>
   </wb-jq>
 </div>
-    <wb-lang>
-        [ru]
-        pages = Страницы
-        create = "Создать"
-        edit = Изменить
-        remove = Удалить
-        all = Все
-        active = Активные
-        hidden = Скрытые
-        search = Поиск
-        [en]
-        pages = Pages
-        create = "Create"
-        edit = Edit
-        remove = Remove
-        all = All
-        active = Active
-        hidden = Hidden
-        search = Search
-    </wb-lang>
+<wb-lang>
+[ru]
+pages = Страницы
+create = "Создать"
+edit = Изменить
+remove = Удалить
+all = Все
+active = Активные
+hidden = Скрытые
+search = Поиск
+[en]
+pages = Pages
+create = "Create"
+edit = Edit
+remove = Remove
+all = All
+active = Active
+hidden = Hidden
+search = Search
+</wb-lang>
 <div class="pages-edit-modal">
 
 </div>
