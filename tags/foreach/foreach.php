@@ -408,10 +408,10 @@ class tagForeach
             } else {
                 $list = $dom->getField($dom->params->from);
             }
-            if ($dom->params('filter') and !$dom->params->table) {
-                $list = $dom->app->arrayFilter($list, $dom->params('filter'));
-            }
         }
+
+        $dom->params('filter') ? $list = $dom->app->arrayFilter($list, $dom->params('filter')) : null;
+
         $this->options = $options;
         $this->sort($list);
 

@@ -37,7 +37,7 @@ class ctrlForm
                 $item = $app->itemRead($table, $app->route->item);
                 $item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], $item);
                 if ($item['active'] == 'on') {
-                    if ($app->vars('_route.tpl') > '') {
+                    if ((!isset($item['template']) OR $item['template'] == '') AND $app->vars('_route.tpl') > '') {
                         $dom = $app->getTpl($app->vars('_route.tpl'));
                     } elseif (isset($item['template']) and $item['template'] > '') {
                         $dom = $app->getTpl($item['template']);

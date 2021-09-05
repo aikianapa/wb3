@@ -70,7 +70,7 @@
 
         <div class="list-group m-2" id="{{_form}}List">
             <wb-foreach
-                data-ajax="{'url':'/ajax/form/{{_form}}/list/','bind':'cms.list.{{_form}}','render':'client','sort':'date:d','size':'{{_sett.page_size}}'}">
+                wb="{'ajax':'/ajax/form/{{_form}}/list/','bind':'cms.list.{{_form}}','render':'client','sort':'date:d','size':'{{_sett.page_size}}'}">
                 <div class="list-group-item d-flex align-items-center">
                     <div data-ajax="{'url':'/cms/ajax/form/news/edit/{{_id}}','html':'.news-edit-modal'}" class="w-100">
                         <a href="javascript:" class="tx-13 tx-inverse tx-semibold mg-b-0">{{date}}</a>

@@ -334,7 +334,7 @@ function tagTreeUl( &$dom, $Item = array(), $param = null, $srcVal = array() ) {
 
             }
         }
-        $dom->find('wb')->unwrap('wb');
+        //$dom->find('wb')->unwrap('wb');
     }
 }
 

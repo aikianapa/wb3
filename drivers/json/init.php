@@ -103,9 +103,7 @@ class jsonDrv
         $_ENV['cache'][$cid][$item['id']] = $item;
 
         $res = $item;
-        if ($flush == true) {
-            $this->tableFlush($form);
-        }
+        $flush == true ? $this->tableFlush($form) : null;
         return $res;
     }
 

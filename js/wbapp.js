@@ -829,7 +829,6 @@ wbapp.start = function () {
         let opts = Object.assign({}, params);
         let token;
         delete opts._event;
-
         if (params.request_type == 'remove_item') {
             wbapp.post(params.url, opts, function (data) {
                 if (data._removed !== undefined && data._removed == true && params.update !== undefined) {
