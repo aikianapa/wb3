@@ -41,9 +41,11 @@ class ctrlForm
                         $dom = $app->getTpl($app->vars('_route.tpl'));
                     } elseif (isset($item['template']) and $item['template'] > '') {
                         $dom = $app->getTpl($item['template']);
-                    } elseif (isset($app->route->tpl)) {
+                    }
+                    if (!$dom && isset($app->route->tpl)) {
                         $dom = $app->getTpl($app->route->tpl);
-                    } else {
+                    }
+                    if (!$dom ) {
                         // последняя попытка
                         $app->route->tpl = $table.'-show.php';
                         $dom = $app->getTpl($app->route->tpl);

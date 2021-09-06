@@ -1,6 +1,5 @@
 "use strict"
 
-
 $(document).on('cart-mod-js', function () {
 
     var calcSum = function (cart) {
@@ -82,6 +81,7 @@ $(document).on('cart-mod-js', function () {
         Object.entries(cart.total).forEach(function (fld, i) {
             $(document).find('.mod-cart-total-' + fld[0]).text(fld[1]);
         });
+        wbapp.trigger('mod-cart-update',cart);
     }
 
     var uid;
@@ -124,8 +124,15 @@ $(document).on('cart-mod-js', function () {
         modCartTotals();
     }, 0);
 
+    $(document).delegate('.mod-cart-clear', wbapp.evClick, function (e) {
+        console.log(mod_cart_bind);
+        wbapp.storage(mod_cart_bind + `.list`,{});
+        updateCart();
+        e.stopPropagation();
+    })
 
-    $(document).delegate('.mod-cart-remove', 'tab click', function (e) {
+
+    $(document).delegate('.mod-cart-remove', wbapp.evClick, function (e) {
         let index = $(this).closest('.mod-cart-item').index();
         let data = wbapp.storage(mod_cart_bind);
         let id = array_keys(data.list)[index];
@@ -176,7 +183,7 @@ $(document).on('cart-mod-js', function () {
     });
 
 
-    $(document).delegate('.mod-cart-add', 'tab click', async function (e) {
+    $(document).delegate('.mod-cart-add', wbapp.evClick, async function (e) {
         e.preventDefault();
 
         let form = $(this).closest('form');
