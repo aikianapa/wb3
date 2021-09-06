@@ -315,14 +315,16 @@ wbapp.start = function () {
 
 
     wbapp.lazyload = function () {
-        $("[data-src]:not([src])").each(function(){
-            let link = document.createElement('link');
-            link.rel = "preload";
-            link.as = "image";
-            link.href = $(this).attr('data-src');
-            document.head.appendChild(link);
-        });
-        $("[data-src]:not([src])").lazyload();
+        setTimeout(() => {
+            $("[data-src]:not([src])").each(function(){
+                let link = document.createElement('link');
+                link.rel = "preload";
+                link.as = "image";
+                link.href = $(this).attr('data-src');
+                document.head.appendChild(link);
+            });
+            $("[data-src]:not([src])").lazyload();
+        }, 1);
     }
 
     wbapp.eventsInit = function () {
