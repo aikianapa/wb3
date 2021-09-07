@@ -229,10 +229,16 @@ function wbCheckToken($token = null) {
     $form = null;
     $app->vars('_route.form') > '' ? $form = $app->vars('_route.form') : null;
     $app->vars('_route.table') > '' ? $form = $app->vars('_route.table') : null;
-    $frm = $app->formClass($form);
-    if (method_exists($frm,'checkToken')) {
-        $res = $frm->checkToken();
-        if ($res === true OR $res === false) return $res;
+
+    $test = debug_backtrace(2);
+    $test = array_column($test,'function');
+
+    if (!in_array('checkToken',$test)) {
+        $frm = $app->formClass($form);
+        if (method_exists($frm,'checkToken')) {
+            $res = $frm->checkToken();
+            if ($res === true OR $res === false) return $res;
+        }
     }
     $apikey = $app->vars('_sett.api_key');
     $app->vars('_sess.user.id') == '' ? $user = microtime() : $user = $app->vars('_sess.user.id');
