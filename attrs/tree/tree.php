@@ -47,10 +47,14 @@ function tagTree( &$dom, $Item = null ) {
         $Item = $dom->app->treeRead( $item );
         $field = 'tree';
     }
-    if ($from > '') {
-        $dotitem = $dom->app->dot($Item);
-        $Item = $dotitem->get($from);
+    if ($dom->params('from')) {
+        if ($dom->app->vars($dom->params->from) > '') {
+            $Item = $dom->app->vars($dom->params->from);
+        } else {
+            $Item = $dom->getField($dom->params->from);
+        }
     }
+
     if ( $field > '' ) {
         if ( !isset( $dom->params->name ) ) $dom->params->name = $field;
         if ( strpos( $field, '.' ) ) {
@@ -269,7 +273,7 @@ function tagTreeUl( &$dom, $Item = array(), $param = null, $srcVal = array() ) {
     if ( $param == null ) {
         $dom->params->name > '' ? $name  = $dom->params('name') : $name = $dom->attr( 'name' );
         $dom->params('from') > '' ? $name = $dom->params('from') : null;
-        $tpl = '<wb>'.$dom->inner().'</wb>';
+        $tpl = $dom->inner();
         $tree = &$Item;
         if ( $dom->params('call') > '') {
             $call = $dom->params('call');
@@ -334,7 +338,7 @@ function tagTreeUl( &$dom, $Item = array(), $param = null, $srcVal = array() ) {
 
             }
         }
-        //$dom->find('wb')->unwrap('wb');
+        $dom->find('wb')->unwrap('wb');
     }
 }
 

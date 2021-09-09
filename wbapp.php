@@ -536,6 +536,7 @@ class wbDom extends DomQuery
         $inputs = $this->find("[name]:not([done])");
         foreach ($inputs as $inp) {
                 $inp->copy($this);
+                $inp->fetchParams();
                 if (!$inp->parents("template")) $inp->fetchParams();
                 $name = $inp->attr("name");
                 $value = $fields->get($name);
@@ -1100,6 +1101,15 @@ class wbApp
 
     public function cond($condition, $item) 
     {
+        // пытаемся преобразовать в json строку с одинарными ковычками
+        $re = '/\'\{(.*)\'(.*)\:(.*)}\'/mu';
+        preg_match($re,$condition,$matches);
+        if (isset($matches[0])) {
+            $repl = substr($matches[0],1,-1);
+            $json = str_replace("'",'"',$repl);
+            $this->isJson($json) ? $condition = str_replace($repl,$json,$condition) : null;
+        }
+        // ======
         if (in_array(substr(trim($condition), 0, 1), ['"',"'"])) {
             $res = wbEval($condition);
         } else {

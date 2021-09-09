@@ -8,8 +8,6 @@ class modCodemirror
     }
     public function init($dom)
     {
-
-	
         if (isset($_ENV["route"]["params"][0]) AND isset($dom->app->route->module) AND $dom->app->route->module == 'module' ) {
             $mode=$_ENV["route"]["params"][0];
             $call="codemirror__{$mode}";
@@ -22,9 +20,6 @@ class modCodemirror
             isset($dom->params->name) ? $name = $dom->params->name : $name = $dom->attr("name");
             $textarea->attr('name', $name);
             $dom->attr('id') > '' ? $out->attr('id', $dom->attr('id')) : $out->attr('id', 'cm_'.wbNewId());
-            $item = new Dot();
-            $item->setReference($dom->item);
-            $text = $item->get($name);
 			$dom->after($out);
 			$dom->remove();
         }
