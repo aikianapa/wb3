@@ -169,15 +169,19 @@ final class wbRouter {
             $ROUTE['params']=(array)$ROUTE['params']+(array)$get;
         }
 
-        if (isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME']>'') {
-            $scheme=$_SERVER['REQUEST_SCHEME'];
+        if (isset($_SERVER['HTTPS']) AND $_SERVER['HTTPS'] == 'on') {
+            $scheme='https';
+        }
+        else if (isset($_SERVER['HTTP_X_HTTPS']) AND $_SERVER['HTTP_X_HTTPS'] == 1) {
+			$scheme='https';
         }
         elseif (isset($_SERVER['SCHEME']) && $_SERVER['SCHEME']>'') {
             $scheme=$_SERVER['SCHEME'];
         }
-        else if (isset($_SERVER['HTTPS']) AND $_SERVER['HTTPS'] == 'on') {
-            $scheme='https';
-        } else {
+        elseif (isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME']>'') {
+            $scheme=$_SERVER['REQUEST_SCHEME'];
+        }
+        else {
             $scheme='http';
         }
         $ROUTE['method'] = $_SERVER['REQUEST_METHOD'];
