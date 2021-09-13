@@ -22,17 +22,31 @@
 
   <template id="fp-listviewItem">
   {{#each images}}
-    <div class="card p-2">
-      <img class="card-img-top" data-src="{{img}}" data-img='{{name}}' loading title="{{title}}" alt="{{alt}}" onload="$(this).removeAttr('loading onload')">
-      <div class="card-body">
-        <a href="#" class="action action-primary crop"><i class="fa fa-crop"></i></a>
-        <a href="#" class="action action-danger delete pull-right"><i class="fa fa-trash-o text-danger"></i></a>
-      </div>
+  <div class="card p-1 m-1 rounded-10">
+  <figure class="pos-relative mg-b-0">
+  <img class="card-img-top rounded-10" data-src="{{img}}" data-img='{{name}}' loading title="{{title}}" alt="{{alt}}" onload="$(this).removeAttr('loading onload')">
+  <figcaption>
+    <div class="btn-group">
+      <a href="javascript:void(0)" class="btn btn-dark btn-icon action crop"><i class="fa fa-crop"></i></a>
+      <a href="javascript:void(0)" class="btn btn-dark btn-icon action delete"><i class="fa fa-trash-o text-danger"></i></a>
     </div>
+  </figcaption>
+  </figure>
+  </div>
+
   {{else}}
-    <div class="card p-2">
-      <i class="fa file-icon-jpg"></i>
+  <div class="card p-1 m-1 rounded-10">
+  <figure class="pos-relative mg-b-0">
+  <img class="card-img-top rounded-10" data-src="" data-img='{{name}}' loading title="{{title}}" alt="{{alt}}" onload="$(this).removeAttr('loading onload')">
+  <figcaption>
+    <div class="btn-group">
+      <a href="javascript:void(0)" class="btn btn-dark btn-icon action crop"><i class="fa fa-crop"></i></a>
+      <a href="javascript:void(0)" class="btn btn-dark btn-icon action delete"><i class="fa fa-trash-o text-danger"></i></a>
     </div>
+  </figcaption>
+  </figure>
+  </div>
+
   {{/each}}
   </template>
 

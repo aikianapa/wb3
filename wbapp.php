@@ -339,9 +339,7 @@ class wbDom extends DomQuery
             foreach ($attrs as $atname => $atval) {
                 if ($atname == "wb" or substr($atname, 0, 3) == "wb-") {
                     $name = $atname;
-                    if ($name !== "wb") {
-                        $name = substr($atname, 3);
-                    }
+                    $name !== "wb" ? $name = substr($atname, 3) : null;
                     if (in_array($name, ['if','where','change','ajax'])) {
                         $prms = [$name => $atval];
                         $this->atrs->$name = $atval;
@@ -350,11 +348,10 @@ class wbDom extends DomQuery
                         if ($name !== "wb") {
                             $prms = [$name => $prms];
                             $this->atrs->$name = $atval;
-                            $this->removeAttr($atname);
+                            // если видим wb-name, но этот тэг внутри другого именованного тэга, то wb-name не удаляем
+                            $name == 'name' && $this->parents('[name]')->length ? null : $this->removeAttr($atname);
                         }
-                        if (is_string($prms)) {
-                            $prms = ["wb"=>$prms];
-                        }
+                        is_string($prms) ? $prms = ["wb"=>$prms] : null;
                     }
                 }
                 $params = array_merge($params, $prms);
@@ -494,7 +491,7 @@ class wbDom extends DomQuery
         return $this;
     }
 
-    public function copy($parent)
+    public function copy(&$parent)
     {
         isset($parent->locale) ? $this->locale = $parent->locale : $this->locale = [];
         isset($parent->head) ? $this->head = $parent->head : $this->head = false;
@@ -531,8 +528,7 @@ class wbDom extends DomQuery
             return;
         }
         isset($this->item) ? null : $this->item = [];
-        $fields = new Dot();
-        $fields->setReference($this->item);
+        $fields = $this->app->dot($this->item);
         $inputs = $this->find("[name]:not([done])");
         foreach ($inputs as $inp) {
                 $inp->copy($this);

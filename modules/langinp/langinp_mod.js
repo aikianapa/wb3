@@ -22,6 +22,8 @@ $(document).on('langinp-mod-js', function () {
     $(document).delegate('.dropdown.mod-langinp', 'show.bs.dropdown', function () {
         let form = $(this).find('.dropdown-menu');
         let json = {};
+        let width = $(this).closest('.input-group').width();
+        $(form).width(width);
         try {
             json = json_decode($(this).closest('.input-group').find('textarea.mod-langinp').html());
         } catch (error) {

@@ -16,7 +16,7 @@ class tagMultiinput {
         if ($dom->params("name") > "") $field = $dom->params("name");
         $dom->attr("name",$field);
         $dom->params->name = $field;
-        if (isset($dom->item[$field])) $dom->item = [$field => $dom->item[$field],"_parent"=>$dom->item];
+        if (isset($dom->item[$field])) $dom->item = [$field => &$dom->item[$field],"_parent"=>&$dom->item];
 				if (isset($dom->dict->prop->multiflds)) {
 						$inner = $this->buildInner();
 				} else {
@@ -31,8 +31,7 @@ class tagMultiinput {
         $textarea->copy($dom);
         $textarea->attr("data-tpl",$tplId);
         $dom->tpl = $wrp->outer();
-        $fields = new Dot();
-        $fields->setReference($textarea->item);
+        $fields = $dom->app->dot($textarea->item);
         $wrp->fetch($fields->get());
 
 				$values = $fields->get($field);
@@ -43,7 +42,7 @@ class tagMultiinput {
         $this->setData($dom,$values);
         $dom->append($textarea)
             ->append("\n<template id='{$tplId}'>{$wrp}</template>\n")
-            ->append('<script type="wbapp">wbapp.loadScripts(["/engine/js/php.js","/engine/js/jquery-ui.min.js","/engine/tags/multiinput/multiinput.js"],"multiinput-js");</script>'."\n\r");
+            ->append('<script wb-app remove>wbapp.loadScripts(["/engine/js/php.js","/engine/js/jquery-ui.min.js","/engine/tags/multiinput/multiinput.js"],"multiinput-js");</script>'."\n\r");
         $dom->attr('done',"");
     }
 

@@ -20,5 +20,19 @@
             background: url(/engine/modules/filepicker/assets/img/loader.gif) 50% 50% no-repeat;
             background-size: contain;
         }
+        figcaption {
+            position: absolute;
+            display:none;
+            bottom:0;
+            left:0;
+            width:100%;
+            padding:10px;
+            justify-content: center;
+        }
+        &:hover {
+            figcaption {
+                display:flex;
+            }
+        }
     }
 }

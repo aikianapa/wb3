@@ -32,8 +32,8 @@ $(document).on("filepicker-js", function () {
       $(document).find(selector).each(function () {
         if (this.done !== undefined) return;
         this.done = true;
-        let width = size * 1;
-        let height = size * 1;
+        var width = size * 1;
+        var height = size * 1;
 
         let $filepicker = $(this);
         let $listview = $(this).find(".listview");
@@ -103,6 +103,8 @@ $(document).on("filepicker-js", function () {
             }
             data.push({
               img: file,
+              width: width,
+              height: height,
               alt: $(this).attr("alt"),
               title: $(this).attr("title"),
             });
@@ -171,17 +173,22 @@ $(document).on("filepicker-js", function () {
             }
             , plugins: ['ui', 'drop', 'camera', 'crop']
           }).on('done.filepicker', function (e, data) {
-            if (data.files[0].original == null && data.files[0].size == 0) {
+            if (data.files[0].original == null || data.files[0].size == 0 || data.files[0].error !== undefined) {
               // ошибка загрузки
               let j = 0;
               $.each($filepicker.list, function (i, line) {
                 if (line.name !== undefined && line.name == data.files[0].name) {
                   let $card = $listview.find(".card:eq(" + j + ")");
-                  $card.children("img")
+                  $card.find("img")
                     .attr("src", "/engine/modules/filepicker/assets/img/error.png")
                     .removeAttr("loading");
+                  wbapp.toast(wbapp._settings.sysmsg.error, data.files[0].error, { 'bgcolor': 'danger' });
                   setTimeout(function () {
-                    $card.remove();
+                    if (!$(inpfile).is("[multiple]")) {
+                      $card.find('img').attr("src", "/thumbc/" + width + "x" + height + "/src/null");
+                    } else {
+                      $card.remove();
+                    }
                   }, 1000)
                   return;
                 }
@@ -228,7 +235,7 @@ $(document).on("filepicker-js", function () {
             let thumb = getthumb(file.url, true);
             $filepicker.find(".listview .card img[data-src='" + file.url + "']").attr("src", thumb);
           }).on('add.filepicker', function (e, data) {
-            if (data.files[0].name !== undefined) {
+            if (data.files[0].name !== undefined && !strpos(' ' + data.files[0].name, '_auto_undefined')) {
               let line = {
                 img: "",
                 name: data.files[0].name,
@@ -271,7 +278,9 @@ $(document).on("filepicker-js", function () {
               fp.delete(file).done(function () {
                 $.each($filepicker.list, function (i, line) {
                   if (line !== undefined) {
-                    if (line.img !== undefined && line.img == file) {
+                    if (line.img == undefined || strpos(' ' + line.img, '_auto_undefined')) {
+                      $filepicker.list.splice(i, 1);
+                    } else if (line.img !== undefined && line.img == file) {
                       if ($(inpfile).is("[multiple]")) {
                         $filepicker.list.splice(i, 1);
                       } else {

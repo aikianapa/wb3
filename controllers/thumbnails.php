@@ -49,14 +49,15 @@ class ctrlThumbnails
         die;
     }
     
-	private function getInfoBrowser(){
+    private function getInfoBrowser()
+    {
         $agent = $_SERVER['HTTP_USER_AGENT'];
         preg_match("/(MSIE|Opera|Firefox|Chrome|Safari|Chromium|Version)(?:\/| )([0-9.]+)/", $agent, $bInfo);
         $browserInfo = array();
         $browserInfo['name'] = ($bInfo[1]=="Version") ? "Safari" : $bInfo[1];
-        $browserInfo['version'] = $bInfo[2];     
+        $browserInfo['version'] = $bInfo[2];
         return $browserInfo;
-}
+    }
     
 
     public function thumbnail_view($app)
@@ -67,15 +68,17 @@ class ctrlThumbnails
         if ($app->vars('_route.http')) {
             $remote=true;
             $p='http';
-        } else if ($app->vars('_route.https')) {
+        } elseif ($app->vars('_route.https')) {
             $remote=true;
             $p='https';
         }
 
-        if ($app->vars('_sett.devmode') == 'on') $cache=false;
+        if ($app->vars('_sett.devmode') == 'on') {
+            $cache=false;
+        }
         if (isset($_SERVER['HTTP_CACHE_CONTROL'])) {
             parse_str($_SERVER['HTTP_CACHE_CONTROL'], $cc);
-            if (isset($cc['no-cache']) OR isset($query['nocache'])) {
+            if (isset($cc['no-cache']) or isset($query['nocache'])) {
                 $cache=false;
             }
         }
@@ -97,7 +100,9 @@ class ctrlThumbnails
                 $url=$p.substr($app->vars('_route.uri'), strpos($app->vars('_route.uri'), '://'));
             }
             $ext = pathinfo($url, PATHINFO_EXTENSION);
-            if (!in_array($ext,$formats) OR in_array($ext,$danger)) return; // дабы не загрузили на сервак бяку
+            if (!in_array($ext, $formats) or in_array($ext, $danger)) {
+                return;
+            } // дабы не загрузили на сервак бяку
             $file=$_ENV['path_app'].'/uploads/_remote/'.md5($url).'.'.$ext;
             if (!is_file($file) or !$cache) {
                 $image=file_get_contents($url);
@@ -109,7 +114,7 @@ class ctrlThumbnails
         }
 
 
-        if (!is_file($file) OR !in_array($ext,$imgext)) {
+        if (!is_file($file) or !in_array($ext, $imgext)) {
             if (is_file($app->vars('_env.path_engine').'/lib/fileicons/'.$ext.'.svg')) {
                 $file = $app->vars('_env.path_engine').'/lib/fileicons/'.$ext.'.svg';
             } else {
@@ -126,26 +131,34 @@ class ctrlThumbnails
             }
 
             $ext = pathinfo($file, PATHINFO_EXTENSION);
-						 $options = [];
+            $options = [];
             if ($ext == 'svg') {
-                $image = file_get_contents($file);
-                $image = str_replace('<svg ','<svg width="'.$app->vars('_route.w').'" height="'.$app->vars('_route.h').'" ',$image);
-								$destination = $file;
+                $imgdata = file_get_contents($file);
+                try {
+                    $image = $app->fromString($imgdata);
+                    $image->attr('width', $app->vars('_route.w'));
+                    $image->attr('height', $app->vars('_route.h'));
+                    $image->attr('viewbox', '0 0 '.$app->vars('_route.w').' '.$app->vars('_route.h'));
+                    $image = $image->outer();
+                } catch (\Throwable $th) {
+                    $image = str_replace('<svg ', '<svg width="'.$app->vars('_route.w').'" height="'.$app->vars('_route.h').'" ', $imgdata);
+                }
+                $destination = $file;
             } else {
-								$this->browser->name !== 'Safari' && in_array($ext,['jpg','jpeg','png']) ? $ext = 'webp' : null;
-								switch($ext) {
-									case 'jpg':
-										$options = ['jpeg_quality'=>80];
-										break;
-									case 'png':
-										$options = ['png_compression_level'=>8];
-										break;
-									case 'webp':
-										$options = ['webp_quality' => 90];
-										break;
-								}
-                                $options['resolution-x'] = 300;
-                                $options['resolution-y'] = 300;
+                $this->browser->name !== 'Safari' && in_array($ext, ['jpg','jpeg','png']) ? $ext = 'webp' : null;
+                switch ($ext) {
+                                    case 'jpg':
+                                        $options = ['jpeg_quality'=>80];
+                                        break;
+                                    case 'png':
+                                        $options = ['png_compression_level'=>8];
+                                        break;
+                                    case 'webp':
+                                        $options = ['webp_quality' => 90];
+                                        break;
+                                }
+                $options['resolution-x'] = 300;
+                $options['resolution-y'] = 300;
                 $cachefile=md5($file.'_'.$app->vars('_route.w').'_'.$app->vars('_route.h').'_'.$app->vars('_get.zc').'_'.json_encode($options)).'.'.$ext;
                 $cachedir=$app->vars('_env.path_app').'/uploads/_cache/'.substr($cachefile, 0, 2);
                 $destination = $cachedir.'/'.$cachefile;
@@ -166,7 +179,9 @@ class ctrlThumbnails
                     $canvas = $imagine->create($size, $color);
                     if ($app->vars('_get.zc') == 0) {
                         $mode    = Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
-                    } else { $mode    = Imagine\Image\ImageInterface::THUMBNAIL_FLAG_UPSCALE;}
+                    } else {
+                        $mode    = Imagine\Image\ImageInterface::THUMBNAIL_FLAG_UPSCALE;
+                    }
                     $image = $imagine->open(realpath($file));
                     $ih = $image->getSize()->getHeight();
                     $iw = $image->getSize()->getWidth();
@@ -211,17 +226,17 @@ class ctrlThumbnails
                     $offsetX < 0 ? $offsetX = 0 : null;
                     $offsetY < 0 ? $offsetY = 0 : null;
                     $canvas->paste($image, new Imagine\Image\Point($offsetX, $offsetY));
-                    $canvas->save($destination,$options);
-    /*
-                    if (in_array($ext, ['jpg','jpeg'])) {
-                        $options = [];
-                        WebPConvert::convert($destination, $destination.'.webp', $options);
-                    }
-    */
+                    $canvas->save($destination, $options);
+                    /*
+                                    if (in_array($ext, ['jpg','jpeg'])) {
+                                        $options = [];
+                                        WebPConvert::convert($destination, $destination.'.webp', $options);
+                                    }
+                    */
                 }
                 $image=file_get_contents($destination);
             }
-			$mime = wbMime($destination);
+            $mime = wbMime($destination);
             header('Content-Type: '.$mime);
             echo $image;
         }
