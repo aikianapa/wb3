@@ -95,6 +95,8 @@ $(document).on("filepicker-js", function () {
             if (tmp.split("/").length == 1) file = path + file;
             let thumb = getthumb(file, update);
             let src = $(this).attr("src");
+            let alt = $(this).attr("alt");
+            let title = $(this).attr("title");
             if (!src) src = "";
             src = explode("?", src);
             src = src[0];
@@ -105,8 +107,8 @@ $(document).on("filepicker-js", function () {
               img: file,
               width: width,
               height: height,
-              alt: $(this).attr("alt"),
-              title: $(this).attr("title"),
+              alt: alt,
+              title: title,
             });
           });
           input.html(json_encode(data));
@@ -267,7 +269,7 @@ $(document).on("filepicker-js", function () {
           var fp = $filepicker.filePicker();
 
 
-          $filepicker.delegate("a.delete", "tap click", function (e) {
+          $filepicker.delegate("a.delete", wbapp.evClick, function (e) {
             e.stopPropagation();
             var card = $(this).closest(".card");
             var file = $(card).find("img").attr("data-src");
@@ -296,7 +298,22 @@ $(document).on("filepicker-js", function () {
             return false;
           });
 
-          $filepicker.delegate("a.crop", "tap click", function (e) {
+          $filepicker.delegate("button.info", wbapp.evClick, function (e) {
+            let $card = $(this).parents('.card');
+            let $img = $card.find('img.card-img-top');
+            let $form = $card.find('form');
+            $form.find('[data-title]').val($img.attr('title'));
+            $form.find('[data-alt]').val($img.attr('alt'));
+            $form.find('[data-title],[data-alt]').off('change');
+            $form.find(':input').on('change',function(){
+                $img.attr('title',$form.find('[data-title]').val());
+                $img.attr('alt',$form.find('[data-alt]').val());
+                setdata();
+            });
+            e.preventDefault();
+          });
+
+          $filepicker.delegate("a.crop", wbapp.evClick, function (e) {
             e.stopPropagation();
             var card = $(this).closest(".card");
             var file = $(card).find("img").attr("data-src");
@@ -306,7 +323,8 @@ $(document).on("filepicker-js", function () {
             return false;
           });
 
-          $filepicker.delegate('.card', 'tap click', function (e) {
+          $filepicker.delegate('.card', wbapp.evClick , function (e) {
+            if ($(e.target).parents('.btn-group').length) return;
             $(this).parents('.filepicker').find('input[type=file]').trigger('click');
           });
 

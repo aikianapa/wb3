@@ -134,15 +134,8 @@ class ctrlThumbnails
             $options = [];
             if ($ext == 'svg') {
                 $imgdata = file_get_contents($file);
-                try {
-                    $image = $app->fromString($imgdata);
-                    $image->attr('width', $app->vars('_route.w'));
-                    $image->attr('height', $app->vars('_route.h'));
-                    $image->attr('viewbox', '0 0 '.$app->vars('_route.w').' '.$app->vars('_route.h'));
-                    $image = $image->outer();
-                } catch (\Throwable $th) {
-                    $image = str_replace('<svg ', '<svg width="'.$app->vars('_route.w').'" height="'.$app->vars('_route.h').'" ', $imgdata);
-                }
+                $imgdata = preg_replace('#\s(width|height)="[^"]+"#', '', $imgdata);
+                $image = str_replace('<svg ', '<svg width="'.$app->vars('_route.w').'" height="'.$app->vars('_route.h').'" viewbox="0 0 '.$app->vars('_route.w').' '.$app->vars('_route.h').'" ', $imgdata);
                 $destination = $file;
             } else {
                 $this->browser->name !== 'Safari' && in_array($ext, ['jpg','jpeg','png']) ? $ext = 'webp' : null;
