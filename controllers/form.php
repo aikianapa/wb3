@@ -10,6 +10,12 @@ class ctrlForm
 
     public function __call($mode, $params)
     {
+        $form = $this->app->route->form;
+        $class=$this->app->formClass($form);
+        if (method_exists($class,$mode)) {
+            echo $class->$mode();
+            die;
+        }
         if (!is_callable(@$this->$mode)) {
             header('HTTP/1.1 404 Not Found');
             echo  $this->get404();

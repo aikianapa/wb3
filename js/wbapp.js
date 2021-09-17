@@ -1,6 +1,10 @@
 "use strict"
 var wbapp = new Object();
+var _tmpphp = false;
+var _tmpjq = false;
+
 wbapp.loader = true;
+
 
 var get_cookie = function (name) {
     const value = `; ${document.cookie}`;
@@ -1781,26 +1785,32 @@ wbapp.start = function () {
     
 
 var loadPhpjs = function () {
-    let phpjs = document.createElement('script');
-    phpjs.src = `/engine/js/php.js`;
-    phpjs.async = false;
-    phpjs.defer = true;
-    phpjs.onload = function () {
+    if (_tmpphp == false) {
+        _tmpphp = true;
+        let phpjs = document.createElement('script');
+        phpjs.src = `/engine/js/php.js`;
+        phpjs.async = false;
+        phpjs.defer = true;
+        phpjs.onload = function () {
+            wbapp.start();
+        }
+        document.head.appendChild(phpjs);
     }
-    document.head.appendChild(phpjs);
-    setTimeout(function(){wbapp.start();},5);
-
 }
 
 var loadJquery = function () {
-    let jquery = document.createElement('script');
-    jquery.src = '/engine/js/jquery.min.js';
-    jquery.async = false;
-    jquery.defer = true;
-    jquery.onload = function () {
+    if (_tmpjq == false) {
+        _tmpjq = true;
+        let jquery = document.createElement('script');
+        jquery.src = '/engine/js/jquery.min.js';
+        jquery.async = false;
+        jquery.defer = true;
+        jquery.onload = function () {
+            wbapp.start();
+        }
+        document.head.appendChild(jquery);
     }
-    document.head.appendChild(jquery);
-    setTimeout(function(){wbapp.start();},5);
+
 }
 
 wbapp.start();

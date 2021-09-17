@@ -1661,7 +1661,6 @@ function wbItemFilter($item, $options, $field = null)
         $item['_context'] = @implode(' ', $text);
         strtolower(trim($item['_context']));
     }
-
     $result = true;
     foreach ((array)$filter as $fld => $expr) {
         if ((array)$expr !== $expr && substr($fld,0,1) !== '$') {
@@ -1689,13 +1688,21 @@ function wbItemFilter($item, $options, $field = null)
                       break;
                     }
                 }
+            } else if ($fld == '$in') {
+                $val = $expr[0];
+                $arr = $expr[1];
+                if (substr($arr,0,1) == '$') {
+                    $arr = $fields->get(substr($arr,1));
+                    (array)$arr === $arr ? null : $arr = json_decode($arr);
+                    if (in_array($val,$arr)) {$result;} else {$result = false;}
+                }
             } else if (in_array($fld,['$gte','$lte','$gt','$lt','='])) {
                     $field == null ? $fldname = array_key_first($expr) : $fldname = $field;
                     $result = wbItemFilter($item, [$fldname=>[$fld => $expr]]);
             } else {
                 foreach ($expr as $cond => $val) {
                     $field = $fields->get($fld);
-                    if ((array)$field === $field) $field = wbJsonEncode($field);
+                    (array)$field === $field ?  $field = wbJsonEncode($field) : null;
                     if (is_numeric($field) && is_numeric($val)) {
                         $field = $field * 1;
                         $val = $val * 1;

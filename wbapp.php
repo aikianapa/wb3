@@ -533,6 +533,7 @@ class wbDom extends DomQuery
         foreach ($inputs as $inp) {
                 $inp->copy($this);
                 // $inp->fetchParams(); // так ломается подстановка в атрибуты
+                if ($inp->is("textarea")) $inp->fetchParams();
                 if (!$inp->parents("template")) $inp->fetchParams();
                 $name = $inp->attr("name");
                 $value = $fields->get($name);

@@ -46,6 +46,10 @@ class modFilepicker
             $out->find("input[name=upload_url]")
                 ->after("<input type='hidden' name='original'>");
         }
+        if ($dom->params("button")) {
+            $out->find('.button-bar .fileinput > span')->text(' '.$dom->params("button"));
+        }
+
         $out->fetch();
         if ($dom->tagName == 'input') {
             $dom->after($out);

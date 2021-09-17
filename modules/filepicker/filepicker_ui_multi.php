@@ -39,10 +39,14 @@
                     onload="$(this).removeAttr('loading onload')">
                 <figcaption>
                     <div class="btn-group">
-                        <a href="javascript:void(0)" class="btn btn-dark btn-icon action crop"><i class="fa fa-crop"></i></a>
+                        <a href="javascript:void(0)" class="btn btn-dark btn-icon pd-2 action crop">
+                            <img src="/module/myicons/crop-square.svg?size=24&stroke=FFFFFF">
+                        </a>
                         <div class="dropdown dropup">
-                        <button type="button" class="btn btn-dark btn-icon action info rounded-0" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false"><i class="fa fa-info"></i></button>
+                        <button type="button" class="btn btn-dark btn-icon action pd-2 info rounded-0" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            <img src="/module/myicons/info-information.svg?size=24&stroke=FFFFFF">
+                        </button>
                           <div class="dropdown-menu">
                             <form class="wd-250 pd-15">
                               <div class="row">
@@ -59,8 +63,9 @@
                             </form>
                           </div>
                         </div>
-                        <a href="javascript:void(0)" class="btn btn-dark btn-icon action delete"><i
-                                class="fa fa-trash-o text-danger"></i></a>
+                        <a href="javascript:void(0)" class="btn btn-dark btn-icon pd-2 action delete">
+                            <img src="/module/myicons/trash-delete-bin-square.svg?size=24&stroke=dc3545">
+                        </a>
                     </div>
                 </figcaption>
             </figure>

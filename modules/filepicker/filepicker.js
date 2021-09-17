@@ -103,13 +103,17 @@ $(document).on("filepicker-js", function () {
             if (update || src !== thumb) {
               $(this).attr("src", thumb).attr("data-src", file);
             }
-            data.push({
-              img: file,
-              width: width,
-              height: height,
-              alt: alt,
-              title: title,
-            });
+            if (strpos(' ' + file, '.')) {
+              data.push({
+                img: file,
+                width: width,
+                height: height,
+                alt: alt,
+                title: title,
+              });
+            } else {
+              $(this).attr("data-src",'null');
+            }
           });
           input.html(json_encode(data));
           input.trigger('change');
