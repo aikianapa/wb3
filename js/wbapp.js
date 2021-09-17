@@ -24,6 +24,7 @@ wbapp.start = function () {
         loadJquery();
         return;
     }
+    
     var data = {};
     wbapp.bind = {};
     wbapp.ui = {
@@ -50,7 +51,7 @@ wbapp.start = function () {
             wbapp.modalsInit();
             $(document).scrollTop(0);
         });
-    }, 0);
+    }, 2700);
 
     $.fn.disableSelection = function() {
         return this
