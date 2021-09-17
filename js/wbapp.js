@@ -3,17 +3,23 @@ var wbapp = new Object();
 var _tmpphp = false;
 var _tmpjq = false;
 
-wbapp.loader = true;
+setTimeout(function(){
+    wbapp.loader = true;
+    let loader = document.getElementById("loader");
+    typeof(loader) != 'undefined' && loader != null ? wbapp.delay = 2500 : wbapp.delay = 10;
+
+    var get_cookie = function (name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    wbapp.devmode = get_cookie('devmode');
+    wbapp.evClick = 'tap click touchstart';
 
 
-var get_cookie = function (name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
-
-wbapp.devmode = get_cookie('devmode');
-wbapp.evClick = 'tap click touchstart';
+    wbapp.start();
+},10);
 
 wbapp.start = function () {
     if (typeof str_replace === 'undefined') {
@@ -51,7 +57,7 @@ wbapp.start = function () {
             wbapp.modalsInit();
             $(document).scrollTop(0);
         });
-    }, 2700);
+    }, wbapp.delay);
 
     $.fn.disableSelection = function() {
         return this
@@ -1813,6 +1819,4 @@ var loadJquery = function () {
     }
 
 }
-
-wbapp.start();
 
