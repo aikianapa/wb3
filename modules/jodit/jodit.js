@@ -2,6 +2,10 @@ $(document).off("jodit-js");
 $(document).on("jodit-js", function () {
   //$(document).on("wb-ajax-done",function(){$(document).trigger("jodit-js");});
   $('.jodit:not(.ready):not(.jodit-box)[id]').each(function () {
+    $(this).parents('.modal-body').on('scroll',function(){
+      window.dispatchEvent(new Event('resize'));
+    })
+
     $(this).addClass("ready");
     let editable = this;
     $(editable).data("timeout", false);
@@ -37,12 +41,12 @@ $(document).on("jodit-js", function () {
         }
       });
 
-
       var options = {
         theme: theme,
         language: lang,
         beautyHTML: false,
         defaultActionOnPaste: "insert_clear_html",
+        toolbarSticky: true,
         sourceEditorNativeOptions: {
           theme: "ace/theme/monokai",
           mode: "ace/mode/php",
@@ -79,8 +83,8 @@ $(document).on("jodit-js", function () {
       }
 
       new Jodit('#' + id, options);
-      window.dispatchEvent(new Event('resize'));
 
+      window.dispatchEvent(new Event('resize'));
     });
   });
 });
