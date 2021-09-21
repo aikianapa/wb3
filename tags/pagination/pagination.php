@@ -133,29 +133,25 @@ class tagPagination
                 $pag->find('ul')->attr('style', $style.';display:none;');
             }
 
-            
-            if ($dom->is('table, tbody') or $dom->parent()->is('table, tbody')) {
+            if ($dom->is('table, tbody') or $dom->parents('table, tbody')->length) {
                 $target = $dom->closest('table');
             } else {
                 $target = &$dom;
             }
 
             if ($dom->params("more") == '' and ($dom->params("pos") == 'top' or $dom->params("pos") == 'both')) {
-                $target->parent()->parent()->length ? $target->parent()->before($pag) : $target->before($pag);
+                $target->parent()->prepend($pag);
             }
             if ($dom->params("pos") !== 'top') {
-                $target->parent()->parent()->length ? $target->parent()->after($pag) : $target->after($pag);
+                $target->parent()->append($pag);
             }
         }
         $dom->find("[data-page='{$page}']")->addClass('active');
         $dom->removeAttr('data-wb');
-        $dom->append(
-            "
+        $dom->append("
         <template id='{$tplId}' data-params='".json_encode($foreach)."'>
             $tpl
-        </template>
-        "
-        );
+        </template>");
         $this->tid = $foreach->target;
         $this->pag = $pag;
     }

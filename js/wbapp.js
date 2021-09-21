@@ -935,31 +935,13 @@ wbapp.start = function () {
                     }
 
                     $(document).find(params.target).children('template').remove();
-
-                    if ($(document).find(params.target).children(':first-child').is('tr')) {
-                        var pagert = $(document).find(params.target).closest('table');
-                    } else {
-                        var pagert = params.target;
-                    }
-
                     $(document).find('.pagination[data-tpl="' + params.target + '"]').parents('nav').remove();
 
-                    if (data.pos == 'top') $(pagert).parent().before(data.pag);
-                    if (data.pos == 'bottom') $(pagert).parent().after(data.pag);
-                    if (data.pos == 'both') {
-                        $(pagert).parent().after(data.pag);
-                        $(pagert).parent().before(data.pag);
-                    }
-
-                    if ($(params.target).is('tbody')) {
-                        var top = $(params.target);
-                        if ($(top).find('nav:first-child .pagination').length) {
-                            if ($(top).prev('nav').length) $(top).prev('nav').html($(params.target).find('nav:first-child .pagination'));
-                        }
-                        if ($(top).find('nav .pagination').length) {
-                            if ($(top).next('nav').length) $(top).next('nav').html($(params.target).find('nav:last-child .pagination'));
-                        }
-                    }
+                    var pagert = $(document).find(params.target).parent();
+                    if ($(pagert).is('li')) pagert = $(pagert).parent();
+                    if ($(pagert).is('tbody')) pagert = $(pagert).parent();
+                    if (data.pos == 'both' || data.pos == 'top') $(pagert).before(data.pag);
+                    if (data.pos == 'both' || data.pos == 'bottom') $(pagert).after(data.pag);
                 }
                 if (params.callback !== undefined) eval(params.callback + '(params,data)');
                 wbapp.tplInit();

@@ -55,6 +55,14 @@
               {{_lang.users}}
             </a>
           </span>
+
+					<span class="nav-item">
+            <a class="nav-link" href="#" data-ajax="{'url':'/module/filemanager','html':'.content-body'}">
+              <img data-src="/module/myicons/programing-code-data-terminal.svg?size=24&stroke=979797" class="mg-r-10">
+              {{_lang.fileman}}
+            </a>
+          </span>
+
         </nav>
       </div>
     </div>
@@ -79,6 +87,7 @@ api = API settings
 modules = Modules
 seo = SEO settings
 users = Users
+fileman = Filemanager
 [ru]
 settings = Настройки
 common = Основные
@@ -89,6 +98,7 @@ api = Настройки API
 modules = Модули
 seo = Настройки SEO
 users = Пользователи
+fileman = Файлменеджер
 </wb-lang>
 
 </html>

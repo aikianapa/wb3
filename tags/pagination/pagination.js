@@ -6,14 +6,14 @@ $(document).one("pagination-js", function() {
       var more = this;
       var selector = $(this).attr("data-trigger");
 
-      $(document).find(selector).on("click tap",function(){
+      $(document).find(selector).on(wbapp.evClick,function(){
           $(more).find(".page-link").trigger("click");
       });
 
   });
 
-  $(document).undelegate(".pagination:not(.wb-wait) .page-link", "tap click");
-  $(document).delegate(".pagination:not(.wb-wait) .page-link", "tap click", function (e) {
+  $(document).undelegate(".pagination:not(.wb-wait) .page-link", wbapp.evClick);
+  $(document).delegate(".pagination:not(.wb-wait) .page-link", wbapp.evClick, function (e) {
     if ($(this).is('[disabled]') || $(this).parents('[disabled]').length) return false;
     e.preventDefault();
     let paginator = $(this).closest(".pagination");

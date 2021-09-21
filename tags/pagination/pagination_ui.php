@@ -18,7 +18,7 @@
     </li>
 </ul>
 
-<script type='wbapp'>
+<script wb-app remove>
     wbapp.loadScripts(['/engine/tags/pagination/pagination.js'],'pagination-js');
 </script>
 

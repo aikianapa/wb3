@@ -124,9 +124,9 @@
                 </div>
 
                 <table id="list" class="table table-striped tx-13">
-                    <tbody>
+                    <tbody id="modFilemanagerList">
                         <wb-foreach wb="from=result&size=10">
-                            <wb-var wrd="disabled" wb-where='"{{wr}}"!="1"' else="" />
+                            <wb-var wrd="disabled" wb-where='"{{wr}}"!=="1"' else="" />
                             <tr class="col-12 {{type}}{{link}} {{ext}}" data-name="{{name}}" data-ext="{{ext}}">
                                 <td class="valign-middle">
                                     <label class="ckbox mg-b-0">
@@ -179,9 +179,6 @@
                         </wb-foreach>
                     </tbody>
                 </table>
-
-
-
             </div>
         </div>
 
