@@ -1415,9 +1415,7 @@ wbapp.start = function () {
     }
 
     wbapp.modalsInit = function () {
-        if (wbapp.modalZndx == undefined) {
-            wbapp.modalZndx = 2000;
-        }
+        wbapp.modalZndx == undefined ? wbapp.modalZndx = 2000 : null;
 
         $(document).undelegate(".modal-header", "dblclick");
         $(document).delegate(".modal-header", "dblclick", function (event) {
@@ -1428,10 +1426,15 @@ wbapp.start = function () {
         if (document.modalDelegates == undefined) {
             document.modalDelegates = true;
             $(document).delegate(".modal", "shown.bs.modal", function () {
-                $('.modal[style*="z-index:"]').each(function () {
-                    let max = $(this).css('z-index') * 1;
+
+                $('.modal[data-zidx]').each(function () {
+                    let max = $(this).attr('data-zidx') * 1;
                     if (max > wbapp.modalZndx) wbapp.modalZndx = max;
                 })
+
+                if ($(this).parents('.modal')) {
+                    $(this).appendTo($(this).parents('.modal').parent());
+                }
 
                 var that = this;
                 if ($(that).find('.modal-content').css('position') == 'fixed') return;
@@ -1452,10 +1455,11 @@ wbapp.start = function () {
                     // нельзя переносить модальное окно, так как могут возникнуть проблемы с селектором!
                     //$(this).appendTo("body");
                 }
-                $(that).css("z-index", wbapp.modalZndx);
-                $(that).find("[data-dismiss]").attr("data-dismiss", wbapp.modalZndx);
-                if ($(that).attr("data-backdrop") !== "false") {
-                    $(".modal-backdrop:not([style])").css("z-index", (wbapp.modalZndx - 5));
+                if ($(that).attr('data-zidx') == undefined) {
+                    $(that).css("z-index", wbapp.modalZndx).attr('data-zidx', wbapp.modalZndx);
+                    if ($(that).attr("data-backdrop") !== "false") {
+                        $(".modal-backdrop:not([data-zidx])").css("z-index", (wbapp.modalZndx - 5)).attr('data-zindx', wbapp.modalZndx - 5);
+                    }
                 }
                 window.dispatchEvent(new Event('resize'));
             });
@@ -1475,10 +1479,10 @@ wbapp.start = function () {
 
             $(document).delegate(".modal [data-dismiss]", "click", function (event) {
                 event.preventDefault();
-                var zndx = $(this).attr("data-dismiss") * 1;
-                var modal = $(document).find(".modal[style*='z-index: " + $(this).attr("data-dismiss") + "']");
+                let zndx = $(this).attr("data-dismiss") * 1;
+                let modal = $(document).find(".modal[data-zidx='" + $(this).attr("data-dismiss") + "']");
                 modal.modal("hide");
-                $(document).find(".modal-backdrop[style*='z-index: " + (zndx - 5) + "']").remove();
+                $(document).find(".modal-backdrop[data-dismiss='" + (zndx - 5) + "']").remove();
             });
 
 

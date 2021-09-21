@@ -5,6 +5,8 @@ class modMyicons
     {
         $this->size = 24;
         $this->path = __DIR__ . '/icons/';
+        $this->stroke = null;
+        $this->fill = null;
         if (get_class($obj) == 'wbApp') {
             $this->app = &$obj;
             $this->dom = $this->app->fromString('');
@@ -12,18 +14,17 @@ class modMyicons
                 'icon' => $this->app->route->mode
             ];
             $this->app->route->mode == 'init' ? $this->init() : null;
-            isset($this->app->route->query->size) ? $this->size = $this->app->route->query->size : $this->size = null;
-            isset($this->app->route->query->stroke) ? $this->stroke = $this->app->route->query->stroke : $this->stroke = null;
-            isset($this->app->route->query->fill) ? $this->fill = $this->app->route->query->fill : $this->fill = null;
             $this->parseURL();
             header('Content-Type: image/svg+xml');
+
             echo $this->icon();
             die;
         } else {
             $this->app = &$obj->app;
             $this->dom = &$obj;
-            $this->dom->attr('stroke') > '' ? $this->stroke = $this->dom->attr('stroke') : $this->stroke = null;
-            $this->dom->attr('fill') > '' ? $this->fill = $this->dom->attr('fill') : $this->fill = null;
+            $this->dom->attr('size') > '' ? $this->size = $this->dom->attr('size') : null;
+            $this->dom->attr('stroke') > '' ? $this->stroke = $this->dom->attr('stroke') : null;
+            $this->dom->attr('fill') > '' ? $this->fill = $this->dom->attr('fill') : null;
             $icon = $this->icon();
             if (!$icon) {$icon = '<err>[mi]</err>';}
             $obj->after($icon);
@@ -41,6 +42,11 @@ class modMyicons
             isset($this->app->route->query->size) ? $this->size = $this->app->route->query->size : $this->size = null;
             isset($this->app->route->query->stroke) ? $this->stroke = $this->app->route->query->stroke : $this->stroke = null;
             isset($this->app->route->query->fill) ? $this->fill = $this->app->route->query->fill : $this->fill = null;
+
+            isset($this->app->route->icon) ? $this->icon = $this->app->route->icon : null;
+            isset($this->app->route->size) ? $this->size = $this->app->route->size : null;
+            isset($this->app->route->stroke) ? $this->stroke = $this->app->route->stroke : null;
+            isset($this->app->route->fill) ? $this->fill = $this->app->route->fill : null;
         }
     }
 
@@ -78,31 +84,73 @@ class modMyicons
         $params = $this->dom->params;
         isset($this->icon) ? $icon = $this->icon : $icon = $this->name();
         $file = $this->path.$icon;
-        $sprite = $app->fromFile($file);
-        if (!$sprite) return false;
         substr($this->stroke,0,1) !== '#' ? $this->stroke = '#'.$this->stroke : null;
-        $id = $sprite->attr('id');
-/*
-        if ($id == '') {
-            $id = 'Layer';
-            $sprite->attr('id', $id);
-            file_put_contents($file,$sprite->outer());
+        substr($this->fill,0,1) !== '#' ? $this->fill = '#'.$this->fill : null;
+
+        
+        $app->vars('_sett.devmode') == 'on' ? $cache=false : $cache = true;
+
+        if (isset($_SERVER['HTTP_CACHE_CONTROL'])) {
+            
+            parse_str($_SERVER['HTTP_CACHE_CONTROL'], $cc);
+            isset($cc['no-cache']) ? $cache=false : null;
+            isset($cc['nocache']) ? $cache=false : null;
         }
-*/
-        $svg = $app->fromFile(__DIR__.'/myicon_ui.php');
-        $svg->find('[viewBox]')->removeAttr('viewBox');
-        $svg->find('use')->attr('href', $file.'#'.$id);
-        $svg->find('use')->after($sprite->inner());
-        $svg->find('use')->remove();
-        $svg->attr('class', $this->dom->attr('class'));
-        if ($this->size) {
-            $svg->attr('width',$this->size);
-            $svg->attr('height',$this->size);
-            $svg->attr('viewBox',"0 0 24 24");
+
+        $cachefile=md5($file.$this->size.$this->stroke,$this->fill);
+        $cachedir=$app->vars('_env.path_app').'/uploads/_cache/module/myicons/'.substr($cachefile, 0, 2);
+        $destination = $cachedir.'/'.$cachefile;
+        is_dir($cachedir) ? null : mkdir($cachedir, 0777, true);
+
+        $cache = false; // пока отключил кэширование, возможно, оно и не нужно
+        
+        if (!is_file($destination) or $cache == false) {
+            $sprite = $app->fromFile($file);
+            if (!$sprite) {
+                return false;
+            }
+            $id = $sprite->attr('id');
+            /*
+                    if ($id == '') {
+                        $id = 'Layer';
+                        $sprite->attr('id', $id);
+                        file_put_contents($file,$sprite->outer());
+                    }
+            */
+            $svg = $app->fromFile(__DIR__.'/myicon_ui.php');
+            $svg->find('[viewBox]')->removeAttr('viewBox');
+            $svg->find('use')->attr('href', $file.'#'.$id);
+            $svg->find('use')->after($sprite->inner());
+            $svg->find('use')->remove();
+            $svg->attr('class', $this->dom->attr('class'));
+            if ($this->size) {
+                $svg->attr('width', $this->size);
+                $svg->attr('height', $this->size);
+                $svg->attr('viewBox', "0 0 24 24");
+            }
+            $this->stroke > '#' ? $svg->find('[stroke]')->attr('stroke', $this->stroke) : null;
+            $this->fill > '#' ? $svg->find('[fill]')->attr('fill', $this->fill) : null;
+
+            $styled = $svg->find('[style*="stroke:"],[style*="fill:"]');
+            foreach ($styled as $tag) {
+                $style = ' '.$tag->attr('style');
+                $stroke = strpos($style, 'stroke:');
+                $fill = strpos($style, 'fill:');
+                if ($stroke) {
+                    substr($style, $stroke, 11) == 'stroke:none' ? $stroke = 'stroke:none' : $stroke = substr($style, $stroke, 14);
+                    $style = str_replace($stroke, 'stroke:'.$this->stroke, $style);
+                }
+                if ($fill) {
+                    substr($style, $fill, 9) == 'fill:none' ? $fill = 'fill:none' : $fill = substr($style, $fill, 12);
+                    $style = str_replace($fill, 'fill:'.$this->fill, $style);
+                }
+                $tag->attr('style', $style);
+            }
+            file_put_contents($destination, $svg->outer());
+            return $svg->outer();
+        } else {
+            return file_get_contents($destination);
         }
-        $this->stroke ? $svg->find('[stroke]')->attr('stroke',$this->stroke) : null;
-        $this->fill ? $svg->find('[fill]')->attr('fill',$this->fill) : null;
-        return $svg->outer();
     }
 
     public function name() {
