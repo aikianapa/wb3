@@ -38,7 +38,12 @@ $(document).on("filepicker-js", function () {
         let $filepicker = $(this);
         let $listview = $(this).find(".listview");
         let input = $filepicker.find(".filepicker-data");
-        let dpar = json_decode(input.attr('data-params'));
+        let dpar;
+        try {
+          dpar = json_decode(input.attr('data-params'));          
+        } catch (error) {
+          dpar = {}
+        }
         input.removeAttr('data-params')
         if (dpar.width !== undefined) width = dpar.width * 1;
         if (dpar.height !== undefined) height = dpar.height * 1;

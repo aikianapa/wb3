@@ -1,5 +1,4 @@
     var editor;
-    var $=jQuery.noConflict();
 //    var locale = wbapp.getlocale("url","/module/filemanager/locale");
     filemanagerGetDir('');
     filemanagerSideMenu();
@@ -62,7 +61,8 @@
     })
 
     $("#filemanager").undelegate("#list tr", "dblclick");
-    $("#filemanager").delegate("#list tr", "dblclick", function() {
+    $("#filemanager").delegate("#list tr", "dblclick", function(e) {
+        if ($(e.target).is('[type=checkbox]')) return;
             var path = $("#filemanager #list").data("path");
             if ($(this).is(".dir,.dir1")) {
                 filemanagerGetDir(path + "/" + $(this).attr("data-name"));
@@ -134,7 +134,7 @@
 
         $("#filemanager").undelegate("#list tr", "contextmenu");
         $("#filemanager").delegate("#list tr", "contextmenu", function() {
-            $(this).find("td .dropdown > a").trigger("click");
+            //$(this).find("td .dropdown > a").trigger("click");
             return false;
         });
 
@@ -142,7 +142,7 @@
 
     function filemanagerBuffer() {
         $("#filemanager").undelegate("#list tr [type=checkbox]", "change");
-        $("#filemanager").delegate("#list tr [type=checkbox]", "change", function() {
+        $("#filemanager").delegate("#list tr [type=checkbox]", "change", function(e) {
             var menu = $("#filemanager .filemgr-sidebar .nav");
             var count = $("#filemanager #list").find("tr:not(.back) [type=checkbox]:checked").length;
             var type;

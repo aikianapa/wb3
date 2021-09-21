@@ -1,9 +1,10 @@
 <html>
+<wb-var iconsize="tx-24" />
 <div class="app-filemgr">
     <div id="filemanager">
         <div class="chat-wrapper chat-wrapper-two">
             <div class="content-toasts pos-absolute t-10 r-10" style="z-index:5000;"></div>
-            <div class="filemgr-sidebar content-sidebar chat-sidebar">
+            <div class="filemgr-sidebar content-sidebar chat-sidebar scroll-y">
                 <div class="filemgr-sidebar-header">
                     <div id="filemanagerUploader" class="dropdown dropdown-icon flex-fill mg-l-10">
                         <div class="uploader">
@@ -13,28 +14,28 @@
                         </div>
                     </div>
                 </div>
-                <div class="filemgr-sidebar-body ps">
+                <div class="filemgr-sidebar-body">
                     <div class="pd-t-20 pd-b-10 pd-x-10">
                         <label
                             class="tx-sans tx-uppercase tx-medium tx-10 tx-spacing-1 tx-color-03 pd-l-10">{{_lang.actions}}</label>
-                        <ul class="nav nav-sidebar tx-13">
+                        <ul class="nav nav-sidebar tx-16 lh-14">
                             <li class="nav-item">
                                 <a href="#refresh" class="nav-link">
-                                    <i class="ri-refresh-line tx-16"></i>
+                                    <svg class="mi mi-rotate-refresh-loading size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.refresh}}</span>
                                 </a>
                             </li>
 
                             <li class="nav-item">
                                 <a href="#newdir" class="nav-link">
-                                    <i class="ri-folder-add-line tx-16"></i>
+                                    <svg class="mi mi-folder-medical-cross size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.title_new_dir}}</span>
                                 </a>
                             </li>
 
                             <li class="nav-item">
                                 <a href="#newfile" class="nav-link">
-                                    <i class="ri-file-add-line tx-16"></i>
+                                    <svg class="mi mi-documents-file.4 size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.title_new_file}}</span>
                                 </a>
                             </li>
@@ -42,35 +43,35 @@
                             <li class="nav-item hidden allow-single allow-file allow-file1"
                                 data-no-ext="zip tar arj rar gzip jpg jpeg png gif tif tiff">
                                 <a href="#edit" class="nav-link">
-                                    <i class="fa fa-edit"></i>
+                                    <svg class="mi mi-content-edit-pen size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.edit}}</span>
                                 </a>
                             </li>
-
+                            
                             <li class="nav-item hidden allow-single allow-dir allow-file allow-dir1 allow-file1">
                                 <a href="#rename" class="nav-link">
-                                    <i class="fa fa-i-cursor"></i>
+                                    <svg class="mi mi-input-text size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.rename}}</span>
                                 </a>
                             </li>
 
                             <li class="nav-item hidden allow-all">
                                 <a href="#remove" class="nav-link">
-                                    <i class="fa fa-trash-o"></i>
+                                    <svg class="mi mi-trash-delete-bin.3 size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.remove}}</span>
                                 </a>
                             </li>
-
+                            
                             <li class="nav-item hidden allow-all" data-no-ext="zip">
                                 <a href="#zip" class="nav-link">
-                                    <i class="fa fa-file-archive-o"></i>
+                                    <svg class="mi mi-file-zip-rar-circle size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.zip}}</span>
                                 </a>
                             </li>
 
                             <li class="nav-item hidden allow-single allow-file" data-ext="zip">
                                 <a href="#unzip" class="nav-link">
-                                    <i class="fa fa-file-archive-o"></i>
+                                    <svg class="mi mi-file-zip-rar-1 size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.unzip}}</span>
                                 </a>
                             </li>
@@ -78,21 +79,21 @@
 
                             <li class="nav-item hidden allow-all">
                                 <a href="#copy" class="nav-link">
-                                    <i class="fa fa-copy"></i>
+                                    <svg class="mi mi-copy-paste-select-add-plus size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.copy}}</span>
                                 </a>
                             </li>
 
                             <li class="nav-item hidden allow-all">
                                 <a href="#cut" class="nav-link">
-                                    <i class="fa fa-cut"></i>
+                                    <svg class="mi mi-scissors-cut.3 size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.cut}}</span>
                                 </a>
                             </li>
 
                             <li class="nav-item hidden allow-buffer">
                                 <a href="#paste" class="nav-link">
-                                    <i class="fa fa-paste"></i>
+                                    <svg class="mi mi-copy-paste-select-add-plus.2 size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.paste}}</span>
                                 </a>
                             </li>
@@ -108,7 +109,9 @@
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb py-1 px-2">
                                 <li class="breadcrumb-item" prepend="nav .breadcrumb">
-                                    <a href="#" data-path=""><i class="fa fa-home"></i></a>
+                                    <a href="#" data-path="">
+                                        <svg class="mi mi-home-house-big size-24" stroke="0168fa" wb-module="myicons"></svg>
+                                    </a>
                                 </li>
                                 <wb-var path='' />
                                 <wb-foreach wb-from="path">
@@ -122,58 +125,75 @@
                         </nav>
                     </div>
                 </div>
-
-                <table id="list" class="table table-striped tx-13">
+                
+                <table id="list" class="table table-striped table-hover tx-14">
+                    <thead>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td class="tx-normal">Название</td>
+                            <td class="tx-normal">Права</td>
+                            <td class="tx-normal">Размер</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </thead>
                     <tbody id="modFilemanagerList">
-                        <wb-foreach wb="from=result&size=10">
-                            <wb-var wrd="disabled" wb-where='"{{wr}}"!=="1"' else="" />
+                        <wb-foreach wb="from=result&size=20">
+                            <wb-var wr="disabled" wb-where='"{{wr}}"!=="1"' else="" />
                             <tr class="col-12 {{type}}{{link}} {{ext}}" data-name="{{name}}" data-ext="{{ext}}">
                                 <td class="valign-middle">
-                                    <label class="ckbox mg-b-0">
-                                        <input type="checkbox" wb-if='"{{wr}}"!="1"' disabled>
-                                        <input type="checkbox" wb-if='"{{wr}}"=="1"'>
+                                    <label class="ckbox mg-b-0" wb-if="'{{type}}'!=='back'">
+                                        <input type="checkbox" class="wd-20-f ht-20-f" wb-if='"{{wr}}"!="1"' disabled>
+                                        <input type="checkbox" class="wd-20-f ht-20-f" wb-if='"{{wr}}"=="1"'>
                                         <span></span>
                                     </label>
                                 </td>
-                                <td class="col name">
-                                    <i class="fa {{type}} {{ext}} tx-22 tx-primary lh-0 valign-middle"></i>
+                                <td class="col name ellipsis">
+                                    <i class="fa {{type}} {{ext}} tx-24 tx-primary lh-0 valign-middle" wb-if="'{{type}}'!=='back'"></i>
+                                    <svg class="mi mi-folder-group-arrow mr-2 size-24" wb-module="myicons" wb-if="'{{type}}'=='back'"></svg>
                                     <span class="pd-l-5">{{name}}</span>
                                 </td>
                                 <td class="hidden-xs">
                                     <nobr>{{perms}}</nobr>
                                 </td>
-                                <td class="hidden-xs">
+                                <td class="hidden-xs tx-right">
                                     <nobr>{{size}}</nobr>
                                 </td>
-                                <td class="hidden-xs-down">{{ext}}</td>
-                                <td>
-                                    <div class="dropdown" wb-if='"{{wr}}"=="1"'>
-                                        <a href="#" data-toggle="dropdown" class="btn pd-y-3 tx-gray-500 hover-info"
-                                            wb-if='"{{type}}"!=="back"'><i class="ri-more-2-fill"></i></a>
-                                        <div class="dropdown-menu dropdown-menu-right pd-10" wb-if='"{{type}}"!=="back"'>
-                                            <nav class="nav nav-style-1 flex-column" >
-                                                <a href="#edit" class="nav-link nobr" wb-if='"{{type}}"=="file"'><i
-                                                        class="fa fa-edit"></i> {{_lang.edit}}</a>
-                                                <a href="#rendir" class="nav-link nobr" wb-if='"{{type}}"=="dir"'><i
-                                                        class="fa fa-i-cursor"></i> {{_lang.rename}}</a>
-                                                <a href="#renfile" class="nav-link nobr" wb-if='"{{type}}"=="file"'><i
-                                                        class="fa fa-i-cursor"></i> {{_lang.rename}}</a>
-                                                <a href="#renlink" class="nav-link nobr"
-                                                    wb-if='"{{type}}"=="dir1" OR "{{type}}"=="file1"'><i
-                                                        class="fa fa-i-cursor"></i> {{_lang.rename}}</a>
-                                                <a href="{{href}}" download="{{name}}" class="nav-link nobr"
-                                                    wb-if='"{{type}}"=="file"'><i class="fa fa-download"></i>
-                                                    {{_lang.download}}</a>
-                                                <a href="#rmfile" class="nav-link nobr" wb-if='"{{type}}"=="file"'><i
-                                                        class="fa fa-remove"></i> {{_lang.remove}}</a>
-                                                <a href="#rmdir" class="nav-link nobr" wb-if='"{{type}}"=="dir"'><i
-                                                        class="fa fa-remove"></i> {{_lang.remove}}</a>
-                                                <a href="#rmlink" class="nav-link nobr"
-                                                    wb-if='"{{type}}"=="dir1" OR "{{type}}"=="file1"'><i
-                                                        class="fa fa-trash-o"></i> {{_lang.remove}}</a>
-                                            </nav>
-                                        </div>
-                                    </div>
+                                <!--td class="hidden-xs-down">{{ext}}</td-->
+                                <td class="actions tx-right">
+                                    <div class="d-block wd-150" wb-if='"{{type}}"!=="back"'>
+                                                <a href="#edit" class="nobr nav-link" wb-if='"{{type}}"=="file"'
+                                                    data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.edit}}">
+                                                    <svg class="mi mi-content-edit-pen mr-2 size-24" wb-module="myicons"></svg>
+                                                </a>
+                                                <a href="#rendir" class="nobr nav-link" wb-if='"{{type}}"=="dir"'
+                                                    data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.rename}}">
+                                                    <svg class="mi mi-input-text size-24" wb-module="myicons"></svg>
+                                                </a>
+                                                <a href="#renfile" class="nobr nav-link" wb-if='"{{type}}"=="file"'
+                                                    data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.rename}}">
+                                                    <svg class="mi mi-input-text size-24" wb-module="myicons"></svg>
+                                                </a>
+                                                <a href="#renlink" class="nobr nav-link" wb-if='"{{type}}"=="dir1" OR "{{type}}"=="file1"'
+                                                    data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.rename}}">
+                                                    <svg class="mi mi-input-text size-24" wb-module="myicons"></svg>
+                                                </a>
+                                                <a href="{{href}}" download="{{name}}" class="nobr nav-link" wb-if='"{{type}}"=="file"'
+                                                    data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.download}}">
+                                                    <svg class="mi mi-download-arrow size-24" wb-module="myicons"></svg>
+                                                </a>
+                                                <a href="#rmfile" class="nobr nav-link" wb-if='"{{type}}"=="file"'
+                                                    data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.remove}}">
+                                                <svg class="mi mi-trash-delete-bin.3 size-24" wb-module="myicons"></svg>
+                                                </a>
+                                                <a href="#rmdir" class="nobr nav-link" wb-if='"{{type}}"=="dir"'
+                                                    data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.remove}}">
+                                                    <svg class="mi mi-trash-delete-bin.3 size-24" wb-module="myicons"></svg>
+                                                </a>
+                                                <a href="#rmlink" class="nobr nav-link" wb-if='"{{type}}"=="dir1" OR "{{type}}"=="file1"'
+                                                    data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.remove}}">
+                                                    <svg class="mi mi-trash-delete-bin.3 size-24" wb-module="myicons"></svg>
+                                                </a>
+                                </div>
                                 </td>
                             </tr>
                         </wb-foreach>
@@ -383,7 +403,7 @@
 </div>
 <script type="wbapp">
     wbapp.loadScripts(["/engine/modules/filemanager/filemanager.js?{{_env.new_id}}"],"filemanager-js");
-    wbapp.loadStyles(["/engine/modules/filemanager/filemanager.css"]);
+    wbapp.loadStyles(["/engine/modules/filemanager/filemanager.less"]);
 </script>
 
 
