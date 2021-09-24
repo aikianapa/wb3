@@ -36,7 +36,7 @@ class attrSave extends wbDom
 
         if (!$dom->is("[contenteditable]") && !$dom->is("input,select,textarea")) {
             if ($params->method == "ajax") {
-                $callback .= "return false;";
+                isset($callback) ? $callback .= "return false;" : $callback = "return false;";
             }
             $dom->params('trigger') > '' ? $trigger = $dom->params('trigger') : $trigger = 'onClick';
         } elseif ($dom->is("input,textarea,select")) {

@@ -45,11 +45,11 @@ class modFilemanager
                         $current_file = "{$dir}/{$dircont[$i]}";
                         $ext=pathinfo($current_file, PATHINFO_EXTENSION);
                         $link=is_link($current_file);
+                        $modif = date ("d.m.y H:i", filemtime($current_file));
                         $href=$_ENV["route"]["params"]["dir"]."/".$dircont[$i];
                         $perms=substr(sprintf('%o', fileperms($current_file)), -4);
                         if (is_file($current_file)) {
                             $size=filesize($current_file);
-
                             if ($size>1024*1024*1024) {
                                 $size=sprintf("%u", $size/(1024*1024*1024))."Гб";
                             } elseif ($size>1024*1024) {
@@ -59,10 +59,10 @@ class modFilemanager
                             } else {
                                 $size.="";
                             }
-                            $list[] = array("type"=>"file","path"=>$dir,"perms"=>$perms,"size"=>$size,"href"=>$href,"link"=>$link,"ext"=>$ext,"name"=>$dircont[$i],'wr'=>is_writable($current_file));
+                            $list[] = array("type"=>"file","path"=>$dir,"modif"=>$modif,"perms"=>$perms,"size"=>$size,"href"=>$href,"link"=>$link,"ext"=>$ext,"name"=>$dircont[$i],'wr'=>is_writable($current_file));
                         }
                         if (is_dir($current_file)) {
-                            $list[] = array("type"=>"dir","path"=>$dir,"perms"=>$perms,"size"=>"-","href"=>$href,"link"=>$link,"ext"=>"DIR","name"=>$dircont[$i],'wr'=>is_writable($current_file));
+                            $list[] = array("type"=>"dir","path"=>$dir,"modif"=>$modif,"perms"=>$perms,"size"=>"-","href"=>$href,"link"=>$link,"ext"=>"DIR","name"=>$dircont[$i],'wr'=>is_writable($current_file));
                         }
                     }
                     $i++;

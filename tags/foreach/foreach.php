@@ -39,7 +39,7 @@ class tagForeach
 
         $dom->tid = $this->tid;
 
-        if (!$dom->params->length && $dom->attr('data-ajax') > '') {
+        if (!$dom->params('length') && $dom->attr('data-ajax') > '') {
             $dom->params = (object)wbAttrToValue($dom->attr('data-ajax'));
         }
 
@@ -344,7 +344,7 @@ class tagForeach
         $dom = &$this->dom;
 
         $dom->filterStrict();
-        $options = &$this->options();
+        $options = $this->options();
 
         $count = 0;
         $page = $pages = 1;

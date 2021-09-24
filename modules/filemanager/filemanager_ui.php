@@ -6,19 +6,18 @@
             <div class="content-toasts pos-absolute t-10 r-10" style="z-index:5000;"></div>
             <div class="filemgr-sidebar content-sidebar chat-sidebar scroll-y">
                 <div class="filemgr-sidebar-header">
-                    <div id="filemanagerUploader" class="dropdown dropdown-icon flex-fill mg-l-10">
+                    <div id="filemanagerUploader" class="flex-fill mg-l-10">
                         <div class="uploader">
-                            <button id="pickfiles" wb="module=filepicker&mode=button" class="btn btn-xs btn-block btn-primary" wb-path="/">
-                                {{_lang.upload}} <i class="ri-upload-2-line"></i>
+                            <button id="pickfiles" wb="module=filepicker&mode=button" class="btn btn-block btn-primary" wb-path="/">
+                                {{_lang.upload}} 
+                                <svg class="mi-upload-loading-arrow size-24" stroke="FFFFFF" wb-module="myicons"></svg>
                             </button>
                         </div>
                     </div>
                 </div>
                 <div class="filemgr-sidebar-body">
-                    <div class="pd-t-20 pd-b-10 pd-x-10">
-                        <label
-                            class="tx-sans tx-uppercase tx-medium tx-10 tx-spacing-1 tx-color-03 pd-l-10">{{_lang.actions}}</label>
-                        <ul class="nav nav-sidebar tx-16 lh-14">
+                    <div class="pd-10">
+                        <ul class="nav nav-sidebar tx-medium tx-14 lh-14">
                             <li class="nav-item">
                                 <a href="#refresh" class="nav-link">
                                     <svg class="mi mi-rotate-refresh-loading size-24" wb-module="myicons"></svg>
@@ -126,11 +125,12 @@
                     </div>
                 </div>
                 
-                <table id="list" class="table table-striped table-hover tx-14">
+                <table id="list" class="table table-striped table-hover tx-14 tx-gray-700">
                     <thead>
                         <tr>
                             <td>&nbsp;</td>
                             <td class="tx-normal">Название</td>
+                            <td class="tx-normal">Изменён</td>
                             <td class="tx-normal">Права</td>
                             <td class="tx-normal">Размер</td>
                             <td>&nbsp;</td>
@@ -151,6 +151,9 @@
                                     <i class="fa {{type}} {{ext}} tx-24 tx-primary lh-0 valign-middle" wb-if="'{{type}}'!=='back'"></i>
                                     <svg class="mi mi-folder-group-arrow mr-2 size-24" wb-module="myicons" wb-if="'{{type}}'=='back'"></svg>
                                     <span class="pd-l-5">{{name}}</span>
+                                </td>
+                                <td class="hidden-xs">
+                                    <nobr>{{modif}}</nobr>
                                 </td>
                                 <td class="hidden-xs">
                                     <nobr>{{perms}}</nobr>

@@ -12,6 +12,11 @@
         right: 0;
     }
 
+    svg[class*='mi-'] {
+        width:24px;
+        height: 24px;
+    }
+
     @media (min-width: 992px) {
         .filemgr-wrapper {
             top: 60px;
@@ -54,18 +59,16 @@
         left: 0;
         right: 0;
         height: 55px;
-        border-bottom: 1px solid rgba(72, 94, 144, 0.16);
+        /*border-bottom: 1px solid rgba(72, 94, 144, 0.16);*/
         display: flex;
-        align-items: center;
+        align-items: end;
         padding: 0 10px;
     }
 
     .filemgr-sidebar-header button {
-        text-transform: uppercase;
         font-weight: 500;
-        font-size: 10px;
         font-family: -apple-system, BlinkMacSystemFont, "Inter UI", Roboto, sans-serif;
-        letter-spacing: .5px;
+        border-radius: 20px;;
     }
 
     .filemgr-sidebar-header button.btn-white {
@@ -76,12 +79,6 @@
         margin-left: 10px;
     }
 
-    .filemgr-sidebar-header button svg {
-        width: 12px;
-        height: 12px;
-        stroke-width: 2.5px;
-        margin-top: -1px;
-    }
 
     .filemgr-sidebar-body {
         position: absolute;

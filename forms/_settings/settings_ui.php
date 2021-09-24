@@ -6,7 +6,7 @@
         <div class="d-flex align-items-center justify-content-between pd-x-10 mg-b-10">
           <span class="tx-30 tx-medium tx-gray-900 tx-sans tx-spacing-1"> {{_lang.settings}}</span>
         </div>
-        <nav id="{{_form}}ListSettings" class="nav flex-column nav-chat mg-b-20 tx-16 lh-14">
+        <nav id="{{_form}}ListSettings" class="nav flex-column nav-chat mg-b-20 tx-14 lh-14">
           <span class="nav-item">
             <a class="nav-link" href="#" data-ajax="{'url':'/cms/settings/ui_common/','html':'#editSettingsForm'}"
               auto>

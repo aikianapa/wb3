@@ -7,8 +7,8 @@ class ctrlModule {
 					die;
 			}
 
-			$module = $app->route->module;
-      $mode = $app->route->mode;
+			$module = $app->vars('_route.module');
+      $mode = $app->vars('_route.mode');
       if ($mode == '_settings') {
           $this->settings();
       } else {

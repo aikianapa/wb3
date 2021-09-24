@@ -55,6 +55,7 @@ function tagTree( &$dom, $Item = null ) {
         }
     }
 
+
     if ( $field > '' ) {
         if ( !isset( $dom->params->name ) ) $dom->params->name = $field;
         if ( strpos( $field, '.' ) ) {
@@ -77,19 +78,17 @@ function tagTree( &$dom, $Item = null ) {
             $tree['dict'] = [];
         } else {
             isset( $Item[$field]['dict'] ) ? $tree['dict'] = $Item[$field]['dict'] : $tree['dict'] = [];
-            $Item = $Item[$field]['data'];
+            isset( $Item[$field]['data'] ) ? $Item = $Item[$field]['data'] : null;
             if (isset($Item['data'])) unset( $Item['data'] );
             if (isset($Item['dict'])) unset( $Item['dict'] );
         }
     }
 
-    if ( isset( $dom->params->dict ) ) {
+    if ( $dom->params('dict') ) {
         $dictdata = wbItemRead( 'catalogs', $dom->params->dict );
         if ($dictdata && isset($dictdata['tree'])) {
             $dictdata = $tree = $dictdata['tree'];
-            if (!isset($Item[$name])) {
-                $Item = $dictdata['data'];
-            }
+            $Item = $dictdata['data'];
         }
         unset( $dictdata );
     }
@@ -194,8 +193,8 @@ class tagTreeSelect {
                 $item['_lvl'] = $this->lvl;
 
                 if ( !isset( $item['active'] ) ) $item['active'] = '';
-                if ( $this->parent !== false && $item['active'] == 'on' )  $flag = true;
-                if ( $this->level > '' && $this->level !== $this->lvl ) $flag = false;
+                if ( $this->parent && $item['active'] == 'on' )  $flag = true;
+                if ( $this->level > 0 && $this->level !== $this->lvl ) $flag = false;
                 if ( $app->vars( '_route.controller' ) == 'ajax' ) {
                     // применяем фильтр только для ajax вызовов
                     if ( $app->vars( '_post._filter' ) && $flag ) $flag = $app->filterItem( $item );

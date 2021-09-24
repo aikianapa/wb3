@@ -11,9 +11,9 @@ class modMyicons
             $this->app = &$obj;
             $this->dom = $this->app->fromString('');
             $this->dom->params = (object)[
-                'icon' => $this->app->route->mode
+                'icon' => $this->app->vars('_route.mode')
             ];
-            $this->app->route->mode == 'init' ? $this->init() : null;
+            $this->app->vars('_route.mode') == 'init' ? $this->init() : null;
             $this->parseURL();
             header('Content-Type: image/svg+xml');
 
@@ -97,7 +97,7 @@ class modMyicons
             isset($cc['nocache']) ? $cache=false : null;
         }
 
-        $cachefile=md5($file.$this->size.$this->stroke,$this->fill);
+        $cachefile = md5($file."{$this->size}{$this->stroke}{$this->fill}");
         $cachedir=$app->vars('_env.path_app').'/uploads/_cache/module/myicons/'.substr($cachefile, 0, 2);
         $destination = $cachedir.'/'.$cachefile;
         is_dir($cachedir) ? null : mkdir($cachedir, 0777, true);
@@ -117,21 +117,12 @@ class modMyicons
                         file_put_contents($file,$sprite->outer());
                     }
             */
-            $svg = $app->fromFile(__DIR__.'/myicon_ui.php');
-            $svg->find('[viewBox]')->removeAttr('viewBox');
-            $svg->find('use')->attr('href', $file.'#'.$id);
-            $svg->find('use')->after($sprite->inner());
-            $svg->find('use')->remove();
-            $svg->attr('class', $this->dom->attr('class'));
-            if ($this->size) {
-                $svg->attr('width', $this->size);
-                $svg->attr('height', $this->size);
-                $svg->attr('viewBox', "0 0 24 24");
-            }
-            $this->stroke > '#' ? $svg->find('[stroke]')->attr('stroke', $this->stroke) : null;
-            $this->fill > '#' ? $svg->find('[fill]')->attr('fill', $this->fill) : null;
 
-            $styled = $svg->find('[style*="stroke:"],[style*="fill:"]');
+
+            $this->stroke > '#' ? $sprite->find('[stroke]')->attr('stroke', $this->stroke) : null;
+            $this->fill > '#' ? $sprite->find('[fill]')->attr('fill', $this->fill) : null;
+
+            $styled = $sprite->find('[style*="stroke:"],[style*="fill:"]');
             foreach ($styled as $tag) {
                 $style = ' '.$tag->attr('style');
                 $stroke = strpos($style, 'stroke:');
@@ -146,6 +137,20 @@ class modMyicons
                 }
                 $tag->attr('style', $style);
             }
+
+
+            $svg = $app->fromFile(__DIR__.'/myicon_ui.php');
+            $svg->find('[viewBox]')->removeAttr('viewBox');
+            $svg->find('use')->attr('href', $file.'#'.$id);
+            $svg->find('use')->after($sprite->inner());
+            $svg->find('use')->remove();
+            $svg->attr('class', $this->dom->attr('class'));
+            if ($this->size) {
+                $svg->attr('width', $this->size);
+                $svg->attr('height', $this->size);
+                $svg->attr('viewBox', "0 0 24 24");
+            }
+
             file_put_contents($destination, $svg->outer());
             return $svg->outer();
         } else {

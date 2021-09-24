@@ -63,7 +63,6 @@ class ctrlThumbnails
     public function thumbnail_view($app)
     {
         $remote = false;
-        $cache = true;
         $query = $app->vars('_route.query');
         if ($app->vars('_route.http')) {
             $remote=true;
@@ -73,9 +72,8 @@ class ctrlThumbnails
             $p='https';
         }
 
-        if ($app->vars('_sett.devmode') == 'on') {
-            $cache=false;
-        }
+        $app->vars('_sett.devmode') == 'on' ? $cache=false : $cache = true;
+
         if (isset($_SERVER['HTTP_CACHE_CONTROL'])) {
             parse_str($_SERVER['HTTP_CACHE_CONTROL'], $cc);
             if (isset($cc['no-cache']) or isset($query['nocache'])) {
@@ -112,7 +110,6 @@ class ctrlThumbnails
             $file=urldecode($_ENV['path_app'].'/'.$_GET['src']);
             $ext = pathinfo($file, PATHINFO_EXTENSION);
         }
-
 
         if (!is_file($file) or !in_array($ext, $imgext)) {
             if (is_file($app->vars('_env.path_engine').'/lib/fileicons/'.$ext.'.svg')) {
@@ -175,9 +172,12 @@ class ctrlThumbnails
                     } else {
                         $mode    = Imagine\Image\ImageInterface::THUMBNAIL_FLAG_UPSCALE;
                     }
+
                     $image = $imagine->open(realpath($file));
+
                     $ih = $image->getSize()->getHeight();
                     $iw = $image->getSize()->getWidth();
+
                     $r1 = $iw / $ih;
                     $r2 = $app->vars('_route.w') / $app->vars('_route.h');
                     $ratio = $r1 / $r2;
@@ -205,7 +205,7 @@ class ctrlThumbnails
                         }
                     }
                     $image->thumbnail($size, $mode);
-                    
+
                     $canvasCenter = new Imagine\Image\Point\Center($canvas->getSize());
                     $imageCenter = new Imagine\Image\Point\Center($image->getSize());
 
@@ -232,6 +232,7 @@ class ctrlThumbnails
             $mime = wbMime($destination);
             header('Content-Type: '.$mime);
             echo $image;
+            die;
         }
     }
 }
