@@ -588,7 +588,7 @@ function reduce_3_expr_3($tokens, &$result) {
 # (3) expr :=  expr  '*'  expr
 #
 $result = reset($tokens);
- $result = (int)$tokens[0] * (int)$tokens[2];
+ $result = (float)$tokens[0] * (float)$tokens[2];
 }
 
 function reduce_4_expr_4($tokens, &$result) {
