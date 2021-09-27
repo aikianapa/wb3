@@ -1306,9 +1306,8 @@ function wbError($type, $name, $error = '__return__error__', $args = null)
         if (isset($_ENV['errors'][$error])) {
             $errname = $_ENV['errors'][$error];
             foreach ((array)$args as $key => $arg) {
-                if ((array)$arg === $arg) {
-                    $arg = implode(',', $arg);
-                }
+                (object)$arg === $arg ? $arg = (array)$arg : null;
+                (array)$arg === $arg ? $arg = implode(',', $arg) : null;
                 $errname = str_replace('{{'.$key.'}}', $arg, $errname);
             }
             $_ENV["last_error"] = $error = $errname;

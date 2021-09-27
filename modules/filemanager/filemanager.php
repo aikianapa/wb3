@@ -10,7 +10,7 @@ class modFilemanager
         strtolower(get_class($obj)) == 'wbapp' ? $app = &$obj : $app = &$obj->app;
         $app->apikey('module');
         $this->app = &$app;
-        if (isset($app->route->mode) AND $app->route->mode !== 'init') {
+        if (isset($app->route->mode) and $app->route->mode !== 'init') {
             $mode = $app->route->mode;
             try {
                 echo $this->$mode();
@@ -45,7 +45,7 @@ class modFilemanager
                         $current_file = "{$dir}/{$dircont[$i]}";
                         $ext=pathinfo($current_file, PATHINFO_EXTENSION);
                         $link=is_link($current_file);
-                        $modif = date ("d.m.y H:i", filemtime($current_file));
+                        $modif = date("d.m.y H:i", filemtime($current_file));
                         $href=$_ENV["route"]["params"]["dir"]."/".$dircont[$i];
                         $perms=substr(sprintf('%o', fileperms($current_file)), -4);
                         if (is_file($current_file)) {
@@ -194,7 +194,8 @@ class modFilemanager
                 }
                 $content->append($inp);
             }
-            echo $content; die;
+            echo $content;
+            die;
             $out->find("meta,input")->remove();
 
             $out->find("#filemanagerModalDialog .modal-title")->inner($title);
@@ -341,7 +342,7 @@ class modFilemanager
         }
         $this->action = $this->app->route->params[0];
         $call = "action_".$this->action;
-        if (method_exists($this,$call)) {
+        if (method_exists($this, $call)) {
             $res = $this->$call();
             if (is_array($res)) {
                 echo json_encode($res);
@@ -368,7 +369,7 @@ class modFilemanager
         $dir = $_ENV["path_app"].$_POST["path"];
         $newname=$_POST["newname"];
         $path=$dir."/".$newname;
-        if (!is_file($path) AND !is_dir($path) and $newname>"") {
+        if (!is_file($path) and !is_dir($path) and $newname>"") {
             $umask=umask(0);
             $res=mkdir($path, 0777, true);
             umask($umask);
@@ -394,7 +395,7 @@ class modFilemanager
         $dir=$_ENV["path_app"].$_POST["path"];
         $newname=$_POST["newname"];
         $path=$dir."/".$newname;
-        if (!is_file($path) AND !is_dir($path) and $newname>"") {
+        if (!is_file($path) and !is_dir($path) and $newname>"") {
             $res=file_put_contents($path, "");
         }
         if (is_file($path)) {
@@ -509,4 +510,3 @@ class modFilemanager
         return $this->app->role("admin");
     }
 }
-?>

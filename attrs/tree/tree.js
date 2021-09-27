@@ -35,18 +35,18 @@ function wb_tree() {
                 storeData();
             });
             $(modal).undelegate(".modal-header a.btn:not(.active)", 'click');
-            $(modal).delegate(".modal-header a.btn:not(.active)", 'click', function () {
+            $(modal).delegate(".modal-header a.btn:not(.active)", 'click', function (ev) {
                 storeData(false);
-                var postdict = $(tree).getData(false);
-                var postdata = $(tree).getData(path);
+                let postdict = $(tree).getData(false);
+                let postdata = $(tree).getData(path);
                 delete postdata.children;
                 if ($(this).hasClass("data")) {
-                    var res = wbapp.postSync("/ajax/tree/form/data/", { "data": postdata, "dict": postdict });
+                    let res = wbapp.postSync("/ajax/tree/form/data/", { "data": postdata, "dict": postdict });
                     $(modal).find(".treeData form").html(res.content).runScripts();
                     $(modal).find(".treeData form :input", 0).trigger("change");
                     wbapp.tplInit();
                 } else if ($(this).hasClass("dict")) {
-                    var res = wbapp.postSync("/ajax/tree/form/dict/", { "data": postdata, "dict": postdict });
+                    let res = wbapp.postSync("/ajax/tree/form/dict/", { "data": postdata, "dict": postdict });
                     $(modal).find(".treeDict form").html(res.content).runScripts();
                     $(modal).find(".treeDict form").dictEvents(tree);
                     wbapp.tplInit();
@@ -325,7 +325,7 @@ function wb_tree() {
         var tree = $(this).getTree();
         var content = $.parseJSON($(tree).children(".wb-tree-data").text());
         if (path === true) {
-            eval("var data = content;");
+            var data = content;
         } else if (path === false) {
             eval("var data = content.dict;");
         } else {

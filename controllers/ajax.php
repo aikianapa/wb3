@@ -90,7 +90,7 @@ class ctrlAjax
         }
 
         $user = $app->checkUser($post->login, $fld, $post->password);
-        $role = &$user->group;
+        $role = $user->group;
 
         if ($user) {
             $url = '/cms';

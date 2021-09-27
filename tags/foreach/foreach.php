@@ -350,7 +350,7 @@ class tagForeach
         $page = $pages = 1;
         $srvpag = false;
         $call = $dom->params("call");
-
+        $list = [];
         $listTable = $parent = $dom->item;
 
         $dom->params('render') == 'server' && $dom->params('bind') > '' ? $dom->params->tpl = 'true' : null;

@@ -17,11 +17,11 @@ class modLanginp
         foreach($attrs as $at) {
             $at->name == 'class' ? $inp->addClass($at->value) : $inp->attr($at->name, $at->value);
         }
-        $txt->attr('name', $inp->attr('name'));
+        $name = $inp->attr('name');
+        $txt->attr('name', $name);
         $out->copy($dom);
         $inp->removeAttr('name');
         $inp->removeAttr('wb');
-        
         $l = wbListLocales($dom->app);
         if (count($l)) {
             $locales = [];
@@ -31,15 +31,24 @@ class modLanginp
         } else {
             $locales = $dom->app->vars('_env.locale');
         }
+        isset($out->item[$name]) ? $value = $out->item[$name] : $value = [];
+        if ( isset($value) && (string)$value === $value ) {
+            $tmp = [];
+            foreach($locales as $lang => $val) {
+                $tmp[$lang] = $value;
+            }
+            $value = $tmp;
+        }
+        $dom->item[$name] = $value;
         $out->item['_locales'] = $locales;
         $out->fetch();
-        $name = $txt->attr('name');
         if (isset($dom->item[$name])) {
             foreach ((array)$dom->item[$name] as $k => $v) {
                 $out->find('input[data-name="'.$k.'"]')->attr('value', $v);
                 $k == $dom->app->vars('_env.lang') ? $inp->attr('value', $v) : null;
             }
         }
+        $out->find('textarea.mod-langinp')->text(json_encode($dom->item[$name]));
         $out->find('.dropdown-item input')->removeAttr('name');
         $dom->after($out->outer());
         $dom->remove();
