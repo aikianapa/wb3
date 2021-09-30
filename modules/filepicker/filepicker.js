@@ -80,12 +80,15 @@ $(document).on("filepicker-js", function () {
           return dir.pop();
         }
 
+        var view = 'thumbc'; // cover
+        if (dpar.view == 'contain') view = 'thumb';
+
         var getthumb = function (file, update = false) {
           var thumb;
           if (update == true) {
-            thumb = "/thumbc/" + width + "x" + height + "/src" + file + "?" + wbapp.newId();
+            thumb = "/"+view+"/" + width + "x" + height + "/src" + file + "?" + wbapp.newId();
           } else {
-            thumb = "/thumbc/" + width + "x" + height + "/src" + file;
+            thumb = "/"+view+"/" + width + "x" + height + "/src" + file;
           }
           return thumb;
         }

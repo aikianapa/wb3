@@ -26,7 +26,9 @@ class modMyicons
             $this->dom->attr('stroke') > '' ? $this->stroke = $this->dom->attr('stroke') : null;
             $this->dom->attr('fill') > '' ? $this->fill = $this->dom->attr('fill') : null;
             $icon = $this->icon();
-            if (!$icon) {$icon = '<err>[mi]</err>';}
+            $this->icon = 'ico-icon-sqaure.svg';
+            !$icon ? $icon = $this->icon() : null;
+            !$icon ? $icon = '<err>[mi]</err>' : null;
             $obj->after($icon);
             $obj->remove();
         } 

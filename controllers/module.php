@@ -15,6 +15,7 @@ class ctrlModule {
         $modpath = "/modules/{$module}";
         $aModule=$_ENV["path_app"].$modpath."/{$module}.php";
         $eModule=$_ENV["path_engine"].$modpath."/{$module}.php";
+
         if (is_file($aModule)) {
           $app->addModule($module, $modpath);
           require_once($aModule);

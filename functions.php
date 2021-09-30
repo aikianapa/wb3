@@ -1306,8 +1306,8 @@ function wbError($type, $name, $error = '__return__error__', $args = null)
         if (isset($_ENV['errors'][$error])) {
             $errname = $_ENV['errors'][$error];
             foreach ((array)$args as $key => $arg) {
-                (object)$arg === $arg ? $arg = (array)$arg : null;
-                (array)$arg === $arg ? $arg = implode(',', $arg) : null;
+@                (object)$arg === $arg ? $arg = (array)$arg : null;
+@                (array)$arg === $arg ? $arg = implode(',', $arg) : null;
                 $errname = str_replace('{{'.$key.'}}', $arg, $errname);
             }
             $_ENV["last_error"] = $error = $errname;
@@ -2057,13 +2057,13 @@ function wbCheckUser($login, $type = 'email', $pass = null) {
         'isgroup' => ['$ne'=>'on'],
         'active' => 'on'
     ]]);
-    if (!count($users['list'])) {
+    if (intval($users['count']) == 0) {
         return false;
     }
     $user = array_shift($users['list']);
     $user['group'] = wbItemRead("users", $user['role']);
     $user = wbArrayToObj($user);
-        if ($pass == null) {
+    if ($pass == null) {
         return $user;
     } else if ($user->group->active == "on" and wbPasswordCheck($pass, $user->password)) {
         return $user;
