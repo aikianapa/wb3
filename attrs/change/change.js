@@ -6,15 +6,20 @@ $.fn.wbAttrChange = function (sl, fn) {
         console.log('Trigger: wb-change-start ' + selector );
         var cache = fn[i];
         var data = {};
-        if ($(that).is('select')) {
-            let opt = $(that).find('option[value="' + $(that).val() + '"]');
-            $(that).find('[selected]').removeAttr('selected');
-            $(opt).prop('selected',true).attr('selected',true);
-            data[$(that).attr('name')] = $(that).val();
-        } else if ($(that).attr('name') > '') {
-            data[$(that).attr('name')] = $(that).val();
+        let name = $(that).attr('name'); 
+        name ? null : name = $(that).attr('data-name'); 
+        if (name !== undefined) {
+            if ($(that).is('select')) {
+                let opt = $(that).find('option[value="' + $(that).val() + '"]');
+                $(that).find('[selected]').removeAttr('selected');
+                $(opt).prop('selected',true).attr('selected',true);
+                data[name] = $(that).val();
+            } else if (name > '') {
+                data[name] = $(that).val();
+            }
         }
         data.value = $(that).val();
+
         wbapp.post("/ajax/change_fld/", { 'cache': cache, 'data': data }, function (data) {
             if (data.content) {
                 $(selector).html($(data.content).html());

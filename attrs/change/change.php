@@ -17,6 +17,7 @@ class attrChange
 
 
         parse_str($params->change, $ini);
+        
         if (isset($ini['filter']) && isset($ini['target'])) {
             return $this->filter($dom, $ini);
         }
@@ -66,7 +67,7 @@ class attrChange
         $onchange .= ';$(this).wbAttrChange(['.$sl.'],['.$fn.']);';
         $dom->attr('onchange', $onchange);
         $dom->append("
-        <script type='wbapp'>
+        <script type='wbapp' remove>
         wbapp.loadScripts(['/engine/attrs/change/change.js'],'wb-change-js');
         </script>
         ");
@@ -82,7 +83,7 @@ class attrChange
         }
         $dom->attr('onclick', $onclick);
         $dom->append("
-        <script type='wbapp'>
+        <script type='wbapp' remove>
         wbapp.loadScripts(['/engine/attrs/change/filter.js'],'wb-change-filter-js');
         </script>
         ");

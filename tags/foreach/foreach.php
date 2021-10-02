@@ -29,9 +29,6 @@ class tagForeach
 
         $dom->html("");
         $dom->outer = $dom->outer();
-
-        $dom->parent()->attr("id") > '' ? $pid = $dom->parent()->attr("id") : $pid = "fp_" . md5($dom->tpl);
-        $dom->parent()->attr("id", $pid);
  
         !isset($this->tid) && $dom->attr("id") > "" ? $this->tid = $dom->attr("id") : null;
         !isset($this->tid) && $dom->parent()->attr("id") > "" ? $this->tid = $dom->parent()->attr("id") : null;
@@ -196,7 +193,6 @@ class tagForeach
         //$this->app->vars('_post.route') == '' and $dom->params('tpl') == 'true' ? $dom->addTpl() : null;
 
         list($list, $count, $pages, $page, $srvpag, $options) = $this->list();
-
 
         $dom->attr("data-ajax") > "" ? $ajax = $dom->attr("data-ajax") : $ajax = false;
         
@@ -412,7 +408,6 @@ class tagForeach
                 $list = $dom->getField($dom->params->from);
             }
         }
-
         $dom->params('filter') ? $list = $dom->app->arrayFilter($list, $dom->params('filter')) : null;
 
         $this->options = $options;

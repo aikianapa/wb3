@@ -144,7 +144,7 @@ class ctrlAjax
             $app->vars('_route', $cache['route']);
             $_ENV['locale'] = $cache['locale'];
             $_SESSION = $cache['session'];
-            $tpl = &$cache['tpl'];
+            $tpl = $cache['tpl'];
             foreach ($_POST['data'] as $fld => $val) {
                 $tpl = str_replace("%{$fld}%", $val, $tpl);
                 $tpl = str_replace("&amp;", '&', $tpl);

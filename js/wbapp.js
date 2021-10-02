@@ -30,7 +30,6 @@ wbapp.start = function () {
         loadJquery();
         return;
     }
-    
     var data = {};
     wbapp.bind = {};
     wbapp.ui = {
@@ -49,6 +48,7 @@ wbapp.start = function () {
             , `/engine/js/topbar.min.js`
             , `/engine/js/lazyload.js`
         ], "wbapp-go",function () {
+            Ractive.DEBUG = false;
             wbapp.eventsInit();
             wbapp.wbappScripts();
             wbapp.tplInit();
@@ -248,7 +248,7 @@ wbapp.start = function () {
     
                 _val == 'null' ? data[val["name"]] = _text : data[val["name"]] = _val;
     
-                if (in_array(data[val["name"]], ['null', '', '{}'])) {
+                if (in_array(data[val["name"]], ['null', '', '{}', '[]'])) {
                     data[val["name"]] = '';
                 } else {
                     try {
@@ -273,6 +273,12 @@ wbapp.start = function () {
     
             }
         });
+
+        let sel = $(form).find('select[name]:not([multiple])');
+        $.each(sel, function () {
+            data[this.name] = $(this).val();
+        });
+
         let multi = $(form).find('select[name][multiple]');
         $.each(multi, function () {
             data[this.name] = $(this).val();

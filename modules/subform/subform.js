@@ -2,7 +2,10 @@ var mod_subform = function() {
     
     let n2m = function(el) {
         $(el).find('[name]:not(.wb-unsaved)').each(function () {
-            $(this).attr('wb-msf', $(this).attr('name')).removeAttr('name');
+            $(this)
+                .attr('wb-msf',$(this).attr('name'))
+                .attr('data-name',$(this).attr('name'))
+                .removeAttr('name');
         })
     }
 
@@ -23,6 +26,10 @@ var mod_subform = function() {
     let listener = function (sub) {
         $(sub).children('.mod-subform-inner').delegate('[name],[wb-msf]','change', function () {
             let form = $(this).parents('.mod-subform-inner');
+            if ($(this).is('select')) {
+                $(this).find('option').removeAttr('selected');
+                $(this).find('option[value="'+$(this).val()+'"]').attr('selected',true);
+            }
             let data = getdata(form);
             $(sub).children('textarea').text(data);
             sub.data = json_decode(data);

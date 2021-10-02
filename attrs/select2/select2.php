@@ -33,7 +33,7 @@ class attrSelect2 {
                             $(this).trigger('change');
                         });
                         $(that).next('.select2').addClass('w-100');
-                    },250);
+                    },50);
                 });
             });
 
