@@ -88,18 +88,14 @@ class ctrlAjax
         if (!in_array($fld, ['email','phone','login','id']) or !isset($post->login)) {
             return json_encode(['login'=>false,'error'=>'Unknown']);
         }
-
         $user = $app->checkUser($post->login, $fld, $post->password);
-        $role = $user->group;
-
         if ($user) {
+            $role = $user->group;
             $url = '/cms';
             if ($user->role !== 'admin' and (!isset($role->active) or $role->active !== 'on') or $user->active !== 'on') {
                 return json_encode(['login'=>false,'error'=>'Account is not active']);
             }
-            if (isset($role->url_login) and $role->url_login > '') {
-                $url = $role->url_login;
-            }
+            isset($role->url_login) and $role->url_login > '' ? $url = $role->url_login : null;
             $app->login($user);
             return json_encode(['login'=>true,'error'=>false,'redirect'=>$url,'user'=>$user,'role'=>$user->role]);
         } else {

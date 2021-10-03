@@ -29,7 +29,6 @@ class tagForeach
 
         $dom->html("");
         $dom->outer = $dom->outer();
- 
         !isset($this->tid) && $dom->attr("id") > "" ? $this->tid = $dom->attr("id") : null;
         !isset($this->tid) && $dom->parent()->attr("id") > "" ? $this->tid = $dom->parent()->attr("id") : null;
         !isset($this->tid) ? $this->tid = "fe_" . $this->app->newId() : null;
@@ -76,7 +75,6 @@ class tagForeach
         }
 
         $dom->attr("data-ajax") > "" ? $ajax = $dom->attr("data-ajax") : $ajax = false;
-
         
         list($list, $count, $pages, $page, $srvpag, $options) = $this->list();
 

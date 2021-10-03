@@ -19,6 +19,7 @@ class mongodbDrv
         if (isset($_ENV["mongodb_connection"])) {
             return $_ENV["mongodb_connection"];
         }
+        
         $ini = $this->app->settings->driver_options["mongodb"];
         $dbname = '';
         isset($ini['dbname']) ? $dbname = $ini['dbname'] : null;
@@ -42,7 +43,7 @@ class mongodbDrv
                 throw new Exception('mongoErr');
             }
             $connection = $mongo->$dbname;
-            $_ENV["mongodb_connection"] = $connection;
+            $_ENV["mongodb_connection"] = &$connection;
         } catch (Exception $err) {
             echo "Mongo DB connection error!";
             echo $err->getMessage();
@@ -158,6 +159,7 @@ class mongodbDrv
 
             }
         }
+
         $filter = $this->filterPrepare($filter);
         $find = $this->db->$form->find($filter, $params);
         $list = [];

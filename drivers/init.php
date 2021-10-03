@@ -6,6 +6,7 @@ function wbItemList($form = 'pages', $options=[])
     $db = wbSetDb($form);
     ini_set('max_execution_time', 900);
     ini_set('memory_limit', '1024M');
+    $res = $db->ItemList($form, $options);
     return $db->ItemList($form, $options);
 }
 

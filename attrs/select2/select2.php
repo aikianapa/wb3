@@ -21,9 +21,9 @@ class attrSelect2 {
                     setTimeout(function(){
                         let options;
                         $(that).css('visibility','visible');
-                        $(that).attr('wb-options')>'' ? options = json_decode($(that).attr('wb-options')) : options = {};
+                        $(that).attr('wb-select2')>'' ? options = json_decode($(that).attr('wb-select2')) : options = {};
                         if (options.placeholder == undefined) options.placeholder = $(that).attr('placeholder');
-                        $(that).removeAttr('wb-options');
+                        $(that).removeAttr('wb-select2');
                         $(that).select2(options).on('select2:select', function (e) {
                             if (e.params.data.selected == true) {
                                 $(e.params.data.element).attr('selected',true);
@@ -33,7 +33,7 @@ class attrSelect2 {
                             $(this).trigger('change');
                         });
                         $(that).next('.select2').addClass('w-100');
-                    },50);
+                    },250);
                 });
             });
 

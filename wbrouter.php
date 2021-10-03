@@ -30,9 +30,8 @@ final class wbRouter {
     public static $lang = '';
 
     public function init() {
-        $this->fix($_POST,file_get_contents('php://input'));
         $this->fix($_GET,$_SERVER['QUERY_STRING']);
-        $this->fix($_COOKIE,$_SERVER['HTTP_COOKIE']);
+        // _POST и _COOKIE не фиксить - будут проблемы с фильтрами и тд
         
         $route_a = $_ENV['path_app'].'/router.ini';
         $route_e = $_ENV['path_engine'].'/router.ini';
