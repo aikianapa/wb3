@@ -91,7 +91,6 @@ final class wbRouter {
         } else if (isset($_SESSION['lang']) && $_SESSION['lang'] > '') {
             self::$lang = $_SESSION['lang'];
         }
-
         $requestedUrl = '/' . implode('/', $bc);
         return $requestedUrl;
     }
@@ -130,6 +129,8 @@ final class wbRouter {
                 }
                 $route = str_replace('(:any)', '(.+)', str_replace('(:num)', '([0-9]+)', str_replace('(:str)', '(.[a-zA-Z]+)', $route)));
             }
+            $requestedUrl = wbNormalizePath($requestedUrl);
+
             if (preg_match('#^'.$route.'$#', $requestedUrl)) {
                 if (strpos($uri, '$') !== false && strpos($route, '(') !== false) {
                     $uri = preg_replace('#^'.$route.'$#', $uri, $requestedUrl);

@@ -2444,11 +2444,11 @@ function wbArrayAttr($attr)
 
     function wbNormalizePath($path)
     {
-    	  substr($path,0,2) == "//" ? $net = true : $net = false;
+    	strpos($path,'://') ? $net = true : $net = false;
         $patterns = array('~/{2,}~', '~/(\./)+~', '~([^/\.]+/(?R)*\.{2,}/)~', '~\.\./~');
         $replacements = array('/', '/', '', '');
         $path = preg_replace($patterns, $replacements, $path);
-        $net ? $path = '/' . $path : null;
+        $net ? $path = str_replace(':/', '://', $path) : null;
         return $path;
     }
 

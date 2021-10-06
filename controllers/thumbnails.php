@@ -36,6 +36,7 @@ class ctrlThumbnails
             } else {
                 $app->vars('_get.src', $matches[1][0]);
             }
+            $app->vars('_route.src') == 'module' ? $app->vars('_get.src', $app->vars('_route.host') .'/'. $app->vars('_get.src')) : null ;
         }
 
         if (strpos($app->vars('_get.src'), '?')) {
@@ -62,7 +63,7 @@ class ctrlThumbnails
 
     public function thumbnail_view($app)
     {
-        $remote = false;
+        $app->vars('_route.src') == 'module' ? $remote = true : $remote = false;
         $query = $app->vars('_route.query');
         if ($app->vars('_route.http')) {
             $remote=true;
@@ -80,24 +81,25 @@ class ctrlThumbnails
                 $cache=false;
             }
         }
-
         if ($app->vars('_route.params') and isset($app->vars('_route.params')[0])) {
             $tmp=base64_decode($app->vars('_route.params')[0]);
             if (strpos($tmp, 'ttp://') or strpos($tmp, 'ttps://')) {
                 $remote = true;
                 $url = $tmp;
             }
+        } 
+        
+        if ($app->vars('_route.src') == 'module') {
+            $url = $app->vars('_get.src');
         }
 
         $formats = ['gif','png','jpg','svg','jpeg','webp','webm','mp3','mp4','pdf','doc','docx','xls','xlsx','zip','rar'];
         $danger = ['php','js','c','sh','py'];
         $imgext = ['gif','png','jpg','svg','jpeg','webp'];
-
         if ($remote) {
-            if (!isset($url)) {
-                $url=$p.substr($app->vars('_route.uri'), strpos($app->vars('_route.uri'), '://'));
-            }
+            !isset($url) ? $url=$p.substr($app->vars('_route.uri'), strpos($app->vars('_route.uri'), '://')) : null;
             $ext = pathinfo($url, PATHINFO_EXTENSION);
+            count($app->vars('_route.query')) ? $url.='?'.http_build_query($app->vars('_route.query')) : null;
             if (!in_array($ext, $formats) or in_array($ext, $danger)) {
                 return;
             } // дабы не загрузили на сервак бяку
@@ -118,6 +120,7 @@ class ctrlThumbnails
                 $file = $app->vars('_env.path_engine').'/uploads/__system/image.svg';
             }
         }
+        
         if (is_file($file)) {
             list($width, $height, $type) = $size = getimagesize($file);
             if ($app->vars('_route.w') == '') {

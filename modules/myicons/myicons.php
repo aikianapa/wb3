@@ -7,6 +7,7 @@ class modMyicons
         $this->path = __DIR__ . '/icons/';
         $this->stroke = null;
         $this->fill = null;
+
         if (get_class($obj) == 'wbApp') {
             $this->app = &$obj;
             $this->dom = $this->app->fromString('');
