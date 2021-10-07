@@ -9,6 +9,9 @@ if (is_file($_SERVER['DOCUMENT_ROOT'].'/functions.php')) {
     require_once $_SERVER['DOCUMENT_ROOT'].'/functions.php';
 }
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 use Adbar\Dot;
 use Nahid\JsonQ\Jsonq;
 
@@ -393,13 +396,14 @@ function wbMail(
         }
     }
 
-        require_once __DIR__.'/modules/phpmailer/phpmailer/PHPMailerAutoload.php';
+        require_once __DIR__.'/modules/phpmailer/phpmailer.php';
         if ($app->vars('_sett.modules.phpmailer.smtp') == 'on') {
             $sett = $app->vars('_sett.modules.phpmailer');
         } else {
             $sett = ['smtp'=>'','host'=>$app->vars('_route.hostname')];
         }
-        $mail = new PHPMailer;
+        $mail = new PHPMailer(true);
+
         try {
         /*
             $mail->SMTPDebug = 2;                                 // Enable verbose debug output
@@ -2062,16 +2066,15 @@ function wbCheckUser($login, $type = 'email', $pass = null) {
     }
     $user = array_shift($users['list']);
     $user['group'] = wbItemRead("users", $user['role']);
+    $user['group'] ? null : $user['group'] = ['active'=>'on']; 
     $user = wbArrayToObj($user);
-    if ($pass == null) {
+    if ($user->group->active == "on" and $pass == null) {
         return $user;
     } else if ($user->group->active == "on" and wbPasswordCheck($pass, $user->password)) {
         return $user;
     }
     return false;
 }
-
-
 
 function wbPhoneFormat($phoneNumber) {
     $phoneNumber = preg_replace('/[^0-9]/','',$phoneNumber);

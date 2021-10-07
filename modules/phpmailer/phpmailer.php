@@ -1,4 +1,8 @@
 <?php
+require $_ENV["route"]['path_engine'].'/modules/phpmailer/vendor/phpmailer/phpmailer/src/Exception.php';
+require $_ENV["route"]['path_engine'].'/modules/phpmailer/vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require $_ENV["route"]['path_engine'].'/modules/phpmailer/vendor/phpmailer/phpmailer/src/SMTP.php';
+
 class modPhpmailer
 {
 

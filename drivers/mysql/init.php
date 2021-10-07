@@ -152,7 +152,7 @@ class mysqlDrv
             $this->db->where($this->keys->$form, $id);
             $this->db->update($form, $item);
         } else {
-            $newid = $this->db->insert($form, $item);
+            $newid = $this->db->insert($form, (array)$item);
             if (!isset($item[$this->keys->$form])) {
                 $id = $newid;
             }

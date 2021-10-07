@@ -70,7 +70,7 @@ ol.wb-tree {
   padding: 0px;
 }
 #tree_edit .tree-view {
-  height: calc(100% - 140px);
+  height: calc(-40%);
   overflow: auto;
 }
 .tree-edit.modal {
@@ -82,7 +82,7 @@ ol.wb-tree {
 }
 .tree-edit.modal .modal-body {
   overflow-y: auto;
-  padding-bottom: calc(100vh / 10);
+  padding-bottom: calc(10vh);
 }
 .wb-tree .dd-item > button {
   position: absolute;
@@ -90,7 +90,6 @@ ol.wb-tree {
   height: auto;
 }
 .wb-tree .wb-tree-line {
-  width: calc( 100% - 125px );
   font-weight: normal;
   margin-left: 60px;
   margin-bottom: 5px;
@@ -98,6 +97,7 @@ ol.wb-tree {
   text-overflow: ellipsis;
   white-space: nowrap;
   padding-right: 50px;
+  width: auto;
 }
 .wb-tree .wb-tree-line::after {
   content: attr(data-id);

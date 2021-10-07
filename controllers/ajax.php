@@ -89,6 +89,7 @@ class ctrlAjax
             return json_encode(['login'=>false,'error'=>'Unknown']);
         }
         $user = $app->checkUser($post->login, $fld, $post->password);
+
         if ($user) {
             $role = $user->group;
             $url = '/cms';

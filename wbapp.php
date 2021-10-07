@@ -771,12 +771,9 @@ class wbApp
         if (!$user->group OR $user->group->active !== 'on' OR $user->active !== 'on') {
             return false;
         }
-        if ($user->group->url_logout == "") {
-            $user->group->url_logout = "/";
-        }
-        if ($user->group->url_login == "") {
-            $user->group->url_login = "/";
-        }
+        $user->group->url_logout == "" ? $user->group->url_logout = "/" : null;
+        $user->group->url_login == "" ? $user->group->url_login = "/" : null;
+
         unset($user->password);
         $arr = $this->objToArray($user);
         $this->vars("_sess.user", $arr);

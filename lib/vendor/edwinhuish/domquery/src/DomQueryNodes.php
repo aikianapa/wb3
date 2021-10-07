@@ -350,7 +350,7 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
             $xml_pi_node_added = true;
         }
 
-        libxml_disable_entity_loader(true);
+//        libxml_disable_entity_loader(true);
         libxml_use_internal_errors(true);
 
         $dom_document = new \DOMDocument('1.0', $encoding);
