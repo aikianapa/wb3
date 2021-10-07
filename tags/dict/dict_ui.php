@@ -48,6 +48,7 @@
                 <option value="switch">switch</option>
                 <option value="enum">enum</option>
                 <option value="tree">tree</option>
+                <option value="treeselect">tree select</option>
                 <option value="snippet">snippet</option>
                 <option value="tags">tags</option>
                 <option value="phone">phone</option>

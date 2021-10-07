@@ -51,7 +51,6 @@
 </template>
 
 
-
 <template type="multiinput">
     <form data-title="{{_lang.multiinput}}: " action="javascript:void(0);">
         <wb-dict name="multiflds" />
@@ -84,6 +83,44 @@
     </form>
 </template>
 
+<template type="treeselect">
+    <form data-title="{{_lang.catalog}}: " action="javascript:void(0);">
+        <div class="form-group row">
+            <label class="col-sm-3 form-control-label">{{_lang.catalog}}</label>
+            <div class="col-sm-9">
+                <select class="form-control" name="treeselect">
+                    <wb-foreach wb="table=catalogs&sort=name">
+                        <option value="{{_id}}">{{name}} [{{_id}}]</option>
+                    </wb-foreach>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 form-control-label">{{_lang.branch}}</label>
+            <div class="col-sm-9">
+                <input class="form-control" placeholder="{{_lang.branch}}" type="text" name="branch">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 form-control-label">Parent</label>
+            <div class="col-sm-3">
+                <select class="form-control" name="parent">
+                    <option value="true">true</option>
+                    <option value="false">flase</option>
+                </select> 
+            </div>
+            <label class="col-sm-3 form-control-label">Childrens</label>
+            <div class="col-sm-3">
+                <select class="form-control" name="childs">
+                    <option value="true">true</option>
+                    <option value="false">flase</option>
+                </select> 
+            </div>
+        </div>
+    </form>
+</template>
+
 
 
 <wb-lang>
@@ -108,6 +145,8 @@
     enum = "Enum"
     unwrap = "Unwrap"
     langinp = "Input multi-language"
+    catalog = "Catalog"
+    branch = "Branch"
     [ru]
     label = "Метка"
     name = "Имя поля"
@@ -129,6 +168,8 @@
     enum = "Перечисление"
     unwrap = "В колонку"
     langinp = "Ввод с переводом"
+    catalog = "Справочник"
+    branch = "Ветка"
 </wb-lang>
 
 </html>

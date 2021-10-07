@@ -27,7 +27,7 @@
            data-ajax="{'target':'#{{_form}}List','filter_add':{'$or':[{ '_id' : {'$like' : '$value'} }, { 'name': {'$like' : '$value'} }]} }">
 
       <div class="form-group">
-        <button class="btn btn-success" type="submit" data-ajax="{'url':'/cms/ajax/form/{{_form}}/edit/_new','html':'.{{_form}}-edit-modal'}">Создать</button>
+        <button class="btn btn-success" type="button" data-ajax="{'url':'/cms/ajax/form/{{_form}}/edit/_new','html':'.{{_form}}-edit-modal'}">Создать</button>
       </div>
     </form>
   </div>

@@ -309,7 +309,7 @@ wbapp.start = function () {
             return $(this).val();
         }
         if (data == undefined) {
-            var data = $(this).val();
+            data = $(this).val();
             try {
                 data = json_decode(data);
             } catch (error) {
@@ -1414,7 +1414,6 @@ wbapp.start = function () {
         if (document.modalDelegates == undefined) {
             document.modalDelegates = true;
             $(document).delegate(".modal", "shown.bs.modal", function () {
-
                 $('.modal[data-zidx]').each(function () {
                     let max = $(this).attr('data-zidx') * 1;
                     if (max > wbapp.modalZndx) wbapp.modalZndx = max;
@@ -1446,7 +1445,7 @@ wbapp.start = function () {
                 if ($(that).attr('data-zidx') == undefined) {
                     $(that).css("z-index", wbapp.modalZndx).attr('data-zidx', wbapp.modalZndx);
                     if ($(that).attr("data-backdrop") !== "false") {
-                        $(".modal-backdrop:not([data-zidx])").css("z-index", (wbapp.modalZndx - 5)).attr('data-zindx', wbapp.modalZndx - 5);
+                        $(".modal-backdrop:not([data-zidx])").css("z-index", (wbapp.modalZndx - 5)).attr('data-zidx', wbapp.modalZndx - 5);
                     }
                 }
                 window.dispatchEvent(new Event('resize'));
@@ -1470,7 +1469,7 @@ wbapp.start = function () {
                 let zndx = $(this).attr("data-dismiss") * 1;
                 let modal = $(document).find(".modal[data-zidx='" + $(this).attr("data-dismiss") + "']");
                 modal.modal("hide");
-                $(document).find(".modal-backdrop[data-dismiss='" + (zndx - 5) + "']").remove();
+               // $(document).find(".modal-backdrop[data-dismiss='" + (zndx - 5) + "']").remove();
             });
 
 
