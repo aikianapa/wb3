@@ -32,14 +32,20 @@ class attrSelect2 {
                             }
                             $(this).trigger('change');
                         });
+                        $(that).select2(options).on('select2:open', function (e) {
+                            if ($(that).parents('.modal[data-zidx]').length) {
+                                $('.select2-container--open').css('z-index',$(that).parents('.modal[data-zidx]').attr('data-zidx'));
+                            }
+                        });
                         $(that).next('.select2').addClass('w-100');
+
                     },250);
                 });
             });
 
         </script>
       ";
-      $dom->after($script);
+      $dom->append($script);
     }
 }
 ?>

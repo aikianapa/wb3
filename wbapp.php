@@ -931,6 +931,14 @@ class wbApp
         return $mult;
     }
 
+    public function fieldBuild_treeselect()
+    {
+        $tag = $this->tpl;
+        $tag->find("select")->setAttributes((array)$this->dict);
+        $tag->fetch($this->item);
+        return $tag;
+    }
+
     public function fieldBuild_image()
     {
         $img = $this->tpl;

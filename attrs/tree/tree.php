@@ -15,7 +15,6 @@ class attrTree {
 function tagTree( &$dom, $Item = null ) {
     $dom->removeAttr( 'wb-tree' );
     $save = $dom->params;
-
     if ( $Item == null ) $Item = $dom->item;
     if ( !( ( array )$Item === $Item ) ) $Item = array( $Item );
     if ( isset( $dom->params->tree ) ) $dom->params = ( object )$dom->params->tree;
@@ -37,12 +36,9 @@ function tagTree( &$dom, $Item = null ) {
 
     $srcData = $Item;
 
-    if ( !isset( $dom->params->from ) AND !isset( $dom->params->field ) ) {
-        $field = $name;
-    }
-    if ( $dom->is( 'select' ) AND !isset( $dom->params->form ) ) {
-        if (!$field) $field = 'tree';
-    }
+    !isset( $dom->params->from ) AND !isset( $dom->params->field ) ? $field = $name : null;
+    $dom->is( 'select' ) AND !isset( $dom->params->form ) AND !$field ?  $field = 'tree' : null;
+    
     if ( $form == '' AND $item > '' ) {
         $Item = $dom->app->treeRead( $item );
         $field = 'tree';
@@ -101,9 +97,10 @@ function tagTree( &$dom, $Item = null ) {
         $select = new tagTreeSelect();
         $select->dom = &$dom;
         $select->tree = $Item;
-        $select->params = null;
+        $select->dom->params = $save;
         isset($save->strict) ? $select->strict = $save->strict : $select->strict = true;
         $select->stage();
+        $dom->params('multiple') == 'on' ? $dom->attr('wb-select2', true) : null;
         //tagTreeUl( $dom, $Item, null, $srcVal );
     } else {
         tagTreeUl( $dom, $Item, null, $srcData );
@@ -113,11 +110,11 @@ function tagTree( &$dom, $Item = null ) {
 
 class tagTreeSelect {
     function stage() {
-        $app = $this->dom->app;
-        $params = $this->dom->params;
-
+        $dom = &$this->dom;
+        $app = &$this->dom->app;
+        $params = &$dom->params;
+        
         if ( $this->dom->is( 'select' ) ) {
-            $app = &$this->dom->app;
             $this->tpl = $this->dom->inner();
             $this->opt = $this->dom->find('option',0)->clone();
             $this->dom->html( '' );
@@ -126,23 +123,17 @@ class tagTreeSelect {
             $this->limit = -1;
             $this->level = -1;
             $this->placeholder = $this->dom->attr('placeholder');
-            if ( !isset( $params->parent ) ) $params->parent = 'true';
-            if ( $params->parent == 'true' ) $this->parent = true;
-            if ( $params->parent == 'false' ) $this->parent = false;
+            !isset( $params->parent ) ? $params->parent = 'true' : null;
+            !isset($params->children) ? $params->children = 'true' : null;
+            !isset($params->level) ? $params->level = 0 : null;
 
-            if ( !isset( $params->children ) ) $params->children = true;
-            if ( $params->children == 'true' ) $this->children = true;
-            if ( $params->children == 'false' ) $this->children = false;
-
-            if ( !isset( $params->level ) ) $params->level = 0;
-            if ( $params->level ) $this->level = intval( $params->level );
+            $params->parent == 'true' ? $this->parent = true : $this->parent = false;
+            $params->children == 'true' ? $this->children = true : $this->children = false;
+            $params->level ? $this->level = intval( $params->level ) : null;
 
             $this->select = &$this->dom;
 
-            if ( !isset( $params->branch ) ) $params->branch = null;
-            if ( $params->branch !== null AND $params->branch == '' ) {
-                $this->tree = [];
-            } else if ( $params->branch > '' ) {
+            if ( $dom->params("branch") > '' ) {
                 if ($this->strict == 'false') {
                     $params->branch = preg_replace('/\%(.*)\%/', "", $params->branch);
                     $this->tree = wbTreeFindBranch($this->tree, $params->branch);

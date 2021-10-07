@@ -107,17 +107,24 @@
             <div class="col-sm-3">
                 <select class="form-control" name="parent">
                     <option value="true">true</option>
-                    <option value="false">flase</option>
+                    <option value="false">false</option>
                 </select> 
             </div>
             <label class="col-sm-3 form-control-label">Childrens</label>
             <div class="col-sm-3">
                 <select class="form-control" name="childs">
                     <option value="true">true</option>
-                    <option value="false">flase</option>
+                    <option value="false">false</option>
                 </select> 
             </div>
         </div>
+        <div class="form-group row">
+            <label class="col-sm-3 form-control-label">{{_lang.multiple}}</label>
+            <div class="col-sm-9">
+                <input wb-module="switch" name="multiple">
+            </div>
+        </div>
+
     </form>
 </template>
 
@@ -147,6 +154,7 @@
     langinp = "Input multi-language"
     catalog = "Catalog"
     branch = "Branch"
+    multiple = "Multiple"
     [ru]
     label = "Метка"
     name = "Имя поля"
@@ -170,6 +178,7 @@
     langinp = "Ввод с переводом"
     catalog = "Справочник"
     branch = "Ветка"
+    multiple = "Multiple"
 </wb-lang>
 
 </html>
