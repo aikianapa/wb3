@@ -34,7 +34,7 @@ class DomQuery extends DomQueryNodes
     {
         if ($val !== null) { // set node value for all nodes
             foreach ($this->nodes as $node) {
-                $node->nodeValue = $val;
+                (array)$val === $val ? $val = json_encode($val) : null;
             }
 
             return $this;

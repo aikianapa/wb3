@@ -179,12 +179,18 @@ class WEProcessor {
 							}
 						} else {
 							$argproc = new WEProcessor($this->vars["_context"]);
-							foreach($args as $k => &$v) {
+							foreach($args as $k => $v) {
 									if (is_string($v) AND strpos($v,"}}")) {
-											$v = $argproc->substitute($v);
+											$args[$k] = $argproc->substitute($v);
 									}
 							}
-							$res = @call_user_func_array($name, array_values($args));
+							try {
+	                            $res = @call_user_func_array($name, array_values($args));
+							} catch (\Throwable $th) {
+                                $res = '';
+							}
+
+
 						}
 					} else {
 						$res = @call_user_func($name, $args);
