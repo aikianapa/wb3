@@ -261,7 +261,7 @@ function tagTreeUl( &$dom, $Item = array(), $param = null, $srcVal = array() ) {
     $srcItem = $Item;
     $tag = $dom->tagName;
     if ( $param == null ) {
-        $dom->params->name > '' ? $name  = $dom->params('name') : $name = $dom->attr( 'name' );
+        $dom->params('name') > '' ? $name  = $dom->params('name') : $name = $dom->attr( 'name' );
         $dom->params('from') > '' ? $name = $dom->params('from') : null;
         $tpl = $dom->inner();
         $tree = &$Item;

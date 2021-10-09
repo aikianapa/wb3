@@ -545,9 +545,9 @@ class wbDom extends DomQuery
                         $oconv = $inp->params('oconv');
                         $inp->text(@$oconv($value));
                     } else if ($inp->attr('type') == 'json') {
-                        $inp->text($value);
+                        $inp->inner($value);
                     } else {
-                        $inp->text(htmlentities($value));
+                        $inp->inner(htmlentities($value));
                     }
                 } elseif ($inp->tagName == "select") {
                     if ((array)$value === $value) {

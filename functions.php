@@ -1696,7 +1696,7 @@ function wbItemFilter($item, $options, $field = null)
                 $arr = $expr[1];
                 if (substr($arr,0,1) == '$') {
                     $arr = $fields->get(substr($arr,1));
-                    (array)$arr === $arr ? null : $arr = json_decode($arr);
+                    (array)$arr === $arr ? null : $arr = json_decode($arr,true);
                     if (in_array($val,$arr)) {$result;} else {$result = false;}
                 }
             } else if (in_array($fld,['$gte','$lte','$gt','$lt','='])) {
