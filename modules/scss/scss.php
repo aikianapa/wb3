@@ -26,8 +26,9 @@ class modScss {
         $this->compiler->setImportPaths($this->path);
       } else {
         $app = &$obj->app;
+        $obj->setValues();
         $scss = $this->compiler->compile($obj->text());
-        $obj->text($scss);
+        $obj->inner($scss);
       } 
   }
 
