@@ -4,7 +4,6 @@ $(document).on("filepicker-js", function () {
     wbapp.trigger("filepicker-init");
     return;
   } else {
-    document.filepicker = true;
     wbapp.loadStyles([
       "/engine/modules/filepicker/assets/css/cropper.min.css",
       "/engine/modules/filepicker/assets/css/fileicons.css",
@@ -346,6 +345,7 @@ $(document).on("filepicker-js", function () {
         }
         listview();
       });
+      document.filepicker = true;
     });
 
 
