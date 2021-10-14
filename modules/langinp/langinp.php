@@ -32,7 +32,7 @@ class modLanginp
             $locales = $dom->app->vars('_env.locale');
         }
         isset($out->item[$name]) ? $value = $out->item[$name] : $value = [];
-        if ( isset($value) && (string)$value === $value ) {
+        if ( isset($value) && is_string($value)) {
             $tmp = [];
             foreach($locales as $lang => $val) {
                 $tmp[$lang] = $value;

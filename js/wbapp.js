@@ -1462,6 +1462,7 @@ wbapp.start = function () {
             $(document).delegate(".modal", 'hidden.bs.modal', function () {
                 let zndx = $(this).css("z-index") * 1;
                 $(".modal-backdrop[style*='z-index: " + (zndx - 5) + "']").remove();
+                $(this).removeAttr('data-zidx');
             })
 
             $(document).delegate(".modal [data-dismiss]", "click", function (event) {
@@ -1469,7 +1470,7 @@ wbapp.start = function () {
                 let zndx = $(this).attr("data-dismiss") * 1;
                 let modal = $(document).find(".modal[data-zidx='" + $(this).attr("data-dismiss") + "']");
                 modal.modal("hide");
-               // $(document).find(".modal-backdrop[data-dismiss='" + (zndx - 5) + "']").remove();
+                $(this).removeAttr('data-zidx');
             });
 
 
