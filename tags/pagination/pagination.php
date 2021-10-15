@@ -14,6 +14,7 @@ class tagPagination
 
         ini_set('max_execution_time', 900);
         ini_set('memory_limit', '1024M');
+        (!isset($dom->params->size) OR  intval($dom->params->size) < 1) ? $dom->params->size = 12 : null;
         $pages = intval(ceil($dom->params->count/$dom->params->size));
         $page = $dom->params->page;
 

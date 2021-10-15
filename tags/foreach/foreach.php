@@ -34,7 +34,6 @@ class tagForeach
         !isset($this->tid) ? $this->tid = "fe_" . $this->app->newId() : null;
 
         $dom->tid = $this->tid;
-
         if (!$dom->params('length') && $dom->attr('data-ajax') > '') {
             $dom->params = (object)wbAttrToValue($dom->attr('data-ajax'));
         }
@@ -77,7 +76,6 @@ class tagForeach
         $dom->attr("data-ajax") > "" ? $ajax = $dom->attr("data-ajax") : $ajax = false;
         
         list($list, $count, $pages, $page, $srvpag, $options) = $this->list();
-
         foreach ((array) $list as $key => $val) {
             $value = $val;
             $val = (object) $val;
@@ -180,14 +178,10 @@ class tagForeach
     {
         $empty = &$this->empty;
         $render = "server";
-
         $idx = 0;
         $ndx = 1;
-
         $parent = $dom->item;
-
-
-        ($dom->params('tpl') == false) ? $ttt = false : $ttt  = true;
+        ($dom->params('tpl') == 'false') ? $ttt = false : $ttt  = true;
         //$this->app->vars('_post.route') == '' and $dom->params('tpl') == 'true' ? $dom->addTpl() : null;
 
         list($list, $count, $pages, $page, $srvpag, $options) = $this->list();
@@ -262,7 +256,6 @@ class tagForeach
                 $ajax !== false ? $dom->find("template[id='{$this->tid}']")->attr('data-ajax', $dom->attr("data-ajax")) : null;
                 $params = json_encode($params);
                 $params > '' ? $dom->find("template[id='{$this->tid}']")->addParams($params) : null;
-
                 $dom->find("template[id=\"{$this->tid}\"] .pagination")->attr("data-tpl", $this->tid);
             }
         }
@@ -290,10 +283,11 @@ class tagForeach
             !count((array)$list) or $dom->html() == "" ? $dom->inner($empty->inner()) : null;
             isset($dom->params->pos) ? $pos = $dom->params->pos : $pos = 'bottom';
 
-            if ($srvpag
+            if (($srvpag
                     or ($this->app->route->controller == 'ajax' and $this->app->vars('_post._params') > "")
                     or ($this->app->route->mode == 'ajax' and $this->app->vars('_post._params') > "")
-                    ) {
+                ) and  !($this->app->vars('_post._params.tpl') == 'true' && $size == '' ) 
+            ) {
                 if (!count((array)$list) or $dom->html() == "") {
                     $html = $empty->inner();
                     $pag = "";
@@ -301,7 +295,6 @@ class tagForeach
                     $html = $dom->html();
                     $pag = $pag->outer();
                 }
-                if ($this->app->vars('_post._params.tpl') == 'true' && $size == '' ) $pag = '';
                 $res = [
                     'html' => $html,
                     'route' => $this->app->route,
@@ -346,7 +339,6 @@ class tagForeach
         $call = $dom->params("call");
         $list = [];
         $listTable = $parent = $dom->item;
-
         $dom->params('render') == 'server' && $dom->params('bind') > '' ? $dom->params->tpl = 'true' : null;
         //$this->app->vars('_post.route') == '' and $dom->params('tpl') == 'true' ? $dom->addTpl() : null;
 
@@ -410,7 +402,6 @@ class tagForeach
 
         $this->options = $options;
         $this->sort($list);
-
         if ($dom->params('count') > "") {
             isset($list) ? $$item = $list : $item = [];
             $list = [];

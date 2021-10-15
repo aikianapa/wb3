@@ -605,7 +605,7 @@ wbapp.start = function () {
 
             if (binds == true) {
                 $.each(wbapp.template, function (i, tpl) {
-                    if (tpl.params.bind !== undefined && checkBind(tpl.params.bind, key) &&
+                    if (tpl.params.bind !== undefined && tpl.params.bind !== null && checkBind(tpl.params.bind, key) &&
                         tpl.params.render !== undefined && tpl.params.render == 'client') {
                         wbapp.render(tpl.params.target);
                     } else if (tpl.params._params !== undefined && tpl.params._params.bind !== undefined

@@ -543,7 +543,7 @@ class wbDom extends DomQuery
                 if ($inp->tagName == "textarea") {
                     if ($inp->params('oconv') > '') {
                         $oconv = $inp->params('oconv');
-                        $inp->text(@$oconv($value));
+                        $inp->inner(@$oconv($value));
                     } else if ($inp->attr('type') == 'json') {
                         $inp->inner($value);
                     } else {

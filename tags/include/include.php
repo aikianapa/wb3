@@ -18,7 +18,6 @@ class tagInclude {
             $inc = $dom->app->fromFile(realpath($src));
             if ($inc) $inc->path = dirname($src);
         }
-        
         $dom->before("\n<!-- Include src: ".$src." -->\n");
     } else if ($dom->params("url")) {
         $inc = $dom->app->fromString(file_get_contents($dom->app->vars("_route.host").$dom->params("url")));
