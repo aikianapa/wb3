@@ -81,7 +81,11 @@ class DomQuery extends DomQueryNodes
     {
         if ($val !== null) { // set attribute for all nodes
             foreach ($this->getElements() as $node) {
-                $node->setAttribute($name, $val);
+                try {
+                    $node->setAttribute($name, $val);
+                } catch (\Throwable $th) {
+                    //throw $th;
+                }
             }
             return $this;
         }

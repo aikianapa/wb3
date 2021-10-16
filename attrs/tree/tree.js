@@ -181,7 +181,7 @@ function wb_tree() {
             data = json_encode(data);
         }
 
-        $(tree).children(".wb-tree-data").html(data);
+        $(tree).children(".wb-tree-data").html(data).trigger('change');
         $(tree).val($(this).getData());
         console.log("Trigger: wb-tree-change-data");
         $(this).trigger("wb-tree-change-data");
