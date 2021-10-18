@@ -46,28 +46,34 @@ class tagJq {
         } else if ( $that->params( 'context' ) ) {
             $that->after($inner->find($that->params('context'))->inner());
         } else {
-            $jqs = explode( ';', $that->params->wb.';' );
-            $dom = &$that->parent;
 
-            foreach ((array)$jqs as $i => $jq) {
-                $jq = ltrim($jq);
-                if (substr($jq, 0, 6) == '$dom->') {
-                    $jq = '$dom->parents(":root")->'.substr($jq,6);
-                    try {
-                        @eval($jq.';');
-                    } catch (Exception $err) {
-                        echo 'Unknown result in the tag: '. $tag;
-                    }
-                    $ch = $dom->children();
-                    foreach ($ch as $c) {
-                        $c->copy($dom);
+
+            if ($that->params('wb')) {
+                $jqs = explode(';', $that->params->wb.';');
+                $dom = &$that->parent;
+
+                foreach ((array)$jqs as $i => $jq) {
+                    $jq = ltrim($jq);
+                    if (substr($jq, 0, 6) == '$dom->') {
+                        $jq = '$dom->parents(":root")->'.substr($jq, 6);
                         try {
-                            @$c->fetch();
-                        } catch (\Throwable $th) {null;}
+                            @eval($jq.';');
+                        } catch (Exception $err) {
+                            echo 'Unknown result in the tag: '. $tag;
+                        }
+                        $ch = $dom->children();
+                        foreach ($ch as $c) {
+                            $c->copy($dom);
+                            try {
+                                @$c->fetch();
+                            } catch (\Throwable $th) {
+                                null;
+                            }
+                        }
+                    } elseif ($jq > '') {
+                        echo 'Error: wb-jq command was start at $dom->';
+                        echo '\n<br/>'. $tag;
                     }
-                } else if ($jq > '') {
-                    echo 'Error: wb-jq command was start at $dom->';
-                    echo '\n<br/>'. $tag;
                 }
             }
         }

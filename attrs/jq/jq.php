@@ -7,7 +7,7 @@ class attrJq extends wbDom {
 
   public function attrJq(&$that) {
             $jqs = explode( ';', $that->params->jq);
-            $dom = &$that;
+            $dom = $that->parents();
 
             foreach ((array)$jqs as $i => $jq) {
                 if (substr($jq, 0, 6) == '$dom->') {

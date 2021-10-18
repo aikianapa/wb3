@@ -42,7 +42,7 @@ class ctrlForm
                 isset($app->route->table) ? $table = $app->route->table : null;
                 $item = $app->itemRead($table, $app->route->item);
                 $item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], $item);
-                if ($item['active'] == 'on') {
+                if (isset($item['active']) && $item['active'] == 'on') {
                     if ((!isset($item['template']) OR $item['template'] == '') AND $app->vars('_route.tpl') > '') {
                         $dom = $app->getTpl($app->vars('_route.tpl'));
                     } elseif (isset($item['template']) and $item['template'] > '') {
@@ -65,6 +65,12 @@ class ctrlForm
             }
             $dom->fetch();
             $dom->setSeo();
+
+            $ttls = $dom->find('title');
+            foreach ($ttls as $t) {
+                $dom->find('head title')->inner($t->text());
+            }
+
             if (isset($this->target)) {
                 $out = $dom->find($this->target)->outer();
                 $out = '<div>'.$out.'</div>';
