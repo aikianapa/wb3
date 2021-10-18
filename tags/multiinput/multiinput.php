@@ -22,7 +22,7 @@ class tagMultiinput {
 				} else {
 						$inner = $dom->inner();
 				}
-        if ($inner <= " ") $inner = "<input type='text' name='{$field}' value='' class='form-control' />";
+        if (in_array(trim($inner),['',' '])) $inner = "<input type='text' name='{$field}' value='' class='form-control' />";
         $wrp = $dom->app->fromString(str_replace("{{inner}}",$inner,$wrp));
         $dom->attr("id") > "" ? $tplId = $dom->attr("id") : $tplId='mi_'.wbNewId();
         $dom->attr("id",$tplId);
@@ -30,6 +30,9 @@ class tagMultiinput {
         $textarea->copy($dom);
         $textarea->attr("data-tpl",$tplId);
         $dom->tpl = $wrp->outer();
+        $tpl = $wrp->outer().'';
+        $tpl = $dom->app->fromString($tpl);
+        $tpl->fetch();
         $fields = $dom->app->dot($textarea->item);
         $wrp->fetch($fields->get());
 
@@ -38,7 +41,7 @@ class tagMultiinput {
 
         $this->setData($dom,$values);
         $dom->append($textarea)
-            ->append("\n<template id='{$tplId}'>{$dom->tpl}</template>\n")
+            ->append("\n<template id='{$tplId}'>{$tpl}</template>\n")
             ->append('<script wb-app remove>wbapp.loadScripts(["/engine/js/php.js","/engine/js/jquery-ui.min.js","/engine/tags/multiinput/multiinput.js"],"multiinput-js");</script>'."\n\r");
         $dom->attr('done',"");
     }
