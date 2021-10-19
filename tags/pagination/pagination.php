@@ -23,10 +23,8 @@ class tagPagination
 
         $dom->pages = $pages;
 
-        if (!isset($dom->params->tpl)) {
-            if ($dom->parent()->attr('id') == '') {
+        if (!isset($dom->params->tpl) && $dom->parent()->attr('id') == '') {
                 $dom->parent()->attr('id', 'fe_'.md5($dom->outer()));
-            }
         }
         $tplId = $dom->parent()->attr('id');
 
@@ -104,6 +102,7 @@ class tagPagination
                 $pag->find('[data-page=next] .page-link')->attr('data-page', $page + 1);
             } else {
                 $pag->find('[data-page=next]')->attr('disabled', true);
+                $pag->find('[data-page=more]')->attr('disabled', true)->css('display', 'none');
             }
 
             if (intval($page) > 1) {
@@ -119,12 +118,9 @@ class tagPagination
                 $pag->find("[data-page='next']")->remove();
                 $pag->find("[data-page='prev']")->remove();
                 $pag->find("[data-page!='more']")->css('display', 'none');
-                if (isset($more[1]) && $more[1]>' ') {
-                    $pag->find("[data-page='more'] .page-link")->html($more[1]);
-                }
-                if ($more[0] !== 'true') {
-                    $pag->find("[data-page='more']")->attr('data-trigger', $more[0])->css('display', 'none');
-                }
+                isset($more[1]) && $more[1]>' ' ? $pag->find("[data-page='more'] .page-link")->inner($more[1]) : null;
+                $more[0] !== 'true' ?  $pag->find("[data-page='more']")->attr('data-trigger', $more[0])->css('display', 'none') : null;
+                $pag->find('[data-page=more] .page-link')->attr('data-page', $page + 1);
             } else {
                 $pag->find("[data-page='more']")->remove();
             }
@@ -134,11 +130,7 @@ class tagPagination
                 $pag->find('ul')->attr('style', $style.';display:none;');
             }
 
-            if ($dom->is('table, tbody') or $dom->parents('table, tbody')->length) {
-                $target = $dom->closest('table');
-            } else {
-                $target = &$dom;
-            }
+            $dom->is('table, tbody') ? $target = $dom->closest('table') : $target = $dom->parent()->parent();
 
             if ($dom->params("more") == '' and ($dom->params("pos") == 'top' or $dom->params("pos") == 'both')) {
                 $target->parent()->prepend($pag);

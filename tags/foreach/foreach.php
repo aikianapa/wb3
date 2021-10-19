@@ -274,7 +274,7 @@ class tagForeach
                     )
             );
             $dom->parent()->attr("data-pages", $pages);
-            $dom->parent()->attr("data-page", $pages);
+            $dom->parent()->attr("data-page", $page);
             $dom->params->count = $count;
             $dom->params->tpl = $dom->parent()->attr('id');
             $dom->params->page = $page;
@@ -485,6 +485,7 @@ class tagForeach
                 $page = $this->app->vars('_post._params.page');
                 $srvpag = true;
             }
+            
             $list = array_chunk($list, $dom->params->size);
             $dom->params->pages = $pages = ceil($count / $dom->params->size);
             if ($page > $pages or $page <= 0) {
