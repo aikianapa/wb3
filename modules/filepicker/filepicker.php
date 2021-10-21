@@ -21,10 +21,9 @@ class modFilepicker
         }
         $out->copy($dom);
         $out->addClass($dom->attr('class'));
-        if ($dom->params("name")) {
-            $out->find(".filepicker-data")
-                ->attr("name", $dom->params->name);
-        }
+
+        ($dom->attr("name") == '' && $dom->params("name")) ? $dom->attr("name", $dom->params("name")) : null;
+
         if ($dom->attr("name") >"") {
             $out->find(".filepicker-data")
                 ->attr("name", $dom->attr("name"))
