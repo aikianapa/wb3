@@ -378,7 +378,7 @@ class ctrlApi
                 substr($label,0,1) == '_' || is_numeric($label) ? null : $out->append("<p><b>{$label}</b>: {$value}<br>");
             }
         } 
-        !isset($_POST["email"]) ? $_POST["email"]=$_ENV["route"]["mode"]."@".$_ENV["route"]["hostname"] : null;
+        !isset($_POST["email"]) ? $_POST["email"]=$_ENV["route"]["mode"]."@".$_ENV["route"]["domain"] : null;
         !isset($_POST["name"]) ? $_POST["name"]="Site Mailer" : null;
         isset($_POST["_mailto"]) ? $mailto=$_POST["_mailto"] : $mailto = $_ENV["settings"]["email"];
 

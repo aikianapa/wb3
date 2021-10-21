@@ -400,7 +400,7 @@ function wbMail(
         if ($app->vars('_sett.modules.phpmailer.smtp') == 'on') {
             $sett = $app->vars('_sett.modules.phpmailer');
         } else {
-            $sett = ['smtp'=>'','host'=>$app->vars('_route.hostname')];
+            $sett = ['smtp'=>'','host'=>$app->vars('_route.domain')];
         }
         $mail = new PHPMailer(true);
 

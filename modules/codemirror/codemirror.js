@@ -30,7 +30,6 @@ $(document).on("codemirror-js-addons", function() {
             var mode = 'htmlmixed';
             var value = html_entity_decode($(that).text());
             $(that).text('');
-            console.log(value);
             if ($(that).attr("data-theme") !== undefined) {
                 theme = $(that).attr("data-theme");
             }
