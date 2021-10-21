@@ -267,7 +267,7 @@ class ctrlAjax
         } else {
             $out = $app->getTpl("mail.php");
         }
-        !isset($formdata["email"]) ? $formdata["email"]=$_ENV["route"]["mode"]."@".$_ENV["route"]["host"] : null;
+        !isset($formdata["email"]) ? $formdata["email"]=$_ENV["route"]["mode"]."@".$_ENV["route"]["domain"] : null;
         !isset($formdata["name"]) ? $formdata["name"]="Site Mailer" : null;
         !isset($formdata["_mailto"]) ? $mailto = $_ENV["settings"]["email"] : $mailto = $formdata["_mailto"];
         $receivers = [];
