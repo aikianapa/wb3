@@ -252,7 +252,6 @@ class ctrlAjax
         !isset($formdata["subject"]) ? $formdata["subject"]=$formdata["_subject"] : null;
 
         //$formdata["subject"] = mb_encode_mimeheader($formdata["subject"], "UTF-8");
-        $formdata["subject"] = $formdata["subject"];
 
         if (isset($formdata["_tpl"])) {
             $out = $app->getTpl($formdata["_tpl"]);

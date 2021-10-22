@@ -1022,7 +1022,7 @@ wbapp.ajax = async function(params, func = null) {
             if (target.tpl !== undefined) target._params.tpl = target.tpl;
             if (target._tid == undefined) target._tid = params.target; // чтобы срабатывал вариант ответа с json
             if (target.url == undefined && target.route !== undefined && target.route.uri !== undefined) target.url = target.route.uri;
-            (target._params == undefined || !target._params.length) ? null: wbapp.ajax(target, func); // только если переданы предыдущие параметры
+            (target._params == undefined || target._params.length == 0) ? null: wbapp.ajax(target, func); // только если переданы предыдущие параметры
         }
     }
 }
