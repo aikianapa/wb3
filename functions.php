@@ -301,7 +301,7 @@ function wbGetSysMsg()
     }
 
 function wbFormExist($form = null) {
-    $app = &$_ENV["app"];
+    $app = &$_ENV['app'];
     ($form == null) ? $form = $app->vars("_route.form") : null;
     $res = false;
     if (is_dir($app->vars("_env.path_app")."/forms/{$form}")) {
@@ -316,7 +316,7 @@ function wbFormExist($form = null) {
 
 
 function wbFormClass($form = null) {
-  $app = &$_ENV["app"];
+  $app = &$_ENV['app'];
   ($form == null) ? $form = $app->vars("_route.form") : null;
   if (is_file($app->vars("_env.path_app")."/forms/{$form}/_class.php")) {
       require_once($app->vars("_env.path_app")."/forms/{$form}/_class.php");
