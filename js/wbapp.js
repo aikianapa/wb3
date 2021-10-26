@@ -1,5 +1,6 @@
 "use strict"
 var wbapp = new Object();
+wbapp.tmp = {};
 var _tmpphp = false;
 var _tmpjq = false;
 
@@ -16,8 +17,6 @@ setTimeout(function() {
 
     wbapp.devmode = get_cookie('devmode');
     wbapp.evClick = 'tap click touchstart';
-
-
     wbapp.start();
 }, 10);
 
@@ -1022,7 +1021,13 @@ wbapp.ajax = async function(params, func = null) {
             if (target.tpl !== undefined) target._params.tpl = target.tpl;
             if (target._tid == undefined) target._tid = params.target; // чтобы срабатывал вариант ответа с json
             if (target.url == undefined && target.route !== undefined && target.route.uri !== undefined) target.url = target.route.uri;
-            (target._params == undefined || target._params.length == 0) ? null: wbapp.ajax(target, func); // только если переданы предыдущие параметры
+            if (target._params == undefined || target._params.length == 0) { void(0); } else {
+                if (wbapp.tmp.ajax_params == undefined || wbapp.tmp.ajax_params !== target) {
+                    wbapp.tmp.ajax_params = target;
+                    wbapp.ajax(target, func); // только если переданы предыдущие параметры
+                    delete wbapp.tmp.ajax_params;
+                }
+            }
         }
     }
 }
