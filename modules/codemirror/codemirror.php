@@ -18,7 +18,9 @@ class modCodemirror
             $textarea = $out->find(".codemirror");
             isset($dom->params->oconv) ? $textarea->attr('wb-oconv',$dom->params->oconv) : null;
             isset($dom->params->name) ? $name = $dom->params->name : $name = $dom->attr("name");
+            $dom->params->name = $name;
             $textarea->attr('name', $name);
+            $textarea->attr('data-params',json_encode($dom->params));
             $dom->attr('id') > '' ? $out->attr('id', $dom->attr('id')) : $out->attr('id', 'cm_'.wbNewId());
 			$dom->after($out);
 			$dom->remove();

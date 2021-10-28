@@ -25,24 +25,22 @@ $(document).on("codemirror-js-addons", function() {
         var that = this;
         var name = $(that).attr("name");
         var form = $(that).parents("form")[0];
+        var params = $(this).data('params');
+
         if (that.done == undefined) {
             var theme = 'cobalt';
             var mode = 'htmlmixed';
             var value = html_entity_decode($(that).text());
             $(that).text('');
-            if ($(that).attr("data-theme") !== undefined) {
-                theme = $(that).attr("data-theme");
-            }
-            if ($(that).attr("data-mode") !== undefined) {
-                mode = $(that).attr("data-mode");
-            }
-            wbapp.loadStyles(['/engine/modules/codemirror/dist/theme/' + theme + '.css']);
-            wbapp.loadScripts(['/engine/modules/codemirror/dist/mode/' + mode + '/' + mode + '.js']);
+            $(that).attr("data-theme") == undefined ? null : params.theme = $(that).attr("data-theme");
 
+            $(that).attr("data-mode") == undefined ? null : params.mode = $(that).attr("data-mode");
 
-            let editor = CodeMirror.fromTextArea(that, {
-                mode: mode,
-                theme: theme,
+            wbapp.loadStyles(['/engine/modules/codemirror/dist/theme/' + params.theme + '.css']);
+            wbapp.loadScripts(['/engine/modules/codemirror/dist/mode/' + params.mode + '/' + params.mode + '.js']);
+            let options = {
+                mode: params.mode,
+                theme: params.theme,
                 lineNumbers: true,
                 lineWrapping: true,
                 styleActiveLine: true,
@@ -50,10 +48,15 @@ $(document).on("codemirror-js-addons", function() {
                 autoCloseBrackets: true,
                 autoRefresh: true,
                 autofocus: true,
-                fixedGutter: true
-            });
+                fixedGutter: true,
+                foldGutter: true,
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+            }
+            let editor = CodeMirror.fromTextArea(that, options);
             editor.setValue(value);
             //editor.foldCode(CodeMirror.Pos(0, 0));
+            $(that).html(htmlentities(editor.getValue()));
+            $(that).trigger('change');
             editor.on("change", function() {
                 $(that).html(htmlentities(editor.getValue()));
                 setTimeout(function() {
@@ -65,7 +68,7 @@ $(document).on("codemirror-js-addons", function() {
             this.editor = editor;
             $(this).data("editor", editor);
             wbapp.trigger('codemirror-init', this);
-            setTimeout(() => { editor.refresh(); }, 300);
+            setTimeout(() => { editor.refresh(); }, 50);
 
         }
     });
