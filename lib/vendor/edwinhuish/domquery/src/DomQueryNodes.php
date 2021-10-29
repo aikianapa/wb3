@@ -69,7 +69,8 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
      */
     public $libxml_options =
         LIBXML_HTML_NOIMPLIED // turns off the automatic adding of implied html/body
-        | LIBXML_HTML_NODEFDTD; // prevents a default doctype being added when one is not found
+        | LIBXML_HTML_NODEFDTD // prevents a default doctype being added when one is not found
+        | LIBXML_COMPACT;
 
 
     /**
@@ -355,8 +356,11 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
 
         $dom_document = new \DOMDocument('1.0', $encoding);
         $dom_document->strictErrorChecking = false;
+        $dom_document->substituteEntities = false;
+        $dom_document->formatOutput = true;
         $dom_document->validateOnParse = false;
         $dom_document->recover = true;
+        $dom_document->preserveWhiteSpace = false;
 
         if ($this->xml_mode) {
             $dom_document->loadXML($content, $this->libxml_options);
@@ -868,7 +872,6 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
         if (stripos($html, 'dqn_tmp_id=') !== false) {
             $html = preg_replace('/ dqn_tmp_id="([a-z0-9]+)"/', '', $html);
         }
-
         return $html;
     }
 

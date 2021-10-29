@@ -16,8 +16,8 @@ class modCodemirror
         } else {
             $out = $dom->app->fromFile(__DIR__ ."/codemirror-ui.php");
             $textarea = $out->find(".codemirror");
-            isset($dom->params->oconv) ? $textarea->attr('wb-oconv',$dom->params->oconv) : null;
-            isset($dom->params->name) ? $name = $dom->params->name : $name = $dom->attr("name");
+            $dom->params('oconv') > '' ? $textarea->attr('wb-oconv',$dom->params->oconv) : $dom->params->oconv = $textarea->attr('wb-oconv');
+            $dom->params('name') > '' ? $name = $dom->params->name : $name = $dom->attr("name");
             $dom->params->name = $name;
             $textarea->attr('name', $name);
             $textarea->attr('data-params',json_encode($dom->params));

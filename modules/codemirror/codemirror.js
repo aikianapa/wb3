@@ -2,7 +2,8 @@ $(document).off("codemirror-js");
 $(document).on("codemirror-js", function() {
     wbapp.loadStyles([
         '/engine/modules/codemirror/dist/lib/codemirror.css',
-        '/engine/modules/codemirror/dist/addon/fold/foldgutter.css'
+        '/engine/modules/codemirror/dist/addon/fold/foldgutter.css',
+        '/engine/modules/codemirror/dist/addon/display/fullscreen.css'
     ], "codemirror-css");
     wbapp.loadScripts(['/engine/modules/codemirror/dist/lib/codemirror.js'], 'codemirror-js-ready', function() {
         wbapp.loadScripts([
@@ -11,6 +12,7 @@ $(document).on("codemirror-js", function() {
             '/engine/modules/codemirror/dist/addon/fold/foldcode.js',
             '/engine/modules/codemirror/dist/addon/fold/foldgutter.js',
             '/engine/modules/codemirror/dist/addon/fold/xml-fold.js',
+            '/engine/modules/codemirror/dist/addon/display/fullscreen.js',
             '/engine/modules/codemirror/dist/mode/xml/xml.js',
             '/engine/modules/codemirror/dist/mode/javascript/javascript.js',
             '/engine/modules/codemirror/dist/mode/css/css.js',
@@ -28,14 +30,14 @@ $(document).on("codemirror-js-addons", function() {
         var params = $(this).data('params');
 
         if (that.done == undefined) {
-            var theme = 'cobalt';
-            var mode = 'htmlmixed';
-            var value = html_entity_decode($(that).text());
-            $(that).text('');
+            let value = $(that).text();
+            params.theme = 'cobalt';
+            params.mode = 'htmlmixed';
             $(that).attr("data-theme") == undefined ? null : params.theme = $(that).attr("data-theme");
-
             $(that).attr("data-mode") == undefined ? null : params.mode = $(that).attr("data-mode");
-
+            that.wait = false;
+            params.oconv == 'base64_encode' ? value = base64_decode(value) : null;
+            console.log(params);
             wbapp.loadStyles(['/engine/modules/codemirror/dist/theme/' + params.theme + '.css']);
             wbapp.loadScripts(['/engine/modules/codemirror/dist/mode/' + params.mode + '/' + params.mode + '.js']);
             let options = {
@@ -43,6 +45,7 @@ $(document).on("codemirror-js-addons", function() {
                 theme: params.theme,
                 lineNumbers: true,
                 lineWrapping: true,
+                fullScreen: false,
                 styleActiveLine: true,
                 autoCloseTags: true,
                 autoCloseBrackets: true,
@@ -53,16 +56,24 @@ $(document).on("codemirror-js-addons", function() {
                 gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
             }
             let editor = CodeMirror.fromTextArea(that, options);
+            if (params.height == 'auto') {
+                $(that).next('.Codemirror').css('height', 'auto');
+            }
             editor.setValue(value);
             //editor.foldCode(CodeMirror.Pos(0, 0));
-            $(that).html(htmlentities(editor.getValue()));
             $(that).trigger('change');
             editor.on("change", function() {
-                $(that).html(htmlentities(editor.getValue()));
-                setTimeout(function() {
+                let value = editor.getValue();
+                params.oconv == 'base64_encode' ? value = base64_encode(value) : null;
+                if (that.wait == false) {
+                    that.wait = true;
+                    $(that).html(value);
                     editor.refresh();
                     $(that).trigger('change');
-                }, 300);
+                    setTimeout(function() {
+                        that.wait = false;
+                    }, 300);
+                }
             });
             this.done = true;
             this.editor = editor;
