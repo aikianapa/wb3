@@ -181,6 +181,9 @@ class ctrlAjax
         $form = $this->app->vars('_route.params.0');
         $mode = $this->app->vars('_route.params.1');
         $out = $this->app->getForm($form, $mode);
+        $post = $this->app->vars('_post');
+        if ($post['__token']) unset($post['__token']);
+        if (count($post)) $out->fetch($post);
         return json_encode(['result'=>$out->outer()]);
     }
 

@@ -325,7 +325,32 @@ wbapp.start = function() {
 
 }
 
-
+wbapp.confirm = function(title = null, text = null, options = null) {
+    /*
+    wbapp.confirm()
+    .on('confirm', function () {
+        alert(1);
+    })
+    .on('cancel', function () {
+        alert(0)
+    });
+    */
+    let modal = wbapp.getTpl('common', 'confirm', { 'confirm': true });
+    let $modal = $(modal.result);
+    let confirm = false;
+    title !== null ? title = $modal.find('.modal-title').text(title) : null;
+    text !== null ? text = $modal.find('.modal-body').text(text) : null;
+    $modal.modal();
+    $modal.undelegate('.btn.confirm', wbapp.evClick);
+    $modal.delegate('.btn.confirm', wbapp.evClick, function() {
+        confirm = true;
+        $modal.trigger('confirm').modal('hide');
+    });
+    $modal.on('hide.bs.modal', function() {
+        confirm == false ? $modal.trigger('cancel') : null;
+    })
+    return $modal;
+}
 
 wbapp.lazyload = function() {
     $("[data-src]:not([src])").each(function() {
@@ -1079,69 +1104,64 @@ wbapp.unloading = function() {
     if (typeof topbar !== 'undefined') {
         topbar.hide();
     }
+}
 
-    wbapp.fetch = function(selector, data, ret) {
-        if (selector == undefined) {
-            var selector = "body";
-        }
-        if (data == undefined) {
-            var data = {};
-        }
-        if ($(selector).length) {
-            var tpl_id = $(selector).attr("data-wb-tpl");
-            if (tpl_id !== undefined) {
-                var html = urldecode($("#" + tpl_id).html());
+wbapp.fetch = function(selector = 'body', data = {}, ret) {
+    if ($(selector).length) {
+        var tpl_id = $(selector).attr("data-wb-tpl");
+        if (tpl_id !== undefined) {
+            var html = urldecode($("#" + tpl_id).html());
+        } else {
+            if ($(selector).is("script")) {
+                var html = $(selector).html();
             } else {
-                if ($(selector).is("script")) {
-                    var html = $(selector).html();
+                if ($(selector).length == 1) {
+                    var html = $(selector).outer();
                 } else {
-                    if ($(selector).length == 1) {
-                        var html = $(selector).outer();
-                    } else {
-                        var html = selector;
-                    }
+                    var html = selector;
                 }
             }
-        } else {
-            var html = selector;
         }
-        var form = "undefined";
-        var item = "undefined";
-        if (data.form !== undefined) {
-            form = data.form;
-        }
-        if (data.id !== undefined) {
-            item = data.id;
-        }
-        if (data._form !== undefined) {
-            form = data._form;
-        }
-        if (data._id !== undefined) {
-            item = data._id;
-        }
-        if (data._item !== undefined) {
-            item = data._item;
-        }
-
-        if (is_object(html)) { var tpl = $(html).outer(); } else { var tpl = html; }
-        // контроллер не обслуживает данный запрос - устарело
-        var url = "/ajax/setdata/" + form + "/" + item;
-        var res = null;
-        var param = { tpl: tpl, data: data };
-        param = base64_encode(JSON.stringify(param));
-        wbapp.postSync(url, {
-            data: param
-        }, function(data) {
-            if (ret == undefined || ret == false) {
-                $(selector).after(data).remove();
-                res = true;
-            } else {
-                res = data;
-            }
-        });
-        return res;
+    } else {
+        var html = selector;
     }
+    var form = "undefined";
+    var item = "undefined";
+    if (data.form !== undefined) {
+        form = data.form;
+    }
+    if (data.id !== undefined) {
+        item = data.id;
+    }
+    if (data._form !== undefined) {
+        form = data._form;
+    }
+    if (data._id !== undefined) {
+        item = data._id;
+    }
+    if (data._item !== undefined) {
+        item = data._item;
+    }
+
+    if (is_object(html)) { var tpl = $(html).outer(); } else { var tpl = html; }
+    // контроллер не обслуживает данный запрос - устарело
+    var url = "/ajax/setdata/" + form + "/" + item;
+    var res = null;
+    var param = { tpl: tpl, data: data };
+    param = base64_encode(JSON.stringify(param));
+    wbapp.postSync(url, {
+        data: param
+    }, function(data) {
+        if (ret == undefined || ret == false) {
+            $(selector).after(data).remove();
+            res = true;
+        } else {
+            res = data;
+        }
+    });
+    return res;
 }
+
 
 wbapp.toast = function(title, text, params = {}) {
     var target = '.content-toasts';
