@@ -1,24 +1,23 @@
-$(document).ready(function () {
-    
-    var currentNote = null;
+$(document).ready(function() {
 
-    $('#notes').delegate('form', 'submit', function () {
+    var currentNote = wbapp.newId();
+    $('#notes').delegate('form', 'submit', function(ev) {
         if ($(this).find('#noteCommentBtn').length) {
             $(this).find('#noteCommentBtn').trigger('click');
         }
         return false;
     });
 
-    $('#noteComments').delegate('.close', 'tap click', function () {
+    $('#noteComments').delegate('.close', wbapp.evClick, function() {
         var id = $('#notes .card.active').attr('data-id');
         let idx = $(this).closest('.comment').index();
-        wbapp.ajax("/api/call/notes/removeComments/", { 'id': id, 'idx': idx }, function (res) {
+        wbapp.ajax("/api/call/notes/removeComments/", { 'id': id, 'idx': idx }, function(res) {
             console.log(res);
         })
         $(this).closest('.comment').remove();
     });
 
-    $('#notes').delegate('.card', 'tap click', function () {
+    $('#notes').delegate('.card', wbapp.evClick, function() {
         $('#notes .card').removeClass('active');
         $(this).addClass('active');
         let tid = '#' + $(this).parent().attr('id');
@@ -36,10 +35,10 @@ $(document).ready(function () {
             item = wbapp.getSync("/api/query/notes/?_id=" + note);
             item = item[note];
         }
-        wbapp.render('#notesPaper',item);
+        wbapp.render('#notesPaper', item);
     });
 
-    $('#notes').delegate('#newNote', 'tap click', function () {
+    $('#notes').delegate('#newNote', wbapp.evClick, function() {
         let tpl = wbapp.tpl('#notesPaper');
         let nid = wbapp.newId();
         currentNote = nid;
@@ -48,35 +47,41 @@ $(document).ready(function () {
         $('#notesPaper').html(tpl);
     })
 
-    $('#notes').delegate('#notesPaper textarea', 'change', function () {
+    $('#notes').delegate('#notesPaper textarea', 'change', function() {
         let id = $(this).attr('data-id');
+        if (id == undefined || id == '') {
+            id = wbapp.newId();
+            $(this).attr('data-id', id);
+        }
         if (this.dirty !== undefined && this.dirty == false) return;
-        if (id == undefined) return;
-        if ($(this).val() == '' && wbapp.storage("cms.list.notes."+id) == undefined) return;
+        //if ($(this).val() == '' && wbapp.storage("cms.list.notes." + id) == undefined) return;
         currentNote = id;
         try {
             params = wbapp.parseAttr($(this).attr("wb-save"));
         } catch (error) { return }
-        wbapp.save($(this), params);
+        params.item > '' ? null : params.item = id;
+        wbapp.save($(this), params, function(data) {
+            // wbapp.render('#notesList');
+        });
         this.dirty = false;
         return false;
     })
 
-    $('#notes').delegate('#notesList','wb-ajax-done',function(){
+    $('#notes').delegate('#notesList', 'wb-ajax-done', function() {
         // server mode
-        setTimeout(function(){
+        setTimeout(function() {
             $('#notesList .card[data-id="' + currentNote + '"]').addClass('active');
         })
     })
 
-    $('#notes').delegate('#notesPaper textarea', 'wb-save-done', function (ev,a,b) {
+    $('#notes').delegate('#notesPaper textarea', 'wb-save-done', function(ev, a, b) {
         // client mode
-        setTimeout(function () {
+        setTimeout(function() {
             $('#notesList .card[data-id="' + currentNote + '"]').addClass('active');
         })
     });
 
-    $('#notes').delegate('button.close', 'tap click', function () {
+    $('#notes').delegate('button.close', wbapp.evClick, function() {
         var card = $(this).closest('.card');
         let id = $(card).attr('data-id');
         if (id == undefined) return;
@@ -86,7 +91,7 @@ $(document).ready(function () {
             return;
         }
         var self = this;
-        wbapp.ajax({ "url": "\/ajax\/rmitem\/notes\/" + id + '?_confirm' }, function (res) {
+        wbapp.ajax({ "url": "\/ajax\/rmitem\/notes\/" + id + '?_confirm' }, function(res) {
             if (res.data._removed !== undefined && res.data._removed == true) {
                 $(card).remove();
                 $('#notes').find('#noteComment, #noteCommentBtn').prop('disabled', true);
@@ -99,13 +104,13 @@ $(document).ready(function () {
     })
 
 
-    $('#notes').delegate('#notesPaper textarea', 'keyup', function () {
+    $('#notes').delegate('#notesPaper textarea', 'keyup', function() {
         var self = this;
         this.dirty = true;
         if (this.timer !== undefined) {
             clearTimeout(this.timer);
         }
-        this.timer = setTimeout(function () {
+        this.timer = setTimeout(function() {
             $(self).trigger('change')
         }, 500)
     });

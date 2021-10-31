@@ -620,7 +620,7 @@ wbapp.storage = function(key, value = undefined, binds = true) {
     }
 }
 
-wbapp.save = function(obj, params, event) {
+wbapp.save = function(obj, params, func = null) {
     wbapp.console("Trigger: wb-save-start");
     $(obj).trigger("wb-save-start", params);
     let that = this;
@@ -703,7 +703,6 @@ wbapp.save = function(obj, params, event) {
                 return null;
             }
 
-
             if (params.callback) eval('params = ' + params.callback + '(params,data)');
 
             if (params.data && params.error !== true) {
@@ -747,6 +746,8 @@ wbapp.save = function(obj, params, event) {
                 params: params,
                 data: data,
             });
+
+            if (func !== null) return func(data);
 
         });
     }, 50);
@@ -1036,7 +1037,6 @@ wbapp.storageUpdate = function(key, data) {
 
     var store = wbapp.storage(key);
     if (!store) wbapp.storage(key, {});
-
     if (store._id == undefined && (store.result !== undefined || store.params !== undefined) && data !== null && data._id !== undefined) {
         if (data._removed !== undefined && data._removed == true) {
             if (store.params !== undefined && store.params.render == 'server') {
@@ -1053,7 +1053,9 @@ wbapp.storageUpdate = function(key, data) {
         } else {
             try {
                 store.result[data._id] = data
-            } catch (err) {}
+            } catch (err) {
+                wbapp.console('Error: wbapp.storageUpdate()');
+            }
         }
         wbapp.storage(key, store);
     } else {
@@ -1309,9 +1311,13 @@ wbapp.tpl = function(tid, data = null) {
 wbapp.render = function(tid, data) {
     if (tid == undefined) return;
     let params = wbapp.template[tid].params;
-    if (data == undefined && params.bind == undefined) data = {};
-    if (data == undefined) data = wbapp.storage(params.bind);
+    if (data == undefined) {
+        data = {};
+        params.bind !== undefined ? data = wbapp.storage(params.bind) : null;
+        params.update !== undefined ? data = wbapp.storage(params.update) : null;
+    }
     if (params.render == undefined) params.render = null; // для рендера не списковых данных
+
     switch (params.render) {
         case 'client':
             wbapp.renderClient(params, data);

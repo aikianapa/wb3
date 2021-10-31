@@ -162,6 +162,7 @@ class ctrlApi
             return $app->jsonEncode($json);
         } else {
             $json = $app->itemList($table, $options);
+            $json['list'] = (object)$json['list'];
             $options = (object)$options;
             if (!isset($options->size)) {
                 return $app->jsonEncode($json['list']);

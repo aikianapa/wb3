@@ -33,7 +33,7 @@
 
 
                 <div class="paper" id="notesPaper">
-                    <template data-params="render=client&bind=cms.notes.paper&target=#notesPaper">
+                    <template data-params="render=client&bind=cms.notespaper&target=#notesPaper">
                         <form>
                             <textarea type="text" name="note" class="form-control scrollable" placeholder="{{_lang.type}}" data-id="{{_id}}" wb-save="table=notes&item={{_id}}&silent=true&update=cms.list.notes">{{note}}</textarea>
                         </form>

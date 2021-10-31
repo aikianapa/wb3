@@ -340,7 +340,7 @@ class wbDom extends DomQuery
                 if ($atname == "wb" or substr($atname, 0, 3) == "wb-") {
                     $name = $atname;
                     $name !== "wb" ? $name = substr($atname, 3) : null;
-                    if (in_array($name, ['if','where','change','ajax'])) {
+                    if (in_array($name, ['if','where','change','ajax','save'])) {
                         $prms = [$name => $atval];
                         $this->atrs->$name = $atval;
                     } else {
@@ -524,56 +524,57 @@ class wbDom extends DomQuery
 
     public function setValues()
     {
-        if ($this->strict) {
-            return;
-        }
+        if ($this->strict) return;
         isset($this->item) ? null : $this->item = [];
         $fields = $this->app->dot($this->item);
         $inputs = $this->find("[name]:not([done])");
+
         foreach ($inputs as $inp) {
+            if (!$inp->closest("template")->length) {
                 $inp->copy($this);
-                // $inp->fetchParams(); // так ломается подстановка в атрибуты
-                if ($inp->is("textarea")) $inp->fetchParams();
-                if (!$inp->parents("template")) $inp->fetchParams();
+                $inp->fetchParams();
                 $name = $inp->attr("name");
                 $value = $fields->get($name);
                 ((array)$value === $value and $inp->tagName !== "select") ? $value = wb_json_encode($value) : null;
-                if ($value > '')$value = str_replace('&amp;quot;', '"', $value); // борьба с ковычками в атрибутах тэгов
-            if (in_array($inp->tagName, ["input","textarea","select"]) && !$inp->closest("template")->length) {
-                if ($inp->tagName == "textarea") {
-                    if ($inp->params('oconv') > '') {
-                        $oconv = $inp->params('oconv');
-                        $inp->inner(@$oconv($value));
-                    } else if ($inp->attr('type') == 'json') {
-                        $inp->inner($value);
-                    } else {
-                        $inp->inner(htmlentities($value));
-                    }
-                } elseif ($inp->tagName == "select") {
-                    if ((array)$value === $value) {
-                        foreach ($value as $val) {
-                            $val > "" ? $inp->find("[value='{$val}']")->attr("selected", true) : null;
+                if ($value > '') {
+                    $value = str_replace('&amp;quot;', '"', $value);
+                } // борьба с ковычками в атрибутах тэгов
+                if (in_array($inp->tagName, ["input","textarea","select"])) {
+                    if ($inp->tagName == "textarea") {
+                        if ($inp->params('oconv') > '') {
+                            $oconv = $inp->params('oconv');
+                            $inp->inner(@$oconv($value));
+                        } elseif ($inp->attr('type') == 'json') {
+                            $inp->inner($value);
+                        } else {
+                            $inp->inner(htmlentities($value));
                         }
-                    } else if ($value > "") {
+                    } elseif ($inp->tagName == "select") {
+                        if ((array)$value === $value) {
+                            foreach ($value as $val) {
+                                $val > "" ? $inp->find("[value='{$val}']")->attr("selected", true) : null;
+                            }
+                        } elseif ($value > "") {
                             $inp->find("[value='{$value}']")->attr("selected", true);
-                    }
-                } elseif ($inp->tagName == "input") {
-                    if ($inp->attr("type") == "radio") {
-                        $inp->attr("value") == $value AND $value > '' ? $inp->attr('checked', 'checked') : null;
-                    } else {
-                        $inp->attr("value", $value);
-                        if ($inp->attr("type") == "checkbox") {
-                            if ($value == "on" or $value == "true"  or $value == "1") {
-                                $inp->attr("checked", true);
-                                $inp->removeAttr("value");
+                        }
+                    } elseif ($inp->tagName == "input") {
+                        if ($inp->attr("type") == "radio") {
+                            $inp->attr("value") == $value and $value > '' ? $inp->attr('checked', 'checked') : null;
+                        } else {
+                            $inp->attr("value", $value);
+                            if ($inp->attr("type") == "checkbox") {
+                                if ($value == "on" or $value == "true"  or $value == "1") {
+                                    $inp->attr("checked", true);
+                                    $inp->removeAttr("value");
+                                }
                             }
                         }
                     }
-                }
-                $inp->attr("done", "");
-            } else if ($inp->hasAttr('type') && !$inp->hasAttr("done") && !$inp->closest("template")->length) {
+                    $inp->attr("done", "");
+                } elseif ($inp->hasAttr('type') && !$inp->hasAttr("done")) {
                     $inp->attr("value", $value);
                     $inp->attr("done", "");
+                }
             }
         }
         $unset = $this->find("template,textarea,code,pre");
