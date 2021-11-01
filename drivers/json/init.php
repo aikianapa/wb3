@@ -5,9 +5,10 @@ use Nahid\JsonQ\Jsonq;
 
 class jsonDrv
 {
-    public function __construct($app)
+    public function __construct(&$app)
     {
-        $this->app = $app;
+        $this->app = &$app;
+        $this->driver = 'json';
     }
 
     public function itemRead($form = null, $id = null)

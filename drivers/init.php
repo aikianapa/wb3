@@ -19,9 +19,7 @@ function wbSetDb($form)
     } else {
         isset($app->drivers) ? null : $app->drivers = (object)[];
     }
-
-    isset($app->settings->driver_tables[$form]) ? $driver = $app->settings->driver_tables[$form] : $driver = $app->settings->driver;
- 
+    isset($app->settings->driver_tables[$form]) ? $driver = $app->settings->driver_tables[$form] : $driver = $app->settings->_driver;
     $form == '_settings' ? $driver = 'json' : null;
     $path = "/drivers/{$driver}/init.php";
     if (is_file($app->route->path_app . $path)) {
@@ -29,7 +27,7 @@ function wbSetDb($form)
     } elseif (is_file($app->route->path_engine.$path)) {
         include_once $app->route->path_engine.$path;
     }
-    $class = $driver."Drv";
+    $class = $driver.'Drv';
     $app->db = new $class($app);
     $app->_db = new jsonDrv($app);
 

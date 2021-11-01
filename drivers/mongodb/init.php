@@ -3,9 +3,10 @@ require 'vendor/autoload.php';
 
 class mongodbDrv
 {
-    public function __construct($app)
+    public function __construct(&$app)
     {
-        $this->app = $app;
+        $this->app = &$app;
+        $this->driver = 'mongodb';
         $this->db = $this->connect();
     }
 

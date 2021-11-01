@@ -23,7 +23,7 @@ class tagData {
     } else if (!$dom->params("field")) {
         $dom->item = [];
     }
-
+    $dom->item == null ? $dom->item = [] : null;
     if (isset($dom->item["_table"])) $dom->item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$dom->item["_table"]], $dom->item);
     if ($dom->params("field")) {
         $data = new Dot();

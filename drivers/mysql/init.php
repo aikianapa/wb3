@@ -8,6 +8,7 @@ class mysqlDrv
     {
         $this->app = &$app;
         $this->db = $this->connect();
+        $this->driver = 'mysql';
         if (!isset($app->connect)) {
             $app->connect = (object)[];
         }

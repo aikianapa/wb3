@@ -618,7 +618,7 @@ class wbApp
             $this->settings->$key = $val;
         }
 
-        !isset($this->settings->driver) ? $this->settings->driver = null : null;
+        isset($this->settings->driver) ? null : $this->settings->driver = 'json' ;
 
         $this->router = new wbRouter();
         $this->vars = new Dot();
@@ -797,8 +797,7 @@ class wbApp
 
     public function driver()
     {
-        if ($this->settings->driver === null) {
-            $this->settings->driver = 'json';
+            $this->settings->_driver = 'json';
             if (is_file($this->route->path_app."/database/_driver.ini")) {
                 $drv = file_get_contents($this->route->path_app."/database/_driver.ini");
                 $drv = wbSetValuesStr($drv);
@@ -812,14 +811,12 @@ class wbApp
                 $flag = true;
                 foreach ($drv as $driver => $options) {
                     if ($flag) {
-                        $this->settings->driver = $driver;
+                        $this->settings->_driver = $driver;
                         $flag = false;
                     }
                     $this->settings->driver_options[$driver] = $options;
                 }
-                $this->settings->driver_tables = $drvlist;
             }
-        }
         include_once $this->route->path_engine."/drivers/json/init.php";
         include_once $this->route->path_engine."/drivers/init.php";
     }
