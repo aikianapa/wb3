@@ -77,6 +77,12 @@ class modYonger
             is_file($dir) OR is_dir($dir) ? null : symlink(__DIR__ .'/common/forms/pages' , $dir );
             $dir = $app->vars('_env.path_app').'/forms/news';
             is_file($dir) OR is_dir($dir) ? null : symlink(__DIR__ .'/common/forms/news' , $dir );
+            $dir = $app->vars('_env.path_app').'/forms/users';
+            is_file($dir) or is_dir($dir) ? null : symlink(__DIR__ .'/common/forms/users', $dir);
+            $dir = $app->vars('_env.path_app').'/forms/quotes';
+            is_file($dir) or is_dir($dir) ? null : symlink(__DIR__ .'/common/forms/quotes', $dir);
+            $dir = $app->vars('_env.path_app').'/forms/comments';
+            is_file($dir) or is_dir($dir) ? null : symlink(__DIR__ .'/common/forms/comments', $dir);
             $file = $app->vars('_env.path_app').'/functions.php';
             is_file($file) ? null : symlink(__DIR__ .'/common/scripts/functions.php' , $file);
             $file = $app->vars('_env.path_app').'/tpl/page.php';
