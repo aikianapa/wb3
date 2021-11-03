@@ -270,7 +270,7 @@ $(document).on("filepicker-js", function() {
                         $filepicker.find(".listview img[data-img='" + data.files[0].name + "']")
                             .attr("src", "/engine/modules/filepicker/assets/img/error.png")
                             .attr("title", "Error")
-                            .on("tap click", function() { $(this).parent(".card").remove(); });
+                            .on(wbapp.evClick, function() { $(this).parent(".card").remove(); });
                     }).on('uploadfallback.filepicker', function(e, data) {
                         console.log(data);
                     });

@@ -225,9 +225,6 @@ class tagTreeSelect {
                     $this->dom->prepend('<option value="">'.$this->dom->attr('placeholder').'</option>');
                 }
             }
-
-
-
     }
 
 }
