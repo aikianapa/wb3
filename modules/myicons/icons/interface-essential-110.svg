@@ -4,14 +4,14 @@
 	 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
 <style type="text/css">
 	.st0{fill:none;}
-	.st1{fill:none;stroke:#323232;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+	.st1{fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
 </style>
 <g>
 	<path class="st0" d="M0,0h24v24H0V0z"/>
-	<path class="st1" d="M6.8,19.8l-2.7-2.7C3.4,16.4,3,15.4,3,14.3V9.7c0-1.1,0.4-2.1,1.2-2.8l2.7-2.7C7.6,3.4,8.6,3,9.7,3h4.7
+	<path stroke="#323232" class="st1" d="M6.8,19.8l-2.7-2.7C3.4,16.4,3,15.4,3,14.3V9.7c0-1.1,0.4-2.1,1.2-2.8l2.7-2.7C7.6,3.4,8.6,3,9.7,3h4.7
 		c1.1,0,2.1,0.4,2.8,1.2l2.7,2.7C20.6,7.6,21,8.6,21,9.7v4.7c0,1.1-0.4,2.1-1.2,2.8l-2.7,2.7c-0.8,0.8-1.8,1.2-2.8,1.2H9.7
 		C8.6,21,7.6,20.6,6.8,19.8z"/>
-	<path class="st1" d="M9,15l6-6"/>
-	<path class="st1" d="M15,15L9,9"/>
+	<path stroke="#323232" class="st1" d="M9,15l6-6"/>
+	<path stroke="#323232" class="st1" d="M15,15L9,9"/>
 </g>
 </svg>

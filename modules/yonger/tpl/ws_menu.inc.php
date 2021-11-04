@@ -25,7 +25,8 @@
     <a href="#" data-toggle="dropdown" class="dropdown-link ml-4">
         <div class="d-flex align-items-center">
             <div class="avatar avatar-sm mg-r-8">
-                <img data-src="/thumb/36x36/src{{_sess.user.avatar[0].img}}" class="img rounded-circle" alt="" />
+                <img wb-if="'{{_sess.user.avatar[0].img}}'>''" data-src="/thumb/36x36/src{{_sess.user.avatar[0].img}}" class="img-fluid rounded-circle" alt="" />
+                <svg wb-if="'{{_sess.user.avatar[0].img}}'==''" class="mi mi-users-06 size-36" wb-module="myicons"></svg>
             </div>
             <div>
             <span class="tx-color-01 tx-semibold d-block lh--9">{{_sess.user.first_name}}</span>

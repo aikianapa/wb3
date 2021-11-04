@@ -766,7 +766,7 @@ class wbApp
     public function login($user) {
         is_string($user) ? $user = $this->itemRead('users',$user) : null;
         is_object($user) ? null : $user = $this->arrayToObj($user);
-        isset($user->avatar) ? null : $user->avatar = [0=>['img'=>"/module/myicons/user-circle.1.svg",'alt'=>'User','title'=>'']];
+        isset($user->avatar) ? null : $user->avatar = [0=>['img'=>"",'alt'=>'User','title'=>'']];
         (array)$user->avatar === $user->avatar ? null : $user->avatar=['img'=>"/uploads/users/{$user->id}/{$user->avatar->img}",'alt'=>'User','title'=>''];
         $user->group = wbArrayToObj(wbItemRead("users", $user->role));
         if (!$user->group OR $user->group->active !== 'on' OR $user->active !== 'on') {
