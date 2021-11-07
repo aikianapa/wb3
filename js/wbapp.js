@@ -957,6 +957,13 @@ wbapp.ajax = async function(params, func = null) {
                 // $inp = $(params._event.target).parent();
                 // тут нужна обработка значений на клиенте
             }
+            setTimeout(function() {
+                wbapp.tplInit();
+                wbapp.lazyload();
+                wbapp.ajaxAuto();
+                wbapp.wbappScripts();
+            }, 1)
+
             if (params.render == 'client') {
                 let res = $(data).find(params.target).html();
                 $(document).find(params.target).html(res);
@@ -983,7 +990,7 @@ wbapp.ajax = async function(params, func = null) {
 
                 var pagert = $(document).find(params.target).parent();
                 if ($(pagert).is('li')) pagert = $(pagert).parent();
-                if ($(pagert).is('tbody')) pagert = $(pagert).parent();
+                if ($(pagert).is('tbody')) pagert = $(pagert).parents('table');
                 if (data.pos == 'both' || data.pos == 'top') $(pagert).before(data.pag);
                 if (data.pos == 'both' || data.pos == 'bottom') $(pagert).after(data.pag);
             }
@@ -991,6 +998,7 @@ wbapp.ajax = async function(params, func = null) {
             wbapp.tplInit();
             wbapp.lazyload();
             wbapp.ajaxAuto();
+            wbapp.wbappScripts();
 
             //wbapp.console("Trigger: wb-ajax-done");
             if (data.result == undefined) params['data'] = data;

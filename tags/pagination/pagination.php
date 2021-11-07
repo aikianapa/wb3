@@ -130,8 +130,8 @@ class tagPagination
                 $pag->find('ul')->attr('style', $style.';display:none;');
             }
 
-            $dom->is('table, tbody') ? $target = $dom->closest('table') : $target = $dom->parent()->parent();
-
+            $dom->is('table, tbody') ? $target = $dom->closest('table') : $target = $dom->closest('#'.$tplId);
+            if ($target->is('tbody')) $target = $target->parent();
             if ($dom->params("more") == '' and ($dom->params("pos") == 'top' or $dom->params("pos") == 'both')) {
                 $target->parent()->prepend($pag);
             }
