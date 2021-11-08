@@ -139,13 +139,7 @@ $(document).on("filepicker-js", function() {
                     });
                 }
 
-
-                var listview = function() {
-                    let lvid = "lv-" + wbapp.newId();
-                    if (wbapp.template["#fp-listviewItem"] == undefined) {
-                        wbapp.template["#fp-listviewItem"] = { html: $(document).find("#fp-listviewItem").html(), params: {} };
-                    }
-                    let tpl = wbapp.template["#fp-listviewItem"].html;
+                var getList = function() {
                     $filepicker.list = input.html();
 
                     try {
@@ -153,6 +147,16 @@ $(document).on("filepicker-js", function() {
                     } catch (error) {
                         $filepicker.list = [];
                     }
+                }
+
+
+                var listview = function() {
+                    let lvid = "lv-" + wbapp.newId();
+                    if (wbapp.template["#fp-listviewItem"] == undefined) {
+                        wbapp.template["#fp-listviewItem"] = { html: $(document).find("#fp-listviewItem").html(), params: {} };
+                    }
+                    let tpl = wbapp.template["#fp-listviewItem"].html;
+                    getList();
 
                     if (!$(inpfile).is("[multiple]") && $filepicker.list.length) {
                         $filepicker.list = [$filepicker.list[0]];
@@ -288,7 +292,8 @@ $(document).on("filepicker-js", function() {
                             delete $filepicker.list[card.index()];
                             card.remove();
                         } else {
-                            fp.delete(file).done(function() {
+                            fp.delete(file).done(function(data) {
+                                getList();
                                 $.each($filepicker.list, function(i, line) {
                                     if (line !== undefined) {
                                         if (line.img == undefined || strpos(' ' + line.img, '_auto_undefined')) {
