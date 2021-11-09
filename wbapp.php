@@ -813,8 +813,10 @@ class wbApp
                         $this->settings->_driver = $driver;
                         $flag = false;
                     }
-                    $this->settings->driver_options[$driver] = $options;
+                    $this->settings->driver_options[$driver] = &$options;
                 }
+                $this->settings->driver_tables = &$drvlist;
+
             }
         include_once $this->route->path_engine."/drivers/json/init.php";
         include_once $this->route->path_engine."/drivers/init.php";
