@@ -63,12 +63,24 @@ class yongerPage {
         strpos(' '.$file,'_yonger_') ? $file = str_replace('/_yonger_',__DIR__,$file) : null;
         strpos(' '.$file, '_app_') ? $file = str_replace('/_app_',$this->app->route->path_app, $file) : null;
         is_file($file) ? null : $file = __DIR__ .'/common/blocks/'.$file;
-        $out = $this->app->fromFile($file);
-        $out->path = dirname($file);
-        $out->fetch($item);
-        $out = $out->find('edit');
-        return $out->outer();
+        $out = $this->app->fromString('<html>'.file_get_contents($file).'</html>');
 
+        $out->find('view')->remove();
+        $out->path = dirname($file);
+
+        $out->fetch($item);
+        if ($out->find('edit')->length > 1) {
+            $edit = $out->find('edit');
+            $i=1;
+            foreach($edit as $ed) {
+                if ($i>1) {
+                    $ed->after($ed->inner());
+                    $ed->remove();
+                }
+                $i++;
+            }
+        }
+        return $out->find('edit')->outer();
     }
 
     function blockview($file = null) {
