@@ -963,7 +963,6 @@ wbapp.ajax = async function(params, func = null) {
                 wbapp.ajaxAuto();
                 wbapp.wbappScripts();
             }, 1)
-
             if (params.render == 'client') {
                 let res = $(data).find(params.target).html();
                 $(document).find(params.target).html(res);
@@ -1055,6 +1054,8 @@ wbapp.ajax = async function(params, func = null) {
             if (target.tpl !== undefined) target._params.tpl = target.tpl;
             if (target._tid == undefined) target._tid = params.target; // чтобы срабатывал вариант ответа с json
             if (target.url == undefined && target.route !== undefined && target.route.uri !== undefined) target.url = target.route.uri;
+            params.clear !== undefined && params.clear == "true" ? $(document).find(target._tid).html('') : null;
+
             if (target._params == undefined || target._params.length == 0) { void(0); } else {
                 if (wbapp.tmp.ajax_params == undefined || wbapp.tmp.ajax_params !== target) {
                     wbapp.tmp.ajax_params = target;
