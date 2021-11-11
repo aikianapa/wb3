@@ -172,14 +172,14 @@ class modYonger
         isset($item['block_id']) && $item['block_id'] ? $section->children()->children(':first-child')->attr('id',$item['block_id']) : null;
         isset($item['block_class']) && $item['block_class'] ? $section->children()->children(':first-child')->addClass($item['block_class']) : null;
         if ($section->find('head')) {
-            $result->head = $section->find('head');
+            $result->head = $section->find('head')->inner();
             $section->find('head')->remove();
         }
         if ($section->find('body')) {
             $result->body = $section->find('body');
             $section->find('body')->remove();
         }
-        $result->result = $section;
+        $result->result = $section->inner();
         return $result;
     }
 
