@@ -315,6 +315,20 @@ function wbFormExist($form = null) {
 }
 
 
+function wbModuleClass($module)
+{
+    $app = &$_ENV['app'];
+    if (is_file($app->vars("_env.path_app")."/modules/{$module}/{$module}.php")) {
+        require_once($app->vars("_env.path_app")."/modules/{$module}/{$module}.php");
+    } elseif (is_file($app->vars("_env.path_engine")."/modules/{$module}/{$module}.php")) {
+        require_once($app->vars("_env.path_engine")."/modules/{$module}/{$module}.php");
+    }
+    $module = ucwords($module);
+    return new $module($app);
+}
+
+
+
 function wbFormClass($form = null) {
   $app = &$_ENV['app'];
   ($form == null) ? $form = $app->vars("_route.form") : null;
