@@ -100,6 +100,7 @@ function wbInitSettings(&$app)
     }
     $variables = [];
     $settings = $app->ItemRead('_settings', 'settings');
+    $app->vars('_sett', $settings);
     if (!$settings) {
         $settings = [];
     } else {
@@ -108,11 +109,9 @@ function wbInitSettings(&$app)
             if (isset($v['var']) AND $v['var'] > '') $variables[$v['var']] = $v['value'];
         }
     }
-
     $_ENV['variables'] = array_merge((array)$_ENV['variables'], $variables);
     $settings = array_merge($settings, $variables);
     $_ENV['settings'] = &$settings;
-
 
     $app->vars('_sett.driver') > '' ? $app->settings->driver = $app->vars('_sett.driver') : null;
     $app->vars('_sett.lang') > '' ? $lang = $app->vars('_sett.lang') : null;

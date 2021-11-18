@@ -87,16 +87,14 @@ class tagPagination
                 );
             }
 
-            if (!isset($dom->params->more)) {
-                $dom->params->more = '';
-            }
-            $more = explode(':', $dom->params->more);
+            isset($dom->params->more) ? $more = explode(':', $dom->params->more) : $dom->params->more = null;
 
             $pag->item = $pagination ;
             $pag->setAttributes();
             $pag->fetch();
             $pag->find("[data-page={$page}]")->addClass('active');
-            $pag->find('ul')->attr('data-tpl', '#'.$tplId);
+            $pag->find('.pagination')->attr('data-tpl', '#'.$tplId);
+            $pag->attr('data-tpl', '#'.$tplId);
 
             if (intval($page) < intval($pages)) {
                 $pag->find('[data-page=next] .page-link')->attr('data-page', $page + 1);
@@ -110,7 +108,6 @@ class tagPagination
             } else {
                 $pag->find('[data-page=prev]')->attr('disabled', true);
             }
-
 
             $pag->find(".page-link[data-page={$page}]")->parent('.page-item')->addClass('active');
 
@@ -130,13 +127,16 @@ class tagPagination
                 $pag->find('ul')->attr('style', $style.';display:none;');
             }
 
-            $dom->is('table, tbody') ? $target = $dom->closest('table') : $target = $dom->closest('#'.$tplId);
-            if ($target->is('tbody')) $target = $target->parent();
+            $dom->closest('#'.$tplId)-> length ? $target = $dom->closest('#'.$tplId) : $target = $dom->parent();
+            $target->is('tbody') ? $target = $dom->parents('table')->parent() : null;
             if ($dom->params("more") == '' and ($dom->params("pos") == 'top' or $dom->params("pos") == 'both')) {
-                $target->parent()->prepend($pag);
+                $pag->addClass('pos-top');
+                $target->prepend($pag);
             }
             if ($dom->params("pos") !== 'top') {
-                $target->parent()->append($pag);
+                $pag->removeClass('pos-top');
+                $pag->addClass('pos-bottom');
+                $target->append($pag);
             }
         }
         $dom->find("[data-page='{$page}']")->addClass('active');

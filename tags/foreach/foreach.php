@@ -14,7 +14,7 @@ class tagForeach
         $this->foreach($dom);
     }
 
-    public function foreach($dom)
+    public function foreach(&$dom)
     {
         !$dom->app ? $dom->app = new wbApp() : null;
         $this->app = &$dom->app;
@@ -249,8 +249,8 @@ class tagForeach
                     $dom->append("<template id = \"{$this->tid}\" >\n{{#each {$from}}}\n" . $dom->tpl . "\n{{/each}}</template>\n");
                     $params->render = 'client';
                 } elseif (!$dom->app->vars('_post.update')) {
-                    $tpl = $dom->app->fromString($dom->tpl);
-                    $dom->append("<template id = \"{$this->tid}\" >\n" . $tpl->outer() . "\n</template>\n");
+                    //$tpl = $dom->app->fromString($dom->tpl);
+                   // $dom->append("<template id = \"{$this->tid}\" >\n" . $tpl->outer() . "\n</template>\n");
                 }
             
                 $ajax !== false ? $dom->find("template[id='{$this->tid}']")->attr('data-ajax', $dom->attr("data-ajax")) : null;
@@ -322,6 +322,7 @@ class tagForeach
             }
         }
         !count((array)$list) ? $dom->inner($empty->inner()) : null;
+
         $dom->before($dom->inner());
         $dom->remove();
     }

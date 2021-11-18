@@ -1,4 +1,4 @@
-<nav class="col-xs-12 col-12">
+<nav class="col-xs-12 col-12 nav-pagination">
 <ul class="pagination justify-content-center mb-40">
     <li class="page-item" data-page="prev">
         <a href="#prev" class="page-link prev" href tabindex="-1">&laquo;</a>

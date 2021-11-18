@@ -985,13 +985,6 @@ wbapp.ajax = async function(params, func = null) {
                 }
 
                 $(document).find(params.target).children('template').remove();
-                $(document).find('.pagination[data-tpl="' + params.target + '"]').parents('nav').remove();
-
-                var pagert = $(document).find(params.target).parent();
-                if ($(pagert).is('li')) pagert = $(pagert).parent();
-                if ($(pagert).is('tbody')) pagert = $(pagert).parents('table');
-                if (data.pos == 'both' || data.pos == 'top') $(pagert).before(data.pag);
-                if (data.pos == 'both' || data.pos == 'bottom') $(pagert).after(data.pag);
             }
             if (params.callback !== undefined) eval(params.callback + '(params,data)');
             wbapp.tplInit();
@@ -1418,6 +1411,7 @@ wbapp.renderClient = function(params, data = {}) {
         })
         ///wbapp.storage(params.bind, data);
     wbapp.template[tid].params = params;
+    /*
     var pagination = $(tid).find(".pagination");
     if (pagination) {
         let page = 1;
@@ -1426,7 +1420,7 @@ wbapp.renderClient = function(params, data = {}) {
         $(pagination).find(".page-item").removeClass("active");
         $(pagination).find(`[data-page="${page}"]`).parent(".page-item").addClass("active");
     }
-
+*/
     if (newbind) {
         wbapp.bind[params.bind][tid].set(data);
         $(document).on("bind-" + params.bind, function(e, data) {

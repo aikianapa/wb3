@@ -45,15 +45,24 @@ $(document).one("pagination-js", function() {
             params.page = page;
         }
         params._tid = tid;
-        wbapp.ajax(params, function() {
-            if (params._params !== undefined && params._params.more !== undefined) {
+        wbapp.ajax(params, function(ev, data) {
+            /*
+                        if (params._params !== undefined && params._params.more !== undefined) {
 
-            } else {
-                var top = $(tid).offset().top;
-                $([document.documentElement, document.body]).animate({
-                    scrollTop: top + offset
-                }, 200);
-            }
+                        } else {
+                            var top = $(tid).offset().top;
+                            $([document.documentElement, document.body]).animate({
+                                scrollTop: top + offset
+                            }, 100);
+                        }
+            */
+            $(document).find('.pagination[data-tpl="' + params.target + '"]').parents('nav').remove();
+            var pagert = $(document).find(params.target);
+            if ($(pagert).is('li')) pagert = $(pagert).parent();
+            if ($(pagert).is('tbody')) pagert = $(pagert).parents('table');
+            if (data.pos == 'both' || data.pos == 'top') $(pagert).before(data.pag);
+            if (data.pos == 'both' || data.pos == 'bottom') $(pagert).after(data.pag);
+
             $(paginator).removeClass('wb-wait');
         });
     });

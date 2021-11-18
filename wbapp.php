@@ -189,6 +189,7 @@ class wbDom extends DomQuery
     {
         if (!$this->app) $this->app = $_ENV["app"];
         $tmp = $this->app->vars('_env.locale');
+        isset($this->root) ? null : $this->root = $this->parents(':root')[0];
         $this->fetchStrict();
         $this->fetchLang();
         if ($this->strict OR isset($this->fetched)) return;
@@ -197,13 +198,13 @@ class wbDom extends DomQuery
         if ($this->tagName == "head") $this->head = $this;
         $this->item = $item;
         $this->fetchParams();
-        
         if ($this->is(":root")) {
             if ($this->func or $this->funca) $this->fetchFunc(); // так нужно для рутовых тэгов
-        } 
+        }
         $childrens = $this->children();
         foreach ($childrens as $wb) {
             $wb->copy($this);
+            $wb->root = $this->root;
             $wb->fetchNode();
         }
 
@@ -215,7 +216,27 @@ class wbDom extends DomQuery
                 $this->attr('href',$href.'?'.$_COOKIE['devmode']);
             }
         }
+        if ($this->find('.nav-pagination[data-tpl]')->length) $this->fixPagination();
         return $this;
+    }
+
+    public function fixPagination() {
+        if ($this->find('.nav-pagination[data-tpl]:not(.fixed)')->length) {
+            $pags = $this->find('.nav-pagination[data-tpl]');
+            foreach($pags as $pag) {
+                $pid = $pag->attr('data-tpl');
+                if ($this->find($pid.':not(template)')->length && $pag->parent($pid)->length) {
+                    $pag->removeClass('nav-pagination');
+                    if ($pag->hasClass('pos-top')) {
+                        $this->find($pid.':not(template)')->parent()->prepend($pag->outer());
+                    } else {
+                        $this->find($pid.':not(template)')->parent()->append($pag->outer());
+                    }
+                    
+                    $pag->remove();
+                }
+            }
+        }
     }
 
     public function fetchNode()
