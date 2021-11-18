@@ -12,7 +12,7 @@ class modAutoinc {
         $app = &$this->app;
         $json = file_get_contents($this->file,LOCK_EX);
         try {
-            $json = $app->dot(json_decode($json,true));
+            $json = $app->dot((array)json_decode($json,true));
         } catch (\Throwable $th) {
             $json = $app->dot();
         }

@@ -386,8 +386,8 @@ class ctrlApi
         $out->item = $_POST;
         $out->fetch();
         $out=$out->outer();
-
-        $res=wbMail("{$_POST["email"]};{$_POST["name"]}", "{$mailto};{$_ENV["settings"]["header"]}", $_POST["subject"], $out, $attachments);
+        $app->vars('_post.subject') > '' ? $subject = $app->vars('_post.subject') : $subject = $app->vars('_sett.header');
+        $res=wbMail("{$_POST["email"]};{$_POST["name"]}", "{$mailto};{$_ENV["settings"]["header"]}", $subject, $out, $attachments);
         if (!$res) {
             $result=json_encode(array("error"=>true,"msg"=>$_ENV['sysmsg']["mail_sent_error"].": ".$_ENV["error"]['wbMail']));
         } else {

@@ -410,11 +410,10 @@ function wbMail(
     }
 
         require_once __DIR__.'/modules/phpmailer/phpmailer.php';
-        if ($app->vars('_sett.modules.phpmailer.smtp') == 'on') {
-            $sett = $app->vars('_sett.modules.phpmailer');
-        } else {
-            $sett = ['smtp'=>'','host'=>$app->vars('_route.domain')];
-        }
+        $app->vars('_sett.modules.phpmailer.smtp') == 'on' 
+            ?  $sett = $app->vars('_sett.modules.phpmailer') : $sett = ['smtp'=>'','host'=>$app->vars('_route.domain')];
+
+        isset($sett["func"]) ? null : $sett["func"] = 'mail';
         $mail = new PHPMailer(true);
 
         try {
