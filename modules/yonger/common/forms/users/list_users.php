@@ -36,7 +36,7 @@
             </thead>
             <tbody id="usersList">
                 <wb-foreach wb="table=users&sort=_created:d&bind=cms.list.users"
-                    wb-filter="{'isgroup':'' }">
+                    wb-filter="{'isgroup':{'$ne':'on'}}">
                     <tr>
                         <td>
                             <div class="avatar">
