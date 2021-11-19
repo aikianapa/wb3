@@ -763,6 +763,7 @@ class wbApp
         } else {
             //strpos($uri, '?') ? $uri .= '&update' : $uri .= '?update';
             fwrite($fp, "GET {$uri} HTTP/1.0\r\nHost: {$this->route->hostname}\r\nCache-Control: no-cache\r\nAccept: */*\r\n\r\n");
+            fgets($fp, 10);
             fclose($fp);
         }
     }
