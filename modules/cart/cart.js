@@ -1,10 +1,9 @@
 "use strict"
 
-$(document).on('cart-mod-js', function () {
-
-    var calcSum = function (cart) {
+$(document).on('cart-mod-js', function() {
+    var calcSum = function(cart) {
         let formula = 'cart.sum = ';
-        $(mod_cart_sum).each(function (i, val) {
+        $(mod_cart_sum).each(function(i, val) {
             if (cart[val] !== undefined || strpos(val, ']')) {
                 if (strpos(val, ']')) {
                     let tmp;
@@ -32,20 +31,19 @@ $(document).on('cart-mod-js', function () {
         return cart.sum;
     }
 
-
-    var updateCart = function (cart = null) {
+    var updateCart = function(cart = null) {
         var data = modCartGet();
         var total = {};
         var res = false;
         !res && cart !== null ? data.list[cart.id] = cart : null;
 
-        $.each(data.list, function (id, item) {
+        $.each(data.list, function(id, item) {
             item.sum = calcSum(item);
             data.list[id] = item;
         });
 
-        $.each(data.list, function (id, item) {
-            $.each(item, function (fld, val) {
+        $.each(data.list, function(id, item) {
+            $.each(item, function(fld, val) {
                 if (is_numeric(val) && val + '') {
                     undefined == total[fld] ? total[fld] = 0 : null;
                     total[fld] += val * 1;
@@ -58,8 +56,7 @@ $(document).on('cart-mod-js', function () {
         modCartTotals();
     }
 
-
-    var modCartGet = function () {
+    var modCartGet = function() {
         var cart = wbapp.storage(mod_cart_bind);
         var list = {};
         var total = {};
@@ -74,65 +71,72 @@ $(document).on('cart-mod-js', function () {
         return cart;
     }
 
-    var modCartTotals = function () {
+    var modCartTotals = function() {
         var cart = modCartGet();
         $(document).find(".mod-cart-count").text(cart.list.length);
         $(document).find('[class*="mod-cart-total-"]').text(0);
-        Object.entries(cart.total).forEach(function (fld, i) {
+        Object.entries(cart.total).forEach(function(fld, i) {
             $(document).find('.mod-cart-total-' + fld[0]).text(fld[1]);
         });
-        wbapp.trigger('mod-cart-update',cart);
+        wbapp.trigger('mod-cart-update', cart);
     }
 
-    var uid;
-    if (!wbapp._session.user || !wbapp._session.user.id || wbapp._session.user.id < ' ') {
-        uid = 'unknown';
-    } else {
-        uid = wbapp._session.user.id;
-    }
+    var uid, mod_cart, mod_cart_bind, mod_cart_list, mod_cart_sum, unk_cart;
 
-    var mod_cart = 'mod.cart';
-    var mod_cart_bind = mod_cart + '.' + uid;
-    var mod_cart_list = [];
-    var mod_cart_sum = ("qty*price").split(/\s|\b/);
-    var unk_cart = wbapp.storage(mod_cart + '.unknown');
-
-    if (uid !== 'unknown' && unk_cart) {
-        wbapp.storage(mod_cart_bind, unk_cart);
-        wbapp.storage(mod_cart + '.unknown', null);
-    }
-
-    $(document).find("[id^='cartlist_']").each(function (i) {
-        let cid = $(this).attr('id');
-        if (wbapp.tpl('#' + cid) !== undefined) {
-            let tpl = wbapp.tpl('#' + cid).html;
-            let sum = $("<wb>" + tpl + "</wb>").find("meta[name=sum]").attr("value");
-            if (sum > "") mod_cart_sum = sum.split(/(\*|\/|\+|-)/);
-
-            mod_cart_list[i] = new Ractive({
-                'target': '#' + cid,
-                'template': tpl,
-                'oncomplete': function () { wbapp.lazyload(); },
-                'data': () => { return wbapp.storage(mod_cart_bind) }
-            });
+    var modCartInit = function() {
+        uid;
+        if (!wbapp._session.user || !wbapp._session.user.id || wbapp._session.user.id < ' ') {
+            uid = 'unknown';
+        } else {
+            uid = wbapp._session.user.id;
         }
-    });
 
-    setTimeout(() => {
-        wbapp.tplInit();
-        wbapp.lazyload();
-        modCartTotals();
-    }, 0);
+        mod_cart = 'mod.cart';
+        mod_cart_bind = mod_cart + '.' + uid;
+        mod_cart_list = [];
+        mod_cart_sum = ("qty*price").split(/\s|\b/);
+        unk_cart = wbapp.storage(mod_cart + '.unknown');
 
-    $(document).delegate('.mod-cart-clear', wbapp.evClick, function (e) {
-        console.log(mod_cart_bind);
-        wbapp.storage(mod_cart_bind + `.list`,{});
+        if (uid !== 'unknown' && unk_cart) {
+            wbapp.storage(mod_cart_bind, unk_cart);
+            wbapp.storage(mod_cart + '.unknown', null);
+        }
+
+        $(document).find("[id^='cartlist_']").each(function(i) {
+            let cid = $(this).attr('id');
+            if (wbapp.tpl('#' + cid) !== undefined) {
+                let tpl = wbapp.tpl('#' + cid).html;
+                let sum = $("<wb>" + tpl + "</wb>").find("meta[name=sum]").attr("value");
+                if (sum > "") mod_cart_sum = sum.split(/(\*|\/|\+|-)/);
+
+                mod_cart_list[i] = new Ractive({
+                    'target': '#' + cid,
+                    'template': tpl,
+                    'oncomplete': function() { wbapp.lazyload(); },
+                    'data': () => { return wbapp.storage(mod_cart_bind) }
+                });
+            }
+        });
+
+        setTimeout(() => {
+            wbapp.tplInit();
+            wbapp.lazyload();
+            modCartTotals();
+        }, 0);
+    }
+
+    modCartInit();
+
+    $(document).on('modCartInit', function() { modCartInit() });
+
+    $(document).delegate('.mod-cart-clear', wbapp.evClick, function(e) {
+        wbapp.storage(mod_cart_bind + `.list`, {});
         updateCart();
         e.stopPropagation();
     })
 
 
-    $(document).delegate('.mod-cart-remove', wbapp.evClick, function (e) {
+    $(document).delegate('.mod-cart-remove', wbapp.evClick, function(e) {
         let index = $(this).closest('.mod-cart-item').index();
         let data = wbapp.storage(mod_cart_bind);
         let id = array_keys(data.list)[index];
@@ -142,7 +146,7 @@ $(document).on('cart-mod-js', function () {
         e.stopPropagation();
     });
 
-    $(document).delegate('.mod-cart-item :input', 'change blur', function () {
+    $(document).delegate('.mod-cart-item :input', 'change blur', function() {
         let name = $(this).attr('name');
         if (name == undefined || name == '') return;
         let index = $(this).closest('.mod-cart-item').index();
@@ -152,7 +156,7 @@ $(document).on('cart-mod-js', function () {
         updateCart();
     });
 
-    $(document).delegate('.mod-cart-inc, .mod-cart-dec', wbapp.evClick, function (e) {
+    $(document).delegate('.mod-cart-inc, .mod-cart-dec', wbapp.evClick, function(e) {
         e.preventDefault();
         var $button = $(this);
         var $inp = $button.parent().find('input');
@@ -183,7 +187,7 @@ $(document).on('cart-mod-js', function () {
     });
 
 
-    $(document).delegate('.mod-cart-add', wbapp.evClick, async function (e) {
+    $(document).delegate('.mod-cart-add', wbapp.evClick, async function(e) {
         e.preventDefault();
 
         let form = $(this).closest('form');
@@ -217,13 +221,13 @@ $(document).on('cart-mod-js', function () {
     });
 
 
-    $(document).on("bind", function (e, res) {
+    $(document).on("bind", function(e, res) {
         if (res.key == mod_cart_bind || res.key.substr(0, 14) == mod_cart_bind + '.') {
             let data = wbapp.storage(mod_cart_bind);
-            $(mod_cart_list).each(function (i, cart) {
+            $(mod_cart_list).each(function(i, cart) {
                 cart.set(data);
             });
-            setTimeout(function () { wbapp.lazyload() }, 300);
+            setTimeout(function() { wbapp.lazyload() }, 300);
         }
     });
 
