@@ -10,7 +10,7 @@ class modJsontodb
             $res = $this->init($app);
         }
         echo $res;
-        return;
+        die;
     }
     public function init()
     {
@@ -23,7 +23,6 @@ class modJsontodb
         }
         $ui->fetch(['files'=>$files]);
         return $ui->outer();
-
     }
 
     private function todb() {
