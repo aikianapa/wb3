@@ -111,7 +111,7 @@ class tagPagination
 
             $pag->find(".page-link[data-page={$page}]")->parent('.page-item')->addClass('active');
 
-            if ($more[0] > '') {
+            if (isset($more) && $more[0] > '') {
                 $pag->find("[data-page='next']")->remove();
                 $pag->find("[data-page='prev']")->remove();
                 $pag->find("[data-page!='more']")->css('display', 'none');

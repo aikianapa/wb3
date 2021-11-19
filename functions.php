@@ -2560,7 +2560,7 @@ function wbListTpl()
     {
         $code = str_replace($_ENV['stop_func'],'',$code);
         try {
-            $res = eval('return '.$code.';');
+            @$res = eval('return '.$code.';');
         } catch (\Throwable $th) {
             $res = false;
         }
