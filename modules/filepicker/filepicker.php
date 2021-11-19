@@ -20,7 +20,12 @@ class modFilepicker
             $out=$app->fromFile(__DIR__ ."/filepicker_ui_multi.php");
         }
         $out->copy($dom);
-        $out->addClass($dom->attr('class'));
+        if ($dom->params("mode") == "button") {
+            $out->find('button')->addClass($dom->attr('class'));
+        } else {
+            $out->addClass($dom->attr('class'));
+        }
+
 
         ($dom->attr("name") == '' && $dom->params("name")) ? $dom->attr("name", $dom->params("name")) : null;
 
@@ -50,7 +55,11 @@ class modFilepicker
             $out->find('.button-bar .fileinput span')->inner(' '.$dom->params("button"));
         }
 
+        $dom->setValues();
+        $out->find('button > span')->inner($dom->inner());
+
         $out->fetch();
+
         if ($dom->tagName == 'input') {
             $dom->after($out);
             $dom->remove();
@@ -60,7 +69,9 @@ class modFilepicker
             $dom->removeAttr("wb");
             $dom->addClass('filepicker fileinput');
         } else {
-            $dom->html($out);
+            $dom->after($out);
+            $dom->remove();
+
         }
     }
 }

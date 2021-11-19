@@ -8,10 +8,10 @@
                 <div class="filemgr-sidebar-header">
                     <div id="filemanagerUploader" class="flex-fill mg-l-10">
                         <div class="uploader">
-                            <button id="pickfiles" wb="module=filepicker&mode=button" class="btn btn-block btn-primary" wb-path="/">
+                            <wb-module id="pickfiles" wb="module=filepicker&mode=button&original=true" class="btn btn-block btn-primary" wb-path="/">
                                 {{_lang.upload}} 
                                 <svg class="mi-upload-loading-arrow size-24" stroke="FFFFFF" wb-module="myicons"></svg>
-                            </button>
+                            </wb-module>
                         </div>
                     </div>
                 </div>

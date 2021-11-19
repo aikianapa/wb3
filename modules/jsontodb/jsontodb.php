@@ -12,7 +12,7 @@ class modJsontodb
         echo $res;
         return;
     }
-    private function init()
+    public function init()
     {
         $app = &$this->app;
         $ui = $app->fromFile(__DIR__.'/jsontodb_ui.php');

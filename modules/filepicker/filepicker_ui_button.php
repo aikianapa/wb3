@@ -3,7 +3,10 @@
     <!-- Button Bar -->
     <div class="button-bar">
         <button class="btn btn-success fileinput">
-            <i class="fa fa-image"></i><span class="d-none d-md-inline"> {{_lang.choose}}</span>
+            <span>
+                <svg class="mi-upload-loading-arrow size-24" stroke="FFFFFF" wb-module="myicons"></svg>
+                <span class="d-none d-md-inline"> {{_lang.choose}}</span>
+            </span>
             <input type="file" name="files[]" class="wb-unsaved">
             <input type="hidden" name="upload_url" class="wb-unsaved">
             <input type="hidden" name="prevent_img" class="wb-unsaved">
