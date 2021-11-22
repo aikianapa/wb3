@@ -292,6 +292,8 @@ function tagTreeUl( &$dom, $Item = array(), $param = null, $srcVal = array() ) {
             $item['_idx'] = $idx;
             $item['_ndx'] = $idx+1;
             $item['_lvl'] = $lvl-1;
+            $item['_val'] = $item;
+
             if ( $parent_id>'' ) $item['%id'] = $parent_id;
             $line = $dom->app->fromString( '<level>'.$tpl.'</level>' );
             $child = $dom->app->fromString( $tpl );

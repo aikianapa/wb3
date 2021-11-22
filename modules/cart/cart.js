@@ -35,9 +35,10 @@ $(document).on('cart-mod-js', function() {
         var data = modCartGet();
         var total = {};
         var res = false;
-        !res && cart !== null ? data.list[cart.id] = cart : null;
 
+        !res && cart !== null ? data.list[cart.id] = cart : null;
         $.each(data.list, function(id, item) {
+            if (data.common) item = array_merge(item, data.common);
             item.sum = calcSum(item);
             data.list[id] = item;
         });
@@ -104,6 +105,9 @@ $(document).on('cart-mod-js', function() {
 
         $(document).find("[id^='cartlist_']").each(function(i) {
             let cid = $(this).attr('id');
+            let common = $(this).data();
+            wbapp.storage(mod_cart_bind + '.common', common);
+
             if (wbapp.tpl('#' + cid) !== undefined) {
                 let tpl = wbapp.tpl('#' + cid).html;
                 let sum = $("<wb>" + tpl + "</wb>").find("meta[name=sum]").attr("value");
@@ -189,7 +193,7 @@ $(document).on('cart-mod-js', function() {
 
     $(document).delegate('.mod-cart-add', wbapp.evClick, async function(e) {
         e.preventDefault();
-
+        let common = {};
         let form = $(this).closest('form');
         let ajax = $(this).attr('data-ajax');
         let cart = [];
