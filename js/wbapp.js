@@ -1884,9 +1884,9 @@ wbapp.print = function(pid) {
     var divToPrint = document.getElementById(pid);
     var newWin = window.open('', 'Print-Window');
     newWin.document.open();
-    newWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="/engine/lib/bootstrap/css/bootstrap.min.css"></head><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
+    newWin.document.write('<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="/engine/lib/bootstrap/css/bootstrap.min.css"></head><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
     newWin.document.close();
-    setTimeout(function() { newWin.close(); }, 10);
+    setTimeout(() => { newWin.close(); }, 1000);
 }
 
 
