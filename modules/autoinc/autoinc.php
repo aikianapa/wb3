@@ -9,16 +9,16 @@ class modAutoinc {
   }
 
   function inc($table, $field, $value = null ) {
-        $app = &$this->app;
-        $json = file_get_contents($this->file,LOCK_EX);
-        try {
-            $json = $app->dot((array)json_decode($json,true));
-        } catch (\Throwable $th) {
-            $json = $app->dot();
-        }
-        $value !== null && intval($json->get($table.'.'.$field)) < $value ? $inc = intval($value) : $inc = intval($json->get($table.'.'.$field)) + 1;
-        $json->set($table.'.'.$field, $inc);
-        file_put_contents($this->file,json_encode($json->get()),LOCK_UN);
+      $app = &$this->app;
+      $id = 't_'.$table;
+      $json = $app->_db->itemRead('_mod_autoinc', $id);
+      $json ? $json = (object)$json : $json = (object)['id'=>$id];
+      isset($json->$field) ? null : $inc = $json->$field = 0;
+      $inc = intval($json->$field);
+        $value > 0 && $inc < $value ? $inc = intval($value) : $inc += 1;
+        $json->$field = $inc;
+        $json = (array)$json;
+        $app->_db->itemSave('_mod_autoinc', $json);
         return $inc;
   }
 }
