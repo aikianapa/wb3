@@ -248,9 +248,9 @@ class tagForeach
                 if ($ajax !== false) {
                     $dom->append("<template id = \"{$this->tid}\" >\n{{#each {$from}}}\n" . $dom->tpl . "\n{{/each}}</template>\n");
                     $params->render = 'client';
-                } elseif (!$dom->app->vars('_post.update')) {
-                    //$tpl = $dom->app->fromString($dom->tpl);
-                   // $dom->append("<template id = \"{$this->tid}\" >\n" . $tpl->outer() . "\n</template>\n");
+                } elseif (!$dom->app->vars('_post.update') AND $this->app->vars('_post._params.tpl') !== 'false' ) {
+                    $tpl = $dom->app->fromString($dom->tpl);
+                    $dom->append("<template id = \"{$this->tid}\" >\n" . $tpl->outer() . "\n</template>\n");
                 }
             
                 $ajax !== false ? $dom->find("template[id='{$this->tid}']")->attr('data-ajax', $dom->attr("data-ajax")) : null;
