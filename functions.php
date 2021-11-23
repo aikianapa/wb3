@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', 0);
 require_once __DIR__."/static.php";
 require_once __DIR__.'/lib/vendor/autoload.php';
 require_once __DIR__."/lib/weprocessor/weprocessor.php";
@@ -20,7 +21,7 @@ use Nahid\JsonQ\Jsonq;
 
 function wbInit()
 {
-    error_reporting(error_reporting() & ~E_NOTICE);
+    //error_reporting(error_reporting() & ~E_NOTICE);
     date_default_timezone_set('Europe/Moscow');
     wbTrigger('func', __FUNCTION__, 'before');
 }
@@ -119,8 +120,6 @@ function wbInitSettings(&$app)
     if ($_SERVER['REQUEST_URI']=='/engine/') {
         unset($_ENV['lang']);
     }
-
-    $app->vars('_sett.devmode') == 'on' ? null : ini_set('display_errors', 0);
 
     isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'] : $lang = 'ru';
 

@@ -399,7 +399,7 @@ class tagForeach
                 $list = $dom->getField($dom->params->from);
             }
         }
-        $dom->params('filter') ? $list = $dom->app->arrayFilter($list, $dom->params('filter')) : null;
+        //$dom->params('filter') ? $list = $dom->app->arrayFilter($list, $dom->params('filter')) : null;
 
         $this->options = $options;
         $this->sort($list);

@@ -999,9 +999,11 @@ wbapp.ajax = async function(params, func = null) {
             } else if (params.target !== undefined) {
                 $(params.target).trigger("wb-ajax-done", params);
             }
+            setTimeout(function() {
+                let showmod = $(document).find(".modal.show:not(:visible)");
+                if (showmod.length) showmod.removeClass("show").modal('show');
+            }, 50);
             $(document).trigger("wb-ajax-done", params);
-            let showmod = $(document).find(".modal.show:not(:visible)");
-            if (showmod.length) showmod.removeClass("show").modal('show');
             if (func !== null) return func(params, data);
         });
     } else if (params.target !== undefined) {
