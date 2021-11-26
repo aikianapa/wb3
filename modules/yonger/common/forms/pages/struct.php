@@ -94,7 +94,7 @@ yonger.pageBlocks = function() {
         }
     });
 
-    $('#modalPagesEdit').delegate('#yongerPageBlockAdd',wbapp.evClick,function(){
+        $('#modalPagesEdit').delegate('#yongerPageBlockAdd',wbapp.evClick,function(){
         $('#modalPagesEditBlocks').modal('show');
         wbapp.ajax({'url':'/module/yonger/blocklist'},function(data){
             wbapp.storage('yonger.blocks', data.data);
@@ -172,6 +172,7 @@ yonger.pageBlocks = function() {
             $blockform.find('#yongerEditorBtnEdit').appendTo($modal.find('.modal-header .header'));
             wbapp.wbappScripts();
             wbapp.tplInit();
+            $blockform.undelegate('[name=header]:first', 'change');
             $blockform.delegate('[name=header]:first','change',function(){
                 wbapp.storage('yonger.page.blocks.' + id + '.header',$(this).val());
             })
