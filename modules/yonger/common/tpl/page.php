@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>{{title}}</title>
+    <title>{{header}}</title>
 </head>
 
 <body>

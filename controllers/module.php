@@ -51,6 +51,7 @@ class ctrlModule {
       $tpl = $app->fromString($tpl->find('#modSettingsWrapper')->inner());
       $out = $app->fromFile($module['sett']);
       $data = $app->vars('_sett.modules');
+      isset($data[$module['id']]) ? null : $data[$module['id']] = [];
       $tpl->fetch(['module'=>$module['id']]);
       $out->fetch($data[$module['id']]);
       $tpl->find("form > div")->html($out->outer());
