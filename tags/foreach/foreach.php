@@ -76,6 +76,7 @@ class tagForeach
         $dom->attr("data-ajax") > "" ? $ajax = $dom->attr("data-ajax") : $ajax = false;
         
         list($list, $count, $pages, $page, $srvpag, $options) = $this->list();
+        $even = false;
         foreach ((array) $list as $key => $val) {
             $value = $val;
             $val = (object) $val;
@@ -86,6 +87,15 @@ class tagForeach
             $val->_val = $value;
             $val->_parent = &$parent;
             $val->_key = $key;
+
+            if ($even) {
+                $val->_even = $even = false;
+                $val->_odd = true;
+            } else {
+                $val->_even = $even = true;
+                $val->_odd = false;
+            }
+
             if (!isset($val->_id)) {
                 isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
             }
@@ -187,7 +197,7 @@ class tagForeach
         list($list, $count, $pages, $page, $srvpag, $options) = $this->list();
 
         $dom->attr("data-ajax") > "" ? $ajax = $dom->attr("data-ajax") : $ajax = false;
-        
+        $even = false;
         foreach ((array) $list as $key => $val) {
             $value = $val;
             $val = (object) $val;
@@ -204,6 +214,15 @@ class tagForeach
                 !isset($val->_id) and isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
                 $table > "" ? $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], (array) $val) : null;
             }
+
+            if ($even) {
+                $val->_even = $even = false;
+                $val->_odd = true;
+            } else {
+                $val->_even = $even = true;
+                $val->_odd = false;
+            }
+
 
             if ($ajax !== false) {
                 $list[$key] = (array) $val;

@@ -5,7 +5,9 @@
         <div class="input-group input-group-sm">
           <input type="text" class="form-control finder" name="address" placeholder="Адрес">
           <div class="input-group-append find" style="cursor:alias;">
-            <i class="input-group-text material-icons">location_searching</i>
+            <span class="input-group-text">
+              <img src="/module/myicons/globe-search.svg?size=20&stroke=3b6998">
+            </span>
           </div>
         </div>
       </div>

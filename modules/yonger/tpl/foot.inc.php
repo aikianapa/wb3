@@ -11,7 +11,6 @@
 
 			wbapp.loadScripts([
 				 "/engine/lib/bootstrap/js/bootstrap.bundle.min.js"
-				,"{{_var.base}}/assets/lib/perfect-scrollbar/perfect-scrollbar.min.js"
 				,"{{_var.base}}/assets/js/dashforge.js"
 				,"{{_var.base}}/assets/js/dashforge.aside.js"
 				,"{{_var.base}}/assets/lib/js-cookie/js.cookie.js"

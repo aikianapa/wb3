@@ -86,5 +86,12 @@
     </div>
     <modals></modals>
 </div>
+    <script wb-app>
+    wbapp.loadStyles(['/engine/lib/js/nestable/nestable.css']);
+    wbapp.loadScripts(['/engine/lib/js/nestable/nestable.min.js'], '', function() {
 
+
+        //$(document).trigger('bind-cms.list.pages');
+    })
+    </script>
 </html>

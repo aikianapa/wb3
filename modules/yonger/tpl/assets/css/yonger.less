@@ -9,6 +9,21 @@
 @color-light: #D8D8D8;
 @color-link: #323232;
 @color-thead: #FAFAFB;
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 0px;
+}
+
+
 body {
     overflow: hidden;
     font-family: 'Roboto';
@@ -163,6 +178,7 @@ body {
         .aside-body {
             height: 100vh;
             padding: 20px;
+            overflow: auto;
             .aside-loggedin {
                 span {
                     text-transform: uppercase;
