@@ -32,9 +32,9 @@ class modYamap
         foreach ($dom->attributes() as $at => $val) {
             if (substr($at, 0, 2) !== "wb" and substr($at, 0, 5) !== "class") {
                 $out->find(".yamap")->attr($at, $val);
+                $out->find(".yamap_canvas")->attr($at, $val);
             }
         }
-
         $out->fetch($dom->item);
 		$dom->after($out)->remove();
     }
