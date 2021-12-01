@@ -28,7 +28,7 @@
             
         </span>
         <ol id="pagesList" class="dd-list">
-                        <wb-foreach wb="{'ajax':'/api/query/{{_form}}/',
+                        <wb-foreach wb="{'table':'{{_form}}',
                             'render':'server',
                             'bind':'cms.list.{{_form}}',
                             'sort':'date:d',

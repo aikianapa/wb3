@@ -34,7 +34,7 @@
                 </tr>
             </thead>
             <tbody id="{{_form}}List">
-                <wb-foreach wb="{'ajax':'/api/query/{{_form}}/',
+                <wb-foreach wb="{'table':'{{_form}}',
                             'render':'server',
                             'bind':'cms.list.{{_form}}',
                             'sort':'date:d',
