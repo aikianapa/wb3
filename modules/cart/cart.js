@@ -131,6 +131,10 @@ $(document).on('cart-mod-js', function() {
 
     modCartInit();
 
+    wbapp.cartRefresh = function() {
+        modCartInit();
+    }
+
     $(document).on('modCartInit', function() { modCartInit() });
 
     $(document).delegate('.mod-cart-clear', wbapp.evClick, function(e) {
