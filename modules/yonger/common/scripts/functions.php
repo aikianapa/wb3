@@ -4,13 +4,19 @@
         $uri = $app->route->uri;
         $path = explode('/', $uri);
         $name = array_pop($path);
+        $path = implode('/', $path);
         $uri == '/' && $name == '' ? $name = 'home' : null;
+        if (isset($app->route->item) && $app->route->item !== $name) {
+            $app->route->alias = $name;
+            $name = $app->route->item;
+            $uri = $path.'/'.$name;
+        };
         $pages = $app->itemList('pages',['filter'=>[
             '_site'=>$app->vars('_sett.site'),
             '_login'=>$app->vars('_sett.login'),
             'name'=>$name,
             'active'=>'on',
-            'url' => $uri
+            'path' => $path
         ]]);
         foreach($pages['list'] as $page) {
             if ($page['url'] == $uri) {
