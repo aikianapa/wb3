@@ -1062,6 +1062,13 @@ wbapp.ajax = async function(params, func = null) {
     }
 }
 
+wbapp.renderFilter = function(tid, filter) {
+    let tpl = wbapp.tpl(tid);
+    tpl.params.filter = filter;
+    wbapp.tpl(tid, tpl);
+    wbapp.render(tid);
+}
+
 wbapp.storageUpdate = function(key, data) {
 
     var store = wbapp.storage(key);
@@ -1350,12 +1357,16 @@ wbapp.render = function(tid, data) {
             wbapp.renderServer(params, data);
             break;
         case null:
+            wbapp.renderServer(params, data);
+            break;
+            /*
             new Ractive({
                 'target': tid,
                 'template': wbapp.template[tid].html,
                 'data': () => { return data; }
             });
             break;
+            */
     }
     wbapp.lazyload();
     wbapp.trigger('wb-render-done', tid, data);
@@ -1369,6 +1380,9 @@ wbapp.renderServer = function(params, data = {}) {
         params._tid = params.target;
         wbapp.ajax(params, function(data) {
             var inner = '<wb>' + data.data + '</wb>';
+            if ($(document).find('.nav-pagination[data-tpl="' + data.target + '"]').length) {
+                $(document).find('.nav-pagination[data-tpl="' + data.target + '"]').html($(data.data.pag).html());
+            }
             inner = $(inner).find(params.target).html();
             $(params.target).html(inner);
         });
