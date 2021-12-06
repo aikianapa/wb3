@@ -645,6 +645,111 @@ wbapp.storage = function(key, value = undefined, binds = true) {
     }
 }
 
+wbapp.sessdata = function(key, value = undefined, binds = true) {
+    function getKey(list) {
+        key = "";
+        $(list).each(function(i, k) {
+            if (k.substr(0, 1) * 1 > -1) {
+                key += `['${k}']`
+            } else {
+                if (i > 0) key += '.'
+                key += k
+            }
+        })
+        return key
+    }
+
+    if (value === undefined) {
+        // get data
+        let list = key.split(".");
+        var res;
+        var data = sessionStorage.getItem(list[0]);
+        if (data !== null) data = JSON.parse(data);
+        if (list.length) {
+            key = getKey(list);
+            try {
+                eval(`res = data.${key}`);
+                if (typeof res == 'object') res = Object.assign({}, res);
+                return res;
+            } catch (err) {
+                return undefined
+            }
+        }
+        return data;
+    } else {
+        // set data
+        var path, branch, type;
+        var list = key.split(".");
+        var last = list.length;
+        var lastkey = list[last - 1];
+        $(list).each(function(i, k) {
+            if (i == 0) {
+                key = k;
+                data = sessionStorage.getItem(key);
+                if (i + 1 !== last && data == null) {
+                    data = {}
+                } else {
+                    try {
+                        data = JSON.parse(data);
+                    } catch (err) {
+                        data = {}
+                    }
+                }
+            } else {
+                if (k.substr(0, 1) * 1 > -1) {
+                    key += `['${k}']`
+                } else {
+                    if (i > 0) key += '.'
+                    key += k
+                }
+            }
+            try {
+                eval(`branch = data.${key}`);
+                if (typeof branch == 'object') branch = Object.assign({}, branch);
+                if (i + 1 < last && typeof branch !== "object") eval(`data.${key} = {}`);
+            } catch (err) {
+                eval(`data.${key} = {}`);
+            }
+        })
+        var tmpValue = value;
+        if (value === null) {
+            eval(`delete data.${key}`);
+        } else if (value !== {}) {
+            if (typeof value == 'string') {
+                eval(`data.${key} = value`);
+            } else {
+                eval(`tmpValue = Object.assign({}, value)`);
+                Object.entries(tmpValue).length == 0 ? null : value = tmpValue;
+                if (typeof value == 'object') value = Object.assign({}, value);
+                eval(`data.${key} = value`);
+            }
+        }
+        sessionStorage.setItem(list[0], json_encode(data));
+
+        let checkBind = function(bind, key) {
+            if (bind == key) return true;
+            if (key.substr(0, bind.length) == bind) return true;
+            return false;
+        }
+
+        if (binds == true) {
+            $.each(wbapp.template, function(i, tpl) {
+                if (tpl.params.bind !== undefined && tpl.params.bind !== null && checkBind(tpl.params.bind, key) &&
+                    tpl.params.render !== undefined && tpl.params.render == 'client') {
+                    wbapp.render(tpl.params.target);
+                } else if (tpl.params._params !== undefined && tpl.params._params.bind !== undefined &&
+                    checkBind(tpl.params._params.bind, key) && tpl.params.render == 'server') {
+                    wbapp.render(tpl.params.target);
+                }
+            });
+            $(document).trigger("bind", { key: key, data: value });
+            $(document).trigger("bind-" + key, value);
+            wbapp.console("Trigger: bind [" + key + "]");
+        }
+        return data;
+    }
+}
+
 wbapp.save = function(obj, params, func = null) {
     wbapp.console("Trigger: wb-save-start");
     $(obj).trigger("wb-save-start", params);
@@ -1051,6 +1156,8 @@ wbapp.ajax = async function(params, func = null) {
             if (target.url == undefined && target.route !== undefined && target.route.uri !== undefined) target.url = target.route.uri;
             params.clear !== undefined && params.clear == "true" ? $(document).find(target._tid).html('') : null;
 
+            wbapp.template[params.target].params = target;
+
             if (target._params == undefined || target._params.length == 0) { void(0); } else {
                 if (wbapp.tmp.ajax_params == undefined || wbapp.tmp.ajax_params !== target) {
                     wbapp.tmp.ajax_params = target;
@@ -1065,7 +1172,9 @@ wbapp.ajax = async function(params, func = null) {
 wbapp.renderFilter = function(tid, filter) {
     let tpl = wbapp.tpl(tid);
     tpl.params.filter = filter;
+    if (tpl.params._params !== undefined) tpl.params._params.filter = filter;
     wbapp.tpl(tid, tpl);
+    wbapp.sessdata('wbapp.filter.' + tid.substr(1), filter);
     wbapp.render(tid);
 }
 
@@ -1270,7 +1379,9 @@ wbapp.tplInit = function() {
                 } catch (error) { null }
             }
 
-
+            if (params.filter !== undefined) {
+                wbapp.sessdata('wbapp.filter.' + tid.substr(1), params.filter);
+            }
 
             let html = $(this).html();
 
@@ -1372,6 +1483,15 @@ wbapp.render = function(tid, data) {
     wbapp.trigger('wb-render-done', tid, data);
 }
 
+wbapp.setPag = function(target, data) {
+    $(document).find('.pagination[data-tpl="' + target + '"]').parents('nav').remove();
+    var pagert = $(document).find(target);
+    if ($(pagert).is('li')) pagert = $(pagert).parent();
+    if ($(pagert).is('tbody')) pagert = $(pagert).parents('table');
+    if (data.pos == 'both' || data.pos == 'top') $(pagert).before(data.pag);
+    if (data.pos == 'both' || data.pos == 'bottom') $(pagert).after(data.pag);
+}
+
 wbapp.renderServer = function(params, data = {}) {
     if (params.target !== undefined && params.target > '#' && $(document).find(params.target).length) {
         //delete params.data;
@@ -1379,12 +1499,7 @@ wbapp.renderServer = function(params, data = {}) {
 
         params._tid = params.target;
         wbapp.ajax(params, function(data) {
-            var inner = '<wb>' + data.data + '</wb>';
-            if ($(document).find('.nav-pagination[data-tpl="' + data.target + '"]').length) {
-                $(document).find('.nav-pagination[data-tpl="' + data.target + '"]').html($(data.data.pag).html());
-            }
-            inner = $(inner).find(params.target).html();
-            $(params.target).html(inner);
+            wbapp.setPag(params.target, data.data)
         });
     }
 }
@@ -1437,6 +1552,7 @@ wbapp.renderClient = function(params, data = {}) {
         $(pagination).find(`[data-page="${page}"]`).parent(".page-item").addClass("active");
     }
 */
+
     if (newbind) {
         wbapp.bind[params.bind][tid].set(data);
         $(document).on("bind-" + params.bind, function(e, data) {
@@ -1905,6 +2021,16 @@ wbapp.print = function(pid) {
     setTimeout(() => { newWin.close(); }, 1000);
 }
 
+wbapp.redirectPost = function(location, args) {
+    var form = '';
+    $.each(args, function(key, value) {
+        value == undefined ? value = "" : null;
+        typeof value == 'object' ? value = JSON.stringify(value) : null;
+        value = value.split('"').join('\"');
+        form += '<textarea style="display:none;" name="' + key + '">' + value + '</textarea>';
+    });
+    $('<form action="' + location + '" method="POST">' + form + '</form>').appendTo($(document.body)).submit();
+}
 
 function is_object(val) { return val instanceof Object; }
 

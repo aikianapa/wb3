@@ -56,13 +56,8 @@ $(document).one("pagination-js", function() {
                             }, 100);
                         }
             */
-            $(document).find('.pagination[data-tpl="' + params.target + '"]').parents('nav').remove();
-            var pagert = $(document).find(params.target);
-            if ($(pagert).is('li')) pagert = $(pagert).parent();
-            if ($(pagert).is('tbody')) pagert = $(pagert).parents('table');
-            if (data.pos == 'both' || data.pos == 'top') $(pagert).before(data.pag);
-            if (data.pos == 'both' || data.pos == 'bottom') $(pagert).after(data.pag);
 
+            wbapp.setPag(params.target, data);
             $(paginator).removeClass('wb-wait');
         });
     });

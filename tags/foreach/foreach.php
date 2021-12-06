@@ -312,7 +312,7 @@ class tagForeach
                     $pag = "";
                 } else {
                     $html = $dom->html();
-                    $pag = $pag->outer();
+                    intval($pages) > 1 ? $pag = $pag->outer() : $pag = '';
                 }
                 $res = [
                     'html' => $html,
@@ -508,9 +508,7 @@ class tagForeach
             
             $list = array_chunk($list, $dom->params->size);
             $dom->params->pages = $pages = ceil($count / $dom->params->size);
-            if ($page > $pages or $page <= 0) {
-                $list = [];
-            }
+            if ($page > $pages or $page <= 0) $dom->params->page = $page = 1;
             if ($pages >= 1 && isset($list[$page - 1])) {
                 $list = $list[$page - 1];
             }
@@ -615,7 +613,9 @@ class tagForeach
         if ($this->app->vars('_post.filter') > '' && $this->app->vars('_post.target') == '#'.$pid) {
             $this->filter_prepare();
             $options["filter"] = $this->app->vars('_post.filter');
+            is_string($options["filter"]) ? $options["filter"] = json_decode($options["filter"], true) : null;
         }
+        
         $dom->params("orm") > "" ? $options["orm"] = $dom->params->orm : null;
         $dom->params("item") > "" ? $options["item"] = $dom->params->item : null;
         $dom->params("filter") > "" ? $options["filter"] = array_merge($dom->params->filter, $options["filter"]) : null;
