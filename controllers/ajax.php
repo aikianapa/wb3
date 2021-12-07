@@ -260,6 +260,8 @@ class ctrlAjax
             $out = $app->getTpl($formdata["_tpl"]);
         } elseif (isset($formdata["_form"])) {
             $out = $app->getTpl($formdata["_form"]);
+        } elseif (isset($formdata["_attach"])) {
+            $attachments[] = $formdata["_attach"];
         } elseif (isset($formdata["_message"])) {
             $out = $app->fromString($formdata["_message"]);
             $b64img = $out->find("img[src^='data:']");

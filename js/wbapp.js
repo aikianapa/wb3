@@ -51,6 +51,7 @@ wbapp.start = function() {
             wbapp.ajaxAuto();
             wbapp.lazyload();
             wbapp.modalsInit();
+            wbapp.fileinpInit();
             $(document).scrollTop(0);
         });
     }, wbapp.delay);
@@ -280,6 +281,11 @@ wbapp.start = function() {
             data[this.name] = $(this).val();
         });
 
+        let attaches = $(form).find('input[name][type=file]');
+        $.each(attaches, function() {
+            data[this.name] = $(this).data('base64');
+        });
+
         var check = $(form).find('input[name][type=checkbox]');
         // fix unchecked values
         $.each(check, function() {
@@ -297,6 +303,7 @@ wbapp.start = function() {
             $(this).attr("name", $(this).attr("wb-tmp-name"));
             $(this).removeAttr("wb-tmp-name");
         });
+
         return data;
     }
 
@@ -323,6 +330,27 @@ wbapp.start = function() {
         }
     }
 
+}
+
+wbapp.fileinpInit = function() {
+    var getBase64 = function(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                //let encoded = reader.result.toString().replace(/^data:(.*,)?/, '');
+                let encoded = reader.result.toString();
+                if ((encoded.length % 4) > 0) {
+                    encoded += '='.repeat(4 - (encoded.length % 4));
+                }
+                resolve(encoded);
+            };
+            reader.onerror = error => reject(error);
+        });
+    }
+    $(document).delegate('input[type=file][data-base64]', 'change', async function() {
+        $(this).data('base64', await getBase64($(this).prop('files')[0]));
+    })
 }
 
 wbapp.confirm = function(title = null, text = null, options = null) {
@@ -954,9 +982,9 @@ wbapp.post = async function(url, data = {}, func = null) {
         try { data.__token = wbapp._session.token; } catch (error) { null }
     }
     wbapp.loading();
-    $.post(url, data).then(function(data) {
+    $.post(url, data).then(function(res) {
         wbapp.unloading();
-        if (func !== null) return func(data);
+        if (func !== null) return func(res);
     })
 }
 
