@@ -389,6 +389,8 @@ function wbMail(
             $from=array($from,strip_tags($_ENV['settings']['header']));
         }
     }
+    $app->vars('_sett.modules.phpmailer.email') > '' ? $from[0] = $app->vars('_sett.modules.phpmailer.email') : null;
+    $app->vars('_sett.modules.phpmailer.name') > '' ? $from[1] = $app->vars('_sett.modules.phpmailer.name') : null;
     if (is_string($sent) and strpos($sent, ',')) $sent = explode(',',$sent);
     if (is_string($sent) and strpos($sent, ";")) {
         $sent=array(explode(";", $sent));
@@ -414,7 +416,7 @@ function wbMail(
 
         isset($sett["func"]) ? null : $sett["func"] = 'mail';
         $mail = new PHPMailer(true);
-
+        $mail->Port = 25;
         try {
         /*
             $mail->SMTPDebug = 2;                                 // Enable verbose debug output
@@ -425,14 +427,17 @@ function wbMail(
             $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
             $mail->Port = 587;                                    // TCP port to connect to
         */
-        if ($sett["smtp"]=="on") {
+        if ($app->vars('_sett.modules.phpmailer.smtp')=="on") {
             $mail->isSMTP();
-            $mail->Host = $sett["host"];
-            $sett["smtp"]=="on" ? $mail->SMTPAuth = true : $mail->SMTPAuth = false;
-            $mail->Username = $sett["username"];
-            $mail->Password = $sett["password"];
-            $mail->SMTPSecure = $sett["secure"];
-            intval($sett["port"]) > 0 ? $mail->Port = intval($sett["port"]) : $mail->Port = 587;
+            $mail->Host = $app->vars('_sett.modules.phpmailer.host');
+            $mail->SMTPAuth = true;
+            $mail->Username = $app->vars('_sett.modules.phpmailer.username');
+            $mail->Password = $app->vars('_sett.modules.phpmailer.password');
+            if ($app->vars('_sett.modules.phpmailer.secure') > '')
+            $mail->SMTPSecure = $app->vars('_sett.modules.phpmailer.secure');
+            $app->vars('_sett.modules.phpmailer.secure') == 'ssl' ? $mail->Port = 465 : null;
+            $app->vars('_sett.modules.phpmailer.secure') == 'tls' ? $mail->Port = 587 : null;
+            intval($app->vars('_sett.modules.phpmailer.secure')) > 0 ? $mail->Port = intval($sett["port"]) : null;
         } else if ($sett["func"]=="sendmail") {
             $mail->isSendmail();
         } else {

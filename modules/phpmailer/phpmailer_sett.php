@@ -8,7 +8,21 @@
       </select>
     </div>
   </div>
+  <div class="row form-group">
+    <label class="col-sm-4 control-label" title="Sender name">Sender name</label>
+    <div class="col-sm-8">
+        <input type="text" name="name" class="form-control" >
+    </div>
+  </div>
 
+  <div class="row form-group">
+    <label class="col-sm-4 control-label" title="Sender email">Sender email</label>
+    <div class="col-sm-8">
+        <input type="text" name="email" class="form-control" >
+    </div>
+  </div>
+
+  <hr>
   <div class="row form-group">
     <label class="col-sm-4 control-label" title="Set mailer to use SMTP">Use SMTP</label>
     <div class="col-sm-8">
@@ -36,6 +50,7 @@
     <label class="col-sm-4 control-label" title="Set system mail function">SMTP secure</label>
     <div class="col-sm-8">
       <select class="col-sm-8 form-control" name="secure" value="{{phmail[secure]}}">
+        <option value="">no secure</option>
         <option value="tls">TLS</option>
         <option value="ssl">SSL</option>
       </select>
