@@ -349,7 +349,11 @@ wbapp.fileinpInit = function() {
         });
     }
     $(document).delegate('input[type=file][data-base64]', 'change', async function() {
-        $(this).data('base64', await getBase64($(this).prop('files')[0]));
+        if ($(this).val() == '') {
+            $(this).data('base64', '');
+        } else {
+            $(this).data('base64', await getBase64($(this).prop('files')[0]));
+        }
     })
 }
 
