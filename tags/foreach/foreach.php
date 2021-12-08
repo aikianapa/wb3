@@ -210,19 +210,19 @@ class tagForeach
                 $val->_ndx = $ndx;
                 $val->_val = $value;
                 $val->_parent = &$parent;
+
+                if ($even) {
+                    $val->_even = $even = false;
+                    $val->_odd = true;
+                } else {
+                    $val->_even = $even = true;
+                    $val->_odd = false;
+                }
+
                 isset($val->_table) && $table == '' ? $table = $val->_table : null;
                 !isset($val->_id) and isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
                 $table > "" ? $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], (array) $val) : null;
             }
-
-            if ($even) {
-                $val->_even = $even = false;
-                $val->_odd = true;
-            } else {
-                $val->_even = $even = true;
-                $val->_odd = false;
-            }
-
 
             if ($ajax !== false) {
                 $list[$key] = (array) $val;
