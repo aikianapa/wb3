@@ -255,8 +255,10 @@ yonger.yongerPageBlockAdd = function(bid) {
         $('#yongerPageBlocks').find('li.dd-item:last .dd-edit').trigger('click');
     }, 100);
 }
-
-yonger.pageBlocks();
+    wbapp.loadStyles(['/engine/lib/js/nestable/nestable.css']);
+    wbapp.loadScripts(['/engine/lib/js/nestable/nestable.min.js'], 'nestable-ready', function () {
+        yonger.pageBlocks();
+    });
 </script>
 <wb-lang>
     [ru]

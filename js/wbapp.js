@@ -52,7 +52,7 @@ wbapp.start = function() {
             wbapp.lazyload();
             wbapp.modalsInit();
             wbapp.fileinpInit();
-            $(document).scrollTop(0);
+            //$(document).scrollTop(0);
         });
     }, wbapp.delay);
 
@@ -385,6 +385,7 @@ wbapp.confirm = function(title = null, text = null, options = null) {
 }
 
 wbapp.lazyload = function() {
+    /*
     $("[data-src]:not([src])").each(function() {
         let link = document.createElement('link');
         link.rel = "preload";
@@ -392,6 +393,7 @@ wbapp.lazyload = function() {
         link.href = $(this).attr('data-src');
         document.head.appendChild(link);
     });
+    */
     $("[data-src]:not([src])").lazyload();
 }
 
@@ -417,8 +419,7 @@ wbapp.eventsInit = function() {
             params._event = e;
             if (tid !== undefined) params._tid = tid;
             wbapp.ajax(params);
-            wbapp.console("Trigger: data-ajax");
-            $(document).trigger("data-ajax", params);
+            wbapp.trigger("data-ajax", params);
             let href = $(this).attr('href');
             if (href !== undefined && href.substr(0, 1) == '#') {
                 document.location.anchor = $(this).attr('href');
@@ -1135,12 +1136,13 @@ wbapp.ajax = async function(params, func = null) {
                 $(params.form).trigger("wb-ajax-done", params);
             } else if (params.target !== undefined) {
                 $(params.target).trigger("wb-ajax-done", params);
+            } else {
+                $(document).trigger("wb-ajax-done", params);
             }
             setTimeout(function() {
                 let showmod = $(document).find(".modal.show:not(:visible)");
                 if (showmod.length) showmod.removeClass("show").modal('show');
             }, 50);
-            $(document).trigger("wb-ajax-done", params);
             if (func !== null) return func(params, data);
         });
     } else if (params.target !== undefined) {
@@ -1693,21 +1695,21 @@ wbapp.modalsInit = function() {
             }
         });
     }
-
-
-    $(document).off("wb-ajax-done");
-    $(document).on("wb-ajax-done", function() {
-        wbapp.console("Trigger: wb-ajax-done");
-        if (wbapp !== undefined) {
-            wbapp.tplInit();
-            wbapp.wbappScripts();
-            //wbapp.pluginsInit();
-            wbapp.lazyload();
-        }
-        if ($(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").length) $(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").modal("show");
-        if ($.fn.tooltip) $('[data-toggle="tooltip"]').tooltip();
-    });
 }
+
+
+$(document).off("wb-ajax-done");
+$(document).on("wb-ajax-done", function() {
+    wbapp.console("Trigger: wb-ajax-done");
+    if (wbapp !== undefined) {
+        wbapp.tplInit();
+        wbapp.wbappScripts();
+        //wbapp.pluginsInit();
+        wbapp.lazyload();
+    }
+    if ($(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").length) $(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").modal("show");
+    if ($.fn.tooltip) $('[data-toggle="tooltip"]').tooltip();
+});
 
 wbapp.getModal = function(id = null) {
     var modal = $(document).data("wbapp-modal");

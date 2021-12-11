@@ -34,6 +34,7 @@ class modFilepicker
                 ->attr("name", $dom->attr("name"))
                 ->attr('data-params',json_encode($dom->params));
         }
+
         if ($dom->params("path")) {
             $out->item['upload_url'] = $dom->params->path;
         } else {
@@ -57,6 +58,9 @@ class modFilepicker
 
         $dom->setValues();
         $out->find('button > span')->inner($dom->inner());
+
+        $out->item['width'] = $dom->params('width');
+        $out->item['height'] = $dom->params('height');
 
         $out->fetch();
 
