@@ -53,6 +53,18 @@ wbapp.start = function() {
             wbapp.modalsInit();
             wbapp.fileinpInit();
             //$(document).scrollTop(0);
+            $(document).on("wb-ajax-done", function() {
+                wbapp.console("Trigger: wb-ajax-done");
+                if (wbapp !== undefined) {
+                    wbapp.tplInit();
+                    wbapp.wbappScripts();
+                    //wbapp.pluginsInit();
+                    wbapp.lazyload();
+                }
+                if ($(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").length) $(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").modal("show");
+                if ($.fn.tooltip) $('[data-toggle="tooltip"]').tooltip();
+            });
+
         });
     }, wbapp.delay);
 
@@ -1696,20 +1708,6 @@ wbapp.modalsInit = function() {
         });
     }
 }
-
-
-$(document).off("wb-ajax-done");
-$(document).on("wb-ajax-done", function() {
-    wbapp.console("Trigger: wb-ajax-done");
-    if (wbapp !== undefined) {
-        wbapp.tplInit();
-        wbapp.wbappScripts();
-        //wbapp.pluginsInit();
-        wbapp.lazyload();
-    }
-    if ($(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").length) $(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").modal("show");
-    if ($.fn.tooltip) $('[data-toggle="tooltip"]').tooltip();
-});
 
 wbapp.getModal = function(id = null) {
     var modal = $(document).data("wbapp-modal");
