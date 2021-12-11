@@ -193,6 +193,18 @@ function wbGetToken() {
 	return md5($app->route->host.session_id().$apikey.$role.$user);
 }
 
+function wbCheckAllow($allow = [],$disallow = [], $role = null) {
+    $app = &$_ENV['app'];
+    $res = true;
+    $role == null ? $role = $app->vars('_sess.user.role') : null;
+    $allow === (array)$allow ? null : $allow = wbAttrToArray($allow);
+    $disallow === (array)$disallow ? null : $disallow = wbAttrToArray($disallow);
+    $role > '' ? null : $res = false;
+    if (count($allow) && !in_array($role,$allow)) $res = false;
+    if (count($disallow) && in_array($role,$disallow)) $res = false;
+    return $res;
+}
+
     function wbApikey($mode = null)
     {
         $app = &$_ENV['app'];

@@ -248,45 +248,50 @@ class jsonDrv
         $dot = new Dot();
         $iter = new ArrayIterator((array) $list);
         $list = [];
-        $flag = true;
         foreach ($iter as $key => $item) {
+                    $flag = true;
+
             $item = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $item);
-            isset($item['_id']) ? null : $item['_id'] = &$item['id'];
-
-            if (isset($options->trigger)) {
-                $item = wbTrigger('form', __FUNCTION__, $options->trigger, func_get_args(), $item);
-            }
-            $dot->setReference($item);
-            if (isset($options->filter) OR isset($options->context)) {
-                $flag = wbItemFilter($item, $options);
-            }
-
-            if (!$flag) {
+            if ($item == null) {
                 unset($list[$key]);
             } else {
-                if (isset($item['id']) and !isset($item['_id'])) {
-                    $item['_id'] = $item['id'];
+                isset($item['_id']) ? null : $item['_id'] = &$item['id'];
+
+                if (isset($options->trigger)) {
+                    $item = wbTrigger('form', __FUNCTION__, $options->trigger, func_get_args(), $item);
+                }
+                $dot->setReference($item);
+                if ($flag && isset($options->filter) or isset($options->context)) {
+                    $flag = wbItemFilter($item, $options);
                 }
 
-                $item['_table'] = $item['_form'] = $form;
-                if (isset($options->projection)) {
-                    $tmp = [
+                if (!$flag) {
+                    unset($list[$key]);
+                } else {
+                    if (isset($item['id']) and !isset($item['_id'])) {
+                        $item['_id'] = $item['id'];
+                    }
+
+                    $item['_table'] = $item['_form'] = $form;
+                    if (isset($options->projection)) {
+                        $tmp = [
                         '_id' => $item['_id'],
                     ];
-                    foreach ($options->projection as $fld) {
-                        $val = $dot->get($fld);
-                        isset($val) ? $tmp[$fld] = $val : $tmp[$fld] = null;
+                        foreach ($options->projection as $fld) {
+                            $val = $dot->get($fld);
+                            isset($val) ? $tmp[$fld] = $val : $tmp[$fld] = null;
+                        }
+                        $item = $tmp;
                     }
-                    $item = $tmp;
+                    $list[$item["_id"]] = $item;
                 }
-                $list[$item["_id"]] = $item;
-            }
-            if (!isset($options->sort) && isset($options->limit) && count($list) == $options->limit) {
-                break;
-            }
+                if (!isset($options->sort) && isset($options->limit) && count($list) == $options->limit) {
+                    break;
+                }
 
-            $cid = md5($form . $item['_id'] . $_SESSION['lang']);
-            $_ENV['cache'][$cid] = $item;
+                $cid = md5($form . $item['_id'] . $_SESSION['lang']);
+                $_ENV['cache'][$cid] = $item;
+            }
         }
 
         if (count($params['sort'])) {

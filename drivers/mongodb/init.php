@@ -170,7 +170,7 @@ class mongodbDrv
             if ((array)$doc['_id'] === $doc['_id']) $doc['_id'] = $doc['_id']['oid'];
             $doc["_form"] = $doc["_table"] = $form;
             $doc = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $doc);
-            $list[$doc['_id']] = $doc;
+            $doc == null ? null : $list[$doc['_id']] = $doc;
         }
         $count = count($list);
         if (!isset($size)) $size = $count;

@@ -183,6 +183,18 @@ class modYonger
         return $result;
     }
 
+
+    private function block() {
+        $app = &$_ENV['app'];
+        $this->app = $app;
+        $this->dom = $app->fromString('<html></html>');
+        $this->dom->params = (object)['view'=>$app->vars('_route.params.0')]; 
+        $this->dom->item = $app->vars('_post.item');
+        $this->render();
+        echo ($this->dom->outer());
+        die;
+    }
+
     private function copypage() {
         header("Content-type: application/json; charset=utf-8");
         $app = $this->app;

@@ -2,7 +2,7 @@
 <div class="m-3" id="yongerSpace">
         <nav class="nav navbar navbar-expand-md col">
         <h3 class="tx-bold tx-spacing--2 order-1">Страницы</h3>
-        <div class="ml-auto order-2 float-right">
+        <div class="ml-auto order-2 float-right" wb-disallow="content">
         <a href="#" data-ajax="{'url':'/cms/ajax/form/pages/edit/_header','html':'#yongerSpace modals'}" class="btn btn-secondary">
             <img src="/module/myicons/24/FFFFFF/menubar-arrow-up.svg" width="24" height="24" /> Шапка
         </a>
@@ -33,10 +33,9 @@
                             'bind':'cms.list.{{_form}}',
                             'sort':'date:d',
                             'size':'{{_sett.page_size}}',
-                            'from':'list',
                             'filter': {'_site':'{{_sett.site}}'}
                 }">
-                <li class="dd-item row" data-item="{{id}}" data-name="{{name}}">
+                <li class="dd-item row" data-item="{{id}}" data-name="{{name}}" wb-if="!in_array('{{_id}}',['_header','_footer'])">
                     <span class="dd-handle"><img src="/module/myicons/20/000000/dots-2.svg"  width="20" height="20"/></span>
                     <span class="dd-text d-none d-sm-flex col-sm-6 ellipsis">
                     <span>{{header}}</span>
@@ -54,7 +53,7 @@
                                 <img src="/module/myicons/24/{{_var.stroke}}/power-turn-on-square.1.svg" class="dd-active cursor-pointer">
                                 <img src="/module/myicons/24/323232/copy-paste-select-add-plus.svg" width="24" height="24" class="dd-copy">
                                 <img src="/module/myicons/24/323232/content-edit-pen.svg" width="24" height="24" class="dd-edit">
-                                <img src="/module/myicons/24/323232/trash-delete-bin.2.svg" width="24" height="24" class="dd-remove">
+                                <img src="/module/myicons/24/323232/trash-delete-bin.2.svg" width="24" height="24" class="dd-remove" wb-disallow="content">
                             </form>
                         </span>
                     </span>

@@ -1,7 +1,7 @@
 <div class="divider-text" wb-if='"{{_route.subdomain}}" > ""  AND "{{_sett.modules.yonger.standalone}}" !== "on"'>{{_route.subdomain}}</div>
 <hr wb-if='"{{_route.subdomain}}" == "" AND "{{_sett.modules.yonger.standalone}}" !== "on"'>
 <ul class="nav nav-aside" wb-tree="from=_sett.cmsmenu.data&branch=aside&parent=false">
-    <wb-var allow="on" wb-if='"{{data.allow}}" == "" OR {{in_array({{_sess.user.role}},{{explode(",",{{data.allow}})}})*1}}' else="" />
+    <wb-var allow="on" wb-if='wbCheckAllow("{{data.allow}}","{{data.disallow}}")' else="" />
     <li wb-if='"{{_lvl}}"=="1" && "{{active}}"=="on" AND "{{_var.allow}}"=="on"'>
         <div class="mg-y-20">{{data.label}}</div>
     </li>
