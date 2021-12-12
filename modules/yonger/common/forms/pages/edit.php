@@ -20,7 +20,7 @@
                     <div class="col-5 col-lg-4">
                         <form id="{{_form}}EditForm">
                             <div wb-if="'{{_route.id}}' !== '_header' && '{{_route.id}}' !== '_footer'">
-                            <div class="form-group row">
+                            <div class="form-group row" wb-allow="admin">
                                 <div class="col-12">
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input" name="active"
@@ -34,7 +34,7 @@
                             <div class="form-group row">
                                 <div class="col-lg-6">
                                     <label class="form-control-label">Путь к странице</label>
-                                    <select class="form-control" placeholder="/" name="path">
+                                    <select class="form-control" placeholder="/" name="path" wb-enabled="admin">
                                         <wb-foreach wb='table=pages&sort=url' wb-filter="{'id':{'$ne':'{{id}}'}}">
                                             <wb-var wb-if='"{{url}}" == "/"' url="/home" else="{{url}}" />
                                             <option value="{{path}}/{{name}}">{{_var.url}}</option>
@@ -43,10 +43,10 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <label class="form-control-label">Имя страницы</label>
-                                    <input type="text" name="name" class="form-control" wb="module=smartid" required>
+                                    <input type="text" name="name" class="form-control" wb="module=smartid" required wb-enabled="admin">
                                 </div>
                                 <div class="col-12 mt-1">
-                                    <div class="alert alert-info p-2 mb-0 cursor-pointer pagelink">
+                                    <div class="btn btn-info btn-block p-2 mb-0 cursor-pointer pagelink">
                                         {{_route.scheme}}://{{_route.hostname}}<span class="path"></span>
                                     </div>
                                 </div>
