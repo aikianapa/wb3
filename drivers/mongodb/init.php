@@ -118,11 +118,11 @@ class mongodbDrv
         if (isset($options["page"])) {
             $page = intval($options["page"]);
             $size = intval($options["size"]);
-            $params["limit"] = $size;
+            $params["limit"] = intval($size);
             $params["skip"] = ($page - 1) * $size;
         } else {
             $page = 1;
-            if (isset($options["limit"])) $params["limit"] = $options["limit"];
+            if (isset($options["limit"])) $params["limit"] = intval($options["limit"]);
         }
 
         if (isset($options["projection"])) {

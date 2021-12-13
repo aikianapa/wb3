@@ -20,7 +20,7 @@
         </thead>
         <tbody id="{{_form}}List">
             <wb-foreach wb="table={{_form}}&sort=_created:d&bind=cms.list.{{_form}}"
-                wb-filter="{'login':'{{_sess.user.login}}' }">
+                wb-filter="{'_site' : {'$in': [null,'{{_sett.site}}']}}">
                 <tr>
                     <td>{{_created}}</td>
                     <td>{{subject}}</td>

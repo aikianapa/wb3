@@ -33,9 +33,9 @@
                             'bind':'cms.list.{{_form}}',
                             'sort':'date:d',
                             'size':'{{_sett.page_size}}',
-                            'filter': {'_site':'{{_sett.site}}'}
+                            'filter': {'_site' : {'$in': [null,'{{_sett.site}}']}, 'id': {'$nin':['_header','_footer']}}
                 }">
-                <li class="dd-item row" data-item="{{id}}" data-name="{{name}}" wb-if="!in_array('{{_id}}',['_header','_footer'])">
+                <li class="dd-item row" data-item="{{id}}" data-name="{{name}}" >
                     <span class="dd-handle"><img src="/module/myicons/20/000000/dots-2.svg"  width="20" height="20"/></span>
                     <span class="dd-text d-none d-sm-flex col-sm-6 ellipsis">
                     <span>{{header}}</span>

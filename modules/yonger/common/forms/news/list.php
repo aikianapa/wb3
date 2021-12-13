@@ -39,7 +39,7 @@
                             'bind':'cms.list.{{_form}}',
                             'sort':'date:d',
                             'size':'{{_sett.page_size}}',
-                            'filter': {'_site':'{{_sett.site}}'}
+                            'filter': {'_site' : {'$in': [null,'{{_sett.site}}']}}
                 }">
                     <tr class="bg-transparent">
                         <td data-ajax="{'url':'/cms/ajax/form/news/edit/{{_id}}','html':'#yongerSpace modals'}">

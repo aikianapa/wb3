@@ -20,7 +20,7 @@
         </thead>
         <tbody id="quotesList">
             <wb-foreach wb="table=quotes&sort=_created:d&bind=cms.list.quotes&size={{_sett.page_size}}"
-                wb-filter="{'login':'{{_sess.user.login}}' }">
+                wb-filter="{'_site' : {'$in': [null,'{{_sett.site}}']}}">
                 <tr>
                     <td>{{_created}}</td>
                     <td>{{subject}}</td>
