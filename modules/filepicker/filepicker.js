@@ -156,6 +156,7 @@ $(document).on("filepicker-js", function() {
                         wbapp.template["#fp-listviewItem"] = { html: $(document).find("#fp-listviewItem").html(), params: {} };
                     }
                     let tpl = wbapp.template["#fp-listviewItem"].html;
+                    console.log(tpl);
                     getList();
 
                     if (!$(inpfile).is("[multiple]") && $filepicker.list.length) {

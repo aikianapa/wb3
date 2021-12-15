@@ -61,7 +61,7 @@
         {{else}}
         <div class="card p-1 m-1 rounded-10">
             <figure class="pos-relative mg-b-0">
-                <img class="card-img-top rounded-10" data-src="" data-img='{{name}}' loading title="{{title}}"
+                <img class="card-img-top rounded-10" width="{{width}}" height="{{height}}" data-src="" data-img='{{name}}' loading title="{{title}}"
                     alt="{{alt}}" onload="$(this).removeAttr('loading onload')">
                 <figcaption>
                     <div class="btn-group">
