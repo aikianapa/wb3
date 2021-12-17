@@ -23,6 +23,10 @@ function afterItemRead(&$item) {
     $item['url'] == '/home' ? $item['url'] = '/' : null;
 }
 
+function beforeitemSave(&$item) {
+    @$item['url'] = $item['path'] . '/' .$item['name'];
+}
+
 function afterItemSave($item) {
     $this->app->shadow($item['url']);
 }
@@ -33,6 +37,8 @@ function list() {
     $this->count = 0;
     $out = $app->fromFile(__DIR__ . '/list.php');
     $this->tpl = $out->find('#pagesList');
+    $this->list = $this->app->itemList('pages');
+    $this->list = $this->list['list'];
     $res = $this->listNested();
     $out->find('#pagesList')->replaceWith($res);
     echo $out->fetch();
@@ -40,21 +46,27 @@ function list() {
 
 function listNested($path = '') {
     $this->count++;
-    $level = $this->app->itemList('pages',['filter'=>['path'=>$path]]);
-    $count = $level['count'];
-    $level = $level['list'];
-    if (!count($level)) return $this->app->fromString("");
-    if ($path == '')     {
-        unset($level['_header']);
-        unset($level['_footer']);
+
+    if ($this->count > 100) {
+        return;
     }
+    $level = $this->app->json($this->list)->where('path','=',$path)->get();
+    $count = count($level);
+    if (!$count) return '';
+
     $out = $this->tpl->clone();
     $out->fetch(['list'=>$level]);
+
     foreach($level as $item) {
-            $path = $item['path'].'/'.$item['name'];
-            $res = $this->listNested($path);
-            if ($path == '/home' && $item['name'] == 'home') $path = '/';
-            $li = $out->find('[data-path="'.$path.'"]')->parent()->parent()->parent();
+            in_array($item['url'],['/','']) ? $url = '/home' : $url = $item['url'];
+            unset($this->list[$item['id']]);
+            $res = $this->listNested($url);
+            if ($url == '/home') {
+                $li = $out->find('li[data-path="/"]');
+            } else {
+                $li = $out->find('li[data-path="'.$url.'"]');
+            }
+            
             $li->append($res);
 
     }
@@ -65,7 +77,9 @@ function path() {
     $app = &$this->app;
     $data = $app->vars('_post.data');
     foreach(array_keys($data) as $id) {
-        $app->itemSave('pages',['_id'=>$id,'path'=>$data[$id]],false);
+        $item = $app->itemRead('pages', $id);
+        $item['path'] = $data[$id];
+        $app->itemSave('pages',$item,false);
     }
     $app->tableFlush('pages');
 }

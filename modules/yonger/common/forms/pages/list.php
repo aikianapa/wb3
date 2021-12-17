@@ -28,14 +28,14 @@
             
         </span>
         <ol id="pagesList" class="dd-list">
-                        <wb-foreach wb="{'table':'{{_form}}',
+                        <wb-foreach wb="{'from':'list',
                             'render':'server',
                             'bind':'cms.list.{{_form}}',
-                            'sort':'date:d',
+                            'sort':'url',
                             'size':'{{_sett.page_size}}',
                             'filter': {'_site' : {'$in': [null,'{{_sett.site}}']}, 'id': {'$nin':['_header','_footer']}}
                 }">
-                <li class="dd-item row" data-item="{{id}}" data-name="{{name}}" >
+                <li class="dd-item row" data-item="{{id}}" data-name="{{name}}" data-path="{{url}}" >
                     <span class="dd-handle"><img src="/module/myicons/20/000000/dots-2.svg"  width="20" height="20"/></span>
                     <span class="dd-text d-none d-sm-flex col-sm-6 ellipsis">
                     <span>{{header}}</span>
@@ -122,8 +122,9 @@
                 maxDepth: 3,
                 beforeDragStop: function(l,e, p){
                     datapath = {};
-                    changePath(e,p).then(function(){
-                        wbapp.post('/cms/ajax/form/pages/path',{'data':datapath});
+                    changePath(e,p).then(function(res){
+                        console.log(datapath);
+                        if (res !== false) wbapp.post('/cms/ajax/form/pages/path',{'data':datapath});
                     });
                 }
             });
@@ -132,9 +133,12 @@
         var changePath = async function (e,p) {
             let self = $(e).attr('data-item');
             let name = $(e).attr('data-name');
+            let selfpath = $(e).attr('data-path');
             let parent = $(p).closest('.dd-item').find('.dd-path').attr('data-path');
             if (parent == undefined) {parent = '';} 
             if (parent == '/') {parent = '/home'}
+            if (selfpath == parent) return false;
+
             let path = parent + '/' + name;
             datapath[self] = parent;
             $(e).children('.dd-info').find('.dd-path')
