@@ -1883,8 +1883,8 @@ wbapp.loadPreload = async function(trigger = null, func = null) {
     });
     let preload_max = 0;
     let preload_count = 0;
-    if (preloads.script.length > 0) preload_max++;
-    if (preloads.style.length > 0) preload_max++;
+    if (preloads.script !== undefined && preloads.script.length > 0) preload_max++;
+    if (preloads.style !== undefined && preloads.style.length > 0) preload_max++;
     let preload_check = () => {
         if (preload_count == preload_max) {
             if (func !== null) return func(styles);
