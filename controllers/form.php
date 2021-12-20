@@ -77,7 +77,9 @@ class ctrlForm
             } else {
                 $out = $dom->outer();
             }
-            
+            $out = $this->app->fromString($out);
+            $this->app->module('compress',$out);
+            $out = $out->outer();
             !strpos(' '.trim($out), '<!DOCTYPE') ? $out = '<!DOCTYPE html>'.$out : null;
             echo $out;
             $app->setCache($out);
