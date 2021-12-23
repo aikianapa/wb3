@@ -49,15 +49,17 @@ class wbDom extends DomQuery
         if (!is_string($html) && !is_object($html)) {
             $html='';
         }
+        
+        $is_tag = preg_match("/<[^<]+>/", $html, $res);
+
         $this->head ? $esc = "head" : $esc = "wb";
 
-        $html = "<{$esc}>{$html}</{$esc}>"; // magick
+            $html = "<{$esc}>{$html}</{$esc}>"; // magick
             $this->html($html);         // magick
-            $this->children("{$esc}")->unwrap("{$esc}"); // magick
-            if ($html > "" and $this->html() == "") {
-                $this->text($html);
-            }
-        $this->find("{$esc}")->unwrap("{$esc}");
+            $this->find("{$esc}")->unwrap("{$esc}"); // magick
+            if (!$is_tag) $this->text($html);
+
+        //$this->find("{$esc}")->unwrap("{$esc}");
         return $this;
     }
 
@@ -188,6 +190,7 @@ class wbDom extends DomQuery
         if (!$this->app) $this->app = $_ENV["app"];
         $tmp = $this->app->vars('_env.locale');
         isset($this->root) ? null : $this->root = $this->parents(':root')[0];
+
         $this->fetchStrict();
         $this->fetchLang();
         if ($this->strict OR isset($this->fetched)) return;

@@ -198,6 +198,7 @@ class tagForeach
 
         $dom->attr("data-ajax") > "" ? $ajax = $dom->attr("data-ajax") : $ajax = false;
         $even = false;
+        $lines = '';
         foreach ((array) $list as $key => $val) {
             $value = $val;
             $val = (object) $val;
@@ -232,19 +233,19 @@ class tagForeach
                         $val->$k = $v;
                     }
                 }
-
-
                 $line = $this->app->fromString($dom->tpl, true);
                 $line->copy($dom);
                 $line->item = (array) $val;
                 $line->fetch();
-                $dom->append($line->inner());
+                $lines .= $line->inner();
             }
             if (!isset($val->__total)) {
                 $idx++;
                 $ndx++;
             }
         }
+        $dom->append($lines);
+
 
         $params = $dom->params;
 

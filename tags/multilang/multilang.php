@@ -54,8 +54,7 @@ class tagMultilang {
         $wrp->find('textarea.wb-multilang-data')[0]->attr('name',$field);
         $dom->attr("id") > "" ? $tplId = $dom->attr("id") : $tplId='ml_'.wbNewId();
         $dom->attr("id",$tplId);
-        $outer = $wrp->outer();
-        $dom->inner($outer);
+        $dom->inner($wrp->html());
         $dom->append('<script wb-app data-remove="multilang-js">wbapp.loadScripts(["/engine/js/php.js","/engine/tags/multilang/multilang.js"],"multilang-js");</script>'."\n\r");
         $dom->attr('done',true);
         $dom->fetched = true;
