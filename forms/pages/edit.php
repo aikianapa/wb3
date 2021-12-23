@@ -58,7 +58,7 @@
                             <div class="form-group row">
                                 <label class="col-12 form-control-label">Текст</label>
                                 <div class="col-12">
-                                    <wb-module wb="{'module':'jodit'}" name="text" />
+                                    <wb-module wb="{'module':'editor'}" name="text" />
                                 </div>
                             </div>
                         </div>

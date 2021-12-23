@@ -91,7 +91,7 @@ class modYonger
         $ws = $app->fromFile(__DIR__."/tpl/workspace.php", true);
         $ws->path = __DIR__ . '/tpl/';
         $ws->fetch();
-        return $ws;
+        return '<!DOCTYPE html>'.$ws->outer();
     }
 
     private function structure() {

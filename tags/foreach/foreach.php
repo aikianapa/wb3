@@ -409,7 +409,14 @@ class tagForeach
             $dom->params->from = 'json';
         }
 
-        if ($dom->params('from')) {
+
+        if ($dom->params('table') && $dom->params('item')) {
+            $list = $dom->app->itemRead($dom->params->table,$dom->params->item);
+            if ($dom->params('from')) {
+                $dot = $dom->app->dot($list);
+                $list = $dot->get($dom->params->from);
+            }
+        } else if ($dom->params('from')) {
             if ($dom->app->vars($dom->params->from) > '') {
                 $list = $dom->app->vars($dom->params->from);
             } elseif (isset($list[$dom->params->from])) {

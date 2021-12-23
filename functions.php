@@ -6,9 +6,6 @@ require_once __DIR__."/lib/weprocessor/weprocessor.php";
 require_once __DIR__."/lib/weprocessor/weparser.class";
 require_once __DIR__.'/wbrouter.php';
 require_once __DIR__.'/wbapp.php';
-if (is_file($_SERVER['DOCUMENT_ROOT'].'/functions.php')) {
-    require_once $_SERVER['DOCUMENT_ROOT'].'/functions.php';
-}
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -590,12 +587,14 @@ function wbFormUploadPath()
     return $path;
 }
 
+
 function wbInitFunctions(&$app)
 {
     wbTrigger('func', __FUNCTION__, 'before');
     if (is_file($_ENV['path_app'].'/functions.php')) {
         require_once $_ENV['path_app'].'/functions.php';
     }
+
     foreach ($_ENV['forms'] as $form) {
         $inc = array(
                    "{$_ENV['path_engine']}/forms/{$form}.php", "{$_ENV['path_engine']}/forms/{$form}/{$form}.php",
@@ -608,15 +607,21 @@ function wbInitFunctions(&$app)
         }
     }
 
+    $_ENV['modules'] = wbListModules();
     $excmod = ["cms"];
 
     foreach ($_ENV['modules'] as $module) {
-        if (in_array($module['name'], $excmod) or $app->vars("_sett.modcheck") !== "on" or
+        if (in_array($module['id'], $excmod) or $app->vars("_sett.modcheck") !== "on" or
             ($app->vars("_sett.modcheck") == "on"
             and $app->vars("_sett.modules.{$module['name']}.active") == "on"
             )
           ) {
-            require_once $module["path"];
+            try {
+                include_once $module["module"];
+            } catch (\Throwable $th) {
+                //throw $th;
+                error_log("Модуль не загружен:".$module["module"] , 0);
+            }
         }
     }
 }

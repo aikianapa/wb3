@@ -7,7 +7,7 @@ var _tmpjq = false;
 setTimeout(function() {
     wbapp.loader = true;
     let loader = document.getElementById("loader");
-    typeof(loader) != 'undefined' && loader != null ? wbapp.delay = 2500 : wbapp.delay = 10;
+    typeof(loader) !== 'undefined' && loader !== null ? wbapp.delay = 2500 : wbapp.delay = 10;
 
     var get_cookie = function(name) {
         const value = `; ${document.cookie}`;
@@ -74,7 +74,6 @@ wbapp.start = function() {
             .css('user-select', 'none')
             .on('selectstart', false);
     };
-
 
     $.fn.verify = function() {
         var form = this;
@@ -413,7 +412,7 @@ wbapp.eventsInit = function() {
     $(document).delegate("[data-ajax]:not(input,select)", "click", function(e, tid) {
         if (!$(this).is("input,select")) {
             let params = wbapp.parseAttr($(this).attr("data-ajax"));
-            if (Object.keys(params)[0] == $(this).attr("data-ajax")) {
+            if (params.url == undefined && typeof params == 'string') {
                 // ajax string only
                 params.url = $(this).attr("data-ajax");
                 if ($(this).parents('form').length) {
@@ -1081,6 +1080,8 @@ wbapp.ajax = async function(params, func = null) {
             if (count(data) == 2 && data.error !== undefined && data.callback !== undefined) {
                 eval(data.callback + '(params,data)');
                 if (func !== null) return func(params, data);
+            } else if (data.callback !== undefined) {
+                eval(data.callback);
             }
 
             if (params.target && params.target > '#') {

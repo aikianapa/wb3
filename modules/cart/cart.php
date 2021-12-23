@@ -18,7 +18,7 @@ class modCart {
         $dom->params("data") > "" ? $dom->attr("mod-cart-data",json_encode($dom->params("data"))) : null;
         $dom->addClass('mod-cart-add');
       }
-      $dom->after('<script type="wbapp" remove>wbapp.loadScripts(["/engine/modules/cart/cart.js"],"cart-mod-js");</script>');
+      $dom->after('<script wb-app remove>wbapp.loadScripts(["/engine/modules/cart/cart.js"],"cart-mod-js");</script>');
       //$dom->remove();
   }
     

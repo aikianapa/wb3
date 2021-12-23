@@ -1,4 +1,5 @@
 <?php
+
 // https://github.com/momentum81/php-remove-unused-css
 
 require __DIR__ .'/vendor/autoload.php';
@@ -10,7 +11,7 @@ class modCompress
         if (strtolower(get_class($obj)) == 'wbapp') {
             $this->app = &$obj;
             $this->dom = $this->app->fromSrting('');
-        } else if (strtolower(get_class($obj)) == 'wbdom') {
+        } elseif (strtolower(get_class($obj)) == 'wbdom') {
             $this->app = &$obj->app;
             $this->dom = &$obj;
         }
@@ -25,7 +26,7 @@ class modCompress
         $css = '';
         $files = [];
         $list = $this->dom->parents('html')->find('link[href*=".css"],link[href*=".less"],link[href*=".scss"]');
-        foreach($list as $link) {
+        foreach ($list as $link) {
             if ($link->attr('rel') == 'stylesheet') {
                 $query = parse_url($link->href);
                 if (!isset($query['host'])) {
@@ -36,33 +37,41 @@ class modCompress
                     $files[] = $query['host'].'/'.$query['path'];
                     $css .= file_get_contents($link->href);
                 }
-                
             }
         }
         if (count($files)) {
             $name = md5(implode(',', $files));
             $filename = $this->app->route->path_app . '/assets/css/compress/'.$name;
-            $css = wbMinifyCss($css);
-            wbPutContents($filename.'.min.css', $css);
-            $this->dom->append('<link rel="stylesheet" href="/assets/css/compress/'.$name.'.min.css">');
 
-/*
-    // Идея удалить неиспользуемый css провалилась - не все нужные стили сохраняются.
-            $cssname = $filename.'.css';
-            $htmname = $filename.'.htm';
+            if ($this->app->vars('_sett.modules.compress.unused') !== 'on') {
+                    $css = wbMinifyCss($css);
+                    wbPutContents($filename.'.min.css', $css);
+            } else {
 
-            wbPutContents($cssname, $css);
-            wbPutContents($htmname, $this->dom->outer());
-            
-            $this->dom->append('<link rel="stylesheet" href="/assets/css/compress/'.$name.'.min.css">');
+                $cssname = $filename.'.css';
+                $htmname = $filename.'.htm';
+                
+                wbPutContents($cssname, $css);
+                wbPutContents($htmname, $this->dom->outer());
 
-            $this->css->styleSheets($cssname)
-                ->htmlFiles($htmname)
-                ->setFilenameSuffix('.min')
-                ->saveFiles();
-            unlink($htmname);
-            unlink($cssname);
-*/
+                $this->dom->append('<link rel="stylesheet" href="/assets/css/compress/'.$name.'.min.css">');
+
+                $this->css->whitelist('html','body',':before',':after',':hover')
+                    ->styleSheets($cssname)
+                    ->htmlFiles($htmname)
+                    ->setFilenameSuffix('.min')
+                    ->minify()
+                    ->refactor()
+                    ->saveFiles();
+                unlink($htmname);
+                unlink($cssname);
+            }
+                if ($this->dom->find('head')->length) {
+                    $this->dom->find('head')->append('<link rel="stylesheet" href="/assets/css/compress/'.$name.'.min.css">');
+                } else {
+                    $this->dom->append('<link rel="stylesheet" href="/assets/css/compress/'.$name.'.min.css">');
+                }
+
         }
         return $this->dom;
     }

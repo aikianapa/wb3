@@ -123,15 +123,13 @@ class wbDom extends DomQuery
 
     public function getField($fld)
     {
-        $fields = new Dot();
-        $fields->setReference($this->item);
+        $fields = $this->app->dot($this->item);
         return $fields->get($fld);
     }
 
     public function setField($fld, $data = [])
     {
-        $fields = new Dot();
-        $fields->setReference($this->item);
+        $fields = $this->app->dot($this->item);
         return $fields->set($fld, $data);
     }
 
@@ -712,16 +710,22 @@ class wbApp
         file_put_contents($name, $out, LOCK_EX);
         $lastModified = filemtime($name);
     }
-    
 
-    public function getCache()
-    {          
+    public function cacheControl() {
         $this->vars('_sett.devmode') == 'on' ? $cache = null : $cache = true;
         if ($cache && isset($_SERVER['HTTP_CACHE_CONTROL'])) {
             parse_str($_SERVER['HTTP_CACHE_CONTROL'], $cc);
-            isset($cc['no-cache']) ? $cache = null : null; 
+            isset($cc['no-cache']) ? $cache = null : null;
         }
         $cache && ((!count($_POST) and isset($_GET['update']) and count($_GET) == 1) or count($_POST) or count($_GET)) ? $cache = null : null;
+        return $cache;
+    }
+
+
+
+    public function getCache()
+    {          
+        $cache = $this->cacheControl();
         if ($cache == null) {
             header("Cache-Control: no-cache, no-store, must-revalidate"); 
             header("Pragma: no-cache");
@@ -813,6 +817,7 @@ class wbApp
         //$this->RouterAdd();
         $this->driver();
         $this->InitSettings($this);
+        $this->InitFunctions($this);
         $this->controller();
 }
 
@@ -1057,7 +1062,8 @@ class wbApp
             ,"uploader"=>"_env.drivers.{$name}"
         ];
         $dir = dirname($path);
-        $dir = substr($dir, strlen($_SERVER["DOCUMENT_ROOT"]));
+
+        $dir = realpath($dir);
 
         if (in_array($type, array_keys($types))) {
             if ($label == null) {
@@ -1086,6 +1092,7 @@ class wbApp
         unset($args[0]);
         if (!count($args)) $args[]=$this;
         $class = 'mod' . ucfirst($mod);
+        /*
         if (is_file($this->vars('_env.path_app')."/modules/{$mod}/{$mod}.php")) {
             require $this->vars('_env.path_app')."/modules/{$mod}/{$mod}.php";
         } else if (is_file($this->vars('_env.path_engine')."/modules/{$mod}/{$mod}.php")) {
@@ -1093,6 +1100,7 @@ class wbApp
         } else {
             return null;
         }
+        */
         $rc = new ReflectionClass($class);
         return $rc->newInstanceArgs($args);
     }

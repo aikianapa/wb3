@@ -1,12 +1,11 @@
 <?php
 use Adbar\Dot;
-
+$app->addEditor("summernote", __DIR__, "Summernote editor");
 
 class modSummernote
 {
     public function __construct($dom)
-    {
-        $dom->app->addEditor("summernote", __DIR__, "Summernote editor");
+    {       
 		$this->init($dom);
         $dom->removeAttr("wb");
     }
@@ -22,7 +21,6 @@ class modSummernote
             }
 			$name = $textarea->attr('name');
 			if ($name > '') {
-                echo $name;
 				$item = $dom->app->dot($dom->item);
 				$textarea->html($item->get($name));
             }

@@ -23,7 +23,7 @@
         </div>
         <div class="form-group row">
             <div class="col-12">
-                <wb-module wb="{'module':'jodit'}" name="text" />
+                <wb-module wb="{'module':'editor'}" name="text" />
             </div>
         </div>
         <div class="form-group row">

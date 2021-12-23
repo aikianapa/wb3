@@ -49,7 +49,7 @@
                         </div>
 
                         <div id="{{_form}}Text" class="tab-pane fade" role="tabpanel">
-                            <wb-module wb-module="jodit" name="text" />
+                            <wb-module wb-module="editor" name="text" />
                         </div>
                         <div id="{{_form}}Images" class="tab-pane fade" role="tabpanel">
                             <wb-module wb="module=filepicker&mode=multi" wb-path="/uploads/{{_form}}/{{_item}}/"

@@ -1,34 +1,40 @@
 <?php
 use Adbar\Dot;
-$app->addEditor("froalaeditor",__DIR__,"Froala editor");
-$app->addModule("froalaeditor",__DIR__,"Froala editor");
-function froalaeditor__init(&$dom) {
-	if (!$dom->data) $dom->data = [];
-	if (isset($_ENV["route"]["params"][0]) AND $_ENV["route"]["mode"] !== "tree_getform") {
-		$mode=$_ENV["route"]["params"][0];
-		$call="froalaeditor__{$mode}";
-		if (is_callable($call)) {$out=@$call();}
-		die;
-	} else {
-		$out = $dom->app->fromFile(__DIR__ ."/froalaeditor-ui.php",true);
-    $id = $dom->app->newId();
-    $out->find(".froalaeditor")->attr("id","fr-{$id}");
-        $ats = $dom->attributes;
-        foreach( $ats as $at ) {
-            if (!strpos(" ".$at->name,"data-wb")) {
-                $out->find(".froalaeditor")->attr($at->name,$at->value);
-            }
+$app->addEditor("froalaeditor", __FILE__, "Froala editor");
+
+class modFroalaeditor
+{
+    public function __construct($dom)
+    {
+        $this->init($dom);
+    }
+    public function init($dom)
+    {
+        $out = $dom->app->fromFile(__DIR__ ."/froalaeditor_ui.php", true);
+        $dom->attr('id') > '' ? $id = $dom->attr('id') : $id = "fe_".$dom->app->newId();
+        $textarea = $out->find("textarea");
+        $textarea->attr("id", $id);
+        $out->copy($dom);
+        if ($dom->attr("name") > "") {
+            $dom->params->name = $dom->attr("name");
         }
-        $out->fetch();
-				$item = new Dot();
-				$item->setReference($dom->data);
-				if ($dom->attr("data-value")>"") {
-						$out->find("textarea")->html($item->get($dom->attr("data-value")));
-				} else {
-					$out->find("textarea")->html($item->get($dom->attr("name")));
-				}
-        $out->addClass("wb-done");
-        return $out;
-	}
+        if ($dom->params("name")) {
+            $item = new Dot();
+            $item->setReference($dom->item);
+            $textarea->attr("name", $dom->params->name);
+            $text = $item->get($dom->params->name);
+        } else {
+            $text = $dom->html();
+        }
+        $text = html_entity_decode($text);
+
+        $text = $dom->app->fromString($text);
+        $code = $text->find('code,pre');
+        foreach ($code as $c) {
+            $c->inner(htmlentities($code->html()));
+        }
+        $out->children('.wb-content-editor')->html($text);
+        $dom->after($out->outer());
+        $dom->remove();
+    }
 }
-?>

@@ -1,9 +1,9 @@
 <?php
 use Adbar\Dot;
+$app->addEditor("jodit", __DIR__, "Jodit editor");
 
 class modJodit {
   function __construct($dom) {
-      $dom->app->addEditor("jodit",__DIR__,"Jodit editor");
       $this->init($dom);
   }
   public function init($dom) {
