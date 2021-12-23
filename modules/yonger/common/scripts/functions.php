@@ -1,11 +1,13 @@
 <?php
     function customRoute($route = []) {
         $app = &$_ENV['app'];
-        if ($app->vars('_route.form') == 'pages' && $app->vars('_route.mode') == 'show') {
+
+        if ($app->vars('_route.controller') == 'form' && $app->vars('_route.mode') == 'show') {
             $uri = $app->route->uri;
             $path = explode('/', $uri);
             $name = array_pop($path);
             $path = implode('/', $path);
+
             $uri == '/' && $name == '' ? $name = 'home' : null;
             if (isset($app->route->item) && $app->route->item !== $name) {
                 $app->route->alias = $name;
