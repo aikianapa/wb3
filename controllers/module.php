@@ -12,6 +12,7 @@ class ctrlModule {
       if ($mode == '_settings') {
           $this->settings();
       } else {
+        /*
         $modpath = "/modules/{$module}";
         $aModule=$_ENV["path_app"].$modpath."/{$module}.php";
         $eModule=$_ENV["path_engine"].$modpath."/{$module}.php";
@@ -23,6 +24,7 @@ class ctrlModule {
           $app->addModule($module, '/engine'.$modpath);
           require_once($eModule);
         }
+        */
         $class = "mod".ucfirst($module);
         if (class_exists($class)) {
             $out = new $class($app);

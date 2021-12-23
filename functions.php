@@ -164,7 +164,7 @@ function wbInitSettings(&$app)
     }
     if (!($app->vars('_sett.cache') > "")) $app->vars('_sett.cache',0);
     if (in_array($app->vars('_route.controller'),['thumbnails','file'])) {
-          if ($app->vars('_sett.user')) {
+          if ($app->vars('_sett.user') && $app->vars('_sett.user.group') == '') {
               $app->vars('_sett.user.group', $app->ItemRead('users', $app->vars('_sett.user.role')));
           }
           if (!$app->vars('_cookie.events')) {
@@ -172,6 +172,7 @@ function wbInitSettings(&$app)
           } // срок действия час
     }
 		$app->vars("_sess.token",$app->getToken());
+        
 }
 
 function wbGetToken() {

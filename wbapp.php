@@ -742,8 +742,8 @@ class wbApp
                 // Делаем асинхронный запрос с обновлением кэша
                 header("Cache-Control: no-cache, no-store, must-revalidate");
                 header("Pragma: no-cache");
+                $this->shadow($this->route->uri);
                 return null;
-//                $this->shadow($this->route->uri);
             } else {
                 header("Cache-control: public");
                 header("Pragma: cache");

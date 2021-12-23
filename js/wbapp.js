@@ -1803,26 +1803,12 @@ wbapp.loadScripts = function(scripts = [], trigger = null, func = null) {
     var stop = 0;
     var count = scripts.length;
     scripts.forEach(function(src, i) {
-        //    let name = src.split("/");
-        //    name = name[name.length-1];
-        if (wbapp.devmode > 0 && src.indexOf('?') == -1) src += '?' + wbapp.devmode;
-        let name = src;
-        if (wbapp.loadedScripts.indexOf(src) !== -1) {
-            wbapp.console("Script loaded: " + name);
-            stop += 1;
-            if (stop >= count) {
-                if (trigger > '') {
-                    $(document).find("script#" + trigger + "-remove").remove();
-                    $(document).trigger(trigger);
-                }
-                if (func !== null) return func(scripts);
-            }
-        } else {
-            let script = document.createElement('script');
-            script.src = src;
-            script.async = false;
-            script.onload = function() {
-                wbapp.loadedScripts.push(name);
+        setTimeout(function() {
+            //    let name = src.split("/");
+            //    name = name[name.length-1];
+            if (wbapp.devmode > 0 && src.indexOf('?') == -1) src += '?' + wbapp.devmode;
+            let name = src;
+            if (wbapp.loadedScripts.indexOf(src) !== -1) {
                 wbapp.console("Script loaded: " + name);
                 stop += 1;
                 if (stop >= count) {
@@ -1832,9 +1818,25 @@ wbapp.loadScripts = function(scripts = [], trigger = null, func = null) {
                     }
                     if (func !== null) return func(scripts);
                 }
+            } else {
+                let script = document.createElement('script');
+                script.src = src;
+                script.async = false;
+                script.onload = function() {
+                    wbapp.loadedScripts.push(name);
+                    wbapp.console("Script loaded: " + name);
+                    stop += 1;
+                    if (stop >= count) {
+                        if (trigger > '') {
+                            $(document).find("script#" + trigger + "-remove").remove();
+                            $(document).trigger(trigger);
+                        }
+                        if (func !== null) return func(scripts);
+                    }
+                }
+                document.head.appendChild(script);
             }
-            document.head.appendChild(script);
-        }
+        }, 5)
     });
 }
 
@@ -1842,37 +1844,39 @@ wbapp.loadStyles = async function(styles = [], trigger = null, func = null) {
     if (wbapp.loadedStyles == undefined) wbapp.loadedStyles = [];
     var i = 0;
     styles.forEach(function(src) {
-        if (wbapp.loadedStyles.indexOf(src) !== -1) {
-            i++;
-            if (i >= styles.length) {
-                if (func !== null) return func(styles);
-                if (trigger !== null) {
-                    wbapp.console("Trigger: " + trigger);
-                    $(document).find("script#" + trigger + "-remove").remove();
-                    $(document).trigger(trigger);
-                }
-            }
-        } else {
-            if (wbapp.devmode && src.indexOf('?') == -1) src += '?' + wbapp.devmode;
-            var style = document.createElement('link');
-            wbapp.loadedStyles.push(src);
-            style.href = src;
-            style.rel = "stylesheet";
-            style.type = "text/css";
-            style.async = true;
-            style.onload = function() {
+        setTimeout(function() {
+            if (wbapp.loadedStyles.indexOf(src) !== -1) {
                 i++;
                 if (i >= styles.length) {
                     if (func !== null) return func(styles);
                     if (trigger !== null) {
+                        wbapp.console("Trigger: " + trigger);
                         $(document).find("script#" + trigger + "-remove").remove();
                         $(document).trigger(trigger);
-                        wbapp.console("Trigger: " + trigger);
                     }
                 }
+            } else {
+                if (wbapp.devmode && src.indexOf('?') == -1) src += '?' + wbapp.devmode;
+                var style = document.createElement('link');
+                wbapp.loadedStyles.push(src);
+                style.href = src;
+                style.rel = "stylesheet";
+                style.type = "text/css";
+                style.async = true;
+                style.onload = function() {
+                    i++;
+                    if (i >= styles.length) {
+                        if (func !== null) return func(styles);
+                        if (trigger !== null) {
+                            $(document).find("script#" + trigger + "-remove").remove();
+                            $(document).trigger(trigger);
+                            wbapp.console("Trigger: " + trigger);
+                        }
+                    }
+                }
+                document.head.appendChild(style);
             }
-            document.head.appendChild(style);
-        }
+        }, 5)
     });
 }
 
