@@ -62,6 +62,9 @@ function wbInitEnviroment()
     $_ENV['intext_width'] = 320;
     $_ENV['intext_height'] = 240;
     $_ENV['page_size'] = 12;
+    $_ENV['max_post'] = ini_get('post_max_size');
+    $_ENV['max_file'] = ini_get('upload_max_filesize');
+
 
     $_ENV['data'] = new stdClass(); // for store some data
 
@@ -380,6 +383,13 @@ function wbMime($path) {
     $types = json_decode(file_get_contents(__DIR__.'/database/_mimetypes.json'),true);
     if (isset($types[$ext])) $mime = $types[$ext];
     return $mime;
+}
+
+function wbMimeExt($mime = "text/plain") {
+    $types = json_decode(file_get_contents(__DIR__.'/database/_mimetypes.json'),true);
+    $types = array_flip($types);
+    isset($types[$mime]) ? $ext = $types[$mime] : $ext = 'txt';
+    return $ext;
 }
 
 function wbMail(

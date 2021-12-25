@@ -293,8 +293,16 @@ wbapp.start = function() {
         });
 
         let attaches = $(form).find('input[name][type=file]');
+        let reader = new FileReader();
         $.each(attaches, function() {
-            data[this.name] = $(this).data('base64');
+            let file = $(this)[0].files[0];
+            if (file) {
+                let that = this;
+                reader.readAsDataURL(file);
+                reader.onload = function() {
+                    data[that.name] = reader.result; //base64encoded string
+                };
+            }
         });
 
         var check = $(form).find('input[name][type=checkbox]');
