@@ -22,6 +22,13 @@
     </div>
   </div>
 
+  <div class="row form-group">
+    <label class="col-sm-4 control-label" title="Sender email">DKIM path</label>
+    <div class="col-sm-8">
+        <input type="text" name="dkim" class="form-control" >
+    </div>
+  </div>
+
   <hr>
   <div class="row form-group">
     <label class="col-sm-4 control-label" title="Set mailer to use SMTP">Use SMTP</label>

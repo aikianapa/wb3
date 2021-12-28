@@ -463,6 +463,7 @@ function wbMail(
         } else {
             $mail->isMail();
         }
+
         $mail->Timeout  =   20;
         $mail->setFrom($from[0], $from[1]);
         $mail->addReplyTo($from[0], $from[1]);
@@ -496,6 +497,15 @@ function wbMail(
                 }
             }
         }
+
+        if ($app->vars('_sett.modules.phpmailer.dkim') > '') {
+            $mail->DKIM_domain = $app->route->domain;
+            $mail->DKIM_selector = 'phpmailer';
+            $mail->DKIM_private = $app->vars('_sett.modules.phpmailer.dkim');
+            $mail->DKIM_passphrase = '';
+            $mail->DKIM_identity = $mail->From;
+        }
+
         //send the message, check for errors
             $res = $mail->send();
             $mail->SmtpClose();

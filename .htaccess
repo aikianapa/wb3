@@ -17,6 +17,7 @@ RewriteRule ^(.*)\.scss$ index.php
 RewriteCond %{HTTP_HOST} ^www\.(.*)$
 RewriteRule ^(.*)$ http://%1/$1 [L,R=301]
 RewriteRule ^database(.*)$ index.php [R=404,L]
+RewriteRule ^.git(.*)$ index.php [R=404,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
