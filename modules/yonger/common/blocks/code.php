@@ -6,7 +6,7 @@
     <div>
         <wb-module wb="module=yonger&mode=edit&block=common.inc" />
     </div>
-    <textarea name="code" class="wd-100p" rows="30"></textarea>
+    <meta wb="module=codemirror" name="code">
     <wb-lang>
     [ru]
     header = "Вставка кода в head"

@@ -571,6 +571,9 @@ class wbDom extends DomQuery
                         } else {
                             $inp->inner(htmlentities($value));
                         }
+                        $inp->params('oconv') > '' ? $inp->attr('data-oconv', $inp->params('oconv')) : null;
+                        $inp->params('iconv') > '' ? $inp->attr('data-iconv', $inp->params('iconv')) : null;
+
                     } elseif ($inp->tagName == "select") {
                         if ((array)$value === $value) {
                             foreach ($value as $val) {

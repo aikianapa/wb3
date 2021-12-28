@@ -38,36 +38,6 @@ wbapp.start = function() {
     wbapp.session();
     wbapp.settings();
 
-    setTimeout(function() {
-        wbapp.loadScripts([
-            //                , `/engine/js/jquery-migrate.min.js`
-            `/engine/js/jquery-ui.min.js` // для modal draggable - нужно подумать куда перенести
-            , `/engine/js/jquery.tap.js`, `/engine/js/ractive.js`, `/engine/js/topbar.min.js`, `/engine/js/lazyload.js`
-        ], "wbapp-go", function() {
-            Ractive.DEBUG = false;
-            wbapp.eventsInit();
-            wbapp.wbappScripts();
-            wbapp.tplInit();
-            wbapp.ajaxAuto();
-            wbapp.lazyload();
-            wbapp.modalsInit();
-            wbapp.fileinpInit();
-            //$(document).scrollTop(0);
-            $(document).on("wb-ajax-done", function() {
-                wbapp.console("Trigger: wb-ajax-done");
-                if (wbapp !== undefined) {
-                    wbapp.tplInit();
-                    wbapp.wbappScripts();
-                    //wbapp.pluginsInit();
-                    wbapp.lazyload();
-                }
-                if ($(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").length) $(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").modal("show");
-                if ($.fn.tooltip) $('[data-toggle="tooltip"]').tooltip();
-            });
-
-        });
-    }, wbapp.delay);
-
     $.fn.disableSelection = function() {
         return this
             .attr('unselectable', 'on')
@@ -249,36 +219,43 @@ wbapp.start = function() {
         var branch = $(form).serializeArray();
 
         $(branch).each(function(i, val) {
-            data[val["name"]] = val["value"];
-            if ($(form).find("textarea[type=json][name='" + val["name"] + "']").length) {
-                let _val = $(form).find("textarea[type=json][name='" + val["name"] + "']").val();
-                let _text = $(form).find("textarea[type=json][name='" + val["name"] + "']").text();
+            let value = val["value"];
+            let name = val["name"];
+            data[name] = value;
+            let $textarea = $(form).find("textarea[name='" + name + "']");
+            if ($textarea.length && $textarea.is("[type=json]")) {
+                let _val = $textarea.val();
+                let _text = $textarea.text();
 
-                _val == 'null' ? data[val["name"]] = _text : data[val["name"]] = _val;
+                _val == 'null' ? data[name] = _text : data[name] = _val;
 
-                if (in_array(data[val["name"]], ['null', '', '{}', '[]'])) {
-                    data[val["name"]] = '';
+                if (in_array(data[name], ['null', '', '{}', '[]'])) {
+                    data[name] = '';
                 } else {
                     try {
-                        data[val["name"]] = json_decode(data[val["name"]]);
+                        data[name] = json_decode(data[name]);
                     } catch (error) {
                         wbapp.console('Unknown error!');
                     }
 
                 }
-            } else if ($(form).find("textarea[name='" + val["name"] + "']").length) {
+            } else if ($textarea.length) {
                 if ($(form).parents(".treeData").length) {
-                    data[val["name"]] = htmlentities(data[val["name"]]);
-                    data[val["name"]] = str_replace('&quot;', '/"', data[val["name"]]);
-                    data[val["name"]] = str_replace('&amp;quot;', '"', data[val["name"]]);
+                    data[name] = htmlentities(data[name]);
+                    data[name] = str_replace('&quot;', '/"', data[name]);
+                    data[name] = str_replace('&amp;quot;', '"', data[name]);
                 } else {
-                    let value = $(form).find("textarea[name='" + val["name"] + "']").val();
-                    let text = $(form).find("textarea[name='" + val["name"] + "']").text();
+                    let value = $textarea.val();
+                    let text = $textarea.text();
                     if (value == 'null') {
-                        data[val["name"]] = text;
-                    } else { data[val["name"]] = value; }
+                        data[name] = text;
+                    } else { data[name] = value; }
                 }
-
+            }
+            if ($textarea.length && $textarea.data('iconv')) {
+                value = data[name];
+                eval(`value = ${$textarea.data('iconv')}(value)`);
+                data[name] = value;
             }
         });
 
@@ -348,6 +325,36 @@ wbapp.start = function() {
             $(this).val(data).trigger("change");
         }
     }
+
+    setTimeout(function() {
+        wbapp.loadScripts([
+            //                , `/engine/js/jquery-migrate.min.js`
+            `/engine/js/jquery-ui.min.js` // для modal draggable - нужно подумать куда перенести
+            , `/engine/js/jquery.tap.js`, `/engine/js/ractive.js`, `/engine/js/topbar.min.js`, `/engine/js/lazyload.js`
+        ], "wbapp-go", function() {
+            Ractive.DEBUG = false;
+            wbapp.eventsInit();
+            wbapp.wbappScripts();
+            wbapp.tplInit();
+            wbapp.ajaxAuto();
+            wbapp.lazyload();
+            wbapp.modalsInit();
+            wbapp.fileinpInit();
+            //$(document).scrollTop(0);
+            $(document).on("wb-ajax-done", function() {
+                wbapp.console("Trigger: wb-ajax-done");
+                if (wbapp !== undefined) {
+                    wbapp.tplInit();
+                    wbapp.wbappScripts();
+                    //wbapp.pluginsInit();
+                    wbapp.lazyload();
+                }
+                if ($(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").length) $(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").modal("show");
+                if ($.fn.tooltip) $('[data-toggle="tooltip"]').tooltip();
+            });
+
+        });
+    }, wbapp.delay);
 
 }
 

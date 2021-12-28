@@ -37,7 +37,7 @@ $(document).on("codemirror-js-addons", function() {
             $(that).attr("data-mode") == undefined ? null : params.mode = $(that).attr("data-mode");
             that.wait = false;
             //params.oconv == 'base64_encode' ? value = base64_decode(value) : null;
-            console.log(params);
+            if ($(that).data('iconv')) eval(`value = ${$(that).data('iconv')}(value)`);
             wbapp.loadStyles(['/engine/modules/codemirror/dist/theme/' + params.theme + '.css']);
             wbapp.loadScripts(['/engine/modules/codemirror/dist/mode/' + params.mode + '/' + params.mode + '.js']);
             let options = {
@@ -64,6 +64,7 @@ $(document).on("codemirror-js-addons", function() {
             $(that).trigger('change');
             editor.on("change", function() {
                 let value = editor.getValue();
+                if ($(that).data('oconv')) eval(`value = ${$(that).data('oconv')}(value)`);
                 //params.oconv == 'base64_encode' ? value = base64_encode(value) : null;
                 if (that.wait == false) {
                     that.wait = true;
