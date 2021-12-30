@@ -1,5 +1,7 @@
 <?php
-    function customRoute($route = []) {
+
+    function customRoute($route = [])
+    {
         $app = &$_ENV['app'];
 
         if ($app->vars('_route.controller') == 'form' && $app->vars('_route.mode') == 'show') {
@@ -15,8 +17,9 @@
                 $uri = $path.'/'.$name;
             };
             $pages = $app->itemList('pages', ['filter'=>[
-            '_site'=>$app->vars('_sett.site'),
-            '_login'=>$app->vars('_sett.login'),
+            '_site' => [
+                '$in'=> [null,'{{_sett.site}}']
+            ],
             'name'=>$name,
             'active'=>'on',
             'path' => $path
@@ -35,16 +38,18 @@
         }
     }
 
-    function siteMenu($path = '') {
+    function yongerSiteMenu($path = '')
+    {
         $app = &$_ENV['app'];
-        $list = $app->itemList('pages',['filter'=>[
+        $list = $app->itemList('pages', ['filter'=>[
             'active'=>'on'
             ,'path' => $path
-            ,'_site'=>$app->vars('_sett.site')
-            ,'_login'=>$app->vars('_sett.login')
+            ,'_site' => [
+                '$in'=> [null,'{{_sett.site}}']
+            ]
         ]]);
         $list = $list['list'];
-        foreach($list as &$item) {
+        foreach ($list as &$item) {
             $path = $item['path'];
             $name = $item['name'];
             $path.'/'.$name == '/' ? $path = '/home' : $path .= '/'.$name;
@@ -55,13 +60,34 @@
                 $self = $item;
                 $self['divider'] = 'divider-after';
                 unset($self['children']);
-                array_unshift($item['children'],$self);
+                array_unshift($item['children'], $self);
             }
         }
         return $list;
     }
 
-    function _beforeItemSave(&$item) {
+    function yongerIsPage($link)
+    {
+        $app = &$_ENV['app'];
+        if (substr($link,-1) == '/') $link = substr($link,0,-1);
+        if (!$app->vars('_env.yonger.pages')) {
+            $list = $app->itemList('pages', ['filter'=>[
+            'active'=>'on'
+            ,'_site' => [
+                '$in'=> [null,'{{_sett.site}}']
+            ]
+            , 'id'=> [
+                '$nin'=>['_header','_footer']
+            ]
+            ]]);
+            $list = array_column($list['list'],'url');
+            $app->vars('_env.yonger.pages',$list);
+        } 
+        return in_array($link, $app->vars('_env.yonger.pages'));
+    }
+
+    function _beforeItemSave(&$item)
+    {
         $app = &$_ENV['app'];
         isset($item['path']) ? null : $item['path'] = '';
         isset($item['name']) ? null : $item['name'] = '';
@@ -71,4 +97,3 @@
         $item['url'] == '/home' ? $item['url'] = '/' : null;
         return $item;
     }
-?>

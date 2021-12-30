@@ -14,7 +14,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarScroll">
 
-                <ul class="navbar-nav mr-auto my-2 my-lg-0 navbar-nav-scroll" wb-tree="call=siteMenu">
+                <ul class="navbar-nav mr-auto my-2 my-lg-0 navbar-nav-scroll" wb-tree="call=yongerSiteMenu">
                     <li class="nav-item level-{{_lvl}} {{divider}}">
                         <a class="nav-link" href="{{path}}">{{header.{{_lang}}}}</a>
                     </li>

@@ -190,6 +190,13 @@ class ctrlApi
         $post = (object)$app->vars('_req');
         $fld = $app->route->type;
         $url = '/';
+
+        // standard api username
+
+        isset($_SERVER['PHP_AUTH_USER']) ? $post->login = $_SERVER['PHP_AUTH_USER'] : null;
+        isset($_SERVER['PHP_AUTH_PW']) ? $post->password = $_SERVER['PHP_AUTH_PW'] : null;
+        !isset($post->login) && isset($post->username) ? $post->login = $post->username : null;
+
         if ($fld == 'logout') {
             if (@isset($_SESSION['user']['userole']['url_login']) && $_SESSION['user']['userole']['url_login'] > '') {
                 $url = $_SESSION['user']['userole']['url_login'];
