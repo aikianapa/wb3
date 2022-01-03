@@ -10,14 +10,14 @@
                 <nav id="{{_form}}ListRoles" class="nav flex-column nav-chat mg-b-20">
                     <span class="nav-link">
                         <a href="#"
-                            data-ajax="{'url':'/ajax/form/{{_form}}/list/','size':'{{_sett.page_size}}','sort':'date:d','bind':'cms.list.{{_form}}','target':'#{{_form}}List','render':'client'}" auto >
+                            data-ajax="{'url':'/ajax/form/{{_form}}/list/','bind':'cms.list.{{_form}}','filter_remove': 'type' ,'render':'client','sort':'date:d','size':'{{_sett.page_size}}'}">
                             {{_lang.all}}
                         </a>
                     </span>
                     <wb-foreach wb-json="[{'id':'news'},{'id':'article'}]">
                         <span class="nav-link">
                             <a href="#"
-                                data-ajax="{'url':'/ajax/form/{{_form}}/list/','sort':'date:d','size':'{{_sett.page_size}}','filter':{ 'type': '{{id}}' },'bind':'cms.list.{{_form}}','target':'#{{_form}}List','render':'client'}">
+                                data-ajax="{'url':'/ajax/form/{{_form}}/list/','size':'{{_sett.page_size}}','sort':'date:d','filter':{ 'type': '{{id}}' },'bind':'cms.list.{{_form}}','target':'#{{_form}}List','render':'client'}">
                                 {{ _lang.{{id}} }}
                             </a>
                         </span>
@@ -70,7 +70,7 @@
 
         <div class="list-group m-2" id="{{_form}}List">
             <wb-foreach
-                wb="{'ajax':'/ajax/form/{{_form}}/list/','bind':'cms.list.{{_form}}','render':'client','sort':'date:d','size':'{{_sett.page_size}}'}">
+                wb="{'url':'/ajax/form/{{_form}}/list/','bind':'cms.list.{{_form}}','render':'client','sort':'date:d','size':'{{_sett.page_size}}'}">
                 <div class="list-group-item d-flex align-items-center">
                     <div data-ajax="{'url':'/cms/ajax/form/news/edit/{{_id}}','html':'.news-edit-modal'}" class="w-100">
                         <a href="javascript:" class="tx-13 tx-inverse tx-semibold mg-b-0">{{date}}</a>
