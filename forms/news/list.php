@@ -10,14 +10,14 @@
                 <nav id="{{_form}}ListRoles" class="nav flex-column nav-chat mg-b-20">
                     <span class="nav-link">
                         <a href="#"
-                            data-ajax="{'url':'/ajax/form/{{_form}}/list/','size':'10','bind':'cms.list.{{_form}}','target':'#{{_form}}List','render':'client'}" >
+                            data-ajax="{'url':'/ajax/form/{{_form}}/list/','size':'{{_sett.page_size}}','sort':'date:d','bind':'cms.list.{{_form}}','target':'#{{_form}}List','render':'client'}" >
                             {{_lang.all}}
                         </a>
                     </span>
                     <wb-foreach wb-json="[{'id':'news'},{'id':'article'}]">
                         <span class="nav-link">
                             <a href="#"
-                                data-ajax="{'url':'/ajax/form/{{_form}}/list/','size':'10','filter':{ 'type': '{{id}}' },'bind':'cms.list.{{_form}}','target':'#{{_form}}List','render':'client'}">
+                                data-ajax="{'url':'/ajax/form/{{_form}}/list/','sort':'date:d','size':'{{_sett.page_size}}','filter':{ 'type': '{{id}}' },'bind':'cms.list.{{_form}}','target':'#{{_form}}List','render':'client'}">
                                 {{ _lang.{{id}} }}
                             </a>
                         </span>
