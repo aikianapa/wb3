@@ -10,7 +10,7 @@
                 <nav id="{{_form}}ListRoles" class="nav flex-column nav-chat mg-b-20">
                     <span class="nav-link">
                         <a href="#"
-                            data-ajax="{'url':'/ajax/form/{{_form}}/list/','size':'{{_sett.page_size}}','sort':'date:d','bind':'cms.list.{{_form}}','target':'#{{_form}}List','render':'client'}" >
+                            data-ajax="{'url':'/ajax/form/{{_form}}/list/','size':'{{_sett.page_size}}','sort':'date:d','bind':'cms.list.{{_form}}','target':'#{{_form}}List','render':'client'}" auto >
                             {{_lang.all}}
                         </a>
                     </span>
