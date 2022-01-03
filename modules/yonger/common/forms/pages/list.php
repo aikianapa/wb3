@@ -30,7 +30,6 @@
         <ol id="pagesList" class="dd-list">
                         <wb-foreach wb="{'from':'list',
                             'render':'server',
-                            'bind':'cms.list.{{_form}}',
                             'sort':'url',
                             'size':'{{_sett.page_size}}',
                             'filter': {'_site' : {'$in': [null,'{{_sett.site}}']}, 'id': {'$nin':['_header','_footer']}}

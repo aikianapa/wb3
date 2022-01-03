@@ -55,6 +55,7 @@ function listNested($path = '') {
     if (!$count) return '';
 
     $out = $this->tpl->clone();
+    $path > '' ? $out->removeAttr('id') : null;
     $out->fetch(['list'=>$level]);
 
     foreach($level as $item) {
