@@ -52,7 +52,7 @@ class tagPagination
             $flag <= 1 ? $flag = 0 : $flag *= 10;
             $dom->params('filter') ? null : $dom->params->filter = [];
             $pagination = array( 'id'=>$tplId, 'size'=>$dom->params->size, 'count'=>$dom->params->count, 'filter'=>$dom->params->filter, 'pages'=>array() );
-            $dom->app('_route.params.form') =='' ? $form = $tplId : $form = $_ENV['route']['params']['form'];
+            $dom->app->vars('_route.params.form') =='' ? $form = $tplId : $form = $_ENV['route']['params']['form'];
             $pagarr = $this->_tagPaginationArr($page, $pages);
 
             foreach ($pagarr as $i => $p) {
