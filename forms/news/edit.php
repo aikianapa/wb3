@@ -18,7 +18,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="ri-calendar-2-line"></i></span>
                             </div>
-                            <input type="text" wb="module=datetimepicker&type=datetimepicker" name="date" class="form-control" placeholder="Дата">
+                            <input type="datetimepicker" wb="module=datetimepicker&type=datetimepicker" name="date" class="form-control" placeholder="Дата">
                         </div>
 
                         <div class="col-sm-4">

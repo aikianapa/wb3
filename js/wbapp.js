@@ -1604,16 +1604,14 @@ wbapp.renderClient = function(params, data = {}) {
         })
         ///wbapp.storage(params.bind, data);
     wbapp.template[tid].params = params;
-    /*
     var pagination = $(tid).find(".pagination");
     if (pagination) {
         let page = 1;
         $(pagination).data("tpl", tid);
-        if (params.page) page = params.page;
+        params.page ? page = params.page : page = 1;
         $(pagination).find(".page-item").removeClass("active");
         $(pagination).find(`[data-page="${page}"]`).parent(".page-item").addClass("active");
     }
-*/
 
     if (newbind) {
         wbapp.bind[params.bind][tid].set(data);

@@ -49,22 +49,10 @@ class tagPagination
             //$pag->wrapInner( '<div></div>' );
             $step = 1;
             $flag = floor($page/10);
-            if ($flag <= 1) {
-                $flag = 0;
-            } else {
-                $flag *= 10;
-            }
-            //$inner = '';
-            if (!$dom->params('filter')) {
-                $dom->params->filter = [];
-            }
+            $flag <= 1 ? $flag = 0 : $flag *= 10;
+            $dom->params('filter') ? null : $dom->params->filter = [];
             $pagination = array( 'id'=>$tplId, 'size'=>$dom->params->size, 'count'=>$dom->params->count, 'filter'=>$dom->params->filter, 'pages'=>array() );
-            if (!isset($_ENV['route']['params']['form']) or $_ENV['route']['params']['form'] == '') {
-                $form = $tplId;
-            } else {
-                $form = $_ENV['route']['params']['form'];
-            }
-
+            $dom->app('_route.params.form') =='' ? $form = $tplId : $form = $_ENV['route']['params']['form'];
             $pagarr = $this->_tagPaginationArr($page, $pages);
 
             foreach ($pagarr as $i => $p) {
@@ -73,7 +61,6 @@ class tagPagination
                     $pn = intval(($pagarr[$i+1] + $pagarr[$i-1]) /2);
                 }
                 if ($p == '...' and $pagarr[$i-1] >= $page) {
-                    //$pn = intval($page+( $pages-$page )/2);
                     $pn = intval(($pagarr[$i+1] + $pagarr[$i-1]) /2);
                 }
 
