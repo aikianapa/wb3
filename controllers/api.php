@@ -165,7 +165,9 @@ class ctrlApi
             $json['list'] = (object)$json['list'];
             $options = (object)$options;
             if (!isset($options->size)) {
-                return $app->jsonEncode(array_values((array)$json['list']));
+                //return $app->jsonEncode(array_values((array)$json['list']));
+                return $app->jsonEncode($json['list']);
+
             } else {
                 $pages = ceil($json['count'] / $options->size);
                 $pagination = wbPagination($json['page'], $pages);
