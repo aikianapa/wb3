@@ -115,7 +115,8 @@ class mongodbDrv
         $filter = [];
         $params = [];
         if (isset($options["filter"])) $filter = $options["filter"];
-        if (isset($options["page"])) {
+        if (isset($options["size"])) {
+            isset($options['page']) ? null : $options['page'] = 1;
             $page = intval($options["page"]);
             $size = intval($options["size"]);
             $params["limit"] = intval($size);
@@ -168,9 +169,10 @@ class mongodbDrv
             $this->toArray($doc);
             if ((object)$doc['_id'] === $doc['_id']) $doc['_id'] = (array)$doc['_id'];
             if ((array)$doc['_id'] === $doc['_id']) $doc['_id'] = $doc['_id']['oid'];
-            $doc["_form"] = $doc["_table"] = $form;
+            $doc_id = $doc['_id'];
             $doc = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $doc);
-            $doc == null ? null : $list[$doc['_id']] = $doc;
+            count($params["projection"]) ? $doc = array_intersect_key($doc, $params["projection"]) : null;
+            $doc == null ? null : $list[$doc_id] = $doc;
         }
         $count = count($list);
         if (!isset($size)) $size = $count;

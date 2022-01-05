@@ -140,10 +140,7 @@ class jsonDrv
     public function itemList($form = 'pages', $options = [])
     {
         if (isset($options['size'])) {
-            if (!isset($options['page'])) {
-                $options['page'] = 1;
-            }
-
+            isset($options['page']) ? null : $options['page'] = 1;
             $page = intval($options['page']);
             $size = intval($options['size']);
             $params['limit'] = $size;
@@ -188,7 +185,7 @@ class jsonDrv
                 $file = $this->tableFile($form);
                 if (!is_file($file)) {
                     wbError('func', __FUNCTION__, 1001, func_get_args());
-                    return array();
+                    return [];
                 }
                 $json = new Jsonq($file);
             } elseif ($match[1] == "field") {
@@ -204,7 +201,7 @@ class jsonDrv
                 $file = $this->tableFile($form);
                 if (!is_file($file)) {
                     wbError('func', __FUNCTION__, 1001, $form);
-                    return array();
+                    return [];
                 }
                 try {
                     $json = new Jsonq($file);
@@ -300,35 +297,43 @@ class jsonDrv
             foreach ($params['sort'] as $fld => $order) {
                 $list->sortBy($fld, $order);
             }
-
+            $list = $list->get();
+            $list = array_column($list, null, '_id');
+            /*
             $iter = new ArrayIterator($list->get());
             $list = [];
             foreach ($iter as $item) {
                 $list[$item['_id']] = $item;
             }
+            */
         }
+
+        if (isset($options->return)) {
+            $return = wbAttrToArray($options->return);
+            $return = array_fill_keys($return, true);
+            array_walk($list,function(&$item,$key,$return){
+                $item = array_intersect_key($item,$return);
+            },$return);
+        }
+
+
         if (isset($options->limit) && count($list)) {
             $list = array_chunk($list, $options->limit);
             $list = $list[0];
         }
 
         $count = count($list);
-        if (!isset($size)) {
-            $size = $count;
-        }
-
+        isset($size) ? null : $size = $count;
         if ($size > 0 && $size < $count) {
             $chunk = array_chunk($list, $size);
-            if (isset($chunk[$page - 1])) {
-                $chunk = $chunk[$page - 1];
-            } else {
-                $chunk = [];
-            }
-            $list = [];
+            $chunk = isset($chunk[$page - 1]) ? $chunk[$page - 1] : [];
+            $list = array_column($chunk, null, '_id');
+/*
             foreach ($chunk as $item) {
 //              $item['_id'] = $item['id'];
                 $list[$item['_id']] = $item;
             }
+*/
             // для api нужно сделать отдельную обработку опции size, для выдачи разбитого массива полностью
         }
         return ["list" => $list, "count" => $count, "page" => $page, "size" => $size];
@@ -349,26 +354,16 @@ class jsonDrv
             $flag = false;
             foreach ($cache as $key => $item) {
                 $item['_table'] = $form;
-                if (isset($data[$key])) {
-                    $data[$key] = array_merge($data[$key], $item);
-                } else {
-                    $data[$key] = $item;
-                }
+                $data[$key] = (isset($data[$key])) ? array_merge($data[$key], $item) : $item;
                 $flag = true;
                 if (isset($item['_removed']) and true == $item['_removed']) {
-//                    if (wbRole('admin')) {
                     unset($data[$key]);
-//                    }
                 }
             }
             $data = wbJsonEncode($data);
             flock($fp, LOCK_UN);
             fclose($fp);
-            if ($flag) {
-                $res = file_put_contents($file, $data, LOCK_EX);
-            } else {
-                $res = null;
-            }
+            $res = ($flag) ? file_put_contents($file, $data, LOCK_EX) : null;
             unset($_ENV['cache'][$cid]);
         }
         return $res;

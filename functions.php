@@ -1766,31 +1766,34 @@ function wbItemFilter($item, $options, $field = null)
                     }
                     switch($cond) {
                         case '$ne':
-                            if ($field == $val) $result = false;
+                            $field == $val ? $result : $result = false;
                             break;
                         case '$not':
-                            if ($field === $val) $result = false;
+                            $field === $val ? $result : $result = false;
                             break;
                         case '$like':
-                            if (!preg_match('/'.$val.'/ui', $field)) $result = false;
+                            preg_match('/'.$val.'/ui', $field) ? $result : $result = false;
                             break;
                         case '$gte':
-                            if ($field >= $val) {$result;} else $result = false;
+                            $field >= $val ? $result : $result = false;
                             break;
                         case '$lte':
-							if ($field <= $val) {$result;} else $result = false;
+							$field <= $val ? $result : $result = false;
                             break;
                         case '$gt':
-							if ($field > $val) {$result;} else $result = false;
+							$field > $val ? $result : $result = false;
                             break;
                         case '$lt':
-							if ($field < $val) {$result;} else $result = false;
+							$field < $val ? $result : $result = false;
                             break;
                         case '$nin':
-                            if (!in_array($field,$val)) {$result;} else {$result = false;}
+                            !in_array($field,$val) ? $result : $result = false;
                             break;
                         case '$in':
-                            if (in_array($field,$val)) {$result;} else {$result = false;}
+                            in_array($field,$val) ? $result : $result = false;
+                            break;
+                        case '$regex':
+                            preg_match('/'.$val.'/', $field) ? $result : $result = false;
                             break;
                     }
 
