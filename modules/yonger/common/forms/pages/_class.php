@@ -10,6 +10,7 @@ function beforeItemShow(&$item) {
 }
 
 function afterItemRead(&$item) {
+    if (!$item) return;
     isset($item['blocks']) ? null : $item['blocks'] = [];
     isset($item['container']) ? null : $item['container'] = '';
     isset($item['id']) ? null : $item['id'] = '';
@@ -39,6 +40,7 @@ function list() {
     $this->tpl = $out->find('#pagesList');
     $this->list = $this->app->itemList('pages');
     $this->list = $this->list['list'];
+    $app->vars('_post',[]); // фикса для правильной отработки обновлений
     $res = $this->listNested();
     $out->find('#pagesList')->replaceWith($res);
     echo $out->fetch();
@@ -53,7 +55,6 @@ function listNested($path = '') {
     $level = $this->app->json($this->list)->where('path','=',$path)->get();
     $count = count($level);
     if (!$count) return '';
-
     $out = $this->tpl->clone();
     $path > '' ? $out->removeAttr('id') : null;
     $out->fetch(['list'=>$level]);

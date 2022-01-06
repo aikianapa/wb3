@@ -25,11 +25,11 @@
                 <wb-foreach wb="bind=yonger.page.blocks&render=client">
                     <li class="dd-item row" data-id="{{id}}" data-form="{{form}}" data-name="{{name}}">
                         <span class="dd-handle"><img src="/module/myicons/20/000000/dots-2.svg" /></span>
-                        <span class="dd-text col-sm-6 ellipsis">
-                            <b>{{header}}&nbsp;</b>
-                            <small class="tx-gray lh--5"><br>{{name}}</small>
+                        <span class="dd-text lh-10 col ellipsis">
+                            <div class="lh-5">{{header}}</div>
+                            <div class="lh-5 tx-gray tx-normal tx-11">{{name}}</div>
                         </span>
-                        <span class="dd-info col-sm-6">
+                        <span class="dd-info col-auto">
                             <span class="row">
                                 <div method="post" class="col-12 text-right m-0 nobr">
                                     {{#if active=='on'}}
