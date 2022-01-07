@@ -178,22 +178,6 @@ function wbInitSettings(&$app)
         
 }
 
-function wbGetToken() {
-	$app = &$_ENV['app'];
-	$apikey = $app->vars('_sett.api_key');
-    $role = $app->vars('_sess.user.role');
-    $user = $app->vars('_sess.user.id');
-    !$user ? $user = microtime() : null;
-    !$role ? $role = microtime() : null;
-	$app->vars('_sett.api_allow') ? $allow = explode(',',$app->vars('_sett.api_allow')) : $allow = [];
-	$app->vars('_sett.api_disallow') ? $disallow = explode(',',$app->vars('_sett.api_disallow')) : $disallow = [];
-	$flag = true;
-	if (count($allow) && !in_array($role,$allow)) $flag = false;
-    if (count($disallow) && in_array($role,$disallow)) $flag = false;
-	if (!$flag) $role = microtime();
-	return md5($app->route->host.session_id().$apikey.$role.$user);
-}
-
 function wbCheckAllow($allow = [],$disallow = [], $role = null) {
     $app = &$_ENV['app'];
     $res = true;
@@ -238,6 +222,25 @@ function wbCheckAllow($allow = [],$disallow = [], $role = null) {
         return true;
     }
 
+
+function wbGetToken()
+{
+    $app = &$_ENV['app'];
+    $apikey = $app->vars('_sett.api_key');
+    $role = $app->vars('_sess.user.role');
+    $user = $app->vars('_sess.user.id');
+    !$user ? $user = microtime() : null;
+    !$role ? $role = microtime() : null;
+    $app->vars('_sett.api_allow') ? $allow = explode(',', $app->vars('_sett.api_allow')) : $allow = [];
+    $app->vars('_sett.api_disallow') ? $disallow = explode(',', $app->vars('_sett.api_disallow')) : $disallow = [];
+    $flag = true;
+    (count($allow) && !in_array($role, $allow)) ? $flag = false : null;
+    (count($disallow) && in_array($role, $disallow)) ? $flag = false : null;
+    (!$flag) ? $role = microtime() : null;
+    return password_hash($app->route->host.session_id().$apikey.$role.$user,null);
+}
+
+
 function wbCheckToken($token = null) {
     $app = &$_ENV['app'];
     $form = null;
@@ -257,9 +260,7 @@ function wbCheckToken($token = null) {
     $apikey = $app->vars('_sett.api_key');
     $app->vars('_sess.user.id') == '' ? $user = microtime() : $user = $app->vars('_sess.user.id');
     $app->vars('_sess.user.role') == '' ? $role = microtime() : $role = $app->vars('_sess.user.role');
-    $valid = md5($app->route->host.session_id().$apikey.$role.$user);
-    $token == null ? $token = $app->vars('_req.__token') : null;
-    $token == $valid ? $res = true : $res = false;
+    $res = password_verify($app->route->host.session_id().$apikey.$role.$user,$app->vars('_req.__token'));
     return $res;
 }
 
@@ -1766,10 +1767,10 @@ function wbItemFilter($item, $options, $field = null)
                     }
                     switch($cond) {
                         case '$ne':
-                            $field == $val ? $result : $result = false;
+                            $field == $val ? $result = false : $result;
                             break;
                         case '$not':
-                            $field === $val ? $result : $result = false;
+                            $field === $val ? $result = false : $result;
                             break;
                         case '$like':
                             preg_match('/'.$val.'/ui', $field) ? $result : $result = false;
