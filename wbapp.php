@@ -812,6 +812,7 @@ class wbApp
         $this->vars("_env.user", $arr);
         setcookie("user", $user->id, time()+3600);
         $this->user = $user;
+        $this->token = $this->getToken();
         return $user;
     }
 

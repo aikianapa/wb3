@@ -31,7 +31,6 @@
                         <wb-foreach wb="{'from':'list',
                             'render':'server',
                             'sort':'url',
-                            'size':'{{_sett.page_size}}',
                             'filter': {'_site' : {'$in': [null,'{{_sett.site}}']}, 'id': {'$nin':['_header','_footer']}}
                 }">
                 <li class="dd-item row" data-item="{{id}}" data-name="{{name}}" data-path="{{url}}" >

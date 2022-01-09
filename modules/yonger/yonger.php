@@ -6,7 +6,7 @@ class modYonger
 {
     public function __construct($obj)
     {
-        if (get_class($obj) == 'wbDom') {
+        if (wbIsDom($obj)) {
             $app = &$obj->app;
             $mode = $obj->params->mode;
             $this->dom = &$obj;
@@ -15,6 +15,8 @@ class modYonger
             $mode = $app->route->mode;
         }
         
+        $app->yonger = &$this;
+
         if ($app->vars('_sett.modules.yonger') == null) {
             $app->vars('_sett.modules.yonger', ['allow' => 'admin', 'standalone' => 'on']);
             $sett = $app->itemRead('_settings', 'settings');
@@ -73,6 +75,8 @@ class modYonger
                 return $master;
             }
         } else {
+            $dir = $app->vars('_env.path_engine').'/modules/yonpageselect';
+            is_file($dir) or is_dir($dir) ? null : symlink(__DIR__ .'/common/modules/yonpageselect', $dir);
             $dir = $app->vars('_env.path_app').'/forms/pages';
             is_file($dir) OR is_dir($dir) ? null : symlink(__DIR__ .'/common/forms/pages' , $dir );
             $dir = $app->vars('_env.path_app').'/forms/news';

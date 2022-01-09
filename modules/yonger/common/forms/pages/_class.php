@@ -40,7 +40,7 @@ function list() {
     $this->tpl = $out->find('#pagesList');
     $this->list = $this->app->itemList('pages');
     $this->list = $this->list['list'];
-    $app->vars('_post',[]); // фикса для правильной отработки обновлений
+    //$app->vars('_post',[]); // фикса для правильной отработки обновлений
     $res = $this->listNested();
     $out->find('#pagesList')->replaceWith($res);
     echo $out->fetch();

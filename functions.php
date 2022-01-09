@@ -78,6 +78,13 @@ function wbInitEnviroment()
     $_ENV['stop_func'] = explode(",", "exec,system,passthru,readfile,shell_exec,escapeshellarg,escapeshellcmd,proc_close,proc_open,ini_alter,dl,popen,parse_ini_file,show_source,curl_exec,file_get_contents,file_put_contents,file,eval,chmod,chown");
 }
 
+function wbIsApp(&$obj) {
+    return strtolower(get_class($obj)) == 'wbapp' ? true : false;
+}
+
+function wbIsDom(&$obj) {
+    return strtolower(get_class($obj)) == 'wbdom' ? true : false;
+}
 
 function wbInitSettings(&$app)
 {
@@ -246,7 +253,6 @@ function wbCheckToken($token = null) {
     $form = null;
     $app->vars('_route.form') > '' ? $form = $app->vars('_route.form') : null;
     $app->vars('_route.table') > '' ? $form = $app->vars('_route.table') : null;
-
     $test = debug_backtrace(2);
     $test = array_column($test,'function');
 
@@ -260,7 +266,8 @@ function wbCheckToken($token = null) {
     $apikey = $app->vars('_sett.api_key');
     $app->vars('_sess.user.id') == '' ? $user = microtime() : $user = $app->vars('_sess.user.id');
     $app->vars('_sess.user.role') == '' ? $role = microtime() : $role = $app->vars('_sess.user.role');
-    $res = password_verify($app->route->host.session_id().$apikey.$role.$user,$app->vars('_req.__token'));
+    $token = ($token == null) ? $app->vars('_req.__token') : $token;
+    $res = password_verify($app->route->host.session_id().$apikey.$role.$user,$token);
     return $res;
 }
 
