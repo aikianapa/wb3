@@ -15,12 +15,11 @@ function afterItemRead(&$item) {
     isset($item['container']) ? null : $item['container'] = '';
     isset($item['id']) ? null : $item['id'] = '';
     if (in_array($item['id'],['_header','_footer'])) return;
-    isset($item['name']) ? null : $item['name'] = '';
+    isset($item['name']) ? null : $item['name'] = $item['id'];
     isset($item['path']) ? null : $item['path'] = '';
-    if ($item['name'] == '') $item['name'] = $item['id'];
     if ($item['path'] == '/') $item['path'] = '';
     if (isset($item['blocks'])) $item['template'] = '';
-    $item['url'] = $item['path'] . '/' .$item['name'];
+    $item['url'] == '' ? $item['url'] = $item['path'] . '/' .$item['name'] : null;
     $item['url'] == '/home' ? $item['url'] = '/' : null;
 }
 
