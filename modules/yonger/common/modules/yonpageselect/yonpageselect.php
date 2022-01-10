@@ -7,20 +7,33 @@ class modYonPageSelect
     public function __construct(&$obj)
     {
         if (wbIsDom($obj)) {
+            if (isset($obj->done)) return;
+            $obj->done = true;
             $this->dom = &$obj;
             $this->app = &$obj->app;
             $this->getui();
         } else {
             header('Content-Type: application/json; charset=utf-8');
-            $this->app = $obj;
+            $this->app = &$obj;
             echo $this->app->jsonEncode($this->list());
         }
     }
     
     private function getui() {
-        $ui = file_get_contents(__DIR__.'/yonpageselect_ui.php');
-        $this->dom->addClass('yonpageselect');
+        $ui = $this->app->fromFile(__DIR__.'/yonpageselect_ui.php');
+        $class = $this->app->attrToArray($this->dom->attr('class'));
+        foreach($class as $i => $c) {
+            if ($c == 'col' || substr($c,0,4) == 'col-') {
+                $ui->find('.input-group')->addClass($c);
+                unset($class[$i]);
+            }
+        }
+        $this->dom->attr('class',implode(' ',$class));
+        $this->dom->params('url') > '' ? $this->dom->attr('data-url', $this->dom->params('url')) : null;
+        $ui->find('.input-group > input')->remove();
+        $ui->find('.input-group')->append($this->dom->outer());
         $this->dom->after($ui);
+        $this->dom->remove();
     }
 
     public function list() {
