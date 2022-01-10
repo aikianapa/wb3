@@ -7,7 +7,7 @@ var _tmpjq = false;
 setTimeout(function() {
     wbapp.loader = true;
     let loader = document.getElementById("loader");
-    typeof(loader) !== 'undefined' && loader !== null ? wbapp.delay = 2500 : wbapp.delay = 10;
+    typeof(loader) !== 'undefined' && loader !== null ? wbapp.delay = 1500 : wbapp.delay = 10;
 
     var get_cookie = function(name) {
         const value = `; ${document.cookie}`;
@@ -1810,13 +1810,13 @@ wbapp.console = function(text) {
     }
 }
 
-wbapp.loadScripts = function(scripts = [], trigger = null, func = null) {
+wbapp.loadScripts = async function(scripts = [], trigger = null, func = null) {
     if (wbapp.loadedScripts == undefined) wbapp.loadedScripts = [];
     let ready = [];
     var stop = 0;
     var count = scripts.length;
-    scripts.forEach(function(src, i) {
-        setTimeout(function() {
+    scripts.forEach(async function(src, i) {
+        setTimeout(async function() {
             //    let name = src.split("/");
             //    name = name[name.length-1];
             if (wbapp.devmode > 0 && src.indexOf('?') == -1) src += '?' + wbapp.devmode;
@@ -1834,7 +1834,7 @@ wbapp.loadScripts = function(scripts = [], trigger = null, func = null) {
             } else {
                 let script = document.createElement('script');
                 script.src = src;
-                script.async = false;
+                script.async = true;
                 script.onload = function() {
                     wbapp.loadedScripts.push(name);
                     wbapp.console("Script loaded: " + name);
@@ -1849,15 +1849,15 @@ wbapp.loadScripts = function(scripts = [], trigger = null, func = null) {
                 }
                 document.head.appendChild(script);
             }
-        }, 5)
+        }, 1)
     });
 }
 
 wbapp.loadStyles = async function(styles = [], trigger = null, func = null) {
     if (wbapp.loadedStyles == undefined) wbapp.loadedStyles = [];
     var i = 0;
-    styles.forEach(function(src) {
-        setTimeout(function() {
+    styles.forEach(async function(src) {
+        setTimeout(async function() {
             if (wbapp.loadedStyles.indexOf(src) !== -1) {
                 i++;
                 if (i >= styles.length) {
@@ -1889,7 +1889,7 @@ wbapp.loadStyles = async function(styles = [], trigger = null, func = null) {
                 }
                 document.head.appendChild(style);
             }
-        }, 5)
+        }, 1)
     });
 }
 
