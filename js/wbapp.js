@@ -1106,6 +1106,8 @@ wbapp.ajax = async function(params, func = null) {
                     $(document).find(params.target).html($(data).find(params.target + ':first').html());
                 }
             }
+
+
             if (params.source && params.source > '') data = $(data).find(params.source).html();
             if (params.html) $(document).find(params.html).html(data);
             if (params.append) $(document).find(params.append).append(data);
@@ -1128,6 +1130,7 @@ wbapp.ajax = async function(params, func = null) {
                 wbapp.lazyload();
                 wbapp.ajaxAuto();
                 wbapp.wbappScripts();
+                paginationfix(data);
             }, 1)
             if (params.render == 'client') {
                 let res = $(data).find(params.target).html();
@@ -1153,10 +1156,6 @@ wbapp.ajax = async function(params, func = null) {
                 $(document).find(params.target).children('template').remove();
             }
             if (params.callback !== undefined) eval(params.callback + '(params,data)');
-            wbapp.tplInit();
-            wbapp.lazyload();
-            wbapp.ajaxAuto();
-            wbapp.wbappScripts();
 
             //wbapp.console("Trigger: wb-ajax-done");
             if (data.result == undefined) params['data'] = data;
@@ -1223,11 +1222,25 @@ wbapp.ajax = async function(params, func = null) {
             if (target._params == undefined || target._params.length == 0) { void(0); } else {
                 if (wbapp.tmp.ajax_params == undefined || wbapp.tmp.ajax_params !== target) {
                     wbapp.tmp.ajax_params = target;
-                    wbapp.ajax(target, func); // только если переданы предыдущие параметры
-                    delete wbapp.tmp.ajax_params;
+                    wbapp.ajax(target, function() {
+                        delete wbapp.tmp.ajax_params;
+                        func
+                    }); // только если переданы предыдущие параметры
                 }
             }
         }
+    }
+    let paginationfix = function(data) {
+        if (data.pag == undefined || data.params == undefined) return;
+        if (data.params.more == undefined || data.params.more < 'more') return;
+        if (data.params.target == undefined || data.params.target < '#') return;
+        let $pag = $(document).find(`.pagination[data-tpl="${data.params.target}"]`)
+        if (!$pag) return;
+        if (data.params.page >= data.params.pages) data.pag = '';
+        if (data.pag > '') {
+            data.pag = $(data.pag).find(`.pagination[data-tpl="${data.params.target}"]`).html();
+        }
+        $pag.html(data.pag);
     }
 }
 

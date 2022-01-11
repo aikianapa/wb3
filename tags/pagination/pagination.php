@@ -103,6 +103,7 @@ class tagPagination
                 $pag->find("[data-page='prev']")->remove();
                 $pag->find("[data-page!='more']")->css('display', 'none');
                 isset($more[1]) && $more[1]>' ' ? $pag->find("[data-page='more'] .page-link")->inner($more[1]) : null;
+                $more[1] == '' ? $pag->find('*')->css('color', 'transparent')->css('border-color', 'transparent') : null;
                 $more[0] !== 'true' ?  $pag->find("[data-page='more']")->attr('data-trigger', $more[0])->css('display', 'none') : null;
                 $pag->find('[data-page=more] .page-link')->attr('data-page', $page + 1);
             } else {

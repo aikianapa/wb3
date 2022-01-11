@@ -141,10 +141,10 @@ class tagForeach
             );
             $dom->parent()->attr("data-pages", $pages);
             $dom->parent()->attr("data-page", $pages);
-            $dom->parent()->attr("data-tpl", 23421);
+            $dom->parent()->attr("data-tpl", $this->tid);
 
             $dom->params->count = $count;
-            $dom->params->tpl = "1231";
+            $dom->params->tpl = $this->tid;
             $dom->params->page = $page;
             //$pag = $dom->tagPagination($dom);
             !count((array)$list) or $dom->html() == "" ? $dom->inner($empty->inner()) : null;
