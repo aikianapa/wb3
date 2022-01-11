@@ -94,10 +94,23 @@ yonger.pageBlocks = function() {
         }
     });
 
-        $('#modalPagesEdit').delegate('#yongerPageBlockAdd',wbapp.evClick,function(){
-        $('#modalPagesEditBlocks').modal('show');
+    $('#modalPagesEdit').delegate('#yongerPageBlockAdd',wbapp.evClick,function(){
+        let $modal = $('#modalPagesEditBlocks');
+        $modal.modal('show');
         wbapp.ajax({'url':'/module/yonger/blocklist'},function(data){
-            wbapp.storage('yonger.blocks', data.data);
+            $modal.list = data.data;
+            wbapp.storage('yonger.blocks', $modal.list);
+            $modal.undelegate('.modal-header input', 'keyup');
+            $modal.delegate('.modal-header input','keyup',function(){
+                let regex = $(this).val().replace("/", "\\/");
+                regex = new RegExp(regex,"gi");
+                let list = {};
+                $.each($modal.list,function(i,item){
+                    let str = item.name+' '+item.header;
+                    str.match(regex) ? list[item.id] = item : null;
+                });
+                wbapp.storage('yonger.blocks', list);
+            })
         })
     })
 

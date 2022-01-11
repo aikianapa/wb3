@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header row">
                 <div class="col-4">
-                    <h5 wb-if="'{{_route.id}}' !== '_header' && '{{_route.id}}' !== '_footer'">Редактирование страницы</h5>
+                    <h5 wb-if="'{{_route.id}}' !== '_header' && '{{_route.id}}' !== '_footer'">{{_lang.header}}</h5>
                     <h5 wb-if="'{{_route.id}}' == '_header'">Шапка сайта</h5>
                     <h5 wb-if="'{{_route.id}}' == '_footer'">Подвал сайта</h5>
                 </div>
@@ -81,15 +81,15 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <i></i>
+                <input type="search" class="form-control mg-r-20" placeholder="{{_lang.search}}...">
                 <i class="fa fa-close cursor-pointer" data-dismiss="modal" aria-label="Close"></i>
             </div>
             <div class="modal-body p-0 pb-5 scroll-y">
                 <div class="list-group" id="{{_form}}EditFormListBlocks">
                     <wb-foreach wb="ajax=/module/yonger/blocklist&render=client&bind=yonger.blocks">
                         <a class="list-group-item list-group-item-action" href="javascript:void(0)" data-name="{{name}}" onclick="yonger.yongerPageBlockAdd('{{id}}')">
-                            <span>{{name}}</span>
-                            <span class="d-block tx-11 text-muted">{{header}}</span>
+                            <h6 class="tx-13 tx-inverse tx-semibold mg-b-0">{{header}}</h6>
+                            <span class="d-block tx-11 text-muted">{{name}}</span>
                         </a>
                     </wb-foreach>
                 </div>
@@ -124,9 +124,13 @@
 
     yonger.pageEditor();
 </script>
-<wb-lang>
-    [ru] main = Основное prop = Вставки кода seo = Оптимизация images = Изображения visible = Отображать header = Заголовок [en]
-    main = Main prop = Code injection seo = SEO images = Images visible = Visible header = Header
-</wb-lang>
+    <wb-lang>
+        [ru]
+        header = Редактирование страницы
+        search = Поиск
+        [en]
+        header = Page edit
+        search = Search
+    </wb-lang>
 
 </html>
