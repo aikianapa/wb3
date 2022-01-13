@@ -955,7 +955,7 @@ wbapp.updateInputs = function() {
 
 wbapp.wbappScripts = function() {
     var done = [];
-    $(document).find("script[type=wbapp],script[wbapp],script[wb-app]").each(function() {
+    $(document).find("script[type=wbapp],script[wbapp],script[wb-app]").each(async function() {
         if (this.done !== undefined) return;
         this.done = true;
         let src = null;
@@ -1425,7 +1425,7 @@ wbapp.objByForm = function(form) {
     return data;
 }
 
-wbapp.tplInit = function() {
+wbapp.tplInit = async function() {
     if (!wbapp.template) wbapp.template = {};
     if (wbapp.template['wb.modal'] == undefined) {
         var res = wbapp.getTpl("snippets", "modal");
@@ -1434,68 +1434,67 @@ wbapp.tplInit = function() {
             params: {}
         });
     }
-    setTimeout(function() {
-        $(document).find("template").each(function() {
-            var tid
-            if (tid == undefined && $(this).is("template[id]")) tid = $(this).attr("id");
-            if (tid == undefined) tid = $(this).parent().attr("id");
-            if (tid == undefined && $(this).is("[data-target]")) tid = $(this).attr("data-target");
-            if (tid == undefined) {
-                $(this).attr("id", "fe_" + wbapp.newId());
-                var tid = $(this).attr("id");
-            }
-            tid = "#" + tid;
 
-            var params = [];
-            if ($(this).attr("data-params") !== undefined) {
-                try {
-                    params = wbapp.parseAttr($(this).attr("data-params"));
-                    params['target'] = tid;
-                } catch (error) { null }
-            }
+    $(document).find("template").each(async function() {
+        var tid
+        if (tid == undefined && $(this).is("template[id]")) tid = $(this).attr("id");
+        if (tid == undefined) tid = $(this).parent().attr("id");
+        if (tid == undefined && $(this).is("[data-target]")) tid = $(this).attr("data-target");
+        if (tid == undefined) {
+            $(this).attr("id", "fe_" + wbapp.newId());
+            var tid = $(this).attr("id");
+        }
+        tid = "#" + tid;
 
-            if (params.filter !== undefined) {
-                wbapp.sessdata('wbapp.filter.' + tid.substr(1), params.filter);
-            }
+        var params = [];
+        if ($(this).attr("data-params") !== undefined) {
+            try {
+                params = wbapp.parseAttr($(this).attr("data-params"));
+                params['target'] = tid;
+            } catch (error) { null }
+        }
 
-            let html = $(this).html();
+        if (params.filter !== undefined) {
+            wbapp.sessdata('wbapp.filter.' + tid.substr(1), params.filter);
+        }
 
-            html = html.replace(/<template\b[^<]*(?:(?!<\/template>)<[^<]*)*<\/template>/gi, "");
-            html = str_replace('%7B%7B', '{{', html);
-            html = str_replace('%7D%7D', '}}', html);
+        let html = $(this).html();
 
-            $(this).removeAttr("data-params");
-            if ($(this).attr("data-ajax") !== undefined) {
-                let prms = wbapp.parseAttr($(this).attr("data-ajax"));
-                params = array_merge(prms, params);
-                wbapp.tpl(tid, {
-                    'html': html,
-                    'params': params
-                });
-                $(this).trigger("click", tid);
-            } else {
-                wbapp.tpl(tid, {
-                    "html": html,
-                    "params": params
-                });
-            }
+        html = html.replace(/<template\b[^<]*(?:(?!<\/template>)<[^<]*)*<\/template>/gi, "");
+        html = str_replace('%7B%7B', '{{', html);
+        html = str_replace('%7D%7D', '}}', html);
 
-            if (params.bind && params.render == 'client') {
-                var profileMenu = Ractive({
-                    target: tid,
-                    template: wbapp.template[tid].html,
-                    data: () => { return wbapp.storage(params.bind); }
-                });
-                wbapp.render(tid, wbapp.storage(params.bind));
-            } else if (params.bind && params.render == 'server') {
-                wbapp.storage(params.bind, params);
-            } else if (params._params && params._params.bind && params._params.render == 'server') {
-                wbapp.storage(params._params.bind, params);
-            }
-            if ($(this).prop("visible") == undefined) $(this).remove();
-        });
+        $(this).removeAttr("data-params");
+        if ($(this).attr("data-ajax") !== undefined) {
+            let prms = wbapp.parseAttr($(this).attr("data-ajax"));
+            params = array_merge(prms, params);
+            wbapp.tpl(tid, {
+                'html': html,
+                'params': params
+            });
+            $(this).trigger("click", tid);
+        } else {
+            wbapp.tpl(tid, {
+                "html": html,
+                "params": params
+            });
+        }
+
+        if (params.bind && params.render == 'client') {
+            var profileMenu = Ractive({
+                target: tid,
+                template: wbapp.template[tid].html,
+                data: () => { return wbapp.storage(params.bind); }
+            });
+            wbapp.render(tid, wbapp.storage(params.bind));
+        } else if (params.bind && params.render == 'server') {
+            wbapp.storage(params.bind, params);
+        } else if (params._params && params._params.bind && params._params.render == 'server') {
+            wbapp.storage(params._params.bind, params);
+        }
+        if ($(this).prop("visible") == undefined) $(this).remove();
         wbapp.wbappScripts();
-    }, 10);
+    });
 }
 
 wbapp.getForm = function(form, mode, data = {}) {
@@ -1702,7 +1701,7 @@ wbapp.modalsInit = function() {
             window.dispatchEvent(new Event('resize'));
         });
 
-        $(document).delegate(".modal", "DOMSubtreeModified", function() {
+        $(document).delegate(".modal", "DOMSubtreeModified", async function() {
             if ($(this).find('.modal-content').height() > $(window).height() - 80) {
                 $(this).addClass('h-100');
             } else {
@@ -1710,7 +1709,7 @@ wbapp.modalsInit = function() {
             }
         })
 
-        $(document).delegate(".modal", 'hidden.bs.modal', function() {
+        $(document).delegate(".modal", 'hidden.bs.modal', async function() {
             let zndx = $(this).css("z-index") * 1;
             $(".modal-backdrop[style*='z-index: " + (zndx - 5) + "']").remove();
             $(this).removeAttr('data-zidx');
@@ -1791,7 +1790,7 @@ wbapp.getSync = function(url, data = {}) {
     return wbapp.ajaxSync([{
         url: url,
         type: 'GET',
-        async: true,
+        async: false,
         data: data
     }])[0];
 }
@@ -1825,16 +1824,36 @@ wbapp.console = function(text) {
 
 wbapp.loadScripts = async function(scripts = [], trigger = null, func = null) {
     if (wbapp.loadedScripts == undefined) wbapp.loadedScripts = [];
+    if (wbapp.loadingScripts == undefined) wbapp.loadingScripts = [];
     let ready = [];
     var stop = 0;
     var count = scripts.length;
-    scripts.forEach(async function(src, i) {
-        setTimeout(async function() {
-            //    let name = src.split("/");
-            //    name = name[name.length-1];
-            if (wbapp.devmode > 0 && src.indexOf('?') == -1) src += '?' + wbapp.devmode;
-            let name = src;
-            if (wbapp.loadedScripts.indexOf(src) !== -1) {
+    scripts.forEach(function(src, i) {
+        //    let name = src.split("/");
+        //    name = name[name.length-1];
+        if (wbapp.devmode > 0 && src.indexOf('?') == -1) src += '?' + wbapp.devmode;
+        let name = src;
+        if (wbapp.loadingScripts.indexOf(name) !== -1) {
+            wbapp.console("Script is loading: " + name);
+        } else if (wbapp.loadedScripts.indexOf(name) !== -1) {
+            wbapp.console("Script already loaded: " + name);
+            stop += 1;
+            if (stop >= count) {
+                if (trigger > '') {
+                    $(document).find("script#" + trigger + "-remove").remove();
+                    $(document).trigger(trigger);
+                }
+                if (func !== null) return func(scripts);
+            }
+        } else {
+            let script = document.createElement('script');
+            wbapp.loadingScripts.push(name);
+            script.src = name;
+            script.async = false;
+            script.onload = async function() {
+                wbapp.loadedScripts.push(name);
+                let pos = wbapp.loadingScripts.indexOf(name);
+                delete wbapp.loadingScripts[pos];
                 wbapp.console("Script loaded: " + name);
                 stop += 1;
                 if (stop >= count) {
@@ -1844,33 +1863,18 @@ wbapp.loadScripts = async function(scripts = [], trigger = null, func = null) {
                     }
                     if (func !== null) return func(scripts);
                 }
-            } else {
-                let script = document.createElement('script');
-                script.src = src;
-                script.async = true;
-                script.onload = function() {
-                    wbapp.loadedScripts.push(name);
-                    wbapp.console("Script loaded: " + name);
-                    stop += 1;
-                    if (stop >= count) {
-                        if (trigger > '') {
-                            $(document).find("script#" + trigger + "-remove").remove();
-                            $(document).trigger(trigger);
-                        }
-                        if (func !== null) return func(scripts);
-                    }
-                }
-                document.head.appendChild(script);
             }
-        }, 1)
+            document.head.appendChild(script);
+        }
+
     });
 }
 
 wbapp.loadStyles = async function(styles = [], trigger = null, func = null) {
     if (wbapp.loadedStyles == undefined) wbapp.loadedStyles = [];
     var i = 0;
-    styles.forEach(async function(src) {
-        setTimeout(async function() {
+    styles.forEach(function(src) {
+        setTimeout(function() {
             if (wbapp.loadedStyles.indexOf(src) !== -1) {
                 i++;
                 if (i >= styles.length) {
@@ -1888,7 +1892,7 @@ wbapp.loadStyles = async function(styles = [], trigger = null, func = null) {
                 style.href = src;
                 style.rel = "stylesheet";
                 style.type = "text/css";
-                style.async = true;
+                style.async = false;
                 style.onload = function() {
                     i++;
                     if (i >= styles.length) {
@@ -1906,7 +1910,7 @@ wbapp.loadStyles = async function(styles = [], trigger = null, func = null) {
     });
 }
 
-wbapp.loadPreload = async function(trigger = null, func = null) {
+wbapp.loadPreload = function(trigger = null, func = null) {
     let preloads = {};
     $('link[rel=preload][as][href]').each(function() {
         if (preloads[$(this).attr('as')] == undefined) { preloads[$(this).attr('as')] = []; }

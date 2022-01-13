@@ -5,5 +5,5 @@
     "/engine/modules/jodit/build/jodit.min.js",
     "/engine/modules/jodit/caret/jquery.caret-1.5.2.min.js",
     "/engine/modules/jodit/jodit.js"
-    ],"jodit-js");
+    ], "jodit-js");
 </script>

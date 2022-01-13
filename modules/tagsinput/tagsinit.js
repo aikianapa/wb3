@@ -1,7 +1,7 @@
 $(document).off("tagsinput-js");
 $(document).on("tagsinput-js", function() {
     var wb_tagsinput = function() {
-        $(".wb-tagsinput").each(function() {
+        $(".wb-tagsinput").each(async function() {
             if (this.done == undefined) {
                 let that = this;
                 this.done = true;
@@ -30,7 +30,7 @@ $(document).on("tagsinput-js", function() {
 });
 
 $(document).off("tagsinit-js");
-$(document).on("tagsinit-js", function() {
+$(document).on("tagsinit-js", async function() {
     wbapp.loadScripts(["/engine/modules/tagsinput/tagsinput.js"], "tagsinput-js");
     wbapp.loadStyles(["/engine/modules/tagsinput/tagsinput.css"]);
     $("[data-remove=tagsinit-js]").remove();

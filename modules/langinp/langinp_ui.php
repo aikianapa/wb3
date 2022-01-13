@@ -25,7 +25,7 @@
         <textarea type="json" class="mod-langinp d-none" name="lang"></textarea>
         <input class="form-control mod-langinp" type="text" name="label">
         <script wb-app remove>
-            wbapp.loadScripts(["/engine/modules/langinp/langinp_mod.js?{{_env.new_id}}"],"langinp-mod-js");
+            wbapp.loadScripts(["/engine/modules/langinp/langinp_mod.js"],"langinp-mod-js");
         </script>
     </div>
 

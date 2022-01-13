@@ -1,9 +1,9 @@
 $(document).off("jodit-js");
-$(document).on("jodit-js", function() {
+$(document).on("jodit-js", async function() {
     //$(document).on("wb-ajax-done",function(){$(document).trigger("jodit-js");});
-    $('textarea.jodit:not(.ready):not(.jodit-box)[id]').each(function() {
+    $('textarea.jodit:not(.ready):not(.jodit-box)[id]').each(async function() {
 
-        $(this).parents('.modal-body').one('scroll', function() {
+        $(this).parents('.modal-body').one('scroll', async function() {
             window.dispatchEvent(new Event('resize'));
         })
 
@@ -26,11 +26,11 @@ $(document).on("jodit-js", function() {
 
 
 
-        var joditInit = function() {
+        var joditInit = async function() {
 
             //lang = explode("-", lang);
 
-            $(document).on('ajax-done wb-tree-change-data', function() {
+            $(document).on('ajax-done wb-tree-change-data', async function() {
                 // Чистим  "хвосты" jodit
                 if (!$('.jodit-workplace').length) {
                     $('.jodit').remove();

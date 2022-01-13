@@ -1,5 +1,5 @@
 $(document).off("filepicker-js")
-$(document).on("filepicker-js", function() {
+$(document).on("filepicker-js", async function() {
     if (document.filepicker !== undefined) {
         wbapp.trigger("filepicker-init");
         return;
@@ -28,7 +28,7 @@ $(document).on("filepicker-js", function() {
             var selector = ".filepicker";
             var uploader = "/engine/modules/filepicker/uploader/index.php";
             var size = 200;
-            $(document).find(selector).each(function() {
+            $(document).find(selector).each(async function() {
                 if (this.done !== undefined) return;
                 this.done = true;
                 var width = size * 1;
