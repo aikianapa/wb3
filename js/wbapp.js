@@ -331,7 +331,7 @@ wbapp.start = function() {
             //                , `/engine/js/jquery-migrate.min.js`
             `/engine/js/jquery-ui.min.js` // для modal draggable - нужно подумать куда перенести
             , `/engine/js/jquery.tap.js`, `/engine/js/ractive.js`, `/engine/js/topbar.min.js`, `/engine/js/lazyload.js`
-        ], "wbapp-go", function() {
+        ], "wbapp-go", async function() {
             Ractive.DEBUG = false;
             wbapp.eventsInit();
             wbapp.wbappScripts();
@@ -341,7 +341,7 @@ wbapp.start = function() {
             wbapp.modalsInit();
             wbapp.fileinpInit();
             //$(document).scrollTop(0);
-            $(document).on("wb-ajax-done", function() {
+            $(document).on("wb-ajax-done", async function() {
                 wbapp.console("Trigger: wb-ajax-done");
                 if (wbapp !== undefined) {
                     wbapp.tplInit();
@@ -410,7 +410,7 @@ wbapp.confirm = function(title = null, text = null, options = null) {
     return $modal;
 }
 
-wbapp.lazyload = function() {
+wbapp.lazyload = async function() {
     /*
     $("[data-src]:not([src])").each(function() {
         let link = document.createElement('link');
@@ -423,8 +423,8 @@ wbapp.lazyload = function() {
     $("[data-src]:not([src])").lazyload();
 }
 
-wbapp.eventsInit = function() {
-    $(document).delegate("[data-ajax]:not(input,select)", "click", function(e, tid) {
+wbapp.eventsInit = async function() {
+    $(document).delegate("[data-ajax]:not(input,select)", "click", async function(e, tid) {
         if (!$(this).is("input,select")) {
             let params = wbapp.parseAttr($(this).attr("data-ajax"));
             if (params.url == undefined && typeof params == 'string') {
@@ -453,7 +453,7 @@ wbapp.eventsInit = function() {
         }
     })
 
-    $(document).delegate("input[data-ajax],select[data-ajax]", "change", function(e, tid) {
+    $(document).delegate("input[data-ajax],select[data-ajax]", "change", async function(e, tid) {
         e.preventDefault();
         let search = $(this).attr("data-ajax");
         search = str_replace('$value', $(this).val(), search);
@@ -479,7 +479,7 @@ wbapp.eventsInit = function() {
         }
     })
 
-    $(document).delegate("input[type=checkbox]", "click", function() {
+    $(document).delegate("input[type=checkbox]", "click", async function() {
         if ($(this).prop("checked") == false) {
             $(this).removeAttr("checked");
         } else {
@@ -494,7 +494,7 @@ wbapp.eventsInit = function() {
         this.style.height = (this.scrollHeight) + "px";
     });
 
-    $(document).delegate("[rows=auto]", "focusout", function() {
+    $(document).delegate("[rows=auto]", "focusout", async function() {
         this.style.overflow = "hidden";
         this.style.height = "auto";
     });
@@ -503,7 +503,7 @@ wbapp.eventsInit = function() {
 }
 
 wbapp.ajaxAuto = function(func = null) {
-    $(document).find("[data-ajax][auto]").each(function() {
+    $(document).find("[data-ajax][auto]").each(async function() {
         $(this).trigger("click");
         if ($(this).attr('once') !== undefined) $(this).removeAttr('data-ajax').removeAttr('once');
         $(this).removeAttr("auto");
@@ -589,7 +589,7 @@ wbapp.auth = function(form, mode = 'signin') {
     eval(mode)();
 }
 
-wbapp.alive = function() {
+wbapp.alive = async function() {
     $.post("/ajax/alive", {}, function(data) {
         if (data.result == false || data.result == undefined) {
             wbapp.console("Trigger: session_close");
@@ -809,7 +809,7 @@ wbapp.sessdata = function(key, value = undefined, binds = true) {
     }
 }
 
-wbapp.save = function(obj, params, func = null) {
+wbapp.save = async function(obj, params, func = null) {
     wbapp.console("Trigger: wb-save-start");
     $(obj).trigger("wb-save-start", params);
     let that = this;
@@ -1051,7 +1051,7 @@ wbapp.ajax = async function(params, func = null) {
     wbapp.trigger("wb-ajax-start", params);
 
     if (params.request_type == 'remove_item') {
-        wbapp.post(params.url, opts, function(data) {
+        wbapp.post(params.url, opts, async function(data) {
             if (data._removed !== undefined && data._removed == true && params.update !== undefined) {
                 $.each(wbapp.template, function(i, tpl) {
                     let rend = false;
@@ -1090,7 +1090,7 @@ wbapp.ajax = async function(params, func = null) {
 
         wbapp.loading();
         if (params.filter !== undefined) opts.filter = params.filter;
-        wbapp.post(params.url, opts, function(data) {
+        wbapp.post(params.url, opts, async function(data) {
             wbapp.unloading();
             if (count(data) == 2 && data.error !== undefined && data.callback !== undefined) {
                 eval(data.callback + '(params,data)');
@@ -1166,7 +1166,7 @@ wbapp.ajax = async function(params, func = null) {
             } else {
                 $(document).trigger("wb-ajax-done", params);
             }
-            setTimeout(function() {
+            setTimeout(async function() {
                 let showmod = $(document).find(".modal.show:not(:visible)");
                 if (showmod.length) showmod.removeClass("show").modal('show');
             }, 50);
@@ -1230,7 +1230,7 @@ wbapp.ajax = async function(params, func = null) {
             }
         }
     }
-    let paginationfix = function(data) {
+    let paginationfix = async function(data) {
         if (data.pag == undefined || data.params == undefined) return;
         if (data.params.more == undefined || data.params.more < 'more') return;
         if (data.params.target == undefined || data.params.target < '#') return;
@@ -1284,7 +1284,7 @@ wbapp.storageUpdate = function(key, data) {
 }
 
 
-wbapp.loading = function() {
+wbapp.loading = async function() {
     if (wbapp.loader !== true) return;
     $(document).find('body').addClass('loading');
     if (typeof topbar !== 'undefined') {
@@ -1293,7 +1293,7 @@ wbapp.loading = function() {
     }
 }
 
-wbapp.unloading = function() {
+wbapp.unloading = async function() {
     if (wbapp.loader !== true) return;
     $(document).find('body').removeClass('loading');
     if (typeof topbar !== 'undefined') {
@@ -1358,7 +1358,7 @@ wbapp.fetch = function(selector = 'body', data = {}, ret) {
 }
 
 
-wbapp.toast = function(title, text, params = {}) {
+wbapp.toast = async function(title, text, params = {}) {
     var target = '.content-toasts';
     if (!$(document).find(target).length) {
         $('body').prepend('<div class="content-toasts position-fixed t-0" style="z-index:999999;right:0;"></div>');
@@ -1524,7 +1524,7 @@ wbapp.tpl = function(tid, data = null) {
     }
 }
 
-wbapp.render = function(tid, data) {
+wbapp.render = async function(tid, data) {
     if (tid == undefined) return;
     let params = wbapp.template[tid].params;
     if (data == undefined) {
@@ -1557,7 +1557,7 @@ wbapp.render = function(tid, data) {
     wbapp.trigger('wb-render-done', tid, data);
 }
 
-wbapp.setPag = function(target, data) {
+wbapp.setPag = async function(target, data) {
     $(document).find('.pagination[data-tpl="' + target + '"]').parents('nav').remove();
     var pagert = $(document).find(target);
     if ($(pagert).is('li')) pagert = $(pagert).parent();
@@ -1566,7 +1566,7 @@ wbapp.setPag = function(target, data) {
     if (data.pos == 'both' || data.pos == 'bottom') $(pagert).after(data.pag);
 }
 
-wbapp.renderServer = function(params, data = {}) {
+wbapp.renderServer = async function(params, data = {}) {
     if (params.target !== undefined && params.target > '#' && $(document).find(params.target).length) {
         //delete params.data;
         delete params.bind;
@@ -1578,7 +1578,7 @@ wbapp.renderServer = function(params, data = {}) {
     }
 }
 
-wbapp.renderClient = function(params, data = {}) {
+wbapp.renderClient = async function(params, data = {}) {
     var tid;
     var newbind = false;
     if (tid == undefined && params._tid !== undefined) tid = params._tid;
@@ -1652,7 +1652,7 @@ wbapp.newId = function(separator, prefix) {
     return id;
 }
 
-wbapp.modalsInit = function() {
+wbapp.modalsInit = async function() {
     wbapp.modalZndx == undefined ? wbapp.modalZndx = 2000 : null;
 
     $(document).undelegate(".modal-header", "dblclick");
@@ -1816,7 +1816,7 @@ wbapp.settings = function(e) {
     return wbapp._settings;
 }
 
-wbapp.console = function(text) {
+wbapp.console = async function(text) {
     if (wbapp._settings == undefined || wbapp._settings.devmode == 'on') {
         console.log(text);
     }
@@ -1945,7 +1945,7 @@ wbapp.on = async function(trigger, func = null) {
     $(document).on(trigger, func);
 }
 
-wbapp.trigger = function(trigger, event = null, data = null) {
+wbapp.trigger = async function(trigger, event = null, data = null) {
     wbapp.console('Trigger: ' + trigger);
     if (event == null) {
         $(document).trigger(trigger, data);
@@ -2069,17 +2069,17 @@ var array_column = function(list, column, indice) {
     return result;
 }
 
-var alive = setInterval(function() {
+var alive = setInterval(async function() {
     wbapp.alive();
 }, 84600);
 
-wbapp.init = function() {
+wbapp.init = async function() {
     wbapp.wbappScripts();
     wbapp.tplInit();
     wbapp.modalsInit();
 }
 
-wbapp.print = function(pid) {
+wbapp.print = async function(pid) {
     var divToPrint = document.getElementById(pid);
     var newWin = window.open('', 'Print-Window');
     newWin.document.open();
@@ -2088,7 +2088,7 @@ wbapp.print = function(pid) {
     setTimeout(() => { newWin.close(); }, 1000);
 }
 
-wbapp.redirectPost = function(location, args) {
+wbapp.redirectPost = async function(location, args) {
     var form = '';
     $.each(args, function(key, value) {
         value == undefined ? value = "" : null;
@@ -2144,7 +2144,6 @@ var loadPhpjs = function() {
         let phpjs = document.createElement('script');
         phpjs.src = `/engine/js/php.js`;
         phpjs.async = false;
-        phpjs.defer = true;
         phpjs.onload = function() {
             wbapp.start();
         }
@@ -2158,7 +2157,6 @@ var loadJquery = function() {
         let jquery = document.createElement('script');
         jquery.src = '/engine/js/jquery.min.js';
         jquery.async = false;
-        jquery.defer = true;
         jquery.onload = function() {
             wbapp.start();
         }
