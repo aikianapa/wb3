@@ -1795,10 +1795,10 @@ function wbItemFilter($item, $options, $field = null)
 							$field < $val ? $result : $result = false;
                             break;
                         case '$nin':
-                            !in_array($field,$val) ? $result : $result = false;
+                            !in_array($field,(array)$val) ? $result : $result = false;
                             break;
                         case '$in':
-                            in_array($field,$val) ? $result : $result = false;
+                            in_array($field,(array)$val) ? $result : $result = false;
                             break;
                         case '$regex':
                             preg_match('/'.$val.'/', $field) ? $result : $result = false;

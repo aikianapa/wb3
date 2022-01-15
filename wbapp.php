@@ -1320,34 +1320,22 @@ class wbApp
         $cur = null;
         $out = null;
         if (true == $path) {
-            if (!$cur and is_file($_ENV['path_app']."/{$tpl}")) {
-                $cur = wbNormalizePath($_ENV['path_app']."/{$tpl}");
-            }
+            !$cur and is_file($_ENV['path_app']."/{$tpl}") ? $cur = wbNormalizePath($_ENV['path_app']."/{$tpl}") : null;
         } else {
-            if (!$cur and is_file($_ENV['path_tpl']."/{$tpl}")) {
-                $cur = wbNormalizePath($_ENV['path_tpl']."/{$tpl}");
-            }
-            if (!$cur and is_file($_ENV['path_engine']."/tpl/{$tpl}")) {
-                $cur = wbNormalizePath($_ENV['path_engine']."/tpl/{$tpl}");
-            }
+            !$cur and is_file($_ENV['path_tpl']."/{$tpl}") ? $cur = wbNormalizePath($_ENV['path_tpl']."/{$tpl}") : null;
+            !$cur and is_file($_ENV['path_engine']."/tpl/{$tpl}") ? $cur = wbNormalizePath($_ENV['path_engine']."/tpl/{$tpl}") : null;
         }
-        if ($cur > "") {
-            $out = $this->fromFile($cur);
-        }
+        $cur > "" ? $out = $this->fromFile($cur) : null;
         $_ENV['tpl_realpath'] = dirname($cur);
         $_ENV['tpl_path'] = substr(dirname($cur),strlen($_ENV['path_app']));
 
         if (!$out) {
-            if ($path !== false) {
-                $cur = wbNormalizePath($path."/{$tpl}");
-            } else {
-                $cur = wbNormalizePath($_ENV['path_tpl']."/{$tpl}");
-            }
+            $cur =  $path !== false ? wbNormalizePath($path."/{$tpl}") : wbNormalizePath($_ENV['path_tpl']."/{$tpl}");
             $cur=str_replace($_ENV["path_app"], "", $cur);
             wbError('func', __FUNCTION__, 1011, array($cur));
         } else if (!$out->is('html')) {
             $out = $out->outer();
-            $out = $this->fromString("<html>\n{$out}\n</html>");
+            $out = $this->fromString('<html>'.$out.'</html>');
         }
         return $out;
     }

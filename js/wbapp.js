@@ -38,6 +38,11 @@ wbapp.start = function() {
     wbapp.session();
     wbapp.settings();
 
+    $(document).on('session_close', function() {
+
+    });
+
+
     $.fn.disableSelection = function() {
         return this
             .attr('unselectable', 'on')
@@ -393,7 +398,7 @@ wbapp.confirm = function(title = null, text = null, options = null) {
         alert(0)
     });
     */
-    let modal = wbapp.getTpl('common', 'confirm', { 'confirm': true });
+    let modal = wbapp.getForm('common', 'confirm', { 'confirm': true });
     let $modal = $(modal.result);
     let confirm = false;
     title !== null ? title = $modal.find('.modal-title').text(title) : null;
@@ -1370,7 +1375,7 @@ wbapp.toast = async function(title, text, params = {}) {
     }
 
     if (wbapp.template['wb.toast'] == undefined) {
-        var res = wbapp.getTpl("snippets", "toast");
+        var res = wbapp.getForm("snippets", "toast");
         wbapp.tpl('wb.toast', {
             html: res.result,
             params: {}
@@ -1428,7 +1433,7 @@ wbapp.objByForm = function(form) {
 wbapp.tplInit = async function() {
     if (!wbapp.template) wbapp.template = {};
     if (wbapp.template['wb.modal'] == undefined) {
-        var res = wbapp.getTpl("snippets", "modal");
+        var res = wbapp.getForm("snippets", "modal");
         wbapp.tpl('wb.modal', {
             html: res.result,
             params: {}
@@ -1497,13 +1502,21 @@ wbapp.tplInit = async function() {
     });
 }
 
-wbapp.getForm = function(form, mode, data = {}) {
-    var res = wbapp.postSync(`/ajax/getform/${form}/${mode}`, data);
+wbapp.getForm = function(form, mode, data = {}, func = null) {
+    if (!func) {
+        var res = wbapp.postSync(`/ajax/getform/${form}/${mode}`, data);
+    } else {
+        var res = wbapp.post(`/ajax/getform/${form}/${mode}`, data, func);
+    }
     return res;
 }
 
-wbapp.getTpl = function(form, mode, data = {}) {
-    var res = wbapp.postSync(`/ajax/gettpl/${form}/${mode}`, data);
+wbapp.getTpl = function(tpl, data = {}, func = null) {
+    if (!func) {
+        var res = wbapp.postSync(`/ajax/gettpl/${tpl}`, data);
+    } else {
+        var res = wbapp.post(`/ajax/gettpl/${tpl}`, data, func);
+    }
     return res;
 }
 
@@ -1738,7 +1751,7 @@ wbapp.modalsInit = async function() {
 wbapp.getModal = function(id = null) {
     var modal = $(document).data("wbapp-modal");
     if (modal == undefined) {
-        var modal = wbapp.postSync("/ajax/gettpl/snippets/modal/");
+        var modal = wbapp.getForm("snippets", "modal");
         modal = $("<div>" + modal.content + "</div>").find(".modal").clone();
         $(document).data("wbapp-modal", modal);
     }
@@ -2076,6 +2089,7 @@ var alive = setInterval(async function() {
 wbapp.init = async function() {
     wbapp.wbappScripts();
     wbapp.tplInit();
+    wbapp.lazyload()
     wbapp.modalsInit();
 }
 

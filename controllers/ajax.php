@@ -172,19 +172,19 @@ class ctrlAjax
         $form = $this->app->vars('_route.params.0');
         $mode = $this->app->vars('_route.params.1');
         $out = $this->app->getForm($form, $mode);
-        $this->app->vars('_post.data') > '' ? $out->fetch($this->app->vars('_post.data')) : $out->fetch();
+        $out && $this->app->vars('_post.data') > '' ? $out->fetch($this->app->vars('_post.data')) : null;
         return json_encode(['result'=>$out->outer()]);
     }
 
     public function gettpl()
     {
-        $form = $this->app->vars('_route.params.0');
-        $mode = $this->app->vars('_route.params.1');
-        $out = $this->app->getForm($form, $mode);
-        $post = $this->app->vars('_post');
-        if ($post['__token']) unset($post['__token']);
-        if (count($post)) $out->fetch($post);
-        return json_encode(['result'=>$out->outer()]);
+        $tpl = $this->app->vars('_route.params.0');
+        $out = $this->app->getTpl($tpl);
+        $res = '';
+        if ($out) {
+            $res = ($this->app->vars('_post.data') > '') ? $out->fetch($this->app->vars('_post.data')) : $out->outer();
+        }
+        return json_encode(['result'=>$res]);
     }
 
     public function renderTpl()
