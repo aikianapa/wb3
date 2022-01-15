@@ -7,23 +7,19 @@
     <meta property="og:title" content="{{_parent.header}}">
     <meta property="og:description" content="{{descr}}">
     <meta property="og:url" content="{{_route.host}}{{_route.uri}}">
-    <meta property="og:image"
-        content="{{_route.host}}/mikrorazmetka-chto-nuzhno-znat-seo-spetsialistu-o-slovaryakh-i-sintaksise.png">
+    <meta property="og:image" content="{{_route.host}}/module/yonger/logo">
 
     <meta property="url" content="{{_route.host}}{{_route.uri}}">
     <meta property="name" content="{{_parent.header}}">
     <meta property="description" content="{{descr}}">
-    <meta property="image"
-        content="{{_route.host}}/mikrorazmetka-chto-nuzhno-znat-seo-spetsialistu-o-slovaryakh-i-sintaksise.png">
+    <meta property="image" content="{{_route.host}}/module/yonger/logo">
 
     <meta itemprop="url" content="{{_route.host}}{{_route.uri}}">
     <meta itemprop="name" content="{{_parent.header}}">
     <meta itemprop="description" content="{{descr}}">
-    <meta itemprop="image"
-        content="{{_route.host}}/mikrorazmetka-chto-nuzhno-znat-seo-spetsialistu-o-slovaryakh-i-sintaksise.png">
+    <meta itemprop="image" content="{{_route.host}}/module/yonger/logo">
 
     <link href="{{_route.host}}{{_route.uri}}" rel="canonical">
-
 </view>
 <edit header="{{_lang.header}}">
     <div>

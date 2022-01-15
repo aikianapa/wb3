@@ -175,11 +175,14 @@ class modYonger
         $section = $this->dom->app->fromString('<html>'.$res->fetch($data)->inner().'</html>');
         isset($item['block_id']) && $item['block_id'] ? $section->children()->children(':first-child')->attr('id',$item['block_id']) : null;
         isset($item['block_class']) && $item['block_class'] ? $section->children()->children(':first-child')->addClass($item['block_class']) : null;
-        if ($section->find('head')) {
+        if (isset($result->head)) {
+            $result->head = $section->inner();
+            $section->remove();
+        } else if ($section->find('head')) {
             $result->head = $section->find('head')->inner();
             $section->find('head')->remove();
         }
-        if ($section->find('body')) {
+        if ($section->find('body') or isset($result->body)) {
             $result->body = $section->find('body');
             $section->find('body')->remove();
         }
@@ -275,8 +278,9 @@ class modYonger
                 if ($block['active'] == 'on') {
                     $block['_parent'] = $app->objToArray($item);
                     $res = $this->blockview($block);
-                    $head && isset($res->head) ? $head->$method($res->head) : null;
-                    $body && isset($res->body) ? $body->$method($res->body) : null;
+
+                    $head->length && isset($res->head) ? $head->$method($res->head) : null;
+                    $body->length && isset($res->body) ? $body->$method($res->body) : null;
                     $dom->$method($res->result);
                 }
             }
