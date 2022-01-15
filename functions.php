@@ -64,7 +64,7 @@ function wbInitEnviroment()
     $_ENV['page_size'] = 12;
     $_ENV['max_post'] = ini_get('post_max_size');
     $_ENV['max_file'] = ini_get('upload_max_filesize');
-
+    $_ENV['hash_algorithm'] = PASSWORD_DEFAULT;
 
     $_ENV['data'] = new stdClass(); // for store some data
 
@@ -244,7 +244,7 @@ function wbGetToken()
     (count($allow) && !in_array($role, $allow)) ? $flag = false : null;
     (count($disallow) && in_array($role, $disallow)) ? $flag = false : null;
     (!$flag) ? $role = microtime() : null;
-    return password_hash($app->route->host.session_id().$apikey.$role.$user,null);
+    return password_hash($app->route->host.session_id().$apikey.$role.$user,$app->vars('_env.hash_algorithm'));
 }
 
 
