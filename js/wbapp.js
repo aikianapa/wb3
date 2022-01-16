@@ -4,7 +4,7 @@ wbapp.tmp = {};
 var _tmpphp = false;
 var _tmpjq = false;
 
-setTimeout(function() {
+setTimeout(async function() {
     wbapp.loader = true;
     let loader = document.getElementById("loader");
     typeof(loader) !== 'undefined' && loader !== null ? wbapp.delay = 1500 : wbapp.delay = 10;
@@ -18,9 +18,9 @@ setTimeout(function() {
     wbapp.devmode = get_cookie('devmode');
     wbapp.evClick = 'tap click touchstart';
     wbapp.start();
-}, 10);
+}, 5);
 
-wbapp.start = function() {
+wbapp.start = async function() {
     if (typeof str_replace === 'undefined') {
         loadPhpjs();
         return;
@@ -205,7 +205,7 @@ wbapp.start = function() {
         return s ? this.before(s).remove() : jQuery("<p>").append(this.eq(0).clone()).html();
     };
 
-    $.fn.runScripts = function() {
+    $.fn.runScripts = async function() {
         $(this).find("script").each(function() {
             var type = $(this).attr("type");
             if (type !== "text/locale" && type !== "text/template") {
@@ -507,7 +507,7 @@ wbapp.eventsInit = async function() {
 
 }
 
-wbapp.ajaxAuto = function(func = null) {
+wbapp.ajaxAuto = async function(func = null) {
     $(document).find("[data-ajax][auto]").each(async function() {
         $(this).trigger("click");
         if ($(this).attr('once') !== undefined) $(this).removeAttr('data-ajax').removeAttr('once');
@@ -595,7 +595,7 @@ wbapp.auth = function(form, mode = 'signin') {
 }
 
 wbapp.alive = async function() {
-    $.post("/ajax/alive", {}, function(data) {
+    $.post("/ajax/alive", {}, async function(data) {
         if (data.result == false || data.result == undefined) {
             wbapp.console("Trigger: session_close");
             $(document).trigger("session_close");
@@ -949,7 +949,7 @@ wbapp.save = async function(obj, params, func = null) {
 
 
 wbapp.updateInputs = function() {
-    $(document).find(":checkbox").each(function() {
+    $(document).find(":checkbox").each(async function() {
         if ($(this).attr("value") == "on") {
             $(this).attr("checked", true).prop("checked", true);
         } else {
@@ -958,7 +958,7 @@ wbapp.updateInputs = function() {
     })
 }
 
-wbapp.wbappScripts = function() {
+wbapp.wbappScripts = async function() {
     var done = [];
     $(document).find("script[type=wbapp],script[wbapp],script[wb-app]").each(async function() {
         if (this.done !== undefined) return;
@@ -1130,7 +1130,7 @@ wbapp.ajax = async function(params, func = null) {
                 // $inp = $(params._event.target).parent();
                 // тут нужна обработка значений на клиенте
             }
-            setTimeout(function() {
+            setTimeout(async function() {
                 wbapp.tplInit();
                 wbapp.lazyload();
                 wbapp.ajaxAuto();
@@ -1258,7 +1258,7 @@ wbapp.renderFilter = function(tid, filter) {
     wbapp.render(tid);
 }
 
-wbapp.storageUpdate = function(key, data) {
+wbapp.storageUpdate = async function(key, data) {
 
     var store = wbapp.storage(key);
     if (!store) wbapp.storage(key, {});
@@ -1419,7 +1419,7 @@ wbapp.toast = async function(title, text, params = {}) {
 wbapp.formByObj = function(selector, data) {
     var form = $(document).find(selector, 0);
     $(form)[0].clear;
-    $.each(data, function(key, value) {
+    $.each(data, async function(key, value) {
         $(form).find("[name='" + key + "']").val(value);
     });
 }
@@ -2152,27 +2152,27 @@ function is_visible(elem) {
     return false;
 }
 
-var loadPhpjs = function() {
+var loadPhpjs = async function() {
     if (_tmpphp == false) {
         _tmpphp = true;
         let phpjs = document.createElement('script');
         phpjs.src = `/engine/js/php.js`;
         phpjs.async = false;
-        phpjs.onload = function() {
-            wbapp.start();
+        phpjs.onload = async function() {
+            setTimeout(() => { wbapp.start() }, 10);
         }
         document.head.appendChild(phpjs);
     }
 }
 
-var loadJquery = function() {
+var loadJquery = async function() {
     if (_tmpjq == false) {
         _tmpjq = true;
         let jquery = document.createElement('script');
         jquery.src = '/engine/js/jquery.min.js';
         jquery.async = false;
-        jquery.onload = function() {
-            wbapp.start();
+        jquery.onload = async function() {
+            setTimeout(() => { wbapp.start() }, 10);
         }
         document.head.appendChild(jquery);
     }
