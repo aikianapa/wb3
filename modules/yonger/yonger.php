@@ -177,7 +177,6 @@ class modYonger
         isset($item['block_class']) && $item['block_class'] ? $section->children()->children(':first-child')->addClass($item['block_class']) : null;
         if (isset($result->head)) {
             $result->head = $section->inner();
-            $section->remove();
         } else if ($section->find('head')) {
             $result->head = $section->find('head')->inner();
             $section->find('head')->remove();
@@ -278,10 +277,16 @@ class modYonger
                 if ($block['active'] == 'on') {
                     $block['_parent'] = $app->objToArray($item);
                     $res = $this->blockview($block);
+                    if ($res->head) {
+                        $head->$method($res->head);
+                    } else {
 
                     $head->length && isset($res->head) ? $head->$method($res->head) : null;
                     $body->length && isset($res->body) ? $body->$method($res->body) : null;
                     $dom->$method($res->result);
+
+                    }
+
                 }
             }
         }

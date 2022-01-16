@@ -13,7 +13,7 @@ class ctrlAjax
 
         in_array($mode,['getsess','getsett','gettpl','getform','auth','alive']) ? null : $app->apikey('ajax');
 
-        $app->initSettings($app);
+        //$app->initSettings($app); // сильно тормозит
         if (is_file($_ENV['path_app'].'/ajax.php')) {
             include_once($_ENV['path_app'].'/ajax.php');
             $this->ajax = new wbAjax($app);

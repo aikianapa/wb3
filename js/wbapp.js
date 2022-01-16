@@ -7,7 +7,7 @@ var _tmpjq = false;
 setTimeout(async function() {
     wbapp.loader = true;
     let loader = document.getElementById("loader");
-    typeof(loader) !== 'undefined' && loader !== null ? wbapp.delay = 1500 : wbapp.delay = 10;
+    typeof(loader) !== 'undefined' && loader !== null ? wbapp.delay = 20 : wbapp.delay = 10;
 
     var get_cookie = function(name) {
         const value = `; ${document.cookie}`;
@@ -345,6 +345,7 @@ wbapp.start = async function() {
             wbapp.lazyload();
             wbapp.modalsInit();
             wbapp.fileinpInit();
+            wbapp.wbappScripts();
             //$(document).scrollTop(0);
             $(document).on("wb-ajax-done", async function() {
                 wbapp.console("Trigger: wb-ajax-done");
@@ -960,7 +961,7 @@ wbapp.updateInputs = function() {
 
 wbapp.wbappScripts = async function() {
     var done = [];
-    $(document).find("script[type=wbapp],script[wbapp],script[wb-app]").each(async function() {
+    $(document).find("script[type=wbapp],script[wbapp],script[wb-app]").each(function() {
         if (this.done !== undefined) return;
         this.done = true;
         let src = null;
@@ -987,6 +988,7 @@ wbapp.wbappScripts = async function() {
             }
         }
         if ($(this).attr("remove") !== undefined) $(this).remove();
+        if ($(this).attr("removable") !== undefined) $(this).remove();
     });
 }
 
@@ -1886,6 +1888,8 @@ wbapp.loadScripts = async function(scripts = [], trigger = null, func = null) {
 wbapp.loadStyles = async function(styles = [], trigger = null, func = null) {
     if (wbapp.loadedStyles == undefined) wbapp.loadedStyles = [];
     var i = 0;
+
+
     styles.forEach(function(src) {
         setTimeout(function() {
             if (wbapp.loadedStyles.indexOf(src) !== -1) {
