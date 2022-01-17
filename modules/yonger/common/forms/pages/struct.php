@@ -39,6 +39,8 @@
                                     <img src="/module/myicons/24/FC5A5A/power-turn-on-square.1.svg"
                                         class="dd-active cursor-pointer" />
                                     {{/if}}
+                                    <img src="/module/myicons/24/323232/copy-paste-select-add-plus.svg"
+                                        class="dd-copy cursor-pointer">
                                     <img src="/module/myicons/24/323232/content-edit-pen.svg"
                                         class="dd-edit cursor-pointer">
                                     <img src="/module/myicons/24/323232/trash-delete-bin.2.svg"
@@ -157,6 +159,15 @@ yonger.pageBlocks = function() {
                 $(that).prop('disabled',false)
             });
         }
+    });
+
+    $('#yongerPageBlocks').delegate('.dd-copy', wbapp.evClick, function() {
+        let id = $(this).parents('.dd-item').attr('data-id');
+        let block = wbapp.storage('yonger.page.blocks.' + id);
+        id = wbapp.newId();
+        block.header += ' (copy)';
+        block.id = id;
+        wbapp.storage('yonger.page.blocks.' + id, block);
     });
 
     var blockSave = function() {

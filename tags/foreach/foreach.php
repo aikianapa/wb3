@@ -16,6 +16,7 @@ class tagForeach
 
     public function foreach(&$dom)
     {
+        if (isset($dom->rendered)) return;
         !$dom->app ? $dom->app = new wbApp() : null;
         $this->app = &$dom->app;
         $this->dom = &$dom;
@@ -29,9 +30,11 @@ class tagForeach
 
         $dom->html("");
         $dom->outer = $dom->outer();
+        $nid = "fe_" . $this->app->newId();
+        $dom->parent()->attr('id') == '' ? $dom->parent()->attr('id', $nid) : null;
         !isset($this->tid) && $dom->attr("id") > "" ? $this->tid = $dom->attr("id") : null;
         !isset($this->tid) && $dom->parent()->attr("id") > "" ? $this->tid = $dom->parent()->attr("id") : null;
-        !isset($this->tid) ? $this->tid = "fe_" . $this->app->newId() : null;
+        !isset($this->tid) ? $this->tid = $nid : null;
 
         $dom->tid = $this->tid;
         if (!$dom->params('length') && $dom->attr('data-ajax') > '') {
@@ -40,9 +43,8 @@ class tagForeach
 
 
         $dom->params('target') == '' ? $dom->params->target = '#'.$this->tid : null;
-        $dom->params("render") == "client" ? $render = $dom->params("render") : $render = "server";
-//        $dom->params->render = $render;
-        $dom->render = $render;
+        $dom->params("render") == "client" ? $render = "client" : $render = "server";
+        $dom->params->render = $dom->render = $render;
         $this->$render($dom);
         $dom->rendered = true;
     }

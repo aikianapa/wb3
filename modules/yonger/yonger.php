@@ -573,4 +573,31 @@ class modYonger
         return $login;
     }
 
+    private function presets() {
+        $res = null;
+        if (isset($this->app->route->params[0])) {
+            $this->file = $this->app->vars('_env.path_app').'/blocks/presets.json';
+            $json = is_file($this->file) ? json_decode(file_get_contents($this->file), true) : [];
+            $func = 'presets_'.$this->app->route->params[0];
+            $res = method_exists($this,$func) ? $this->$func($json) : null;
+        }
+        header("Content-type: application/json; charset=utf-8");
+        return json_encode($res);
+    }
+
+    private function presets_list($json) {
+            $res = $this->app->arrayToObj($json);
+            return $res;
+    }
+
+    private function presets_save($json) {
+            $name = $this->app->vars('_post.name');
+            $id = $this->app->furlGenerate($name);
+            $json[$id] = ['blocks'=>$this->app->vars('_post.blocks'),'name'=>$name,'id'=>$id];
+            $json = $this->app->itemToArray($json);
+            $json = $this->app->jsonEncode($json);
+            $this->app->putContents($this->file, $json);
+            return $res;
+    }
+
 }

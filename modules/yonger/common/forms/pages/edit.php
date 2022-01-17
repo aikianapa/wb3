@@ -46,17 +46,27 @@
                                         <input type="text" name="header" class="form-control" placeholder="Заголовок" wb="module=langinp" required>
                                     </div>
                                 </div>
+
+            <div class="form-group row">
+                <label class="col-lg-4 form-control-label">Шаблон</label>
+                <div class="col-lg-8">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text p-1" onclick="yonger.pagePresetSelect()">
+                            <img data-src="/module/myicons/interface-essential-138.svg?size=24&stroke=323232" width="24" height="24">
+                        </span>
+                    </div>
+                    <input class="form-control" type="text" name="preset" placeholder="{{_lang.preset}}">
+                    <div class="input-group-append" onclick="yonger.pagePresetSave()">
+                        <span class="input-group-text p-1"><img data-src="/module/myicons/floppy-save.svg?size=24&stroke=323232" width="24" height="24"></span>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+
                             </div>
-                            <!--div class="form-group row">
-                            <label class="col-12 form-control-label">Шаблон</label>
-                            <div class="col-12">
-                                <select class="form-control" name="template" placeholder="Шаблон">
-                                    <wb-foreach wb='call=wbListTpl()'>
-                                        <option value="{{_val}}">{{_val}}</option>
-                                    </wb-foreach>
-                                </select>
-                            </div>
-                        </div-->
+
                             <wb-module wb="module=yonger&mode=structure" />
                         </form>
                     </div>
@@ -98,8 +108,20 @@
     </div>
 </div>
 
+<template id="yonPresetSelect">
+    <div class="list-group">
+        {{#each presets}}
+        <a href="javascript:void(0)" class="list-group-item text-dark" data-name='{{name}}' data-id='{{id}}'>
+            <h6 class="tx-13 tx-inverse tx-semibold mg-b-0">{{name}}</h6>
+            <span class="d-block tx-11 text-muted">{{id}}</span>
+        </a>
+        {{/each}}
+    </div>
+</template>
+
 <script wb-app>
     let timeout = 50;
+    // ==============
     yonger.pageEditor = function() {
         let $form = $('#{{_form}}EditForm');
         $form.delegate('[name=path]', 'change', function() {
@@ -122,15 +144,95 @@
         })
     }
 
+    // ===============
+    yonger.pagePresetSelect = function() {
+        let yonpageselect = wbapp.postSync('/module/yonger/presets/list/');
+        let $modal = $(wbapp.tpl('wb.modal').html);
+        let tpl = wbapp.tpl('#yonPresetSelect').html;
+        let that = this;
+        $modal
+            .attr('data-backdrop','true')
+            .removeClass('fade')
+            .addClass('effect-slide-in-right left w-50 removable')
+            .modal('show');
+        $modal.find('.modal-header').prepend('<input type="search" class="form-control">');
+        $modal.find('.modal-body').addClass('p-0 pb-5 scroll-y').html(tpl);
+        let list = [];
+        let url = $(that).next('input').data('url');
+        if (url > '') {
+            url = "^" + url.replace("/", "\\/");
+            let regex = new RegExp(url,"gi");
+            $(yonpageselect).each(function(i,item){
+                let str = item.url;
+                str.match(regex) ? list.push(item) : null;
+            })
+        } else {
+            list = yonpageselect;
+        }
+        console.log(list);
+        $modal.list = list;
+        $modal.ractive = Ractive({
+            target: $modal.find('.modal-body'),
+            data: {
+                presets: list
+            },
+            template: tpl
+        })
+        
+        $modal.delegate('.modal-header input','keyup',function(){
+            let regex = $(this).val().replace("/", "\\/");
+            regex = new RegExp(regex,"gi");
+            list = [];
+            $($modal.list).each(function(i,item){
+                let str = item.url+' '+item.header;
+                str.match(regex) ? list.push(item) : null;
+            });
+            $modal.ractive.reset({pages: list})
+        })
+
+        $modal.delegate('.list-group-item','click',function(){
+            let name = $(this).data('name');
+            let prid = $(this).data('id');
+            $("#{{_form}}EditForm [name=preset]").val(name);
+            wbapp.storage('yonger.page.blocks',$modal.list[prid].blocks);
+            $modal.modal('hide');
+        })
+    }
+
+    yonger.pagePresetSave = function() {
+        let blocks = wbapp.storage('yonger.page.blocks');
+        let data = [];
+        $.each(blocks,function(i,block){
+            data.push({
+                 'id': wbapp.newId()
+                ,'active': block.active
+                ,'block_id': block.block_id
+                ,'block_class': block.block_class
+                ,'name': block.name
+                ,'header': block.header
+                ,'form': block.form
+                ,'container': block.container
+            })
+        })
+        let name = $("#{{_form}}EditForm [name=preset]").val();
+        if (!name) return;
+        wbapp.post('/module/yonger/presets/save/',{'name':name,'blocks':data},function(data){
+            console.log(data);
+        });
+        
+    }
+
     yonger.pageEditor();
 </script>
     <wb-lang>
         [ru]
         header = Редактирование страницы
         search = Поиск
+        preset = Имя шаблона
         [en]
         header = Page edit
         search = Search
+        preset = Preset name
     </wb-lang>
 
 </html>

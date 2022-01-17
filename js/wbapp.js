@@ -399,7 +399,7 @@ wbapp.confirm = function(title = null, text = null, options = null) {
         alert(0)
     });
     */
-    let modal = wbapp.getForm('common', 'confirm', { 'confirm': true });
+    let modal = wbapp.getForm('common', 'confirm', { data: { 'confirm': true } });
     let $modal = $(modal.result);
     let confirm = false;
     title !== null ? title = $modal.find('.modal-title').text(title) : null;
