@@ -172,7 +172,7 @@ class ctrlAjax
         $form = $this->app->vars('_route.params.0');
         $mode = $this->app->vars('_route.params.1');
         $out = $this->app->getForm($form, $mode);
-        $out && $this->app->vars('_post.data') > '' ? $out->fetch($this->app->vars('_post.data')) : $out->fetch();
+        $out && $this->app->vars('_post.data') > '' ? $out->fetch($this->app->vars('_post.data')) : $out->outer();
         return json_encode(['result'=>$out->outer()]);
     }
 
