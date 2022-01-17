@@ -56,7 +56,7 @@
                             <img data-src="/module/myicons/interface-essential-138.svg?size=24&stroke=323232" width="24" height="24">
                         </span>
                     </div>
-                    <input class="form-control" type="text" name="preset" placeholder="{{_lang.preset}}">
+                    <input class="form-control" type="text" name="preset" placeholder="{{_lang.preset}}" autocomplete="off">
                     <div class="input-group-append" onclick="yonger.pagePresetSave()">
                         <span class="input-group-text p-1"><img data-src="/module/myicons/floppy-save.svg?size=24&stroke=323232" width="24" height="24"></span>
                     </div>
@@ -146,10 +146,9 @@
 
     // ===============
     yonger.pagePresetSelect = function() {
-        let yonpageselect = wbapp.postSync('/module/yonger/presets/list/');
+        let yonpresetselect = wbapp.postSync('/module/yonger/presets/list/');
         let $modal = $(wbapp.tpl('wb.modal').html);
         let tpl = wbapp.tpl('#yonPresetSelect').html;
-        let that = this;
         $modal
             .attr('data-backdrop','true')
             .removeClass('fade')
@@ -157,20 +156,8 @@
             .modal('show');
         $modal.find('.modal-header').prepend('<input type="search" class="form-control">');
         $modal.find('.modal-body').addClass('p-0 pb-5 scroll-y').html(tpl);
-        let list = [];
-        let url = $(that).next('input').data('url');
-        if (url > '') {
-            url = "^" + url.replace("/", "\\/");
-            let regex = new RegExp(url,"gi");
-            $(yonpageselect).each(function(i,item){
-                let str = item.url;
-                str.match(regex) ? list.push(item) : null;
-            })
-        } else {
-            list = yonpageselect;
-        }
-        console.log(list);
-        $modal.list = list;
+        let list = $modal.list = yonpresetselect;
+
         $modal.ractive = Ractive({
             target: $modal.find('.modal-body'),
             data: {
@@ -180,20 +167,23 @@
         })
         
         $modal.delegate('.modal-header input','keyup',function(){
-            let regex = $(this).val().replace("/", "\\/");
-            regex = new RegExp(regex,"gi");
-            list = [];
-            $($modal.list).each(function(i,item){
-                let str = item.url+' '+item.header;
-                str.match(regex) ? list.push(item) : null;
-            });
-            $modal.ractive.reset({pages: list})
+            let regex = $(this).val();
+            let list = $modal.list;
+            if (regex > ' ') {
+                regex = new RegExp(regex,"gi");
+                list = [];
+                $.each($modal.list,function(i,item){
+                    let str = item.name+' '+item.id;
+                    str.match(regex) ? list.push(item) : null;
+                });
+            }
+            $modal.ractive.reset({presets: list})
         })
 
         $modal.delegate('.list-group-item','click',function(){
             let name = $(this).data('name');
             let prid = $(this).data('id');
-            $("#{{_form}}EditForm [name=preset]").val(name);
+            $("#{{_form}}EditForm [name=preset]").val(name).data('id',prid);
             wbapp.storage('yonger.page.blocks',$modal.list[prid].blocks);
             $modal.modal('hide');
         })
@@ -202,24 +192,36 @@
     yonger.pagePresetSave = function() {
         let blocks = wbapp.storage('yonger.page.blocks');
         let data = [];
-        $.each(blocks,function(i,block){
-            data.push({
-                 'id': wbapp.newId()
-                ,'active': block.active
-                ,'block_id': block.block_id
-                ,'block_class': block.block_class
-                ,'name': block.name
-                ,'header': block.header
-                ,'form': block.form
-                ,'container': block.container
-            })
-        })
         let name = $("#{{_form}}EditForm [name=preset]").val();
+        let prid = wbapp.furl(name);
+        prid = strtolower(str_replace('_','-',prid));
         if (!name) return;
-        wbapp.post('/module/yonger/presets/save/',{'name':name,'blocks':data},function(data){
-            console.log(data);
-        });
-        
+        let save = function() {
+            $.each(blocks,function(i,block){
+                data.push({
+                    'id': wbapp.newId()
+                    ,'active': block.active
+                    ,'block_id': block.block_id
+                    ,'block_class': block.block_class
+                    ,'name': block.name
+                    ,'header': block.header
+                    ,'form': block.form
+                    ,'container': block.container
+                })
+            })
+            wbapp.post('/module/yonger/presets/save/',{'name':name,'blocks':data},function(data){
+                console.log(data);
+            });
+        }
+        let yonpresetselect = wbapp.postSync('/module/yonger/presets/list/');
+        console.log(prid, yonpresetselect);
+        if (yonpresetselect[prid] !== undefined) {
+            wbapp.confirm("{{_lang.preset_save}}",`{{_lang.preset_confirm}} ${name} ?`)
+                .on('confirm',()=>{save()})
+                .on('cancel',()=>{});
+        } else {
+            save();
+        }
     }
 
     yonger.pageEditor();
@@ -229,10 +231,14 @@
         header = Редактирование страницы
         search = Поиск
         preset = Имя шаблона
+        preset_save = Сохранение шаблона
+        preset_confirm = Перезаписать уже имеющийся шаблон
         [en]
         header = Page edit
         search = Search
         preset = Preset name
+        preset_save = Preset save
+        preset_confirm = Preset is already exixst. Owerwrite?
     </wb-lang>
 
 </html>
