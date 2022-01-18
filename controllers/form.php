@@ -25,11 +25,9 @@ class ctrlForm
 
     public function show()
     {
-        ob_start();
-        echo '<!DOCTYPE html>';
-        ob_get_contents();
-        ob_flush();
-        
+        header('HTTP/1.1 200 OK');
+        print '<!DOCTYPE html>'.PHP_EOL;
+
         $app = &$this->app;
         $cache = $app->getCache();
         $item = [];

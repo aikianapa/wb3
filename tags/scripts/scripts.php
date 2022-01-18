@@ -8,37 +8,42 @@ class tagScripts
     {   
         $this->dom = &$dom;
         $this->app = &$dom->app;
+        $this->inner = $dom->text();
         $this->home = $dom->app->vars('_env.path_app');
         $this->path = '/assets/compress/js';
         $this->dir = $this->home.$this->path;
-        $this->filename = $dom->attr('result');
-        $this->file =  $this->dir.'/'.$this->filename;
+        $this->filename = $this->dom->attr('src') ? $this->dom->attr('src') : md5($this->inner).'.jsgz';
+        strtolower(substr($this->filename, -5)) == '.jsgz' ? null : $this->filename.='.jsgz';
+        $this->file =  wbNormalizePath($this->dir.'/'.$this->filename);
         $this->access();
-        $this->load($dom);
+        $this->load();
         $dom->remove();
     }
 
-    public function load(&$dom)
+    public function load()
     {
-        $arr = json_decode($dom->text(),true);
+        $inner = wbSetValuesStr($this->inner, $dom->item);
+        $arr = json_decode($inner,true);
         $script = '';
+        $wbapp = false;
         foreach($arr as $src) {
             $src = stream_is_local($src) ? $this->home.$src : $src;
             $tmp = file_get_contents($src);
-
             try {
+                //$tmp = wbMinifyJs($tmp);
                 $tmp = JSMin::minify($tmp);
             } catch (\Throwable $th) {
-                echo "Ошибка минификации скрипта: ".$src;
-                die;
+                //$tmp = wbMinifyJs($tmp);
             }
             $script .= $tmp.';'.PHP_EOL;
         }
+        if ($script == '') return;
         $this->dom->attr('trigger') > '' ? $script.='$(document).trigger("'.$this->dom->attr('trigger').'");'.PHP_EOL : null;
         
         $script = gzencode($script, 9);
         $this->app->putContents($this->file, $script);
-        $this->dom->after('<script wb-app src="'.$this->path.'/'.$this->filename.'"></script>\n');
+        $type = strtolower(trim($this->dom->attr('src')) == 'wbapp') ? '' : ' type="wbapp" ';
+        $this->dom->after('<script '.$type.' src="'.$this->path.'/'.$this->filename.'"></script>'.PHP_EOL);
     }
 
     public function access() {

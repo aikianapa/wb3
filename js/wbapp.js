@@ -332,11 +332,15 @@ wbapp.start = async function() {
     }
 
     setTimeout(function() {
-        wbapp.loadScripts([
-            //                , `/engine/js/jquery-migrate.min.js`
-            `/engine/js/jquery-ui.min.js` // для modal draggable - нужно подумать куда перенести
-            , `/engine/js/jquery.tap.js`, `/engine/js/ractive.js`, `/engine/js/topbar.min.js`, `/engine/js/lazyload.js`
-        ], "wbapp-go", async function() {
+        let load = [];
+        if (typeof topbar == 'undefined') load.push("/engine/js/topbar.min.js");
+        if (typeof jQuery.ui == 'undefined') load.push("/engine/js/jquery-ui.min.js");
+        if (typeof Ractive == 'undefined') load.push(`/engine/js/ractive.js`);
+        load.push(`/engine/js/jquery.tap.js`);
+        if (typeof lazyload == 'undefined') load.push(`/engine/js/lazyload.js`);
+
+
+        wbapp.loadScripts(load, "wbapp-go", async function() {
             Ractive.DEBUG = false;
             wbapp.eventsInit();
             wbapp.wbappScripts();

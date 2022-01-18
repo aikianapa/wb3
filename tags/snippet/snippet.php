@@ -19,8 +19,8 @@ class tagSnippet {
           $snip = $app->fromFile($app->vars("_env.path_app").$dom->params->src);
       }
       $dom->inner($snip);
-      $dom->unwrap("wb-snippet");
       if ($dom->params('render') !== 'client') $dom->fetch();
+      $dom->unwrap("wb-snippet");
   }
 }
 ?>
