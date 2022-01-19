@@ -26,8 +26,6 @@ class ctrlForm
     public function show()
     {
         header('HTTP/1.1 200 OK');
-        print '<!DOCTYPE html>'.PHP_EOL;
-
         $app = &$this->app;
         $cache = $app->getCache();
         $item = [];
@@ -77,7 +75,6 @@ class ctrlForm
             $out = isset($this->target) ? '<div>'.$dom->find($this->target)->outer().'</div>' : $out = $dom->outer();
             $out = $this->app->fromString($out);
             $this->app->module('compress',$out);
-
             $out = $out->outer();
             !strpos(' '.trim($out), '<!DOCTYPE') ? $out = '<!DOCTYPE html>'.$out : null;
             echo $out;
