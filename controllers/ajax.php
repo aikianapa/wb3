@@ -213,6 +213,7 @@ class ctrlAjax
     public function rmitem()
     {
         $app = $this->app;
+        if (!$app->apikey()) return;
         $form = $app->vars('_route.form');
         $item = $app->vars('_route.item');
         if (!isset($_REQUEST['_confirm'])) {
@@ -237,6 +238,16 @@ class ctrlAjax
             echo json_encode($result);
             die;
         }
+    }
+
+    public function copy() {
+        $app = $this->app;
+        if (!$app->apikey()) return;
+        $form = $app->vars('_route.form');
+        $item = $app->vars('_route.item');
+        $result = $app->itemCopy($form, $item);
+        echo json_encode($result);
+        die;
     }
 
     public function getsess()

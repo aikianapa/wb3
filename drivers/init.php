@@ -116,6 +116,29 @@ function wbItemRename($form = null, $old = null, $new = null, $flush = true)
     return false;
 }
 
+
+function wbItemCopy($form = null, $old = null, $new = null, $flush = true)
+{
+    if ($new == null or $new == "") {
+        $new = wbNewId();
+    }
+    $item = wbItemRead($form, $old);
+    if ($item) {
+        $item=wbTrigger('form', __FUNCTION__, 'beforeItemCopy', func_get_args(), $item);
+        $item["id"] = $item["_id"] = $new;
+        $item = wbItemSave($form, $item, $flush);
+        if ($item) {
+        //    $path = "{$_ENV["path_app"]}/uploads/{$form}";
+        //    if (is_dir("{$path}/{$old}")) {
+        //        rename("{$path}/{$old}", "{$path}/{$new}");
+        }
+        $item=wbTrigger('form', __FUNCTION__, 'afterItemCopy', func_get_args(), $item);
+        return $item;
+    }
+    return false;
+}
+
+
 function wbItemSave($form, $item = null, $flush = true)
 {
     $app = $_ENV['app'];
