@@ -1109,7 +1109,7 @@ class wbApp
         }
         */
         $rc = new ReflectionClass($class);
-        return $rc->newInstanceArgs($args);
+        return @$rc->newInstanceArgs($args);
     }
 
     public function json($data)

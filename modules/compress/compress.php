@@ -16,8 +16,10 @@ class modCompress
             $this->dom = &$obj;
         }
         $this->css = new \Momentum81\PhpRemoveUnusedCss\RemoveUnusedCssBasic();
-        return $this->init();
+        $this->init();
+        return $this->dom;
     }
+
     public function init()
     {
         if ($this->app->vars('_sett.modules.compress.active') !== 'on') {

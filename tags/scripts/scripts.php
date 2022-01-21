@@ -22,7 +22,7 @@ class tagScripts
 
     public function load()
     {
-        $inner = wbSetValuesStr($this->inner, $dom->item);
+        $inner = wbSetValuesStr($this->inner, $this->dom->item);
         $arr = json_decode($inner,true);
         $script = '';
         $wbapp = false;
