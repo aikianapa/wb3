@@ -40,7 +40,7 @@ function wbSetDb($form)
     ($app->route->mode == 'save') && !$app->drivers->$form->tableExist($form) && !$loop ? $app->tableCreate($form) : null;
 
     if (!$app->drivers->$form->tableExist($form)) {
-        echo "Fatal error! Table {$form} not exists!" ;
+        echo json_encode(["error"=>true,"msg"=>"Fatal error! {$form} not found !"]);
         die;
     }
 
