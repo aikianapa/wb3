@@ -1510,9 +1510,9 @@ wbapp.tplInit = async function() {
 
 wbapp.getForm = function(form, mode, data = {}, func = null) {
     if (!func) {
-        var res = wbapp.postSync(`/ajax/getform/${form}/${mode}`, data);
+        var res = wbapp.postSync("/ajax/getform/" + form + "/" + mode, data);
     } else {
-        var res = wbapp.post(`/ajax/getform/${form}/${mode}`, data, func);
+        var res = wbapp.post("/ajax/getform/" + form + "/" + mode, data, func);
     }
     return res;
 }
