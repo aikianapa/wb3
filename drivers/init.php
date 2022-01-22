@@ -32,13 +32,12 @@ function wbSetDb($form)
     $app->_db = new jsonDrv($app);
 
     (substr($form, 0, 1) == '_') ? $app->drivers->$form = &$app->_db : $app->drivers->$form = &$app->db;
-
     $loop=false;
     foreach (debug_backtrace() as $func) {
         'wbTableCreate'==$func["function"] ? $loop=true : null;
     }
 
-    !$app->drivers->$form->tableExist($form) && !$loop ? $app->tableCreate($form) : null;
+    ($app->route->mode == 'save') && !$app->drivers->$form->tableExist($form) && !$loop ? $app->tableCreate($form) : null;
 
     return $app->drivers->$form;
 }
