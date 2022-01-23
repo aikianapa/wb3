@@ -368,6 +368,14 @@ wbapp.start = async function() {
 
 }
 
+wbapp.ractive = function(target = 'body', tpl = 'empty', data = []) {
+    return new Ractive({
+        'target': target,
+        'template': tpl,
+        'data': data
+    });
+}
+
 wbapp.fileinpInit = function() {
     var getBase64 = function(file) {
         return new Promise((resolve, reject) => {
@@ -434,6 +442,7 @@ wbapp.lazyload = async function() {
 }
 
 wbapp.eventsInit = async function() {
+    $(document).undelegate("[data-ajax]:not(input,select)", "click");
     $(document).delegate("[data-ajax]:not(input,select)", "click", async function(e, tid) {
         if (!$(this).is("input,select")) {
             let params = wbapp.parseAttr($(this).attr("data-ajax"));
@@ -463,6 +472,7 @@ wbapp.eventsInit = async function() {
         }
     })
 
+    $(document).undelegate("input[data-ajax],select[data-ajax]", "change")
     $(document).delegate("input[data-ajax],select[data-ajax]", "change", async function(e, tid) {
         e.preventDefault();
         let search = $(this).attr("data-ajax");
@@ -474,6 +484,7 @@ wbapp.eventsInit = async function() {
         return false;
     })
 
+    $(document).undelegate("input[type=search][data-ajax]", "keyup");
     $(document).delegate("input[type=search][data-ajax]", "keyup", function() {
         var minlen = 0;
         var that = this;
@@ -489,6 +500,7 @@ wbapp.eventsInit = async function() {
         }
     })
 
+    $(document).undelegate("input[type=checkbox]", "click");
     $(document).delegate("input[type=checkbox]", "click", async function() {
         if ($(this).prop("checked") == false) {
             $(this).removeAttr("checked");
@@ -498,12 +510,14 @@ wbapp.eventsInit = async function() {
         }
     });
 
+    $(document).undelegate("[rows=auto]", "keydown keyup focus");
     $(document).delegate("[rows=auto]", "keydown keyup focus", function() {
         this.style.overflow = "hidden";
         this.style.height = "1px";
         this.style.height = (this.scrollHeight) + "px";
     });
 
+    $(document).undelegate("[rows=auto]", "focusout")
     $(document).delegate("[rows=auto]", "focusout", async function() {
         this.style.overflow = "hidden";
         this.style.height = "auto";
@@ -1118,7 +1132,6 @@ wbapp.ajax = async function(params, func = null) {
                 }
             }
 
-
             if (params.source && params.source > '') data = $(data).find(params.source).html();
             if (params.html) $(document).find(params.html).html(data);
             if (params.append) $(document).find(params.append).append(data);
@@ -1136,13 +1149,7 @@ wbapp.ajax = async function(params, func = null) {
                 // $inp = $(params._event.target).parent();
                 // тут нужна обработка значений на клиенте
             }
-            setTimeout(async function() {
-                wbapp.tplInit();
-                wbapp.lazyload();
-                wbapp.ajaxAuto();
-                wbapp.wbappScripts();
-                paginationfix(data);
-            }, 1)
+            wbapp.refresh(data);
             if (params.render == 'client') {
                 let res = $(data).find(params.target).html();
                 $(document).find(params.target).html(res);
@@ -1241,6 +1248,20 @@ wbapp.ajax = async function(params, func = null) {
             }
         }
     }
+}
+
+wbapp.refresh = function(data = null) {
+    setTimeout(async function() {
+        wbapp.wbappScripts();
+        wbapp.tplInit();
+        wbapp.ajaxAuto();
+        wbapp.lazyload();
+        wbapp.modalsInit();
+        //        wbapp.fileinpInit();
+        wbapp.wbappScripts();
+        if ($.fn.tooltip) $('[data-toggle="tooltip"]').tooltip();
+        if (data !== null) paginationfix(data);
+    }, 1)
     let paginationfix = async function(data) {
         if (data.pag == undefined || data.params == undefined) return;
         if (data.params.more == undefined || data.params.more < 'more') return;
@@ -1492,11 +1513,6 @@ wbapp.tplInit = async function() {
         }
 
         if (params.bind && params.render == 'client') {
-            var profileMenu = Ractive({
-                target: tid,
-                template: wbapp.template[tid].html,
-                data: () => { return wbapp.storage(params.bind); }
-            });
             wbapp.render(tid, wbapp.storage(params.bind));
         } else if (params.bind && params.render == 'server') {
             wbapp.storage(params.bind, params);
@@ -1646,6 +1662,7 @@ wbapp.renderClient = async function(params, data = {}) {
 
     if (newbind) {
         wbapp.bind[params.bind][tid].set(data);
+        $(document).off("bind-" + params.bind);
         $(document).on("bind-" + params.bind, function(e, data) {
             try {
                 wbapp.bind[params.bind][tid].set(data);
@@ -1745,7 +1762,7 @@ wbapp.modalsInit = async function() {
 
         $(document).delegate(".modal", "hidden.bs.modal", function(event) {
             var that = this;
-            if ($(this).hasClass("removable")) {
+            if ($(this).hasClass("removable") || $(this).hasClass("remove")) {
                 $(that).modal("dispose").remove();
             } else {
                 $(this).appendTo($(this).data("parent"));
@@ -1980,6 +1997,7 @@ wbapp.trigger = async function(trigger, event = null, data = null) {
 wbapp.furl = function(str) {
     str = str.replace(/[^\/а-яА-Яa-zA-Z0-9_-]{1,}/gm, "_");
     str = str.replace(/[__]{1,}/gm, "_");
+    str = str_replace('-', '_', str);
     str = wbapp.transilt(str);
     return str;
 }
