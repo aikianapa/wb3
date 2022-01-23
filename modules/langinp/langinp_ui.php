@@ -1,8 +1,8 @@
 
-    <div class="input-group">
-        <div class="dropdown mod-langinp">
+    <div class="input-group dropdown mod-langinp">
+
             <div class="input-group-prepend" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="input-group-text text-blue px-1" style='border-radius:0.25rem 0rem 0rem 0.25rem;'>
+                <span class="input-group-text text-blue p-1">
                     <img data-src="/module/myicons/language-translate.5.svg?size=24&stroke=323232" width="24" height="24">
                 </span>
             </div>
@@ -21,7 +21,7 @@
 
                     </wb-foreach>
             </div>
-        </div>
+
         <textarea type="json" class="mod-langinp d-none" name="lang"></textarea>
         <input class="form-control mod-langinp" type="text" name="label">
         <script wb-app remove>
