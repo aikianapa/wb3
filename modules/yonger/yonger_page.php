@@ -42,8 +42,9 @@ class yongerPage {
         $list = $this->app->arraySort($list,'name');
         
         if ($this->dom == null) return $list;
+        $target = $this->dom->params('target') ? $this->dom->params('target') :'#yongerBlocksForm';
         $res = $this->app->fromFile(__DIR__.'/common/forms/pages/struct.php');
-        $res->fetch(['blocks'=>$this->dom->item['blocks']]);
+        $res->fetch(['blocks'=>$this->dom->item['blocks'],'target'=>$target]);
         return $res->outer();
     }
 

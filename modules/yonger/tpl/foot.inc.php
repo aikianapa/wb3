@@ -23,10 +23,6 @@
 </wb-styles>
 
 <script type="wbapp" remove>
-	wbapp.loadStyles([
-		
-	]);
-
 	wbapp.loadScripts([
 		"{{_var.base}}/assets/js/yonger.js"
 	]);

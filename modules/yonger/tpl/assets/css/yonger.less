@@ -99,9 +99,6 @@ body {
         vertical-align: middle;
     }
 
-    .form-control {
-        height: auto;
-    }
 
     /*
     .form-control {
@@ -490,7 +487,11 @@ body {
         font-size: 14px;
         font-style: normal;
         align-items: center;
-
+        margin-bottom:5px;
+        border-radius: @radius;
+        &.active {
+            background-color: @color-gray;
+        }
         &.hover {
             >.dd-text {
                 background-color: #f2f4fc;
@@ -579,7 +580,7 @@ body {
         }
     }
 
-    &#yongerPageBlocks {
+    &[id^=ypb_] {
         .dd-text {
             line-height: 30px;
             height: 35px;
