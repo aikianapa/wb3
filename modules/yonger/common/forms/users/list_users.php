@@ -7,7 +7,7 @@
             class="ml-auto order-2 float-right btn btn-secondary">
             <img src="/module/myicons/24/FFFFFF/users-circle.svg" /> {{_lang.roles}}
         </a>
-        <a href="#" data-ajax="{'url':'/cms/ajax/form/users/edit/_new','html':'#yongerSpace modals'}"
+        <a href="#" data-ajax="{'url':'/cms/ajax/form/users/edit/_new','html':'modals'}"
             class="ml-2 order-2 float-right btn btn-primary">
             <img src="/module/myicons/24/FFFFFF/users-15.svg" /> {{_lang.create}}
         </a>
@@ -56,12 +56,12 @@
                                     for="{{_form}}SwitchItemActive{{_idx}}">&nbsp;</label>
                             </div>
                             <a href="javascript:"
-                                data-ajax="{'url':'/cms/ajax/form/users/edit/{{id}}','html':'#yongerSpace modals'}"
+                                data-ajax="{'url':'/cms/ajax/form/users/edit/{{id}}','html':'modals'}"
                                 class="d-inline">
                                 <img src="/module/myicons/content-edit-pen.svg?size=24&stroke=323232">
                             </a>
                             <a href="javascript:"
-                                data-ajax="{'url':'/ajax/rmitem/users/{{id}}','update':'cms.list.users','html':'#yongerSpace modals'}"
+                                data-ajax="{'url':'/ajax/rmitem/users/{{id}}','update':'cms.list.users','html':'modals'}"
                                 class="d-inline">
                                 <img src="/module/myicons/trash-delete-bin.2.svg?size=24&stroke=323232"
                                     class="d-inline">
@@ -73,7 +73,6 @@
             <tfoot><tr><td></td></tr></tfoot>
         </table>
     </div>
-    <modals></modals>
 </div>
 
 <wb-lang>

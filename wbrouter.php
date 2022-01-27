@@ -225,6 +225,8 @@ final class wbRouter {
             $ROUTE['fileinfo'] = pathinfo($ROUTE['file']);
         }
         $ROUTE['lang'] = self::$lang;
+        $ROUTE['_post'] = $_POST;
+        $ROUTE['_get'] = $_GET;
         if (!isset($ROUTE['table']) AND isset($ROUTE['form'])) $ROUTE['table'] = $ROUTE['form'];
         return $ROUTE;
     }

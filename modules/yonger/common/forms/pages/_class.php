@@ -67,8 +67,8 @@ function listNested($path = '') {
             } else {
                 $li = $out->find('li[data-path="'.$url.'"]');
             }
-            
             $li->append($res);
+            $li->find('template')->remove();
 
     }
     return $out;

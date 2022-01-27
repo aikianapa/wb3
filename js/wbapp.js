@@ -728,7 +728,7 @@ wbapp.storage = function(key, value = undefined, binds = true) {
     }
 }
 
-wbapp.sessdata = function(key, value = undefined, binds = true) {
+wbapp.data = function(key, value = undefined, binds = true) {
     function getKey(list) {
         key = "";
         $(list).each(function(i, k) {
@@ -839,11 +839,7 @@ wbapp.save = async function(obj, params, func = null) {
     let that = this;
     let data, form, result;
     let method = "POST";
-    if (params.form !== undefined) {
-        form = $(params.form);
-    } else {
-        form = $(obj).parents("form");
-    }
+    params.form !== undefined ? form = $(params.form) : form = $(obj).parents("form");
 
     if ($(form).length && !$(form).verify()) {
         $(obj).trigger("wb-save-error", {
@@ -896,8 +892,6 @@ wbapp.save = async function(obj, params, func = null) {
                 wbapp.storage(tmpId, null);
             }
             data['id'] = id;
-
-
             if (params.url == undefined) params.url = `/api/save/${params.table}`;
         } else if (params.field !== undefined) {
             wbapp.storage('tmp' + '.' + params.table + '.' + params.field, data, false);
@@ -906,7 +900,6 @@ wbapp.save = async function(obj, params, func = null) {
         if ($(obj).data('saved-id') !== undefined) {
             data['id'] = $(obj).data('saved-id');
         }
-
         wbapp.post(params.url, data, function(data) {
             if (data.error == true) {
                 $(obj).trigger("wb-save-error", {
@@ -935,23 +928,7 @@ wbapp.save = async function(obj, params, func = null) {
 
             if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
             wbapp.console('Update by tpl');
-            $.each(wbapp.template, function(i, tpl) {
-                if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
-                if (tpl.params.render == 'client') {
-                    // client-side update
-                    if (tpl.params._params && tpl.params._params.bind) tpl.params = tpl.params._params;
-                    if (tpl.params.bind && (tpl.params.bind == params.bind || strpos(' ' + tpl.params.bind, params.update)) == 1) {
-                        if (params.bind) wbapp.storage(params.bind, data);
-                        if (params.update) wbapp.storageUpdate(params.update, data);
-                    }
-                } else {
-                    // server-side update
-                    if (tpl.params.bind !== undefined) tpl.params.update = tpl.params.bind;
-                    wbapp.renderServer(tpl.params, data);
-                }
-            })
-
-
+            wbapp.updateView(params);
             if (data._id !== undefined) $(obj).data('saved-id', data._id);
 
             wbapp.console("Trigger: wb-save-done");
@@ -966,6 +943,38 @@ wbapp.save = async function(obj, params, func = null) {
     }, 50);
 }
 
+wbapp.updateView = function(params = {}) {
+    console.log('Update view');
+    $.each(wbapp.template, function(i, tpl) {
+        if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
+        if (tpl.params.render == 'client') {
+            // client-side update
+            if (tpl.params._params && tpl.params._params.bind) tpl.params = tpl.params._params;
+            if (tpl.params.bind && (tpl.params.bind == params.bind || strpos(' ' + tpl.params.bind, params.update)) == 1) {
+                if (params.bind) wbapp.storage(params.bind, data);
+                if (params.update) wbapp.storageUpdate(params.update, data);
+            }
+        } else {
+            // server-side update
+            let prms = Object.assign({}, tpl.params);
+            if (prms.bind !== undefined && prms.update == undefined) prms.update = prms.bind;
+            try {
+                if (params.update == prms._params.bind) {
+                    let target = prms.target;
+                    wbapp.post(prms.url, prms._route._post, function(res) {
+                        let html = $(res).find(target).html();
+                        $(document).find(target).html(html);
+                        wbapp.refresh();
+                    })
+                } else {
+                    params.update == prms.update ? wbapp.renderServer(prms, data) : null;
+                }
+            } catch (error) {
+                params.update == prms.update ? wbapp.renderServer(prms, data) : null;
+            }
+        }
+    })
+}
 
 wbapp.updateInputs = function() {
     $(document).find(":checkbox").each(async function() {
@@ -1149,7 +1158,9 @@ wbapp.ajax = async function(params, func = null) {
                 // $inp = $(params._event.target).parent();
                 // тут нужна обработка значений на клиенте
             }
+            if (params.update !== undefined) wbapp.updateView(params);
             wbapp.refresh(data);
+            /*
             if (params.render == 'client') {
                 let res = $(data).find(params.target).html();
                 $(document).find(params.target).html(res);
@@ -1173,6 +1184,7 @@ wbapp.ajax = async function(params, func = null) {
 
                 $(document).find(params.target).children('template').remove();
             }
+            */
             if (params.callback !== undefined) eval(params.callback + '(params,data)');
 
             //wbapp.console("Trigger: wb-ajax-done");
@@ -1281,12 +1293,11 @@ wbapp.renderFilter = function(tid, filter) {
     tpl.params.filter = filter;
     if (tpl.params._params !== undefined) tpl.params._params.filter = filter;
     wbapp.tpl(tid, tpl);
-    wbapp.sessdata('wbapp.filter.' + tid.substr(1), filter);
+    wbapp.data('wbapp.filter.' + tid.substr(1), filter);
     wbapp.render(tid);
 }
 
 wbapp.storageUpdate = async function(key, data) {
-
     var store = wbapp.storage(key);
     if (!store) wbapp.storage(key, {});
     if (store._id == undefined && (store.result !== undefined || store.params !== undefined) && data !== null && data._id !== undefined) {
@@ -1468,6 +1479,8 @@ wbapp.tplInit = async function() {
     }
 
     $(document).find("template").each(async function() {
+        if (this.done !== undefined) return
+        else this.done = true;
         var tid
         if (tid == undefined && $(this).is("template[id]")) tid = $(this).attr("id");
         if (tid == undefined) tid = $(this).parent().attr("id");
@@ -1487,7 +1500,7 @@ wbapp.tplInit = async function() {
         }
 
         if (params.filter !== undefined) {
-            wbapp.sessdata('wbapp.filter.' + tid.substr(1), params.filter);
+            wbapp.data('wbapp.filter.' + tid.substr(1), params.filter);
         }
 
         let html = $(this).html();
@@ -1604,12 +1617,29 @@ wbapp.setPag = async function(target, data) {
 wbapp.renderServer = async function(params, data = {}) {
     if (params.target !== undefined && params.target > '#' && $(document).find(params.target).length) {
         //delete params.data;
+        params.bind ? params.update = params.bind : null;
         delete params.bind;
-
         params._tid = params.target;
-        wbapp.ajax(params, function(data) {
-            wbapp.setPag(params.target, data.data)
-        });
+        let post;
+        params.url == undefined && params.ajax !== undefined ? params.url = params.ajax : null;
+        try {
+            post = params._route._post;
+        } catch (error) {
+            post = null;
+        }
+
+        if (post) {
+            console.log(params);
+            wbapp.post(params.url, post, function(res) {
+                let html = $(res).find(params.target).html();
+                $(document).find(params.target).html(html);
+                wbapp.refresh();
+            })
+        } else {
+            wbapp.ajax(params, function(data) {
+                wbapp.setPag(params.target, data.data)
+            });
+        }
     }
 }
 

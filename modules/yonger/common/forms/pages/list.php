@@ -3,13 +3,13 @@
         <nav class="nav navbar navbar-expand-md col">
         <h3 class="tx-bold tx-spacing--2 order-1">Страницы</h3>
         <div class="ml-auto order-2 float-right" wb-disallow="content">
-        <a href="#" data-ajax="{'url':'/cms/ajax/form/pages/edit/_header','html':'#yongerSpace modals'}" class="btn btn-secondary">
+        <a href="#" data-ajax="{'url':'/cms/ajax/form/pages/edit/_header','html':'modals'}" class="btn btn-secondary">
             <img src="/module/myicons/24/FFFFFF/menubar-arrow-up.svg" width="24" height="24" /> Шапка
         </a>
-        <a href="#" data-ajax="{'url':'/cms/ajax/form/pages/edit/_footer','html':'#yongerSpace modals'}" class="btn btn-secondary">
+        <a href="#" data-ajax="{'url':'/cms/ajax/form/pages/edit/_footer','html':'modals'}" class="btn btn-secondary">
             <img src="/module/myicons/24/FFFFFF/menubar-arrow-down.svg" width="24" height="24" /> Подвал
         </a>
-        <a href="#" data-ajax="{'url':'/cms/ajax/form/pages/edit/_new','html':'#yongerSpace modals'}" class="btn btn-primary">
+        <a href="#" data-ajax="{'url':'/cms/ajax/form/pages/edit/_new','html':'modals'}" class="btn btn-primary">
             <img src="/module/myicons/24/FFFFFF/item-select-plus-add.svg" width="24" height="24" /> Добавить страницу
         </a>
         </div>
@@ -31,6 +31,7 @@
                         <wb-foreach wb="{'from':'list',
                             'render':'server',
                             'sort':'url',
+                            'bind': 'cms.list.pages',
                             'filter': {'_site' : {'$in': [null,'{{_sett.site}}']}, 'id': {'$nin':['_header','_footer']}}
                 }">
                 <li class="dd-item row" data-item="{{id}}" data-name="{{name}}" data-path="{{url}}" >
@@ -59,7 +60,7 @@
             </wb-foreach>
         </ol>
     </div>
-    <modals></modals>
+
     <script wb-app>
     wbapp.loadStyles(['/engine/lib/js/nestable/nestable.css']);
     wbapp.loadScripts(['/engine/lib/js/nestable/nestable.min.js'], '', function() {
@@ -84,7 +85,7 @@
 
         $('#yongerPagesTree').delegate('.dd-remove',wbapp.evClick,function(e) {
             let item = $(this).parents('[data-item]').attr('data-item')
-            wbapp.ajax({'url':'/ajax/rmitem/{{_form}}/'+item,'update':'cms.list.pages','html':'#yongerSpace modals'});
+            wbapp.ajax({'url':'/ajax/rmitem/{{_form}}/'+item,'update':'cms.list.pages','html':'modals'});
             e.stopPropagation();
         });
 
@@ -106,7 +107,7 @@
         $('#yongerPagesTree').delegate('li[data-item] .dd-edit',wbapp.evClick,function(e){
             e.stopPropagation();
             let item = $(this).parents('[data-item]').attr('data-item')
-            wbapp.ajax({'url':'/cms/ajax/form/pages/edit/'+item,'html':'#yongerSpace modals'});
+            wbapp.ajax({'url':'/cms/ajax/form/pages/edit/'+item,'html':'modals'});
         });
 
         $('#yongerPagesTree').delegate('li[data-item] .dd-copy',wbapp.evClick,function(e){
@@ -121,7 +122,6 @@
                 beforeDragStop: function(l,e, p){
                     datapath = {};
                     changePath(e,p).then(function(res){
-                        console.log(datapath);
                         if (res !== false) wbapp.post('/cms/ajax/form/pages/path',{'data':datapath});
                     });
                 }

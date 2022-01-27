@@ -2,7 +2,7 @@
 <div class="m-3" id="yongerQuotes">
     <nav class="nav navbar navbar-expand-md col">
         <h3 class="tx-bold tx-spacing--2 order-1">{{_lang.quotes}}</h3>
-        <a href="#" data-ajax="{'url':'/cms/ajax/form/quotes/edit/_new','html':'#yongerQuotes modals'}"
+        <a href="#" data-ajax="{'url':'/cms/ajax/form/quotes/edit/_new','html':'modals'}"
             class="ml-auto order-2 float-right btn btn-primary">
             <img src="/module/myicons/item-select-plus-add.svg?size=24&stroke=FFFFFF" /> {{_lang.newQuote}}
         </a>
@@ -28,12 +28,12 @@
                     <td>{{status}}</td>
                     <td>
                         <a href="javascript:"
-                            data-ajax="{'url':'/cms/ajax/form/quotes/edit/{{id}}','html':'#yongerQuotes modals'}"
+                            data-ajax="{'url':'/cms/ajax/form/quotes/edit/{{id}}','html':'modals'}"
                             class="d-inline">
                             <img src="/module/myicons/content-edit-pen.svg?size=24&stroke=323232">
                         </a>
                         <a href="javascript:"
-                            data-ajax="{'url':'/ajax/rmitem/quotes/{{id}}','update':'cms.list.quotes','html':'#yongerQuotes modals'}"
+                            data-ajax="{'url':'/ajax/rmitem/quotes/{{id}}','update':'cms.list.quotes','html':'modals'}"
                             class="d-inline">
                             <img src="/module/myicons/trash-delete-bin.2.svg?size=24&stroke=323232" class="d-inline">
                         </a>
@@ -47,9 +47,6 @@
             </tr>
         </tfoot>
     </table>
-
-
-    <modals></modals>
 </div>
 <script wb-app>
 
