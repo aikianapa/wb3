@@ -1,7 +1,7 @@
 <div class="input-group">
     <div class="input-group-prepend yonpageselect">
-        <span class="input-group-text form-control">
-            <svg class="mi mi-programing-data.2 size-20" wb-stroke="#000000" wb-module="myicons"></svg>
+        <span class="input-group-text form-control p-1">
+            <img data-src="/module/myicons/programing-data.2.svg?size=24&amp;stroke=323232" width="24" height="24">
         </span>
     </div>
     <input>
@@ -9,7 +9,7 @@
 <script type="wbapp" remove>
     if (yonpageselect == undefined) {
         var yonpageselect;
-        wbapp.get('/module/yonpageselect/list', function(data) {
+        wbapp.get('/module/yonger/pageselect', function(data) {
             yonpageselect = data;
         })
     }
@@ -23,9 +23,10 @@
             .attr('data-backdrop','true')
             .removeClass('fade')
             .addClass('effect-slide-in-right left w-50 removable')
-            .modal('show');
-        $modal.find('.modal-header').prepend('<input type="search" class="form-control">');
-        $modal.find('.modal-body').addClass('p-0 pb-5 scroll-y').html(tpl);
+            .modal('show')
+            .find('.modal-header').prepend('<input type="search" class="form-control">')
+            .find('.modal-body').addClass('p-0 pb-5 scroll-y').html(tpl);
+        $modal.find('.modal-header input').focus();
         let list = [];
         let url = $(that).next('input').data('url');
         if (url > '') {
@@ -59,7 +60,9 @@
         })
 
         $modal.delegate('.list-group-item','click',function(){
-            $(that).next('input').val($(this).data('path'));
+            let path = $(this).data('path');
+            if (path == "/") path = "";
+            $(that).next('input').val(path).trigger('change');
             $modal.modal('hide');
         })
     });

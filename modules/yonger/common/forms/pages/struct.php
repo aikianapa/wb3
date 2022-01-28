@@ -101,6 +101,8 @@ yonger.pagePresetSelect = function() {
         .modal('show');
     $modal.find('.modal-header').prepend('<input type="search" class="form-control">');
     $modal.find('.modal-body').addClass('p-0 pb-5 scroll-y').html(tpl);
+    $modal.find('.modal-header input').focus();
+
     let list = $modal.list = yonpresetselect;
 
     $modal.ractive = Ractive({
@@ -168,7 +170,6 @@ yonger.pagePresetSave = function() {
         });
     }
     let yonpresetselect = wbapp.postSync('/module/yonger/presets/list/');
-    console.log(prid, yonpresetselect);
     if (yonpresetselect[prid] !== undefined) {
         wbapp.confirm("{{_lang.preset_save}}", `{{_lang.preset_confirm}} ${name} ?`)
             .on('confirm', () => {

@@ -10,11 +10,13 @@ class modYonger
             $app = &$obj->app;
             $mode = $obj->params->mode;
             $this->dom = &$obj;
+            $this->type = 'dom';
         } else {
             $app = &$obj;
             $mode = $app->route->mode;
+            $this->type = 'app';
         }
-        
+
         $app->yonger = &$this;
 
         if ($app->vars('_sett.modules.yonger') == null) {
@@ -75,8 +77,6 @@ class modYonger
                 return $master;
             }
         } else {
-            $dir = $app->vars('_env.path_engine').'/modules/yonpageselect';
-            is_file($dir) or is_dir($dir) ? null : symlink(__DIR__ .'/common/modules/yonpageselect', $dir);
             $dir = $app->vars('_env.path_app').'/forms/pages';
             is_file($dir) OR is_dir($dir) ? null : symlink(__DIR__ .'/common/forms/pages' , $dir );
             $dir = $app->vars('_env.path_app').'/forms/news';
@@ -96,6 +96,48 @@ class modYonger
         $ws->path = __DIR__ . '/tpl/';
         $ws->fetch();
         return '<!DOCTYPE html>'.$ws->outer();
+    }
+
+    private function pageselect() {
+        if ($this->type == 'app') {
+            // return list to json;
+            if ($this->app->vars('_env.cache.yonpageselect')) {
+                $list = $this->app->vars('_env.cache.yonpageselect');
+            } else {
+                $list = $this->app->itemList('pages', [
+                    'sort' => 'url',
+                    'return' => 'url,header',
+                    'filter'=> ['active'=>'on','_site' => ['$in'=> [null,$this->app->vars('_sett.site')]], 'id'=> ['$nin'=>['_header','_footer']]]
+                ]);
+                $list = array_values($list['list']);
+                array_walk($list, function(&$item,$key){
+                    $item['header'] = $item['header'][$this->app->vars('_sess.lang')];
+                });
+                $this->app->vars('_env.cache.yonpageselect', $list);
+            }
+            header("Content-type: application/json; charset=utf-8");
+            return $this->app->jsonEncode($list);
+        } else {
+            // return input selector
+            if (!$this->dom->is('input')) {
+                $this->dom->after("<div class='alert alert-warning'>Требуется тэг input</div>");
+            } else {
+                $ui = $this->app->fromFile($this->app->route->path_engine.'/modules/yonger/tpl/pageselect_ui.php');
+                $class = $this->app->attrToArray($this->dom->attr('class'));
+                foreach ($class as $i => $c) {
+                    if ($c == 'col' || substr($c, 0, 4) == 'col-') {
+                        $ui->find('.input-group')->addClass($c);
+                        unset($class[$i]);
+                    }
+                }
+                $this->dom->attr('class', implode(' ', $class));
+                $this->dom->params('url') > '' ? $this->dom->attr('data-url', $this->dom->params('url')) : null;
+                $ui->find('.input-group > input')->remove();
+                $ui->find('.input-group')->append($this->dom->outer());
+                $this->dom->after($ui);
+            }
+        }
+        $this->dom->remove();
     }
 
     private function structure() {

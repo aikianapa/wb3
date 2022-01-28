@@ -29,10 +29,16 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="form-group row" wb-allow="admin">
+                                    <label class="col-lg-4 form-control-label">Путь к странице</label>
+                                    <!--wb-module wb="module=yonger&mode=pageselect" /-->
+                                    <div class="col-lg-8">
+                                        <input name="path" wb="module=yonger&mode=pageselect" class="form-control" readonly />
+                                    </div>
+                                </div>
                                 <div class="form-group row">
                                     <label class="col-lg-4 form-control-label">Наименование</label>
                                     <div class="col-lg-8">
-                                        <input type="hidden" name="path" wb-enabled="admin">
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text p-1">
