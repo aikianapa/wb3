@@ -928,7 +928,7 @@ wbapp.save = async function(obj, params, func = null) {
 
             if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
             wbapp.console('Update by tpl');
-            wbapp.updateView(params);
+            wbapp.updateView(params, data);
             if (data._id !== undefined) $(obj).data('saved-id', data._id);
 
             wbapp.console("Trigger: wb-save-done");
@@ -943,7 +943,7 @@ wbapp.save = async function(obj, params, func = null) {
     }, 50);
 }
 
-wbapp.updateView = function(params = {}) {
+wbapp.updateView = function(params = {}, data) {
     console.log('Update view');
     $.each(wbapp.template, function(i, tpl) {
         if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
@@ -1158,7 +1158,7 @@ wbapp.ajax = async function(params, func = null) {
                 // $inp = $(params._event.target).parent();
                 // тут нужна обработка значений на клиенте
             }
-            if (params.update !== undefined) wbapp.updateView(params);
+            if (params.update !== undefined) wbapp.updateView(params, data);
             wbapp.refresh(data);
             /*
             if (params.render == 'client') {
