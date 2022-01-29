@@ -6,7 +6,7 @@ class pagesClass extends cmsFormsClass {
 function beforeItemShow(&$item) {
     isset($item['lang']) ? $lang = $item['lang'][$this->app->vars('_sess.lang')] : $lang = [];
     $item = (array)$lang + (array)$item;
-    isset($item['header'])  AND isset($item['header'][$_SESSION['lang']]) ? $item['header'] = $item['header'][$_SESSION['lang']] : null;
+    isset($item['header']) AND isset($item['header'][$_SESSION['lang']]) ? $item['header'] = $item['header'][$_SESSION['lang']] : null;
 }
 
 function afterItemRead(&$item) {
@@ -33,12 +33,16 @@ function afterItemSave($item) {
 
 function list() {
     $app = &$this->app;
+    $this->tables = $app->tableList();
     $this->jq = new Jsonq();
     $this->count = 0;
     $out = $app->fromFile(__DIR__ . '/list.php');
     $this->tpl = $out->find('#pagesList');
-    $this->list = $this->app->itemList('pages');
+    $this->list = $this->app->itemList('pages',['return'=>'id,name,_form,header,active,url,path']);
     $this->list = $this->list['list'];
+    foreach ($this->list as &$item) {
+        isset($item['header']) and isset($item['header'][$_SESSION['lang']]) ? $item['header'] = $item['header'][$_SESSION['lang']] : null;
+    }
     //$app->vars('_post',[]); // фикса для правильной отработки обновлений
     $res = $this->listNested();
     $out->find('#pagesList')->replaceWith($res);
@@ -51,7 +55,19 @@ function listNested($path = '') {
     if ($this->count > 100) {
         return;
     }
-    $level = $this->app->json($this->list)->where('path','=',$path)->get();
+    $table = substr($path, 1);
+    if (in_array($table, $this->tables)) {
+        $level = $this->app->itemList($table,['return'=>'id,name,_form,header,active']);
+        $level = $level['list'];
+        foreach($level as &$item) {
+            isset($item['header']) ? null : $item['header'] = $item['name'];
+            $item['path'] = $path;
+            $item['name'] = wbFurlGenerate($item['header']);
+            $item['url'] = $item['path'].'/'.$item['id'].'/'.$item['name'];
+        }
+    } else {
+        $level = $this->app->json($this->list)->where('path', '=', $path)->get();
+    }
     $count = count($level);
     if (!$count) return '';
     $out = $this->tpl->clone();
@@ -61,15 +77,15 @@ function listNested($path = '') {
     foreach($level as $item) {
             in_array($item['url'],['/','']) ? $url = '/home' : $url = $item['url'];
             unset($this->list[$item['id']]);
-            $res = $this->listNested($url);
-            if ($url == '/home') {
-                $li = $out->find('li[data-path="/"]');
-            } else {
-                $li = $out->find('li[data-path="'.$url.'"]');
-            }
-            $li->append($res);
-            $li->find('template')->remove();
 
+                $res = $this->listNested($url);
+                if ($url == '/home') {
+                    $li = $out->find('li[data-path="/"]');
+                } else {
+                    $li = $out->find('li[data-path="'.$url.'"]');
+                }
+                $li->append($res);
+                $li->find('template')->remove();
     }
     return $out;
 }

@@ -307,14 +307,17 @@ class mongodbDrv
             return false;
         }
         if (wbRole('admin')) {
+            $form = $this->db->dropCollection($form);
+/*
             if (!$form) { // не удалилось
                 wbError('func', __FUNCTION__, 1003, func_get_args());
             }
-            $res = $form;
             if (!$form) { // не существует
                 wbError('func', __FUNCTION__, 1001, func_get_args());
             }
+*/
         }
+        return $res;
     }
 
     public function TableList($engine = false)

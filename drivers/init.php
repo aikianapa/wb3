@@ -42,6 +42,9 @@ function wbSetDb($form)
     if (!$app->drivers->$form->tableExist($form)) {
         echo json_encode(["error"=>true,"msg"=>"Fatal error! {$form} not found !"]);
         die;
+    } else {
+        $file = $app->vars('_env.dba')."/{$form}.json";
+        is_file($file) ? null : $app->putContents($file, '');
     }
 
     return $app->drivers->$form;
@@ -195,20 +198,20 @@ function wbTableFlush($form)
 
 function wbTableCreate($form = 'pages', $engine = false)
 {
+    $app = &$_ENV['app'];
     $db = wbSetDb($form);
     wbTrigger('form', __FUNCTION__, 'beforeTableCreate', func_get_args(), array());
-    return $db->tableCreate($form, $engine);
+    $res = $db->tableCreate($form, $engine);
+    $file = $app->vars('_env.dba')."/{$form}.json";
+    is_file($file) ? null : $app->putContents($file,'');
+    return $res;
 }
 
 function wbTableRemove($form = null, $engine = false)
 {
     $res = false;
-    $drv=wbCallDriver(__FUNCTION__, func_get_args());
-    if ($drv !== false) {
-        $form = $drv["result"];
-    } else {
-        $form = jsonTableRemove($form, $engine);
-    }
+    $db = wbSetDb($form);
+    $res = $db->tableRemove($form, $engine);
     return $res;
 }
 
@@ -223,11 +226,13 @@ function wbTableExist($form)
 
 function wbTableList($engine = false)
 {
-    $drv=wbCallDriver(__FUNCTION__, func_get_args());
-    if ($drv !== false) {
-        $list = $drv["result"];
-    } else {
-        $list = jsonTableList($engine);
+    $app = &$_ENV['app'];
+    $list = wbListFiles($_ENV['path_app'].'/database');
+    $res = [];
+    foreach($list as $file) {
+        if (substr($file,-5) == '.json') {
+            $res[] = substr($file, 0, -5);
+        }
     }
-    return $list;
+    return $res;
 }

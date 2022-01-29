@@ -34,7 +34,7 @@
                             'bind': 'cms.list.pages',
                             'filter': {'_site' : {'$in': [null,'{{_sett.site}}']}, 'id': {'$nin':['_header','_footer']}}
                 }">
-                <li class="dd-item row" data-item="{{id}}" data-name="{{name}}" data-path="{{url}}" >
+                <li class="dd-item row" data-item="{{id}}" data-name="{{name}}" data-path="{{url}}" data-form="{{_form}}">
                     <span class="dd-handle"><img src="/module/myicons/20/000000/dots-2.svg"  width="20" height="20"/></span>
                     <span class="dd-text d-none d-sm-flex col-sm-6 ellipsis">
                     <span>{{header}}</span>
@@ -84,8 +84,11 @@
         });
 
         $('#yongerPagesTree').delegate('.dd-remove',wbapp.evClick,function(e) {
-            let item = $(this).parents('[data-item]').attr('data-item')
-            wbapp.ajax({'url':'/ajax/rmitem/{{_form}}/'+item,'update':'cms.list.pages','html':'modals'});
+            let data = $(this).parents('[data-item]').data();
+            wbapp.confirm('Удаление',`Удалить запись ${data.item} из таблицы ${data.form} ?`,{'bgcolor':'danger'})
+            .on('confirm',function(){
+                wbapp.ajax({'url':'/ajax/rmitem/'+data.form+'/'+data.item+'?_confirm','update':'cms.list.pages','html':'modals'});
+            });
             e.stopPropagation();
         });
 
@@ -100,20 +103,22 @@
         $('#yongerPagesTree').delegate('.dd-active',wbapp.evClick,function(e){
             e.stopPropagation();
             let id = $(e.currentTarget).parents('[data-item]').attr('data-item');
+            let form = $(e.currentTarget).parents('[data-form]').attr('data-form');
             $(e.currentTarget).parent('form').find('[name=active]').trigger('click');
-            wbapp.save($(e.currentTarget),{'table':'pages','id':id,'update':'cms.list.pages','silent':'true'})
+            wbapp.save($(e.currentTarget),{'table':form,'id':id,'update':'cms.list.pages','silent':'true'})
         });
 
         $('#yongerPagesTree').delegate('li[data-item] .dd-edit',wbapp.evClick,function(e){
             e.stopPropagation();
-            let item = $(this).parents('[data-item]').attr('data-item')
-            wbapp.ajax({'url':'/cms/ajax/form/pages/edit/'+item,'html':'modals'});
+            let data = $(this).parents('[data-item]').data();
+            wbapp.ajax({'url':'/cms/ajax/form/'+data.form+'/edit/'+data.item,'html':'modals'});
         });
 
         $('#yongerPagesTree').delegate('li[data-item] .dd-copy',wbapp.evClick,function(e){
             e.stopPropagation();
-            let item = $(this).parents('[data-item]').attr('data-item')
-            wbapp.ajax({'url':'/module/yonger/copypage/','item':item,'update':'cms.list.pages'});
+            let data = $(this).parents('[data-item]').data();
+            data.form == 'pages' ? url = '/module/yonger/copypage/' : url = '/ajax/copy/'+data.form+'/'+data.item+'/';
+            wbapp.ajax({'url':url,'item':data.item,'update':'cms.list.pages'});
         });
 
         $(document).on('bind-cms.list.pages',function(){

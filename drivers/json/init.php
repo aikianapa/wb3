@@ -66,10 +66,7 @@ class jsonDrv
     public function tableRemove($form, $engine)
     {
         if (wbRole('admin')) {
-            $db = $_ENV['dbec'];
-            if (false == $engine) {
-                $db = $_ENV['dbac'];
-            }
+            false == $engine ? $db = $_ENV['dbac'] : $db = $_ENV['dbec'];
             $cache = $db . '/' . $form;
             $file = $this->tablePath($form, $engine);
             wbRecurseDelete($cache);
