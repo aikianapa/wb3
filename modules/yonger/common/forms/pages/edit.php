@@ -79,17 +79,6 @@
     </div>
 </div>
 
-<template id="yonPresetSelect">
-    <div class="list-group">
-        {{#each presets}}
-        <a href="javascript:void(0)" class="list-group-item text-dark" data-name='{{name}}' data-id='{{id}}'>
-            <h6 class="tx-13 tx-inverse tx-semibold mg-b-0">{{name}}</h6>
-            <span class="d-block tx-11 text-muted">{{id}}</span>
-        </a>
-        {{/each}}
-    </div>
-</template>
-
 <script wb-app>
 let timeout = 50;
 // ==============

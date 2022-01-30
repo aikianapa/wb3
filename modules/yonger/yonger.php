@@ -142,7 +142,14 @@ class modYonger
 
     private function structure() {
         $yp = new yongerPage($this->dom);
-        $this->dom->after($yp->list());
+        $out = $this->app->fromString($yp->list());
+        $preset = $this->dom->params('preset');
+        if ($this->app->route->id == '_new' && $preset > '') {
+            $out->find('[name=preset]')->attr('value', $preset);
+            $preset = $this->preset_get($preset);
+            $out->find('textarea[name=blocks]')->inner(json_encode($preset));
+        }
+        $this->dom->after($out);
         $this->dom->remove();
     }
 
@@ -641,6 +648,17 @@ class modYonger
             $json = $this->app->jsonEncode($json);
             $this->app->putContents($this->file, $json);
             return $item;
+    }
+
+    private function preset_get($name) {
+        $this->file = $this->app->vars('_env.path_app').'/blocks/presets.json';
+        $json = is_file($this->file) ? json_decode(file_get_contents($this->file), true) : [];
+
+        if (isset($json[$name])) {
+            return $json[$name]['blocks'];
+        } else {
+            return [];
+        }
     }
 
 }
