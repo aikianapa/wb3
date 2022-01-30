@@ -401,7 +401,7 @@ wbapp.fileinpInit = function() {
     })
 }
 
-wbapp.confirm = function(title = null, text = null, params = null) {
+wbapp.confirm = function(title = null, text = null, options = null) {
     /*
     wbapp.confirm()
     .on('confirm', function () {
@@ -416,19 +416,6 @@ wbapp.confirm = function(title = null, text = null, params = null) {
     let confirm = false;
     title !== null ? title = $modal.find('.modal-title').text(title) : null;
     text !== null ? text = $modal.find('.modal-body').text(text) : null;
-    if (params.target) options.target = params.target;
-    if (params.bgcolor) {
-        $modal.addClass('bd-' + params.bgcolor);
-        $modal.find('.modal-header').addClass('bg-' + params.bgcolor);
-        $modal.find('.modal-footer .btn.confirm')
-            .removeClass('btn-warning')
-            .addClass('btn-' + params.bgcolor);
-    }
-    if (params.txcolor) {
-        $modal.find('.modal-header h6').addClass('tx-' + params.txcolor).removeClass('tx-inverse');
-    }
-
-
     $modal.modal();
     $modal.undelegate('.btn.confirm', wbapp.evClick);
     $modal.delegate('.btn.confirm', wbapp.evClick, function() {
@@ -941,7 +928,7 @@ wbapp.save = async function(obj, params, func = null) {
 
             if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
             wbapp.console('Update by tpl');
-            wbapp.updateView(params, data);
+            wbapp.updateView(params);
             if (data._id !== undefined) $(obj).data('saved-id', data._id);
 
             wbapp.console("Trigger: wb-save-done");
@@ -956,7 +943,7 @@ wbapp.save = async function(obj, params, func = null) {
     }, 50);
 }
 
-wbapp.updateView = function(params = {}, data) {
+wbapp.updateView = function(params = {}) {
     console.log('Update view');
     $.each(wbapp.template, function(i, tpl) {
         if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
@@ -1171,8 +1158,15 @@ wbapp.ajax = async function(params, func = null) {
                 // $inp = $(params._event.target).parent();
                 // тут нужна обработка значений на клиенте
             }
-            if (params.update !== undefined) wbapp.updateView(params, data);
+            if (params.update !== undefined) wbapp.updateView(params);
             wbapp.refresh(data);
+            if (data.html !== undefined && params.target !== undefined) {
+                if (params._params !== undefined && params._params.more !== undefined) {
+                    $(document).find(params.target).append(data.html);
+                } else {
+                    $(document).find(params.target).html(data.html);
+                }
+            }
             /*
             if (params.render == 'client') {
                 let res = $(data).find(params.target).html();
