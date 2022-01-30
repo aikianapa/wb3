@@ -45,8 +45,13 @@ function list() {
     }
     //$app->vars('_post',[]); // фикса для правильной отработки обновлений
     $res = $this->listNested();
+    $firstlvl = $res->find('> li.dd-item');
+    foreach($firstlvl as $li) {
+        $name= $li->attr('data-name');
+        in_array($name, $this->tables) ? $li->attr('data-inner', $name) : null;
+    }
     $out->find('#pagesList')->replaceWith($res);
-    echo $out->fetch();
+    echo $out;
 }
 
 function listNested($path = '') {
@@ -55,38 +60,49 @@ function listNested($path = '') {
     if ($this->count > 100) {
         return;
     }
+    $out = $this->tpl->clone();
     $table = substr($path, 1);
+    $page = true;
     if (in_array($table, $this->tables)) {
+        $page = false;
         $level = $this->app->itemList($table,['return'=>'id,name,_form,header,active']);
-        $level = $level['list'];
-        foreach($level as &$item) {
+        $level = array_chunk($level['list'],100);
+        $level = $level[0];
+        foreach($level as $key => $item) {
+            isset($item['name']) ? null : $item['name'] = null;
             isset($item['header']) ? null : $item['header'] = $item['name'];
-            $item['path'] = $path;
-            $item['name'] = wbFurlGenerate($item['header']);
-            $item['url'] = $item['path'].'/'.$item['id'].'/'.$item['name'];
+            $item['_form'] = $table;
+            if ($item['header']) {
+                $item['path'] = $path;
+                $item['name'] = wbFurlGenerate($item['header']);
+                $item['url'] = $item['path'].'/'.$item['id'].'/'.$item['name'];
+                $level[$key] = $item;
+            } else {
+                unset($level[$key]);
+            }
         }
     } else {
         $level = $this->app->json($this->list)->where('path', '=', $path)->get();
     }
     $count = count($level);
     if (!$count) return '';
-    $out = $this->tpl->clone();
     $path > '' ? $out->removeAttr('id') : null;
     $out->fetch(['list'=>$level]);
-
+    
     foreach($level as $item) {
-            in_array($item['url'],['/','']) ? $url = '/home' : $url = $item['url'];
-            unset($this->list[$item['id']]);
-
-                $res = $this->listNested($url);
-                if ($url == '/home') {
-                    $li = $out->find('li[data-path="/"]');
-                } else {
-                    $li = $out->find('li[data-path="'.$url.'"]');
-                }
-                $li->append($res);
-                $li->find('template')->remove();
+        in_array($item['url'],['/','']) ? $url = '/home' : $url = $item['url'];
+        unset($this->list[$item['id']]);
+            $res = $this->listNested($url);
+            if ($url == '/home') {
+                $li = $out->find('li[data-path="/"]');
+            } else {
+                $li = $out->find('li[data-path="'.$url.'"]');
+            }
+            if ($res !== null) $li->append($res);
+            if ($item['_form']!=='pages') $li->find('.dd-add')->remove();
+            $li->find('template')->remove();
     }
+    $out->parent = $this;
     return $out;
 }
 
