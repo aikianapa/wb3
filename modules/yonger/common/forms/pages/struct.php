@@ -161,7 +161,7 @@ yonger.pagePresetSave = function() {
     let save = function() {
         $.each(blocks, function(i, block) {
             data.push({
-                'id': wbapp.newId(),
+                'id': block.id,
                 'active': block.active,
                 'block_id': block.block_id,
                 'block_class': block.block_class,
@@ -263,8 +263,6 @@ yonger.pageBlocks = function() {
                         id = name = 'seo';
                     if (block.file == 'code.php' && substr(block.path, 0, 10) == '/_yonger_/')
                         id = name = 'code';
-
-
                     if (!in_array(id, ['seo', 'code']) && wbapp.storage(
                             'yonger.{{_var.ypb}}.blocks.' + id)) {
                         let i = 0;

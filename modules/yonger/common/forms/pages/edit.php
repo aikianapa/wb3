@@ -20,7 +20,6 @@
                     <div class="col-5 col-lg-4">
                         <form id="{{_form}}EditForm">
                             <div wb-if="'{{_route.id}}' !== '_header' && '{{_route.id}}' !== '_footer'">
-
                                 <div class="form-group row">
                                     <div class="col-12 mt-1">
                                         <div class="btn btn-info btn-block p-2 mb-0 cursor-pointer pagelink">
@@ -33,7 +32,8 @@
                                     <label class="col-lg-4 form-control-label">Путь к странице</label>
                                     <!--wb-module wb="module=yonger&mode=pageselect" /-->
                                     <div class="col-lg-8">
-                                        <input name="path" wb="module=yonger&mode=pageselect" class="form-control" readonly />
+                                        <input name="path" wb="module=yonger&mode=pageselect" class="form-control"
+                                            readonly />
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -57,8 +57,28 @@
                                             wb="module=langinp" required>
                                     </div>
                                 </div>
-                            </div>
 
+                                <div wb-if="'{{_sett.devmode}}'=='on'">
+                                    <div class="divider-text">Присоединённый раздел</div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-4 form-control-label">Раздел</label>
+                                        <div class="col-lg-8">
+                                            <select class="form-control" wb-select2 placeholder="{{_lang.attach}}"
+                                                name="attach">
+                                                <wb-foreach wb-from="_env.forms" wb-tpl="false">
+                                                    <option>{{_val}}</option>
+                                                </wb-foreach>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-12">
+                                        <input type="text" name="filter" class="form-control"
+                                            placeholder="{{_lang.filter}}">
+                                    </div>
+                                </div>
+                            </div>
                             <wb-module wb="module=yonger&mode=structure" />
                         </form>
                     </div>
@@ -78,6 +98,19 @@
         </div>
     </div>
 </div>
+
+<wb-lang>
+[ru]
+header = Редактирование страницы
+search = Поиск
+attach = Присоединить раздел
+filter = Фильтр (json)
+[en]
+header = Page edit
+search = Search
+attach = Attach division
+filter = Filter (json)
+</wb-lang>
 
 <script wb-app>
 let timeout = 50;
@@ -106,13 +139,4 @@ yonger.pageEditor = function() {
 
 yonger.pageEditor();
 </script>
-<wb-lang>
-    [ru]
-    header = Редактирование страницы
-    search = Поиск
-    [en]
-    header = Page edit
-    search = Search
-</wb-lang>
-
 </html>

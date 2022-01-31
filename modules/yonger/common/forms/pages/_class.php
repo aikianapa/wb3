@@ -9,6 +9,7 @@ function beforeItemShow(&$item) {
     isset($item['header']) AND isset($item['header'][$_SESSION['lang']]) ? $item['header'] = $item['header'][$_SESSION['lang']] : null;
 }
 
+
 function afterItemRead(&$item) {
     if (!$item) return;
     isset($item['blocks']) ? null : $item['blocks'] = [];
