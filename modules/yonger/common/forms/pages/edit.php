@@ -20,23 +20,23 @@
                     <div class="col-5 col-lg-4">
                         <form id="{{_form}}EditForm">
                             <div wb-if="'{{_route.id}}' !== '_header' && '{{_route.id}}' !== '_footer'">
-                                <div class="form-group row">
-                                    <div class="col-12 mt-1">
+                                <div class="form-group row mb-2">
+                                    <div class="col-12">
                                         <div class="btn btn-info btn-block p-2 mb-0 cursor-pointer pagelink">
                                             <img data-src="/module/myicons/link-big.svg?size=20&stroke=FFFFFF">
                                             {{_route.scheme}}://{{_route.hostname}}<span class="path"></span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group row" wb-allow="admin">
-                                    <label class="col-lg-4 form-control-label">Путь к странице</label>
+                                <div class="form-group row mb-2" wb-allow="admin">
+                                    <label class="col-lg-4 form-control-label">Путь</label>
                                     <!--wb-module wb="module=yonger&mode=pageselect" /-->
                                     <div class="col-lg-8">
                                         <input name="path" wb="module=yonger&mode=pageselect" class="form-control"
                                             readonly />
                                     </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row mb-2">
                                     <label class="col-lg-4 form-control-label">Наименование</label>
                                     <div class="col-lg-8">
                                         <div class="input-group">
@@ -50,7 +50,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row mb-2">
                                     <label class="col-lg-4 form-control-label">Заголовок</label>
                                     <div class="col-lg-8">
                                         <input type="text" name="header" class="form-control" placeholder="Заголовок"
@@ -59,23 +59,21 @@
                                 </div>
 
                                 <div wb-if="'{{_sett.devmode}}'=='on'">
-                                    <div class="divider-text">Присоединённый раздел</div>
-                                    <div class="form-group row">
+                                    <div class="divider-text cursor-pointer" onclick="$(this).next().toggleClass('d-none')" >Присоединённый раздел > </div>
+                                    <div class="form-group row d-none mb-2">
                                         <label class="col-lg-4 form-control-label">Раздел</label>
                                         <div class="col-lg-8">
-                                            <select class="form-control" wb-select2 placeholder="{{_lang.attach}}"
-                                                name="attach">
-                                                <wb-foreach wb-from="_env.forms" wb-tpl="false">
-                                                    <option>{{_val}}</option>
+                                            <select class="form-control" placeholder="{{_lang.attach}}" name="attach">
+                                                <wb-foreach wb-from="_var.attaches" wb-tpl="false">
+                                                    <option value="{{_val}}">{{_val}}</option>
                                                 </wb-foreach>
                                             </select>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-12">
-                                        <input type="text" name="filter" class="form-control"
+                                    <div class="col-12 mt-2">
+                                        <input type="text" name="attach_filter" class="form-control"
                                             placeholder="{{_lang.filter}}">
+                                    </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -98,19 +96,6 @@
         </div>
     </div>
 </div>
-
-<wb-lang>
-[ru]
-header = Редактирование страницы
-search = Поиск
-attach = Присоединить раздел
-filter = Фильтр (json)
-[en]
-header = Page edit
-search = Search
-attach = Attach division
-filter = Filter (json)
-</wb-lang>
 
 <script wb-app>
 let timeout = 50;
@@ -139,4 +124,17 @@ yonger.pageEditor = function() {
 
 yonger.pageEditor();
 </script>
+<wb-lang>
+    [ru]
+    header = Редактирование страницы
+    search = Поиск
+    attach = Присоединить раздел
+    filter = "Фильтр (json)"
+    [en]
+    header = Page edit
+    search = Search
+    attach = Attach division
+    filter = "Filter (json)"
+</wb-lang>
+
 </html>

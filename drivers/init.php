@@ -229,6 +229,10 @@ function wbTableExist($form)
 }
 
 
+function wbListTables($engine = false) {
+    return wbTableList($engine);
+}
+
 function wbTableList($engine = false)
 {
     $app = &$_ENV['app'];
