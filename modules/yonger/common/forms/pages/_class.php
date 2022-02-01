@@ -79,8 +79,7 @@ private function listNested($path = '') {
             $attach = (isset($item['attach']) AND $item['attach'] > ' ') ? true : false;
             @$res = $attach ? $this->listTable($item, $url) : $res = $this->listNested($url);
             $li = ($url == '/home') ? $out->find('li[data-path="/"]') : $out->find('li[data-path="'.$url.'"]');
-            $url == '/home' ? $url = '/' : null;
-            $this->map[md5($url)] = ['f'=>$item['_form'],'i'=>$item['id']];
+            substr($item['id'],0,1) == '_' ? null : $this->map[md5($url)] = ['f'=>$item['_form'],'i'=>$item['id'],'u'=>$url];
             if ($res !== null) $li->append($res);
             $li->find('template')->remove();
             if ($attach) {
