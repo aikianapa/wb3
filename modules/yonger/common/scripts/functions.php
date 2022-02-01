@@ -3,9 +3,23 @@
     function customRoute($route = [])
     {
         $app = &$_ENV['app'];
+        $map = $app->vars('_env.dba').'/_yonmap.json';
+        $uri = $app->route->uri;
+        if (is_file($map)) {
+            $map = (array)json_decode(file_get_contents($map),true);
+            $idx = md5($uri);
+            if (isset($map[$idx])) {
+                $app->route->controller = 'form';
+                $app->route->mode = 'show';
+                $app->route->table = $map[$idx]['f'];
+                $app->route->item = $map[$idx]['i'];
+                $app->route->tpl = $map[$idx]['f'].".php";
+                $app->vars('_route', $app->objToArray($app->route));
+                return;
+            }
+        }
 
         if ($app->vars('_route.controller') == 'form' && $app->vars('_route.mode') == 'show') {
-            $uri = $app->route->uri;
             $path = explode('/', $uri);
             $name = array_pop($path);
             $path = implode('/', $path);

@@ -47,6 +47,7 @@ function list() {
     $this->tables = $app->tableList();
     $this->jq = new Jsonq();
     $this->count = 0;
+    $this->map = [];
     $out = $app->fromFile(__DIR__ . '/list.php');
     $this->tpl = $out->find('#pagesList');
     $this->list = $this->app->itemList('pages',['return'=>'id,name,_form,header,active,attach,attach_filter,url,path']);
@@ -54,15 +55,8 @@ function list() {
     foreach ($this->list as &$item) {
         isset($item['header']) and isset($item['header'][$_SESSION['lang']]) ? $item['header'] = $item['header'][$_SESSION['lang']] : null;
     }
-    //$app->vars('_post',[]); // фикса для правильной отработки обновлений
     $res = $this->listNested();
-    /*
-    $firstlvl = $res->find('> li.dd-item');
-    foreach($firstlvl as $li) {
-        $name= $li->attr('data-name');
-        in_array($name, $this->tables) ? $li->attr('data-inner', $name) : null;
-    }
-    */
+    $app->putContents($app->vars('_env.dba').'/_yonmap.json', json_encode($this->map));
     $out->find('#pagesList')->replaceWith($res);
     echo $out;
 }
@@ -85,6 +79,8 @@ private function listNested($path = '') {
             $attach = (isset($item['attach']) AND $item['attach'] > ' ') ? true : false;
             @$res = $attach ? $this->listTable($item, $url) : $res = $this->listNested($url);
             $li = ($url == '/home') ? $out->find('li[data-path="/"]') : $out->find('li[data-path="'.$url.'"]');
+            $url == '/home' ? $url = '/' : null;
+            $this->map[md5($url)] = ['f'=>$item['_form'],'i'=>$item['id']];
             if ($res !== null) $li->append($res);
             $li->find('template')->remove();
             if ($attach) {
@@ -118,8 +114,9 @@ private function listTable($item, $path = '') {
             if ($item['header']) {
                 $item['path'] = $path;
                 $item['name'] = wbFurlGenerate($item['header']);
-                $item['url'] = $item['path'].'/'.$item['id'].'/'.$item['name'];
+                $item['url'] = $item['path'].'/'.$item['name'];
                 $level[$key] = $item;
+                $this->map[md5($item['url'])] = ['f'=>$item['_form'],'i'=>$item['id']];
             } else {
                 unset($level[$key]);
             }

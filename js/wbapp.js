@@ -92,7 +92,6 @@ wbapp.start = async function() {
 
                     wbapp.console("trigger: wb-verify-true [" + $(this).attr("name") + "]");
                     $(form).trigger("wb-verify-true", [this]);
-
                 }
             }
             if ($(this).is("[required][type=checkbox]:not(:checked)")) {
@@ -928,7 +927,7 @@ wbapp.save = async function(obj, params, func = null) {
 
             if (params.dismiss && params.error !== true) $("#" + params.dismiss).modal("hide");
             wbapp.console('Update by tpl');
-            wbapp.updateView(params);
+            wbapp.updateView(params, data);
             if (data._id !== undefined) $(obj).data('saved-id', data._id);
 
             wbapp.console("Trigger: wb-save-done");
@@ -943,7 +942,7 @@ wbapp.save = async function(obj, params, func = null) {
     }, 50);
 }
 
-wbapp.updateView = function(params = {}) {
+wbapp.updateView = function(params = {}, data = {}) {
     console.log('Update view');
     $.each(wbapp.template, function(i, tpl) {
         if (tpl.params.render == undefined || tpl.params.render !== 'client') tpl.params.render = 'server';
@@ -957,21 +956,27 @@ wbapp.updateView = function(params = {}) {
         } else {
             // server-side update
             let prms = Object.assign({}, tpl.params);
+            let post = null;
+            prms.route == undefined ? prms.route = [] : null;
             if (prms.bind !== undefined && prms.update == undefined) prms.update = prms.bind;
-            try {
-                if (params.update == prms._params.bind) {
-                    let target = prms.target;
-                    wbapp.post(prms.url, prms._route._post, function(res) {
+            if (prms._params !== undefined && prms._params.bind !== undefined) prms.update = prms._params.bind;
+            if (prms._params !== undefined && prms._params.update !== undefined) prms.update = prms._params.update;
+            if (prms.route !== undefined && prms.route._post !== undefined) post = prms.route._post;
+            if (prms.url == undefined && prms.route.url !== undefined) prms.url = prms.route.url;
+
+            if (params.update == prms.update) {
+                let target = prms.target;
+                if (post && prms.url !== undefined) {
+                    wbapp.post(prms.url, post, function(res) {
                         let html = $(res).find(target).html();
                         $(document).find(target).html(html);
                         wbapp.refresh();
                     })
                 } else {
-                    params.update == prms.update ? wbapp.renderServer(prms, data) : null;
+                    wbapp.renderServer(prms, data);
                 }
-            } catch (error) {
-                params.update == prms.update ? wbapp.renderServer(prms, data) : null;
             }
+
         }
     })
 }
@@ -1158,7 +1163,7 @@ wbapp.ajax = async function(params, func = null) {
                 // $inp = $(params._event.target).parent();
                 // тут нужна обработка значений на клиенте
             }
-            if (params.update !== undefined) wbapp.updateView(params);
+            if (params.update !== undefined) wbapp.updateView(params, data);
             wbapp.refresh(data);
             if (data.html !== undefined && params.target !== undefined) {
                 if (params._params !== undefined && params._params.more !== undefined) {
