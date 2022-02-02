@@ -1220,7 +1220,7 @@ function wbItemInit($table, $item = null)
     return $item;
 }
 
-function wbSortIndex($idx = 0) {
+function wbSortIndex($idx = 999999999) {
     return str_pad($number, 9, '0', STR_PAD_LEFT);
 }
 

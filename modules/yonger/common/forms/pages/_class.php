@@ -130,8 +130,10 @@ function path() {
     $data = $app->vars('_post.data');
     foreach(array_keys($data) as $id) {
         $item = $app->itemRead('pages', $id);
-        $item['path'] = $data[$id];
-        $app->itemSave('pages',$item,false);
+        if ($item) {
+            $item['path'] = $data[$id];
+            $app->itemSave('pages', $item, false);
+        }
     }
     $app->tableFlush('pages');
 }
