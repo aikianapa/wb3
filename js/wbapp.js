@@ -1641,7 +1641,6 @@ wbapp.renderServer = async function(params, data = {}) {
         }
 
         if (post) {
-            console.log(params);
             wbapp.post(params.url, post, function(res) {
                 let html = $(res).find(params.target).html();
                 $(document).find(params.target).html(html);

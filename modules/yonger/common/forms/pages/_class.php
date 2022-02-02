@@ -82,6 +82,7 @@ private function listNested($path = '') {
             substr($item['id'],0,1) == '_' ? null : $this->map[md5($url)] = ['f'=>$item['_form'],'i'=>$item['id'],'u'=>$url];
             if ($res !== null) $li->append($res);
             $li->find('template')->remove();
+            ($url == '/home') ? $li->find('.dd-handle')->addClass('dd-home')->removeClass('dd-handle')->inner(' ') : null;
             if ($attach) {
                 $li->find('> ol .dd-add')->remove();
                 $li->find('> ol .dd-handle')->remove();

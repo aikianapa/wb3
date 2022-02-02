@@ -1206,32 +1206,22 @@ function wbSetChmod($ext = '.json')
 function wbItemInit($table, $item = null)
 {
     $app = &$_ENV["app"];
-    if (!isset($item['_id']) && isset($item['id'])) {
-        $item['_id'] = $item['id'];
-    }
-    if (!isset($item['_id']) or '_new' == $item['_id'] or $item['_id'] == "") {
-        $item['_id'] = wbNewId();
-    }
+    (!isset($item['_id']) && isset($item['id'])) ? $item['_id'] = $item['id'] : null;
+    (!isset($item['_id']) or '_new' == $item['_id'] or $item['_id'] == "") ? $item['_id'] = wbNewId() : null;
     $item['id'] = $item['_id'];
-
     $item['_table'] = $item['_form'] = $table;
-    
-    if (in_array('wbItemRead',wbCallStack()) OR in_array('wbItemList',wbCallStack())) {
-        $tmp = null;
-    } else {
-        $tmp = wbItemRead($item["_form"], $item["_id"]);
-    }
-    if ((!$tmp or !isset($tmp['_created']) or '' == $tmp['_created']) or !isset($item["_created"])) {
-        $item['_created'] = date('Y-m-d H:i:s');
-    }
-    if ((!$tmp or !isset($tmp['_creator']) or '' == $tmp['_creator']) and !isset($item["_creator"])) {
-        $item['_creator'] = $app->vars("_sess.user.id");
-    }
-
+    $tmp = (in_array('wbItemRead',wbCallStack()) OR in_array('wbItemList',wbCallStack())) ? null : $tmp = wbItemRead($item["_form"], $item["_id"]);
+    (!$tmp or !isset($tmp['_created']) or '' == $tmp['_created']) or !isset($item["_created"]) ? $item['_created'] = date('Y-m-d H:i:s') : null;
+    (!$tmp or !isset($tmp['_creator']) or '' == $tmp['_creator']) and !isset($item["_creator"]) ? $item['_creator'] = $app->vars("_sess.user.id") : null;
     $item['_lastdate'] = date('Y-m-d H:i:s');
     $item['_lastuser'] = $app->vars("_sess.user.id");
+    $item['_sort'] = isset($item['_sort']) ? wbSortIndex($item['_sort']) : wbSortIndex();
     if (isset($item['__token'])) unset($item['__token']);
     return $item;
+}
+
+function wbSortIndex($idx = 0) {
+    return str_pad($number, 9, '0', STR_PAD_LEFT);
 }
 
 function wbCallStack() {

@@ -35,18 +35,17 @@
                             'filter': {'_site' : {'$in': [null,'{{_sett.site}}']}, 'id': {'$nin':['_header','_footer']}}
                 }">
                 <li class="dd-item row" data-item="{{id}}" data-name="{{name}}" data-path="{{url}}" data-form="{{_form}}" data-inner="pages">
-                    <span class="dd-handle"><img src="/module/myicons/20/000000/dots-2.svg"  width="20" height="20"/></span>
-                    <span class="dd-text d-none d-sm-flex col-sm-6 ellipsis">
-                    <span>{{header}}</span>
+                    <span class="dd-handle"></span>
+                    <span class="dd-text d-none d-sm-flex col-sm-9 ellipsis">
+                        <span>{{header}}
+                            <br>
+                                <span class="dd-path ellipsis" data-path="{{url}}">
+                                    {{url}}
+                                </span>
+                        </span>
                     </span>
-                    <span class="dd-info col-sm-6">
-                        <span class="row">
-                            <span class="dd-path col-6 ellipsis" data-path="{{url}}">
-                                <img data-src="/module/myicons/link-big.svg?size=24&stroke=000000">
-                                {{url}}
-                                <span class="d-block d-sm-none tx-10 tx-muted">{{header}}</span>
-                            </span>
-                            <form method="post" class="col-6 text-right m-0">
+                    <span class="dd-info col-sm-3">
+                            <form method="post" class="text-right m-0">
                                 <wb-var wb-if='"{{active}}" == ""' stroke="FC5A5A" else="82C43C" />
                                 <input type="checkbox" name="active" class="d-none">
                                 <img src="/module/myicons/24/{{_var.stroke}}/power-turn-on-square.1.svg" class="dd-active cursor-pointer" wb-allow="admin">
@@ -55,7 +54,6 @@
                                 <img src="/module/myicons/24/323232/content-edit-pen.svg" width="24" height="24" class="dd-edit">
                                 <img src="/module/myicons/24/323232/trash-delete-bin.2.svg" width="24" height="24" class="dd-remove" wb-allow="admin">
                             </form>
-                        </span>
                     </span>
                 </li>
             </wb-foreach>

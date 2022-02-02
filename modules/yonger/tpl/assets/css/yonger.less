@@ -23,7 +23,6 @@
     outline: 0px;
 }
 
-
 body {
     overflow: hidden;
     font-family: 'Roboto';
@@ -511,7 +510,6 @@ body {
         .dd-text {
             font-weight: 600;
             height: @dd-height;
-            line-height: @dd-height;
             align-items: center;
             padding-left: 20px;
         }
@@ -563,6 +561,49 @@ body {
             }
         }
 
+        .dd-home {
+            margin: 7px 0;
+            padding: 5px 10px;
+            box-sizing: border-box;
+            position: absolute;
+            cursor:no-drop;
+            display: inline;
+            border: 0;
+            background: none;
+            top: 5px;
+            margin-left: -30px;
+            z-index: 110;
+            height: 30px;
+            width: 35px;
+            &:before {
+                position: absolute;
+                content: ' ';
+                background: url(/module/myicons/home-circle.svg?stroke=323232&size=24) 50% 50% no-repeat;
+                width: 30px;
+                height: 24px;
+                top: 0;
+            }
+        }
+
+        .dd-path {
+            padding-left: 30px;
+            height: 30px;
+            font-weight: normal;
+            color: #323232;
+            font-size: 12px;
+            &:before {
+                position: absolute;
+                left: 30px;
+                content: ' ';
+                background: url(/module/myicons/link-big?stroke=323232&size=18) 50% 50% no-repeat;
+                width: 15px;
+                height: 15px;
+            }
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
         .dd-handle {
             position: absolute;
             display: inline;
@@ -572,6 +613,14 @@ body {
             margin-left: -30px;
             z-index: 110;
             width: 35px;
+            &:before {
+                position: absolute;
+                content: ' ';
+                background: url(/module/myicons/20/323232/dots-2.svg) 50% 50% no-repeat;
+                width: 30px;
+                height: 24px;
+                top: 0;
+            }
         }
 
         ol {
