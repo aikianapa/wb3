@@ -7,6 +7,8 @@ function beforeItemShow(&$item) {
     isset($item['lang']) ? $lang = $item['lang'][$this->app->vars('_sess.lang')] : $lang = [];
     $item = (array)$lang + (array)$item;
     isset($item['header']) AND isset($item['header'][$_SESSION['lang']]) ? $item['header'] = $item['header'][$_SESSION['lang']] : null;
+    $item['menu_title'] = isset($item['menu_title']) ? $item['menu_title'][$_SESSION['lang']] : $item['header'];
+    $item['menu_title'] == '' ? $item['menu_title'] = $item['header'] : null;
 }
 
 function beforeItemEdit(&$item)
@@ -77,18 +79,23 @@ private function listNested($path = '') {
         in_array($item['url'],['/','']) ? $url = '/home' : $url = $item['url'];
         unset($this->list[$item['id']]);
             $attach = (isset($item['attach']) AND $item['attach'] > ' ') ? true : false;
-            @$res = $attach ? $this->listTable($item, $url) : $res = $this->listNested($url);
+            $res1 = $res2 = null;
+            $res1 = $this->listNested($url);
+            $res2 = $attach ? $this->listTable($item, $url) : null;
+
             $li = ($url == '/home') ? $out->find('li[data-path="/"]') : $out->find('li[data-path="'.$url.'"]');
             substr($item['id'],0,1) == '_' ? null : $this->map[md5($url)] = ['f'=>$item['_form'],'i'=>$item['id'],'u'=>$url];
-            if ($res !== null) $li->append($res);
+            if ($res2 !== null) $li->append($res2);
             $li->find('template')->remove();
             ($url == '/home') ? $li->find('.dd-handle')->addClass('dd-home')->removeClass('dd-handle')->inner(' ') : null;
+            $li->addClass('dd-collapsed');
             if ($attach) {
                 $li->find('> ol .dd-add')->remove();
                 $li->find('> ol .dd-handle')->remove();
                 $li->find('> .dd-info .dd-add')->attr('data-inner', $item['attach']);
                 $li->attr('data-inner', $item['attach']);
             }
+            if ($res1 !== null) $li->append($res1);
     }
     $out->parent = $this;
     return $out;
