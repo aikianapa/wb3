@@ -50,6 +50,18 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="form-group row mb-2" wb-allow="admin">
+                                    <label class="col-lg-4 form-control-label">Пункт меню</label>
+                                    <div class="col">
+                                        <input type="text" name="menu_title" class="form-control"
+                                            placeholder="Пункт меню" wb="module=langinp" required>
+                                    </div>
+                                    <div class="col-auto py-1">
+                                        <input name="menu" wb-module="swico" data-size="30">
+                                    </div>
+                                </div>
+
                                 <div class="form-group row mb-2">
                                     <label class="col-lg-4 form-control-label">Заголовок</label>
                                     <div class="col-lg-8">
@@ -59,7 +71,8 @@
                                 </div>
 
                                 <div wb-if="'{{_sett.devmode}}'=='on'">
-                                    <div class="divider-text cursor-pointer" onclick="$(this).next().toggleClass('d-none')" >Присоединённый раздел > </div>
+                                    <div class="divider-text cursor-pointer"
+                                        onclick="$(this).next().toggleClass('d-none')">Присоединённый раздел > </div>
                                     <div class="form-group row d-none mb-2">
                                         <label class="col-lg-4 form-control-label">Раздел</label>
                                         <div class="col-lg-8">
@@ -69,10 +82,10 @@
                                                 </wb-foreach>
                                             </select>
                                         </div>
-                                    <div class="col-12 mt-2">
-                                        <input type="text" name="attach_filter" class="form-control"
-                                            placeholder="{{_lang.filter}}">
-                                    </div>
+                                        <div class="col-12 mt-2">
+                                            <input type="text" name="attach_filter" class="form-control"
+                                                placeholder="{{_lang.filter}}">
+                                        </div>
 
                                     </div>
                                 </div>
