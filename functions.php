@@ -1221,7 +1221,7 @@ function wbItemInit($table, $item = null)
 }
 
 function wbSortIndex($idx = 999999999) {
-    return str_pad($number, 9, '0', STR_PAD_LEFT);
+    return str_pad($idx, 9, '0', STR_PAD_LEFT);
 }
 
 function wbCallStack() {

@@ -13,11 +13,9 @@ function wbItemList($form = 'pages', $options=[])
 function wbSetDb($form)
 {
     $app = &$_ENV["app"];
-
+    isset($app->drivers) ? null : $app->drivers = (object)[];
     if (isset($app->drivers->$form)) {
         return $app->drivers->$form;
-    } else {
-        isset($app->drivers) ? null : $app->drivers = (object)[];
     }
     isset($app->settings->driver_tables[$form]) ? $driver = $app->settings->driver_tables[$form] : $driver = $app->settings->_driver;
     $form == '_settings' ? $driver = 'json' : null;
@@ -36,15 +34,16 @@ function wbSetDb($form)
     foreach (debug_backtrace() as $func) {
         'wbTableCreate'==$func["function"] ? $loop=true : null;
     }
-
-    if (!$app->drivers->$form->tableExist($form) && !$loop) {
+    $exists = $app->drivers->$form->tableExist($form);
+    if (!$exists && !$loop) {
         if (in_array($form,$app->listForms()) OR $app->vars('_route.mode') == 'save') {
             $app->tableCreate($form);
             $app->_db->tableCreate($form);
+            $exists = $app->drivers->$form->tableExist($form);
         }
     }
 
-    if (!$app->drivers->$form->tableExist($form)) {
+    if (!$exists) {
         echo json_encode(["error"=>true,"msg"=>"Fatal error! {$form} not found !"]);
         die;
     } else {
@@ -153,7 +152,6 @@ function wbItemCopy($form = null, $old = null, $new = null, $flush = true)
 
 function wbItemSave($form, $item = null, $flush = true)
 {
-    $app = $_ENV['app'];
     $db = wbSetDb($form);
     $item = wbTrigger('form', __FUNCTION__, 'beforeItemSave', func_get_args(), $item);
     if (!isset($item['id'])) {

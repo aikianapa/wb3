@@ -30,7 +30,6 @@
         <ol id="pagesList" class="dd-list">
                         <wb-foreach wb="{'from':'list',
                             'render':'server',
-                            'sort':'url',
                             'bind': 'cms.list.pages',
                             'filter': {'_site' : {'$in': [null,'{{_sett.site}}']}, 'id': {'$nin':['_header','_footer']}}
                 }">
@@ -48,11 +47,11 @@
                             <form method="post" class="text-right m-0">
                                 <wb-var wb-if='"{{active}}" == ""' stroke="FC5A5A" else="82C43C" />
                                 <input type="checkbox" name="active" class="d-none">
+                                <img src="/module/myicons/24/0168fa/item-select-plus-add.svg" class="dd-add cursor-pointer" wb-allow="admin">
+                                <img src="/module/myicons/24/7987a1/copy-paste-select-add-plus.svg" width="24" height="24" class="dd-copy" wb-allow="admin">
+                                <img src="/module/myicons/24/7987a1/content-edit-pen.svg" width="24" height="24" class="dd-edit">
                                 <img src="/module/myicons/24/{{_var.stroke}}/power-turn-on-square.1.svg" class="dd-active cursor-pointer" wb-allow="admin">
-                                <img src="/module/myicons/24/323232/item-select-plus-add.svg" class="dd-add cursor-pointer" wb-allow="admin">
-                                <img src="/module/myicons/24/323232/copy-paste-select-add-plus.svg" width="24" height="24" class="dd-copy" wb-allow="admin">
-                                <img src="/module/myicons/24/323232/content-edit-pen.svg" width="24" height="24" class="dd-edit">
-                                <img src="/module/myicons/24/323232/trash-delete-bin.2.svg" width="24" height="24" class="dd-remove" wb-allow="admin">
+                                <img src="/module/myicons/24/FC5A5A/trash-delete-bin.2.svg" width="24" height="24" class="dd-remove" wb-allow="admin">
                             </form>
                     </span>
                 </li>
@@ -132,33 +131,35 @@
 
         $(document).on('bind-cms.list.pages',function(){
             $('#yongerPagesTree').nestable({
-                maxDepth: 3,
-                beforeDragStop: function(l,e, p){
-                    datapath = {};
-                    changePath(e,p).then(function(res){
-                        if (res !== false) wbapp.post('/cms/ajax/form/pages/path',{'data':datapath});
+                maxDepth: 5,
+                callback: function(l,e){
+                    changePath(e).then(function(res){
+                        console.log(res.items);
+                        if (res) wbapp.post('/cms/ajax/form/pages/path',{'data':res});
                     });
                 }
             });
         });
 
-        var changePath = async function (e,p) {
-            let self = $(e).attr('data-item');
-            let name = $(e).attr('data-name');
-            let selfpath = $(e).attr('data-path');
-            let parent = $(p).closest('.dd-item').find('.dd-path').attr('data-path');
+        var changePath = async function (e, datapath = null) {
+            // передавать не только id, но и позицию в списке, записывая её в поле _sort
+            let ol = $(e).closest('ol');
+            let parent = $(ol).closest('.dd-item').attr('data-path');
+            datapath == null ? datapath = {form:$(e).data('form'),items:{}} : null;
             if (parent == undefined) {parent = '';} 
             if (parent == '/') {parent = '/home'}
-            if (selfpath == parent) return false;
-
-            let path = parent + '/' + name;
-            datapath[self] = parent;
-            $(e).children('.dd-info').find('.dd-path')
-                .text(path)
-                .attr('data-path',path);
-                $(e).find('ol.dd-list .dd-item').each(await function(){
-                        changePath(this,e);
+            $(ol).find(`> .dd-item`).each(function(i){
+                let data = $(this).data();
+                let path = parent + '/' + data.name;
+                let that = this;
+                $(this).find('.dd-path').text(path).attr('data-path',path);
+                $(this).attr('data-path',path);
+                datapath.items[data.item] = {'i':i,'p':parent};
+                $(this).find('.dd-item[data-form="'+data.form+'"]').each(function(i){
+                    changePath(this, datapath);
                 });
+            });
+            return datapath;
         }
         $(document).find('modals').html('');
         $(document).trigger('bind-cms.list.pages');

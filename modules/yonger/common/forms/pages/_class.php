@@ -50,7 +50,7 @@ function list() {
     $this->map = [];
     $out = $app->fromFile(__DIR__ . '/list.php');
     $this->tpl = $out->find('#pagesList');
-    $this->list = $this->app->itemList('pages',['return'=>'id,name,_form,header,active,attach,attach_filter,url,path']);
+    $this->list = $this->app->itemList('pages',['return'=>'id,name,_form,header,active,attach,attach_filter,url,path,_sort']);
     $this->list = $this->list['list'];
     foreach ($this->list as &$item) {
         isset($item['header']) and isset($item['header'][$_SESSION['lang']]) ? $item['header'] = $item['header'][$_SESSION['lang']] : null;
@@ -67,7 +67,7 @@ private function listNested($path = '') {
         return;
     }
     $out = $this->tpl->clone();
-    $level = $this->app->json($this->list)->where('path', '=', $path)->get();
+    $level = $this->app->json($this->list)->where('path', '=', $path)->sortBy('_sort')->get();
     $count = count($level);
     if (!$count) return '';
     $path > '' ? $out->removeAttr('id') : null;
@@ -128,14 +128,18 @@ private function listTable($item, $path = '') {
 function path() {
     $app = &$this->app;
     $data = $app->vars('_post.data');
-    foreach(array_keys($data) as $id) {
-        $item = $app->itemRead('pages', $id);
-        if ($item) {
-            $item['path'] = $data[$id];
-            $app->itemSave('pages', $item, false);
-        }
+    $form = &$data['form'];
+    $items = &$data['items'];
+    $list = $app->itemList($form, ['filter'=>['_id'=>['$in'=>array_keys($items)]]]);
+    foreach($list['list'] as $item) {
+            $id = $item['id'];
+            $vals = &$items[$id];
+            $item['_sort'] = $vals['i'];
+            $form == 'pages' ? $item['path'] = $vals['p'] : null;
+            $app->itemSave($form, $item, false);
     }
-    $app->tableFlush('pages');
+    $app->tableFlush($form);
+    echo json_encode('true');
 }
 
 }
