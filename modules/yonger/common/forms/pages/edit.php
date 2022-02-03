@@ -55,7 +55,7 @@
                                     <label class="col-lg-4 form-control-label">Пункт меню</label>
                                     <div class="col">
                                         <input type="text" name="menu_title" class="form-control"
-                                            placeholder="Пункт меню" wb="module=langinp" required>
+                                            placeholder="Пункт меню" wb="module=langinp">
                                     </div>
                                     <div class="col-auto py-1">
                                         <input name="menu" wb-module="swico" data-size="30">
