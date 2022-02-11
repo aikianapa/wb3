@@ -2,12 +2,15 @@
 $err = '';
 $path = $_SERVER['DOCUMENT_ROOT'];
 
-if (!class_exists("DomDocument")) {
-    $err .= "<li>Error! Extension not found: php-xml</li>";
+$required = ['mbstring','dom','xml','gd','imagick','json','zip'];
+$exts = get_loaded_extensions();
+
+foreach($required as $req) {
+    if (!in_array($req,$exts)) {
+        $err .= "<li>Error! Extension not found: {$req}.<br>Use: sudo apt -y install php-{$req} </li>";
+    }
 }
-if (!extension_loaded('mbstring')) {
-    $err .= "<li>Error! Extension not loaded: php-mbstring</li>";
-}
+
 // проверить composer
 // проверить GD или Imagick
 

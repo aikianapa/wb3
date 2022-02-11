@@ -4,7 +4,7 @@ class ctrlForm
     public function __construct($app)
     {
         $this->app = $app;
-        $mode = $app->route->mode;
+        $mode = isset($app->route->mode) ? $app->route->mode : 'show';
         $this->$mode();
     }
 
