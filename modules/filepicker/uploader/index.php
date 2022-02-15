@@ -12,7 +12,7 @@ use Hazzard\Config\Repository as Config;
 
 $app = new wbApp();
 
-if (!$app->vars('_sess.user_role') == 'admin') return;
+//if (!$app->vars('_sess.user_role') == 'admin') return;
 
 if (class_exists('Imagick')) {
     $uploader = new Uploader($config = new Config, new ImageManager(array('driver' => 'imagick')));
@@ -27,7 +27,7 @@ $handler = new Handler($uploader);
 $config['debug'] = true;
 
 
-$app->vars('_sess.user_role') == 'admin' ? $config['accept_file_types_regex'] = '/.*/' : null;
+//$app->vars('_sess.user_role') == 'admin' ? $config['accept_file_types_regex'] = '/.*/' : null;
 
 isset($_POST["file"]) ? $file = $_POST["file"] : $file = wbNewId("img");
 
