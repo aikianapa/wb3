@@ -10,6 +10,7 @@ class ctrlForm
 
     public function __call($mode, $params)
     {
+        if (!isset($this->app->route->form)) return;
         $form = $this->app->route->form;
         $class=$this->app->formClass($form);
         if (method_exists($class,$mode)) {
