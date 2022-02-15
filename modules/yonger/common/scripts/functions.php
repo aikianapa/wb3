@@ -5,7 +5,7 @@
         $app = &$_ENV['app'];
         $map = $app->vars('_env.dba').'/_yonmap.json';
         $app->route->uri == '/' ? $uri = '/home' : $uri = $app->route->uri;
-        if (is_file($map) && $app->cacheControl()) {
+        if (is_file($map)) {
             $map = (array)json_decode(file_get_contents($map),true);
             $idx = md5($uri);
             if (isset($map[$idx])) {

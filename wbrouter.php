@@ -41,17 +41,19 @@ final class wbRouter {
         foreach ($res as $r) {
             $this->addRouteFile($r);
         }
-        is_file($route_e) ? $this->addRouteFile($route_e) : null;
         is_file($route_a) ? $this->addRouteFile($route_a) : null;
-
-    }
+        is_file($route_e) ? $this->addRouteFile($route_e) : null;
+}
     
     
     // Добавить маршрут
-    public static function addRoute($route, $destination=null) {
+    public static function addRoute($route, $destination=null, $rewrite = false) {
         if ($destination != null && !is_array($route)) {
-            $route = array($route => $destination);
-            self::$routes = array_merge(self::$routes, $route);
+            //$route = [$route => $destination];
+            if ($rewrite OR !isset(self::$routes[$route])) {
+                self::$routes[$route] = $destination;
+            }
+            //self::$routes = array_merge(self::$routes, $route);
         }
     }
 
@@ -69,7 +71,6 @@ final class wbRouter {
                 $this->addRoute(trim($r[0]),trim($r[1]));
             }
         }
-        $this->getRoute();
     }
 
     // Разделить переданный URL на компоненты
@@ -110,10 +111,9 @@ final class wbRouter {
         if (isset(self::$routes[$requestedUrl])) {
             self::$params = self::splitUrl(self::$routes[$requestedUrl]);
             self::$names[] = '';
-            return self::returnRoute();
+            $_ENV['route'] = self::returnRoute();
+            return $_ENV['route'];
         }
-
-
         foreach ((array)self::$routes as $route => $uri) {
             // Заменяем wildcards на рег. выражения
             $name=null;
@@ -131,7 +131,6 @@ final class wbRouter {
                 $route = str_replace('(:any)', '(.+)', str_replace('(:num)', '([0-9]+)', str_replace('(:str)', '(.[a-zA-Z]+)', $route)));
             }
             $requestedUrl = wbNormalizePath($requestedUrl);
-
             if (preg_match('#^'.$route.'$#', $requestedUrl)) {
                 if (strpos($uri, '$') !== false && strpos($route, '(') !== false) {
                     $uri = preg_replace('#^'.$route.'$#', $uri, $requestedUrl);

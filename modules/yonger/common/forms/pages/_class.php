@@ -65,7 +65,7 @@ function list() {
 
 private function listNested($path = '') {
     $this->count++;
-    if ($this->count > 100) {
+    if ($this->count > 1000) {
         return;
     }
     $out = $this->tpl->clone();
@@ -123,7 +123,7 @@ private function listTable($item, $path = '') {
                 $item['name'] = wbFurlGenerate($item['header']);
                 $item['url'] = $item['path'].'/'.$item['name'];
                 $level[$key] = $item;
-                $this->map[md5($item['url'])] = ['f'=>$item['_form'],'i'=>$item['id']];
+                $this->map[md5($item['url'])] = ['f'=>$item['_form'],'i'=>$item['id'],'u'=>$item['url']];
             } else {
                 unset($level[$key]);
             }
