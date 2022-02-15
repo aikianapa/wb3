@@ -247,6 +247,12 @@ $(document).on("filepicker-js", async function() {
                             ractive.set({ images: $filepicker.list });
                             setdata();
                         }
+                        let $fibtn = $filepicker.find('button.fileinput:visible');
+                        if ($fibtn.length) {
+                            $fibtn.find('> span .spinner-border').remove();
+                            $fibtn.find('> span > svg').show();
+                        }
+
                         console.log('Trigger: mod-filepicker-done');
                         $filepicker.trigger('mod-filepicker-done', $filepicker.list);
                     }).on('cropsave.filepicker', function(e, file) {
@@ -267,11 +273,22 @@ $(document).on("filepicker-js", async function() {
                                 $filepicker.list[0] = line;
                             }
                         }
+                        let $fibtn = $filepicker.find('button.fileinput:visible');
+                        if ($fibtn.length) {
+                            $fibtn.find('> span').prepend(wbapp.ui.spinner_sm);
+                            $fibtn.find('> span > svg').hide();
+                        }
                         fixoldimg();
                         $filepicker.ractive.set({ images: $filepicker.list });
                         setdata();
 
                     }).on('fail.filepicker', function(e, data) {
+                        let $fibtn = $filepicker.find('button.fileinput:visible');
+                        if ($fibtn.length) {
+                            $fibtn.find('> span .spinner-border').remove();
+                            $fibtn.find('> span > svg').show();
+                        }
+
                         $filepicker.find(".listview img[data-img='" + data.files[0].name + "']")
                             .attr("src", "/engine/modules/filepicker/assets/img/error.png")
                             .attr("title", "Error")

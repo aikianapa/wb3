@@ -53,7 +53,7 @@ class modFilepicker
         }
 
         if ($dom->params("button")) {
-            $out->find('.button-bar .fileinput span')->inner(' '.$dom->params("button"));
+            $out->find('.button-bar .fileinput span.btn-text')->inner(' '.$dom->params("button"));
         }
 
         $dom->setValues();

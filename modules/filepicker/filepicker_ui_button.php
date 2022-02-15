@@ -5,7 +5,7 @@
         <button class="btn btn-success fileinput">
             <span>
                 <svg class="mi-upload-loading-arrow size-24" stroke="FFFFFF" wb-module="myicons"></svg>
-                <span class="d-none d-md-inline"> {{_lang.choose}}</span>
+                <span class="d-none d-md-inline btn-text"> {{_lang.choose}}</span>
             </span>
             <input type="file" name="files[]" class="wb-unsaved">
             <input type="hidden" name="upload_url" class="wb-unsaved">
