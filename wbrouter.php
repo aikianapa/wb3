@@ -43,7 +43,7 @@ final class wbRouter {
         }
         is_file($route_a) ? $this->addRouteFile($route_a) : null;
         is_file($route_e) ? $this->addRouteFile($route_e) : null;
-}
+    }
     
     
     // Добавить маршрут
@@ -59,6 +59,7 @@ final class wbRouter {
 
 
     public function addRouteFile($file) {
+        $this->rewrite = false;
         if (is_file($file)) {
             $route = file($file);
         } else if (is_file($_ENV['path_app'].'/'.$file)) {
@@ -66,9 +67,13 @@ final class wbRouter {
         }
         if (!isset($route)) return;
         foreach((array)$route  as $key => $r) {
-            $r = explode('=>', $r);
-            if (count($r) == 2) {
-                $this->addRoute(trim($r[0]),trim($r[1]));
+            if (trim($r) == '[rewrite]') {
+                $this->rewrite = true;
+            } else {
+                $r = explode('=>', $r);
+                if (count($r) == 2) {
+                    $this->addRoute(trim($r[0]),trim($r[1]), $this->rewrite);
+                } 
             }
         }
     }
