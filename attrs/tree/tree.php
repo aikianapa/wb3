@@ -14,11 +14,13 @@ class attrTree {
 
 function tagTree( &$dom, $Item = null ) {
     $dom->removeAttr( 'wb-tree' );
-    $save = $dom->params;
+
     if ( $Item == null ) $Item = $dom->item;
     if ( !( ( array )$Item === $Item ) ) $Item = array( $Item );
     if ( isset( $dom->params->tree ) ) $dom->params = ( object )$dom->params->tree;
+    $save = $dom->params;
 
+    
     isset( $dom->params->table ) ? $table = $dom->params->table : $table = null;
     isset( $dom->params->name ) ? $name = $dom->params->name : $name = $dom->attr( 'name' );
     isset( $dom->params->form ) ? $form = $dom->params->form : $form = null;
