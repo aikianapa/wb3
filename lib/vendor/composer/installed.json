@@ -267,12 +267,12 @@
         "version_normalized": "1.2.3.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/avalanche123/Imagine.git",
+            "url": "https://github.com/php-imagine/Imagine.git",
             "reference": "cb2361e5bb4410b681462d8e4f912bc5dabf84ab"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/cb2361e5bb4410b681462d8e4f912bc5dabf84ab",
+            "url": "https://api.github.com/repos/php-imagine/Imagine/zipball/cb2361e5bb4410b681462d8e4f912bc5dabf84ab",
             "reference": "cb2361e5bb4410b681462d8e4f912bc5dabf84ab",
             "shasum": ""
         },
@@ -323,17 +323,17 @@
     },
     {
         "name": "mustache/mustache",
-        "version": "v2.13.0",
-        "version_normalized": "2.13.0.0",
+        "version": "v2.14.1",
+        "version_normalized": "2.14.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/bobthecow/mustache.php.git",
-            "reference": "e95c5a008c23d3151d59ea72484d4f72049ab7f4"
+            "reference": "579ffa5c96e1d292c060b3dd62811ff01ad8c24e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/bobthecow/mustache.php/zipball/e95c5a008c23d3151d59ea72484d4f72049ab7f4",
-            "reference": "e95c5a008c23d3151d59ea72484d4f72049ab7f4",
+            "url": "https://api.github.com/repos/bobthecow/mustache.php/zipball/579ffa5c96e1d292c060b3dd62811ff01ad8c24e",
+            "reference": "579ffa5c96e1d292c060b3dd62811ff01ad8c24e",
             "shasum": ""
         },
         "require": {
@@ -343,7 +343,7 @@
             "friendsofphp/php-cs-fixer": "~1.11",
             "phpunit/phpunit": "~3.7|~4.0|~5.0"
         },
-        "time": "2019-11-23T21:40:31+00:00",
+        "time": "2022-01-21T06:08:36+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1052,6 +1052,64 @@
             "flat-file",
             "key-value",
             "serverless"
+        ]
+    },
+    {
+        "name": "workerman/workerman",
+        "version": "v4.0.27",
+        "version_normalized": "4.0.27.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/walkor/workerman.git",
+            "reference": "d2787647c2bca724248ae6d1e3bb717c2be69be4"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/walkor/workerman/zipball/d2787647c2bca724248ae6d1e3bb717c2be69be4",
+            "reference": "d2787647c2bca724248ae6d1e3bb717c2be69be4",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3"
+        },
+        "suggest": {
+            "ext-event": "For better performance. "
+        },
+        "time": "2022-02-10T14:20:14+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Workerman\\": "./"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "walkor",
+                "email": "walkor@workerman.net",
+                "homepage": "http://www.workerman.net",
+                "role": "Developer"
+            }
+        ],
+        "description": "An asynchronous event driven PHP framework for easily building fast, scalable network applications.",
+        "homepage": "http://www.workerman.net",
+        "keywords": [
+            "asynchronous",
+            "event-loop"
+        ],
+        "funding": [
+            {
+                "url": "https://opencollective.com/workerman",
+                "type": "open_collective"
+            },
+            {
+                "url": "https://www.patreon.com/walkor",
+                "type": "patreon"
+            }
         ]
     }
 ]

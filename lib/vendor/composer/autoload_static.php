@@ -19,6 +19,7 @@ class ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d
     public static $prefixLengthsPsr4 = array (
         'W' => 
         array (
+            'Workerman\\' => 10,
             'WebPConvert\\' => 12,
         ),
         'T' => 
@@ -64,6 +65,10 @@ class ComposerStaticInit10d8e36cc1cac79ce2653b63f64aad0d
     );
 
     public static $prefixDirsPsr4 = array (
+        'Workerman\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/workerman/workerman',
+        ),
         'WebPConvert\\' => 
         array (
             0 => __DIR__ . '/..' . '/rosell-dk/webp-convert/src',
