@@ -31,7 +31,7 @@
             <ul class="dd-list" id="{{_var.ypb}}_yonblocks">
                 <wb-foreach wb="bind=yonger.{{_var.ypb}}.blocks&render=client">
                     <li class="dd-item row" data-id="{{id}}" data-form="{{form}}" data-name="{{name}}">
-                        <span class="dd-handle"><img src="/module/myicons/20/323232/dots-2.svg" /></span>
+                        <span class="dd-handle">&nbsp;</span>
                         <span class="dd-text lh-10 col ellipsis">
                             <div class="lh-5">{{header}}</div>
                             <div class="lh-5 tx-gray tx-normal tx-11">{{name}}</div>
