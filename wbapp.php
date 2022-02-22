@@ -577,10 +577,18 @@ class wbDom extends DomQuery
                     } elseif ($inp->tagName == "select") {
                         if ((array)$value === $value) {
                             foreach ($value as $val) {
+                                    $tmp = $inp->find('[value]');
+                                    foreach ($tmp as $v) {
+                                        if ($v->attr('value') == $val) $v->attr('selected', true);
+                                    }
+
                                 $val > "" ? $inp->find("[value='{$val}']")->attr("selected", true) : null;
                             }
                         } elseif ($value > "") {
-                            $inp->find("[value='{$value}']")->attr("selected", true);
+                            $tmp = $inp->find('[value]');
+                            foreach($tmp as $v) {
+                                if ($v->attr('value') == $value) $v->attr('selected', true);
+                            }
                         }
                     } elseif ($inp->tagName == "input") {
                         if ($inp->attr("type") == "radio") {
