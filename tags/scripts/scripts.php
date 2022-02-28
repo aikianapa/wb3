@@ -31,9 +31,7 @@ class tagScripts
             $this->loaded = [];
         } else {$this->app->vars('_env.tmp.modScripts');}
 
-        $loaded = <<<loaded
-            if (!document.loadedScripts) document.loadedScripts =[];
-        loaded;
+        $loaded = 'if (!document.loadedScripts) document.loadedScripts =[];';
 
         foreach($arr as $src) {
             if (!in_array($this->loaded, $src)) {
@@ -54,7 +52,7 @@ class tagScripts
         $this->app->vars('_env.tmp.modScripts',$this->loaded);
         if ($script == '') return;
         $this->dom->attr('trigger') > '' ? $script.='$(document).trigger("'.$this->dom->attr('trigger').'");'.PHP_EOL : null;
-        $script = $loaded.$script;
+        $script = $loaded.$script.PHP_EOL;
         $script = gzencode($script, 9);
         $this->app->putContents($this->file, $script);
         $type = strtolower(trim($this->dom->attr('src')) == 'wbapp') ? '' : ' type="wbapp" ';
