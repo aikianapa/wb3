@@ -1900,19 +1900,23 @@ wbapp.console = async function(text) {
 }
 
 wbapp.loadScripts = async function(scripts = [], trigger = null, func = null) {
-    if (wbapp.loadedScripts == undefined) wbapp.loadedScripts = [];
-    if (wbapp.loadingScripts == undefined) wbapp.loadingScripts = [];
+    if (document.loadedScripts == undefined) document.loadedScripts = [];
+    if (document.loadingScripts == undefined) document.loadingScripts = [];
     let ready = [];
     var stop = 0;
     var count = scripts.length;
+    var loadedArr = JSON.parse(JSON.stringify(document.loadedScripts));
+    var loadingArr = JSON.parse(JSON.stringify(document.loadingScripts));
     scripts.forEach(function(src, i) {
         //    let name = src.split("/");
         //    name = name[name.length-1];
+        let name = src + '';
+        let loaded = in_array(name, loadedArr);
+        let loading = in_array(name, loadingArr);;
         if (wbapp.devmode > 0 && src.indexOf('?') == -1) src += '?' + wbapp.devmode;
-        let name = src;
-        if (wbapp.loadingScripts.indexOf(name) !== -1) {
+        if (loading) {
             wbapp.console("Script is loading: " + name);
-        } else if (wbapp.loadedScripts.indexOf(name) !== -1) {
+        } else if (loaded) {
             wbapp.console("Script already loaded: " + name);
             stop += 1;
             if (stop >= count) {
@@ -1922,15 +1926,15 @@ wbapp.loadScripts = async function(scripts = [], trigger = null, func = null) {
                 }
                 if (func !== null) return func(scripts);
             }
-        } else {
+        } else if (!loading && !loaded) {
             let script = document.createElement('script');
-            wbapp.loadingScripts.push(name);
+            document.loadingScripts.push(name);
             script.src = name;
             script.async = false;
             script.onload = async function() {
-                wbapp.loadedScripts.push(name);
-                let pos = wbapp.loadingScripts.indexOf(name);
-                delete wbapp.loadingScripts[pos];
+                document.loadedScripts.push(name);
+                let pos = document.loadingScripts.indexOf(name);
+                delete document.loadingScripts[pos];
                 wbapp.console("Script loaded: " + name);
                 stop += 1;
                 if (stop >= count) {

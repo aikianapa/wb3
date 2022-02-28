@@ -26,20 +26,35 @@ class tagScripts
         $arr = json_decode($inner,true);
         $script = '';
         $wbapp = false;
+
+        if ($this->app->vars('_env.tmp.modScripts') == '') {
+            $this->loaded = [];
+        } else {$this->app->vars('_env.tmp.modScripts');}
+
+        $loaded = <<<loaded
+            if (!document.loadedScripts) document.loadedScripts =[];
+        loaded;
+
         foreach($arr as $src) {
-            $src = stream_is_local($src) ? $this->home.$src : $src;
-            $tmp = file_get_contents($src);
-            try {
-                //$tmp = wbMinifyJs($tmp);
-                $tmp = JSMin::minify($tmp);
-            } catch (\Throwable $th) {
-                //$tmp = wbMinifyJs($tmp);
+            if (!in_array($this->loaded, $src)) {
+                $loaded.="document.loadedScripts.push('{$src}');";
+                $this->loaded[] = $src;
+                $this->app->vars('_env.tmp.modScripts', $this->loaded);
+                $src = stream_is_local($src) ? $this->home.$src : $src;
+                $tmp = file_get_contents($src);
+                try {
+                    //$tmp = wbMinifyJs($tmp);
+                    $tmp = JSMin::minify($tmp);
+                } catch (\Throwable $th) {
+                    //$tmp = wbMinifyJs($tmp);
+                }
+                $script .= $tmp.';'.PHP_EOL;
             }
-            $script .= $tmp.';'.PHP_EOL;
         }
+        $this->app->vars('_env.tmp.modScripts',$this->loaded);
         if ($script == '') return;
         $this->dom->attr('trigger') > '' ? $script.='$(document).trigger("'.$this->dom->attr('trigger').'");'.PHP_EOL : null;
-        
+        $script = $loaded.$script;
         $script = gzencode($script, 9);
         $this->app->putContents($this->file, $script);
         $type = strtolower(trim($this->dom->attr('src')) == 'wbapp') ? '' : ' type="wbapp" ';
