@@ -18,10 +18,10 @@ if ($err > '') {
     echo "<ol>{$err}</ol>";
     die;
 } else if (!is_file($path.'/database/_settings.json')) {
-    @mkdir($path.'/database', 0766);
-    @mkdir($path.'/forms', 0766);
-    @mkdir($path.'/modules', 0766);
-    @mkdir($path.'/tpl', 0766);
+    @mkdir($path.'/database', 0777);
+    @mkdir($path.'/forms', 0777);
+    @mkdir($path.'/modules', 0777);
+    @mkdir($path.'/tpl', 0777);
     copy($path.'/engine/database/_settings.json', $path.'/database/__setup.json');
     !is_file($path.'/.htaccess') ? @copy($path.'/engine/.htaccess', $path.'/.htaccess') : null;
     !is_file($path.'/index.php') ? @copy($path.'/engine/index.php', $path.'/index.php') : null;

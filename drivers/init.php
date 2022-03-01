@@ -44,8 +44,9 @@ function wbSetDb($form)
     }
 
     if (!$exists) {
-        echo json_encode(["error"=>true,"msg"=>"Fatal error! {$form} not found !"]);
-        die;
+        //echo json_encode(["error"=>true,"msg"=>"Fatal error! {$form} not found !"]);
+        error_log("Fatal error! Form {$form} not found !"." [{$_SERVER['REQUEST_URI']} from {$_SERVER['REMOTE_ADDR']}]");
+        $app->drivers->$form = null;
     } else {
         $file = $app->vars('_env.dba')."/{$form}.json";
         is_file($file) ? null : $app->putContents($file, '');
@@ -68,6 +69,7 @@ function wbItemRead($form = null, $id = null)
         return null;
     }
     $db = wbSetDb($form);
+    if ($db == null) return null;
     wbTrigger('form', __FUNCTION__, 'beforeItemRead', func_get_args(), array());
     !isset($_SESSION['lang']) ? $_SESSION['lang'] = 'en' : null;
     $cid = md5($form . $id . $_SESSION['lang']);
