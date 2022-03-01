@@ -12,5 +12,5 @@ if (!isset($_SESSION["lang"])) $_SESSION["lang"] = "ru";
 
 require_once __DIR__."/modules/setup/requrements.php";
 require_once __DIR__."/functions.php";
-if (!($app === false)) $app = new wbApp();
+if (!isset($app) OR ( isset($app) && !($app === false))) $app = new wbApp();
 ?>

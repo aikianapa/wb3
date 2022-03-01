@@ -7,7 +7,7 @@ function beforeItemShow(&$item) {
     isset($item['lang']) ? $lang = $item['lang'][$this->app->vars('_sess.lang')] : $lang = [];
     $item = (array)$lang + (array)$item;
     isset($item['header']) AND isset($item['header'][$_SESSION['lang']]) ? $item['header'] = $item['header'][$_SESSION['lang']] : null;
-    $item['menu_title'] = isset($item['menu_title']) ? $item['menu_title'][$_SESSION['lang']] : $item['header'];
+    $item['menu_title'] = isset($item['menu_title']) && isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] : $item['header'];
     $item['menu_title'] == '' ? $item['menu_title'] = $item['header'] : null;
 }
 
