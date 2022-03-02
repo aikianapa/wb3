@@ -427,7 +427,8 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
         // already support Jquery selector in CssToXpath
         // $css_expression = $this->replaceEqToNthChild($css_expression);
 
-        $xpath_expression = CssToXpath::transform($css_expression);
+        //$xpath_expression = CssToXpath::transform($css_expression);
+        $xpath_expression = \DQ\XpathQuery::compile($css_expression);
         $result = $this->xpath($xpath_expression);
 
         if (\is_string($selector)) {

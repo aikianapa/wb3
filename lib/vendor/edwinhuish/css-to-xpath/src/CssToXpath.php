@@ -13,7 +13,7 @@ class CssToXpath
      *
      * @var array
      */
-    private static $xpath_cache = array();
+    private static $xpath_cache = [];
 
     /**
      * Transform CSS selector expression to XPath
@@ -27,7 +27,6 @@ class CssToXpath
         if (isset(self::$xpath_cache[$path])) {
             return self::$xpath_cache[$path];
         }
-
         // add space for '>' in case of no space.
         $path = preg_replace('/((?<!\()(?<!^)\s*>)/', ' >', $path); // add space before '>', except begin with '(' or the first char
         $path = preg_replace('/(>\s*(?<!$)(?<!\)))/', '> ', $path); // add space after '>', except end with ')' or the last char
@@ -35,7 +34,7 @@ class CssToXpath
         $tmp_path = self::replaceCharInsideEnclosure($path, ',');
         if (strpos($tmp_path, ',') !== false) {
             $paths       = explode(',', $tmp_path);
-            $expressions = array();
+            $expressions = [];
 
             foreach ($paths as $single_path) {
                 $single_path   = str_replace("\0", ',', $single_path); // restore commas
@@ -52,7 +51,7 @@ class CssToXpath
         // create tokens and analyze to create segments
         $tokens = preg_split('/\s+/', $path_escaped);
 
-        $segments = array();
+        $segments = [];
 
         foreach ($tokens as $key => $token) {
             $token = str_replace("\0", ' ', $token); // restore spaces
@@ -121,12 +120,12 @@ class CssToXpath
             return false;
         }
 
-        $segment = (object) array(
+        $segment = (object) [
             'selector'          => '',
             'relation_token'    => false,
-            'attribute_filters' => array(),
-            'pseudo_filters'    => array()
-        );
+            'attribute_filters' => [],
+            'pseudo_filters'    => []
+        ];
 
         if (isset($tokens[$key - 1]) && \in_array($tokens[$key - 1], $relation_tokens, true)) { // get relationship token
             $segment->relation_token = $tokens[$key - 1];
@@ -150,7 +149,6 @@ class CssToXpath
         }
 
         $segment->selector = $token;
-
         while (preg_match('/(.*):(not|contains|has|nth-child|eq|gt|lt)\((.+)\)$/i', $segment->selector, $matches)) { // pseudo selector
             $segment->selector         = $matches[1];
             $segment->pseudo_filters[] = [$matches[2], $matches[3]];
@@ -207,7 +205,7 @@ class CssToXpath
      */
     private static function transformCssSegments(array $segments)
     {
-        $new_path_tokens = array();
+        $new_path_tokens = [];
 
         foreach ($segments as $num => $segment) {
             if ($segment->relation_token === '>') {
@@ -255,7 +253,7 @@ class CssToXpath
     private static function transformCssPseudoSelector($expression, array &$new_path_tokens)
     {
 
-        if (is_array($expression)) {
+        if ((array)$expression === $expression) {
             switch (trim(strtolower($expression[0]))) {
                 case 'not':
                     return self::notPseudo($expression[1]);
@@ -299,7 +297,7 @@ class CssToXpath
 
         //  static replacement
 
-        $pseudo_class_selectors = array(
+        $pseudo_class_selectors = [
             'disabled'    => '[@disabled]',
             'first-child' => '[not(preceding-sibling::*)]',
             'last-child'  => '[not(following-sibling::*)]',
@@ -313,7 +311,7 @@ class CssToXpath
             'first'       => '[1]',
             'last'        => '[last()]',
             'root'        => '[not(parent::*)]',
-        );
+        ];
 
         if ( ! isset($pseudo_class_selectors[$expression])) {
             throw new \Exception('Pseudo class '.$expression.' unknown');
@@ -458,3 +456,4 @@ class CssToXpath
         throw new \Exception('Attribute selector is malformed or contains unsupported characters.');
     }
 }
+
