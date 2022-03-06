@@ -1,8 +1,8 @@
 <html>
 <wb-var ypb="ypb_{{wbNewId()}}" />
 <div class="divider-text">{{_lang.structure}}</div>
-<div class="form-group row" wb-if="'{{_sett.devmode}}'=='on'">
-    <div class="col mb-1">
+<div class="form-group row">
+    <div class="col mb-1" wb-if="'{{_sett.devmode}}'=='on'">
         <div class="input-group order-1">
             <div class="input-group-prepend">
                 <span class="input-group-text p-1" onclick="yonger.pagePresetSelect()">
@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <div class="col-md-auto">
+    <div class="col-md-auto" wb-if="'{{_sett.devmode}}'=='on'">
         <a href="#" id="{{_var.ypb}}Add" class="btn btn-block btn-outline-secondary nobr">
             <img src="/module/myicons/20/323232/text-item-list-add-plus.svg" />
             <span class="d-md-none d-lg-inline"> {{_lang.addblk}}</span>
