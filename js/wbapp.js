@@ -1198,7 +1198,7 @@ wbapp.ajax = async function(params, func = null) {
             }
             */
             if (params.callback !== undefined) eval(params.callback + '(params,data)');
-
+            wbapp.setPag(params.target, data);
             //wbapp.console("Trigger: wb-ajax-done");
             if (data.result == undefined) params['data'] = data;
             if (params.form !== undefined) {
@@ -1260,7 +1260,6 @@ wbapp.ajax = async function(params, func = null) {
                 })
             }
             $(target.target)[0].filter = target.filter;
-            console.log($(target.target)[0].filter);
             if (target._params && target._params.page !== undefined) target._params.page = 1
             if (target._params && target._params.pages !== undefined) delete target._params.pages
             if (target._params && target._params.count !== undefined) delete target._params.count
