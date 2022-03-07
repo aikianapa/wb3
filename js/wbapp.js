@@ -1223,7 +1223,15 @@ wbapp.ajax = async function(params, func = null) {
             return;
         } else {
             target.target = params.target;
-            if (target.filter == undefined) target.filter = {};
+            if ($(target.target)[0].filter == undefined) {
+                try {
+                    $(target.target)[0].filter = wbapp.template[target.target].params._params.filter;
+                } catch (error) {
+                    $(target.target)[0].filter = {}
+                }
+            }
+            console.log($(target.target)[0].filter);
+            target.filter = $(target.target)[0].filter;
             if (target._params == undefined) target._params = {};
             let clearval = null;
             $.each(params, function(key, val) {
@@ -1251,6 +1259,8 @@ wbapp.ajax = async function(params, func = null) {
                     })
                 })
             }
+            $(target.target)[0].filter = target.filter;
+            console.log($(target.target)[0].filter);
             if (target._params && target._params.page !== undefined) target._params.page = 1
             if (target._params && target._params.pages !== undefined) delete target._params.pages
             if (target._params && target._params.count !== undefined) delete target._params.count
@@ -1260,8 +1270,14 @@ wbapp.ajax = async function(params, func = null) {
             params.clear !== undefined && params.clear == "true" ? $(document).find(target._tid).html('') : null;
 
             wbapp.template[params.target].params = target;
-
             if (target._params == undefined || target._params.length == 0) { void(0); } else {
+
+                if (target.filter) {
+                    console.log(params.target);
+                    wbapp.template[params.target].params._params.filter = target.filter;
+                }
+
+
                 if (wbapp.tmp.ajax_params == undefined || wbapp.tmp.ajax_params !== target) {
                     wbapp.tmp.ajax_params = target;
                     wbapp.ajax(target, function() {

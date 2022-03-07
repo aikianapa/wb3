@@ -45,6 +45,9 @@ $(document).one("pagination-js", function() {
             params.page = page;
         }
         params._tid = tid;
+        if ($(tid)[0].filter !== undefined) {
+            params.filter = $(tid)[0].filter;
+        }
         wbapp.ajax(params, function(ev, data) {
             /*
                         if (params._params !== undefined && params._params.more !== undefined) {
