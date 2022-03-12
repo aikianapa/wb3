@@ -1,6 +1,7 @@
 <html>
 <view head>
-    <meta name="Description" content="{{descr}}">
+    <title>{{title}}</title>
+    <meta name="description" content="{{descr}}">
     <meta name="keywords" content="{{keywords}}">
 
     <meta property="og:type" content="website">
@@ -27,6 +28,13 @@
     </div>
     <wb-multilang wb-lang="{{_sett.locales}}" name="lang">
         <div class="form-group row">
+            <label class="form-control-label col-md-3">{{_lang.title}}</label>
+            <div class="col-md-9">
+                <input type="text" class="form-control" name="title" placeholder="{{_lang.title}}">
+            </div>
+        </div>
+
+        <div class="form-group row">
             <label class="form-control-label col-md-3">{{_lang.descr}}</label>
             <div class="col-md-9">
                 <textarea class="form-control" name="descr" rows="auto" placeholder="{{_lang.descr}}"></textarea>
@@ -45,10 +53,12 @@
         header = "Поисковая оптимизация"
         descr = Описание
         keywords = Ключевые слова
+        title = Заголовок
         [en]
         header = "Search Engine Optimization"
         descr = Description
         keywords = Keywords
+        title = Title
     </wb-lang>
 </edit>
 

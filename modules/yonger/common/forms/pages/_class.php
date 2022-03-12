@@ -9,6 +9,13 @@ function beforeItemShow(&$item) {
     isset($item['header']) AND isset($item['header'][$_SESSION['lang']]) ? $item['header'] = $item['header'][$_SESSION['lang']] : null;
     $item['menu_title'] = isset($item['menu_title']) && isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] : $item['header'];
     $item['menu_title'] == '' ? $item['menu_title'] = $item['header'] : null;
+    $data = $this->app->dot($item);
+    if ($data->get('blocks.seo.active') == 'on') {
+        $item['seo'] = 'on';
+        $item['meta_title'] = $data->get("blocks.seo.lang.{$_SESSION['lang']}.title");
+        $item['meta_keywords'] = $data->get("blocks.seo.lang.{$_SESSION['lang']}.keywords");
+        $item['meta_description'] = $data->get("blocks.seo.lang.{$_SESSION['lang']}.descr");
+    }
 }
 
 function beforeItemEdit(&$item)

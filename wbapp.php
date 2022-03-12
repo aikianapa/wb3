@@ -528,20 +528,26 @@ class wbDom extends DomQuery
 
     public function setSeo()
     {
-        isset($this->item['header']) ? $header = $this->item['header'] : $header = $this->app->vars('_sett.header');
-        $title = $this->find('title');
-        if ($title->text() == '') $title->text($header);
+        $descr = $this->find("meta[name=description]")->inner();
+        $keywords = $this->find("meta[name=keywords]")->inner();
+        $this->find("title")->remove();
+        $this->find("meta[name=description]")->remove();
+        $this->find("meta[name=keywords]")->remove();
         $seo = $this->app->ItemRead('_settings', 'seo');
-        if ($seo and isset($seo['seo']) and $seo['seo'] == 'on') {
-            $title->text($seo['title']);
-            $this->find('meta[name="keywords"]')->attr('content', $seo['meta_keywords']);
-            $this->find('meta[name="description"]')->attr('content', $seo['meta_description']);
+        $data = $this->app->dot($this->item);
+        isset($this->item['header']) ? $header = $this->item['header'] : $header = $this->app->vars('_sett.header');
+        if ($data->get('seo') == 'on') {
+            $data->get('meta_title') ? $header = $data->get('meta_title') : null;
+            $data->get('meta_keywords') ? $keywords = $data->get('meta_keywords') : null;
+            $data->get('meta_description') ? $descr = $data->get('meta_description') : null;
+        } else if ($seo and isset($seo['seo']) and $seo['seo'] == 'on') {
+            $header = $seo['title'];
+            $keywords = $seo['meta_keywords'];
+            $descr = $seo['meta_description'];
         }
-        if (isset($this->item['seo']) and $this->item['seo'] == 'on') {
-            $title->text($this->item['title']);
-            $this->find('meta[name="keywords"]')->attr('content', $this->item['meta_keywords']);
-            $this->find('meta[name="description"]')->attr('content', $this->item['meta_description']);
-        }
+        $this->find('head')->prepend("<meta name='description' content='{$descr}' />");
+        $this->find('head')->prepend("<meta name='keywords' content='{$keywords}' />");
+        $this->find('head')->prepend("<title>{$header}</title>");
     }
 
     public function setValues()
