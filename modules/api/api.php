@@ -148,6 +148,21 @@ class modApi
         return ['login'=>false,'error'=>false,'redirect'=>$redirect,'user'=>null,'role'=>null];
     }
 
+
+    private function func() {
+        /*
+        Вызов функции из класса формы
+        Если требуется доступ по токену, то соответствующая проверка должна быть в функции
+        /api/v2/list/{{table}}/{{func}}
+        */
+        $app = &$this->app;
+        $form = $app->route->form;
+        $func = $app->route->func;
+        $class = $app->formClass($form);
+        return $class->$func();
+    }
+
+
     private function list()
     {
         /*
