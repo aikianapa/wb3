@@ -33,8 +33,8 @@ class tagScripts
 
         $loaded = 'if (!document.loadedScripts) document.loadedScripts =[];';
 
-        foreach($arr as $src) {
-            if (!in_array($this->loaded, $src)) {
+        foreach((array)$arr as $src) {
+            if (!in_array($this->loaded, (array)$src)) {
                 $loaded.="document.loadedScripts.push('{$src}');";
                 $this->loaded[] = $src;
                 $this->app->vars('_env.tmp.modScripts', $this->loaded);
