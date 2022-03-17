@@ -157,7 +157,7 @@ class mongodbDrv
                 }
             }
         }
-        $limit = $params['limit'];
+        $limit = isset($params['limit']) ? $params['limit'] : null;
         $options['filter'] = $this->filterPrepareAlt($filter, $params);
         $filter = $this->filterPrepare($filter,$params);
         $query = new MongoDB\Driver\Query($filter, $params);
@@ -181,7 +181,7 @@ class mongodbDrv
                 $list[$doc_id] = $doc;
                 $count++;
             }
-            if ($count >= $limit) break;
+            if ($limit && $count >= $limit) break;
         }
         isset($size) ? null : $size = $count;
         return ["list"=>$list,"count"=>$count,"page"=>$page,"size"=>$size];
