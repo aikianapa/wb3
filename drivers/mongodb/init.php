@@ -157,11 +157,15 @@ class mongodbDrv
                 }
             }
         }
-        $filter = $this->filterPrepare($filter);
+        $limit = $params['limit'];
+        $options['filter'] = $this->filterPrepareAlt($filter, $params);
+        $filter = $this->filterPrepare($filter,$params);
         $query = new MongoDB\Driver\Query($filter, $params);
         $rows = $this->db->executeQuery("{$this->db->dbname}.{$form}", $query);
         $find = $rows->toArray();
         $list = [];
+        $count = 0;
+        $options = (object)$options;
         foreach ($find as $doc) {
             $this->toArray($doc);
             if ((object)$doc['_id'] === $doc['_id']) {
@@ -172,15 +176,18 @@ class mongodbDrv
             }
             $doc_id = $doc['_id'];
             $doc = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $doc);
-            isset($params["projection"]) && count($params["projection"]) ? $doc = array_intersect_key($doc, $params["projection"]) : null;
-            $doc == null ? null : $list[$doc_id] = $doc;
+            if ($doc !== null && wbItemFilter($doc, $options)) {
+                isset($params["projection"]) && count($params["projection"]) ? $doc = array_intersect_key($doc, $params["projection"]) : null;
+                $list[$doc_id] = $doc;
+                $count++;
+            }
+            if ($count >= $limit) break;
         }
-        $count = count($list);
         isset($size) ? null : $size = $count;
         return ["list"=>$list,"count"=>$count,"page"=>$page,"size"=>$size];
     }
 
-    public function filterPrepare($filter) // ok
+    public function filterPrepare(&$filter,&$params) // ok
     {
         $filter = (array)$filter;
         if (in_array('$like', array_keys($filter))) {
@@ -190,7 +197,32 @@ class mongodbDrv
             }
         }
         foreach ($filter as $key => $node) {
-            (array)$node === $node ? $node = $this->filterPrepare($node) : null;
+            if (substr($key,0,1) !== '@') {
+                (array)$node === $node ? $node = $this->filterPrepare($node,$params) : null;
+                $filter[$key] = $node;
+            } else {
+                unset($filter[$key]);
+                $params['limit'] = null;
+            }
+        }
+        return $filter;
+    }
+
+    public function filterPrepareAlt($filter,$params) // ok
+    {
+        $filter = (array)$filter;
+        if (in_array('$like', array_keys($filter))) {
+            if (isset($filter['$like'])) {
+                $filter = ['$regex' => '(?i)'.$filter['$like']];
+                return $filter;
+            }
+        }
+        foreach ($filter as $key => $node) {
+            if (substr($key, 0, 1) == '@') {
+                unset($filter[$key]);
+                $key = substr($key, 1);
+            }
+            (array)$node === $node ? $node = $this->filterPrepare($node, $params) : null;
             $filter[$key] = $node;
         }
         return $filter;

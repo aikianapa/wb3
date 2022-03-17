@@ -1793,12 +1793,14 @@ function wbItemFilter($item, $options, $field = null)
                         case '$regex':
                             preg_match('/'.$val.'/', $field) ? $result : $result = false;
                             break;
+                        default: 
+                            $fields->get($cond) == $val ? $result : $result = false;
+                            break;
                     }
-
                 }
-
             }
         }
+
         if ($result == false) {
             break;
         }

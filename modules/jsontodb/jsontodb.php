@@ -30,21 +30,22 @@ class modJsontodb
         $files = $app->ListFiles($app->vars('_env.dba'));
         if (!in_array($app->route->mode,$files)) $this->error('Нет такого файла');
         $form = substr($app->route->mode,0,-5);
-        if ( $app->_db->driver == $app->db->driver) {
+        $drv = $app->SetDb($form);
+        if ( $app->_db->driver == $drv) {
             $this->error('Нельзя конвертировать одинаковые типы базы');
         }
         $listJ = $app->_db->itemList($form);
-        $listD = $app->db->itemList($form);
+        $listD = $drv->itemList($form);
         if ($listD['count'] > 0) {
             $this->error('Очистите коллекцию перед конвертацией');
         }
         ob_start();
         foreach($listJ['list'] as $item) {
-            $app->db->itemSave($form, $item, false);
+            $drv->itemSave($form, $item, false);
             echo $item['_id'].'<br>';
             ob_flush();
         }
-        $app->db->tableFlush($form);
+        $drv->tableFlush($form);
         ob_end_clean();
         return "The End";
     }
@@ -55,15 +56,5 @@ class modJsontodb
         die;
     }
 
-}
-?>
-<?php
-
-
-class modJson2db___ {
-    public function __construct($app)
-    {
-
-    }
 }
 ?>
