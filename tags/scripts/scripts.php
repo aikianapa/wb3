@@ -37,7 +37,7 @@ class tagScripts
                 $this->app->vars('_env.tmp.modScripts', $this->loaded);
                 $src = stream_is_local($src) ? $this->home.$src : $src;
                 $tmp = file_get_contents($src);
-                $tmp = wbMinifyJs($tmp);
+                //$tmp = wbMinifyJs($tmp);
                 $script .= $tmp.';'.PHP_EOL;
             }
         }
