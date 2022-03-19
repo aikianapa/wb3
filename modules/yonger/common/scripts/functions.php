@@ -62,6 +62,7 @@
         $app = &$_ENV['app'];
         $list = $app->itemList('pages', ['filter'=>[
             'active'=>'on'
+            ,'menu'=>'on'
             ,'path' => $path
             ,'_site' => [
                 '$in'=> [null,'{{_sett.site}}']
@@ -72,7 +73,7 @@
             $path = $item['path'];
             $name = $item['name'];
             $path.'/'.$name == '/' ? $path = '/home' : $path .= '/'.$name;
-            $item['children'] = siteMenu($path);
+            $item['children'] = yongerSiteMenu($path);
             $path == '/home' ? $path =  '/' : null;
             $item['path'] = $path;
             if (count($item['children'])) {
@@ -84,6 +85,37 @@
         }
         return $list;
     }
+
+
+    function yongerSiteMap($path = '')
+    {
+        $app = &$_ENV['app'];
+        $list = $app->itemList('pages', ['filter'=>[
+            'active'=>'on'
+            ,'path' => $path
+            ,'_site' => [
+                '$in'=> [null,'{{_sett.site}}']
+            ]
+        ]]);
+        $list = $list['list'];
+        foreach ($list as &$item) {
+            $path = $item['path'];
+            $name = $item['name'];
+            $path.'/'.$name == '/' ? $path = '/home' : $path .= '/'.$name;
+            $item['children'] = yongerSiteMap($path);
+            $path == '/home' ? $path =  '/' : null;
+            $item['path'] = $path;
+            if (count($item['children'])) {
+                $self = $item;
+                $self['divider'] = 'divider-after';
+                unset($self['children']);
+                array_unshift($item['children'], $self);
+            }
+        }
+        return $list;
+    }
+
+
 
     function yongerIsPage($link)
     {

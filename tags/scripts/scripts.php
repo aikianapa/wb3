@@ -1,7 +1,4 @@
 <?php
-
-require_once('jsmin.php');
-
 class tagScripts
 {
     public function __construct(&$dom)
@@ -40,12 +37,7 @@ class tagScripts
                 $this->app->vars('_env.tmp.modScripts', $this->loaded);
                 $src = stream_is_local($src) ? $this->home.$src : $src;
                 $tmp = file_get_contents($src);
-                try {
-                    //$tmp = wbMinifyJs($tmp);
-                    $tmp = JSMin::minify($tmp);
-                } catch (\Throwable $th) {
-                    //$tmp = wbMinifyJs($tmp);
-                }
+                $tmp = wbMinifyJs($tmp);
                 $script .= $tmp.';'.PHP_EOL;
             }
         }
