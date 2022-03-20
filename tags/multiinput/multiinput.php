@@ -10,6 +10,7 @@ class tagMultiinput {
   public function multiinput($dom) {
         if (!$dom->app) $dom->app = new wbApp();
 				$this->dom = &$dom;
+        $this->col = $dom->app->fromFile(__DIR__ ."/multiinput_col.php");
         $wrp = $dom->app->fromFile(__DIR__ ."/multiinput_wrapper.php");
         $field = "multifld";
         if ($dom->attr("name") > "") $field = $dom->attr("name");
@@ -30,8 +31,7 @@ class tagMultiinput {
         $textarea->copy($dom);
         $textarea->attr("data-tpl",$tplId);
         $dom->tpl = $wrp->outer();
-        $tpl = $wrp->outer().'';
-        $tpl = $dom->app->fromString($tpl);
+        $tpl = $dom->app->fromString($wrp->outer());
         $tpl->fetch();
         $fields = $dom->app->dot($textarea->item);
         $wrp->fetch($fields->get());
@@ -49,8 +49,8 @@ class tagMultiinput {
 		function buildInner() {
 				$app = &$this->app;
 				$dom = &$this->dom;
-				$out = '';
-				$col = $dom->app->fromFile(__DIR__ ."/multiinput_col.php");
+				$col = $dom->app->fromString($this->col);
+        $out = '';
 				foreach($dom->dict->prop->multiflds as $i => $fld) {
 						$col->inner($app->fieldBuild($fld));
 						$col->find("[done]")->removeAttr("done");
@@ -77,8 +77,7 @@ class tagMultiinput {
                 $str .= $line;
             }
         }
-        if ($str > "") $dom->html($str);
-        else $dom->html($dom->tpl);
+        $str > "" ? $dom->html($str) : $dom->html($dom->tpl);
     }
 
 }

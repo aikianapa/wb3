@@ -1,5 +1,4 @@
 function wb_multilang() {
-
     var ml_value = function(that, data = undefined) {
         if (data == undefined) {
             var data = $(that).children("textarea").html();
@@ -73,11 +72,13 @@ function wb_multilang() {
             if ($(this).attr('name') == undefined) $(this).attr('name', 'lang')
             var that = this;
 
+            $(that).find('a[data-toggle="tab"]').off('shown.bs.tab');
             $(that).find('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
                 window.dispatchEvent(new Event('resize'));
                 // fix for jodit
             });
 
+            $(that).undelegate(".wb-multilang-row :input", "change blur");
             $(that).delegate(".wb-multilang-row :input", "change blur", async function() {
                 if ($(this).is("select")) {
                     $(this).find("option:not(:selected)").prop("selected", false).removeAttr("selected");
@@ -94,7 +95,7 @@ function wb_multilang() {
     });
 }
 
-$(document).on('multilang-js', async function() {
+$(document).one('multilang-js', async function() {
     wb_multilang();
     $(document).find('[data-remove="multilang-js"]').remove();
 })

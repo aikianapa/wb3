@@ -33,29 +33,43 @@ class tagMultilang {
             $data[wbTranslit($l)] = ['_origkey'=>$l];
         }
 
+        $tpl = '<wb>'.$dom->inner().'</wb>';
+
         $dom->getField($field) ? $fld = (array)$dom->getField($field) : $fld = [];
         $dom->item['lang'] = array_merge($data, $fld);
+
+        $inners = [];
         foreach($dom->item['lang'] as $key => &$line) {
-            $line['_origkey'] = $data[$key];
-            if (!isset($data[$key])) unset($dom->item['lang'][$key]);
+            if (isset($data[$key])) {
+                $line['_origkey'] = $data[$key];
+                $tabdata = isset($dom->item[$field][$key]) ? $dom->item[$field][$key] : [];
+                $tabdom = $dom->app->fromString($tpl);
+                $tabdom->fetch($tabdata);
+                $inputs = $tabdom->find('input[name],select[name],textarea[name]');
+                foreach ($inputs as $inp) {
+                    $inp->attr('wb-name', $inp->attr('name'));
+                    $inp->removeAttr('name');
+                }
+                $inners[$key] = $tabdom->inner();
+            } else {
+                unset($dom->item['lang'][$key]);
+            }
         }
 
-        $wrp->find('.tab-content > wb-foreach > .tab-pane')->html($dom->inner());
         $wrp->copy($dom);
         $wrp->fetch();
-        if ($dom->params("flags") == "false") $wrp->find(".nav-link img.mod-multilang-flag")->remove();
-        $inputs = $wrp->find('input[name],select[name],textarea[name]');
-        foreach($inputs as $inp) {
-            $inp->attr('wb-name', $inp->attr('name'));
-            $inp->removeAttr('name');
-        }
         $wrp->find('.nav-tabs .nav-item:first-child .nav-link')->addClass('active');
         $wrp->find('.tab-content .tab-pane:first-child')->addClass('show active');
-        $wrp->find('textarea.wb-multilang-data')[0]->attr('name',$field);
+        $wrp->find('textarea.wb-multilang-data')[0]->attr('name', $field);
+        $tabs = $wrp->find('.tab-content .tab-pane');
+        foreach($tabs as $tab) {
+            $tab->inner($inners[$tab->attr('data-id')]);
+        }
+        if ($dom->params("flags") == "false") $wrp->find(".nav-link img.mod-multilang-flag")->remove();
         $dom->attr("id") > "" ? $tplId = $dom->attr("id") : $tplId='ml_'.wbNewId();
         $dom->attr("id",$tplId);
         $dom->inner($wrp->html());
-        $dom->append('<script wb-app data-remove="multilang-js">wbapp.loadScripts(["/engine/js/php.js","/engine/tags/multilang/multilang.js"],"multilang-js");</script>'."\n\r");
+        $dom->append("\n\r".'<script wb-app data-remove="multilang-js">wbapp.loadScripts(["/engine/js/php.js","/engine/tags/multilang/multilang.js"],"multilang-js");</script>'."\n\r");
         $dom->attr('done',true);
         $dom->fetched = true;
     }

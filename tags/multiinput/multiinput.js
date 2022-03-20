@@ -127,6 +127,7 @@ function wb_multiinput() {
     });
 }
 
+$(document).off("multiinput-js");
 $(document).on("multiinput-js", async function() {
     wb_multiinput_init();
     wb_multiinput();
