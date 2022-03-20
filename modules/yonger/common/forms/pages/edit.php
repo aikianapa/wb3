@@ -110,16 +110,18 @@
     </div>
 </div>
 
-<script wb-app>
+<script wb-app remove>
 let timeout = 50;
 // ==============
 yonger.pageEditor = function() {
     let $form = $('#{{_form}}EditForm');
+    $form.undelegate('[name=path]', 'change');
     $form.delegate('[name=path]', 'change', function() {
         let path = $(this).val() + '/';
         $form.find('.path').html(path);
         $form.find('[name=name]').trigger('change');
     });
+    $form.undelegate('[name=name]', 'change keyup');
     $form.delegate('[name=name]', 'change keyup', function() {
         let path = $form.find('[name=path]').val() + '/';
         let name = $(this).val();
@@ -128,6 +130,7 @@ yonger.pageEditor = function() {
     });
     $form.find('[name=path]').trigger('change');
 
+    $form.find('.pagelink').off(wbapp.evClick);
     $form.find('.pagelink').on(wbapp.evClick, function() {
         let url = $(this).text();
         let target = md5(url);
