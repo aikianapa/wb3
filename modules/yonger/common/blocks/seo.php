@@ -4,22 +4,6 @@
     <meta name="description" content="{{descr}}">
     <meta name="keywords" content="{{keywords}}">
 
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="{{_parent.header}}">
-    <meta property="og:description" content="{{descr}}">
-    <meta property="og:url" content="{{_route.host}}{{_route.uri}}">
-    <meta property="og:image" content="{{_route.host}}/module/yonger/logo">
-
-    <meta property="url" content="{{_route.host}}{{_route.uri}}">
-    <meta property="name" content="{{_parent.header}}">
-    <meta property="description" content="{{descr}}">
-    <meta property="image" content="{{_route.host}}/module/yonger/logo">
-
-    <meta itemprop="url" content="{{_route.host}}{{_route.uri}}">
-    <meta itemprop="name" content="{{_parent.header}}">
-    <meta itemprop="description" content="{{descr}}">
-    <meta itemprop="image" content="{{_route.host}}/module/yonger/logo">
-
     <link href="{{_route.host}}{{_route.uri}}" rel="canonical">
 </view>
 <edit header="{{_lang.header}}">
