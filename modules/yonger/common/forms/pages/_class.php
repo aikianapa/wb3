@@ -111,8 +111,10 @@ private function listNested($path = '') {
 private function listTable($item, $path = '') {
         $table = $item['attach'];
         $filter = (isset($item['attach_filter']) && $item['attach_filter'] > '') ? $item['attach_filter'] : [];
-        if (is_string($filter)) $filter = str_replace("'",'"',$filter);
-        $filter = json_decode($filter,true);
+        if (is_string($filter)) {
+            $filter = str_replace("'", '"', $filter);
+            $filter = json_decode($filter, true);
+        }
         $options = [
             'return'=>'id,name,_form,header,active,tags',
             'filter'=> $filter
