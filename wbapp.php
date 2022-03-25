@@ -779,17 +779,25 @@ class wbApp
     public function shadow($uri)
     {
         // отправка url запроса без ожидания ответа
-        $fp = stream_socket_client("tcp://{$this->route->hostname}:{$this->route->port}", $errno, $errstr, 120,STREAM_CLIENT_ASYNC_CONNECT|STREAM_CLIENT_CONNECT);
-        if (!$fp) {
-            echo "$errstr ($errno)<br />\n";
-            wbLog("func", __FUNCTION__, $errno, $errstr);
-
-        } else {
-            //strpos($uri, '?') ? $uri .= '&update' : $uri .= '?update';
-            fwrite($fp, "GET {$uri} HTTP/1.0\r\nHost: {$this->route->hostname}\r\nCache-Control: no-cache\r\nAccept: */*\r\n\r\n");
-            fgets($fp, 10);
+            $url = $this->route->host.$uri;
+            $cook = http_build_query($_COOKIE,'','; ');
+            $params = ['__token'=>$_SESSION["token"]];
+            foreach ($params as $key => &$val) {
+            if (is_array($val)) $val = implode(',', $val);
+                $post_params[] = $key.'='.urlencode($val);
+            }
+            $post_string = implode('&', $post_params);
+            $parts=parse_url($url);
+            $fp = fsockopen($this->route->hostname, $this->route->port, $errno, $errstr, 30);
+            $out = "POST ".$uri." HTTP/1.1\r\n";
+            $out.= "Host: ".$this->route->hostname."\r\n";
+            $out.= "Cookie: {$cook}\r\n";
+            $out.= "Content-Type: application/x-www-form-urlencoded\r\n";
+            $out.= "Content-Length: ".strlen($post_string)."\r\n";
+            $out.= "Connection: Close\r\n\r\n";
+            if (isset($post_string)) $out.= $post_string;
+            fwrite($fp, $out);
             fclose($fp);
-        }
     }
 
     public function router()
