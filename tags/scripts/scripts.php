@@ -23,6 +23,7 @@ class tagScripts
         $arr = json_decode($inner,true);
         $script = '';
         $wbapp = false;
+        isset($this->loaded) ? null : $this->loaded = [];
 
         if ($this->app->vars('_env.tmp.modScripts') == '') {
             $this->loaded = [];
@@ -30,8 +31,9 @@ class tagScripts
 
         $loaded = 'if (!document.loadedScripts) document.loadedScripts =[];';
 
+
         foreach((array)$arr as $src) {
-            if (!in_array($this->loaded, (array)$src)) {
+            if (!in_array($src, $this->loaded)) {
                 $loaded.="document.loadedScripts.push('{$src}');";
                 $this->loaded[] = $src;
                 $this->app->vars('_env.tmp.modScripts', $this->loaded);
