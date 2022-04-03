@@ -188,36 +188,88 @@ class wbDom extends DomQuery
     public function fetch($item = null)
     {
         if (!$this->app) $this->app = $_ENV["app"];
-        $tmp = $this->app->vars('_env.locale');
-        isset($this->root) ? null : $this->root = $this->parents(':root')[0];
+        $_ENV['wb_steps'] = !isset($_ENV['wb_steps']) ? 1 : $_ENV['wb_steps']++;
+        ($item == null) ? $item = $this->item : null;
+        ($this->tagName == "head") ? $this->head = $this : null;
 
-        $this->fetchStrict();
-        $this->fetchLang();
-        if ($this->strict OR isset($this->fetched)) return;
-        if (!isset($_ENV['wb_steps'])) {$_ENV['wb_steps'] = 1;} else {$_ENV['wb_steps']++;}
-        if ($item == null) $item = $this->item;
-        if ($this->tagName == "head") $this->head = $this;
-        $this->item = $item;
-        $this->fetchParams();
-        if ($this->is(":root")) {
-            if ($this->func or $this->funca) $this->fetchFunc(); // так нужно для рутовых тэгов
-        }
-        $childrens = $this->children();
-        foreach ($childrens as $wb) {
-            $wb->copy($this);
-            $wb->root = $this->root;
-            $wb->fetchNode();
-        }
+        $cache = md5($this->outer().json_encode($this->app->vars('_route').json_encode($item)));
+        $cfn = $this->app->vars('_route.path_app').'/database/_cache/_partials/'.$cache.'.tmp';
+        if (is_file($cfn) && $this->app->vars('_route.mode') == 'show') {
+            // вытаскиваем кусочек из кэша
+            $cdata = unserialize(file_get_contents($cfn));
+            if ($cdata['removed']) {
+                $this->after($cdata['outer']);
+                $this->remove();
+            } else {
+                $this->inner($cdata['inner']);
+                foreach($this->attributes as $attr) {
+                    $this->removeAttr($attr->name);
+                }
+                foreach($cdata['attrs'] as $attr => $val)       {
+                    $this->attr($attr, $val);
+                }
+            }
+        } else {
+            $tmp = $this->app->vars('_env.locale');
+            isset($this->root) ? null : $this->root = $this->parents(':root')[0];
 
-        $this->setValues();
-        $this->app->vars("_env.locale", $tmp);
-        if ($this->app->vars('_sett.devmode') == 'on' && $this->is('[rel=preload]')) {
-            $href = $this->attr('href');
-            if (!strpos('?',$href) && isset($_COOKIE['devmode'])) {
-                $this->attr('href',$href.'?'.$_COOKIE['devmode']);
+            $this->fetchStrict();
+            $this->fetchLang();
+            if ($this->strict or isset($this->fetched)) {
+                return;
+            }
+            $this->item = $item;
+            $this->fetchParams();
+            if ($this->is(":root")) {
+                if ($this->func or $this->funca) {
+                    $this->fetchFunc();
+                } // так нужно для рутовых тэгов
+            }
+            $childrens = $this->children();
+            foreach ($childrens as $wb) {
+                $wb->copy($this);
+                $wb->root = $this->root;
+                $wb->fetchNode();
+            }
+
+            $this->setValues();
+            $this->app->vars("_env.locale", $tmp);
+            if ($this->app->vars('_sett.devmode') == 'on' && $this->is('[rel=preload]')) {
+                $href = $this->attr('href');
+                if (!strpos('?', $href) && isset($_COOKIE['devmode'])) {
+                    $this->attr('href', $href.'?'.$_COOKIE['devmode']);
+                }
+            }
+            if ($this->find('.nav-pagination[data-tpl]')->length) {
+                $this->fixPagination();
+            }
+
+
+            if ($this->app->vars('_route.mode') == 'show') {
+                // сохряняем кэш кусочка
+                if ($this->length == 0 && $this->next()->length) {
+                    $result = $this->next();
+                    $removed = true;
+                } else {
+                    $result = $this;
+                    $removed = false;
+                }
+
+                $attrs = [];
+                foreach ($result->attributes as $attr) {
+                    $attrs[$attr->name] = $attr->value;
+                }
+
+                $cdata = [
+                'outer' => $result->outer(),
+                'inner' => $result->inner(),
+                'attrs' => $attrs,
+                'removed' => $removed
+            ];
+                $cdata = serialize($cdata);
+                $this->app->putContents($cfn, $cdata);
             }
         }
-        if ($this->find('.nav-pagination[data-tpl]')->length) $this->fixPagination();
         return $this;
     }
 
