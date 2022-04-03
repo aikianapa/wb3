@@ -39,13 +39,12 @@ final class wbRouter {
         $resa = glob($_ENV['path_app'].'/modules/*/router.ini');
         $res = array_merge($rese, $resa);
 
+        is_file($route_a) ? $this->addRouteFile($route_a) : null;
+        is_file($route_e) ? $this->addRouteFile($route_e) : null;
         foreach ($res as $r) {
             $this->addRouteFile($r);
         }
-
-        is_file($route_a) ? $this->addRouteFile($route_a) : null;
-        is_file($route_e) ? $this->addRouteFile($route_e) : null;
-
+        return $this;
     }
     
     
@@ -62,6 +61,7 @@ final class wbRouter {
 
 
     public function addRouteFile($file, $rewrite = false) {
+        $this->rewrite = $rewrite;
         if (is_file($file)) {
             $route = file($file);
         } else if (is_file($_ENV['path_app'].'/'.$file)) {
@@ -69,10 +69,10 @@ final class wbRouter {
         }
         if (!isset($route)) return;
         foreach((array)$route  as $key => $r) {
-                $r = explode('=>', $r);
-                if (count($r) == 2) {
-                    $this->addRoute(trim($r[0]),trim($r[1]), $rewrite);
-                } 
+            $r = explode('=>', $r);
+            if (count($r) == 2) {
+                $this->addRoute(trim($r[0]),trim($r[1]), $this->rewrite);
+            } 
         }
     }
 
