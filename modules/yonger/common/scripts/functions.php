@@ -3,6 +3,7 @@
     function customRoute(&$route = [])
     {
         $app = &$_ENV['app'];
+        //$app->router->addRouteFile(realpath(__DIR__.'/../../router.ini'), true);
         $map = $app->vars('_env.dba').'/_yonmap.json';
         $app->route->uri == '/' ? $uri = '/home' : $uri = $app->route->uri;
         if (is_file($map)) {
