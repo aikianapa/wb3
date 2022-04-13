@@ -303,8 +303,24 @@ wbapp.start = async function() {
             $(this).attr("name", $(this).attr("wb-tmp-name"));
             $(this).removeAttr("wb-tmp-name");
         });
-
-        return data;
+        // fix dot notation
+        let obj = {}
+        $.each(data,function(name,value) {
+            if (strpos(name,".")) {
+                let chunks = explode(".",name);
+                let idx = ""
+                $.each(chunks,function(i,key){
+                    if (i < chunks.length) {
+                        idx == "" ? idx = key : idx += "."+key
+                        eval(`if (obj.${idx} == undefined) obj.${idx} = {}`);        
+                    }
+                })
+                eval(`obj.${name} = value`);
+            } else {
+                eval(`obj.${name} = value`);
+            }
+        })
+        return obj;
     }
 
     $.fn.jsonVal = function(data = undefined) {

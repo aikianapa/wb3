@@ -205,8 +205,14 @@ class tagForeach
         $lines = '';
         foreach ((array) $list as $key => $val) {
             $value = $val;
+
+            if ($dom->params('parent') == "true") {
+                $val =  $parent;
+            }
+
             $val = (object) $val;
             $val->_key = $key;
+            
             if (!isset($val->__total)) {
                 $table = $dom->params('table');
                 $val->_page = $page;
@@ -226,6 +232,7 @@ class tagForeach
 
                 isset($val->_table) && $table == '' ? $table = $val->_table : null;
                 !isset($val->_id) and isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
+
                 $table > "" ? $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], (array) $val) : null;
             }
 
