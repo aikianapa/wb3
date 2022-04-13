@@ -220,7 +220,7 @@ class tagForeach
                 $val->_idx = $idx;
                 $val->_ndx = $ndx;
                 $val->_val = $value;
-                $val->_parent = &$parent;
+                if ($dom->params('parent') !== "true") $val->_parent = &$parent;
 
                 if ($even) {
                     $val->_even = $even = false;
@@ -355,6 +355,7 @@ class tagForeach
         !count((array)$list) ? $dom->inner($empty->inner()) : null;
 
         $dom->before($dom->inner());
+        $dom->fetched = true;
         $dom->remove();
     }
 
