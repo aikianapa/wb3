@@ -983,7 +983,12 @@ wbapp.updateView = function(params = {}, data = {}) {
             if (params.update == prms.update) {
                 let target = prms.target;
                 if (post && prms.url !== undefined) {
-                    wbapp.post(prms.url, post, function(res) {
+                    fetch(prms.url, {
+                        method: 'POST',
+                        body: post
+                    })
+                    .then((resp)=>resp.json())
+                    .then(function(res){
                         let html = $(res).find(target).html();
                         $(document).find(target).html(html);
                         wbapp.refresh();

@@ -6,7 +6,7 @@
         $map = $app->vars('_env.dba').'/_yonmap.json';
         $app->route->uri == '/' ? $uri = '/home' : $uri = $app->route->uri;
         if (is_file($map)) {
-            $map = (array)json_decode(file_get_contents($map),true);
+            $map = (array)json_decode(file_get_contents($map), true);
             $idx = md5($uri);
             if (isset($map[$idx])) {
                 $app->route->controller = 'form';
@@ -120,7 +120,9 @@
     function yongerIsPage($link)
     {
         $app = &$_ENV['app'];
-        if (substr($link,-1) == '/') $link = substr($link,0,-1);
+        if (substr($link, -1) == '/') {
+            $link = substr($link, 0, -1);
+        }
         if (!$app->vars('_env.yonger.pages')) {
             $list = $app->itemList('pages', ['filter'=>[
             'active'=>'on'
@@ -131,20 +133,24 @@
                 '$nin'=>['_header','_footer']
             ]
             ]]);
-            $list = array_column($list['list'],'url');
-            $app->vars('_env.yonger.pages',$list);
-        } 
+            $list = array_column($list['list'], 'url');
+            $app->vars('_env.yonger.pages', $list);
+        }
         return in_array($link, $app->vars('_env.yonger.pages'));
     }
 
+
     function _beforeItemSave(&$item)
     {
+        if ($item['_table'] == 'pages') {
+            isset($item['path']) ? null : $item['path'] = '';
+
+            isset($item['name']) ? null : $item['name'] = '';
+            $item['url'] = $item['path'] . '/' . $item['name'];
+            $item['url'] == '/home' ? $item['url'] = '/' : null;
+        }
         $app = &$_ENV['app'];
-        isset($item['path']) ? null : $item['path'] = '';
-        isset($item['name']) ? null : $item['name'] = '';
         $item['_site'] = $app->vars('_sett.site');
         $item['_login'] = $app->vars('_sett.login');
-        $item['url'] = $item['path'] . '/' . $item['name'];
-        $item['url'] == '/home' ? $item['url'] = '/' : null;
         return $item;
     }
