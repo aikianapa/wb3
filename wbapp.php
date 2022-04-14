@@ -779,7 +779,7 @@ class wbApp
     public function shadow($uri)
     {
         // отправка url запроса без ожидания ответа
-            $url = $this->route->host.$uri;
+            $url = $this->route->host.$uri; 
             $cook = http_build_query($_COOKIE,'','; ');
             $params = ['__token'=>$_SESSION["token"]];
             foreach ($params as $key => &$val) {
@@ -788,7 +788,8 @@ class wbApp
             }
             $post_string = implode('&', $post_params);
             $parts=parse_url($url);
-            $fp = fsockopen($this->route->hostname, $this->route->port, $errno, $errstr, 30);
+            
+            
             $out = "POST ".$uri." HTTP/1.1\r\n";
             $out.= "Host: ".$this->route->hostname."\r\n";
             $out.= "Cookie: {$cook}\r\n";
@@ -796,8 +797,15 @@ class wbApp
             $out.= "Content-Length: ".strlen($post_string)."\r\n";
             $out.= "Connection: Close\r\n\r\n";
             if (isset($post_string)) $out.= $post_string;
+            /*
+            $fp = fsockopen($this->route->hostname, $this->route->port, $errno, $errstr, 30);
             fwrite($fp, $out);
             fclose($fp);
+            */
+            $b64 = base64_encode($out);
+            exec("cd {$this->route->path_engine} && php shadow.php host={$this->route->hostname} port={$this->route->port} headers={$b64} &");
+            //echo("php shadow.php host={$this->route->hostname} port={$this->route->port} headers={$b64}");
+            
     }
 
     public function router()
