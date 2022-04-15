@@ -19,6 +19,7 @@
                 <div class="row">
                     <div class="col-5 col-lg-4">
                         <form id="{{_form}}EditForm">
+                            <input type="hidden" name="id" value="{{_route.id}}" wb-if="'{{_route.id}}' == '_header' OR '{{_route.id}}' == '_footer'">
                             <div wb-if="'{{_route.id}}' !== '_header' && '{{_route.id}}' !== '_footer'">
                                 <div class="form-group row mb-2">
                                     <div class="col-12">
