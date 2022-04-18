@@ -161,7 +161,7 @@ class ctrlThumbnails
                 $image = str_replace('<svg ', '<svg width="'.$app->vars('_route.w').'" height="'.$app->vars('_route.h').'" viewbox="0 0 '.$app->vars('_route.w').' '.$app->vars('_route.h').'" ', $imgdata);
                 $destination = $file;
             } else {
-                //$this->browser->name !== 'Safari' && in_array($ext, ['jpg','jpeg','png']) ? $ext = 'webp' : null;
+                $this->browser->name !== 'Safari' && in_array($ext, ['jpg','jpeg','png']) ? $ext = 'webp' : null;
                 switch ($ext) {
                                     case 'jpg':
                                         $options = ['jpeg_quality'=>80];
@@ -178,7 +178,6 @@ class ctrlThumbnails
                 $cachefile=md5($app->route->uri).'.'.$ext;
                 $cachedir=$app->vars('_env.path_app').'/uploads/_cache/'.substr($cachefile, 0, 2);
                 $destination = $cachedir.'/'.$cachefile;
-                                echo $destination;
 
                 is_dir($cachedir) ? null : mkdir($cachedir, 0777, true);
 
@@ -258,8 +257,8 @@ class ctrlThumbnails
                 $image=file_get_contents($destination);
             }
             $mime = wbMime($destination);
-            //header('Content-Type: '.$mime);
-            //echo $image;
+            header('Content-Type: '.$mime);
+            echo $image;
             die;
         }
     }
