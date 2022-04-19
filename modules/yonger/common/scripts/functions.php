@@ -13,6 +13,7 @@
                 $app->route->mode = 'show';
                 $app->route->table = $map[$idx]['f'];
                 $app->route->item = $map[$idx]['i'];
+                $app->route->name = $map[$idx]['n'];
                 isset($app->route->tpl) ? null : $app->route->tpl = $map[$idx]['f'].".php";
                 $app->vars('_route', $app->objToArray($app->route));
                 $route = $app->route;
@@ -47,6 +48,7 @@
                     $app->route->mode = 'show';
                     $app->route->table = 'pages';
                     $app->route->item = $page['_id'];
+                    $app->route->name = $name;
                     isset($app->route->tpl) ? null : $app->route->tpl = "page.php";
                     $app->vars('_route', $app->objToArray($app->route));
                     $route = $app->route;

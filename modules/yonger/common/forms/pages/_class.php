@@ -92,7 +92,7 @@ private function listNested($path = '') {
             $res2 = $attach ? $this->listTable($item, $url) : null;
 
             $li = ($url == '/home') ? $out->find('li[data-path="/"]') : $out->find('li[data-path="'.$url.'"]');
-            substr($item['id'],0,1) == '_' ? null : $this->map[md5($url)] = ['f'=>$item['_form'],'i'=>$item['id'],'u'=>$url];
+            substr($item['id'],0,1) == '_' ? null : $this->map[md5($url)] = ['f'=>$item['_form'],'i'=>$item['id'],'u'=>$url, 'n'=>$item['name']];
             if ($res2 !== null) $li->append($res2);
             $li->find('template')->remove();
             ($url == '/home') ? $li->find('.dd-handle')->addClass('dd-home')->removeClass('dd-handle')->inner(' ') : null;
