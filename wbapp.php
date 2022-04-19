@@ -242,7 +242,7 @@ class wbDom extends DomQuery
     }
     public function fetchNode()
     {
-        if (!strpos($this->outer(), 'wb') && !strpos($this->outer(), '}}')) {
+        if (!strpos($this->outer(), 'wb') && !strpos($this->outer(), '}}') && !strpos($this->outer(), '%7D%7D')) {
             return;
         }
 
