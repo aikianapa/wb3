@@ -242,6 +242,10 @@ class wbDom extends DomQuery
     }
     public function fetchNode()
     {
+        if (!strpos($this->outer(), 'wb') && !strpos($this->outer(), '}}')) {
+            return;
+        }
+
         $this->fetchStrict();
         if ($this->strict or isset($this->fetched)) {
             return;
@@ -258,13 +262,10 @@ class wbDom extends DomQuery
             $_ENV['wb_steps']++;
         }
         $childrens = $this->children();
-
         foreach ($childrens as $wb) {
-            if (strpos($wb->outer(), 'wb')) {
-                $wb->copy($this);
-                $wb->root = $this->root;
-                $wb->fetchNode();
-            }
+            $wb->copy($this);
+            $wb->root = $this->root;
+            $wb->fetchNode();
         }
         $this->setValues();
         if ($this->find('.nav-pagination')->length) {
