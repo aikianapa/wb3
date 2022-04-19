@@ -1,4 +1,5 @@
 <?php
+
 // Author: oleg_frolov@mail.ru
 use Nahid\JsonQ\Jsonq;
 use Adbar\Dot;
@@ -45,19 +46,21 @@ class wbDom extends DomQuery
         if ($html == null) {
             return $this->getinnerHtml();
         }
-        
+
         if (!is_string($html) && !is_object($html)) {
             $html='';
         }
-        
+
         $is_tag = preg_match("/<[^<]+>/", $html, $res);
 
         $this->head ? $esc = "head" : $esc = "wb";
 
-            $html = "<{$esc}>{$html}</{$esc}>"; // magick
+        $html = "<{$esc}>{$html}</{$esc}>"; // magick
             $this->html($html);         // magick
             $this->find("{$esc}")->unwrap("{$esc}"); // magick
-            if (!$is_tag) $this->text($html);
+            if (!$is_tag) {
+                $this->text($html);
+            }
 
         //$this->find("{$esc}")->unwrap("{$esc}");
         return $this;
@@ -187,24 +190,39 @@ class wbDom extends DomQuery
 
     public function fetch($item = null)
     {
-        if (!$this->app) $this->app = $_ENV["app"];
+        if (!$this->app) {
+            $this->app = $_ENV["app"];
+        }
         $tmp = $this->app->vars('_env.locale');
         isset($this->root) ? null : $this->root = $this->parents(':root')[0];
 
         $this->fetchStrict();
         $this->fetchLang();
-        if ($this->strict OR isset($this->fetched)) return;
-        if (!isset($_ENV['wb_steps'])) {$_ENV['wb_steps'] = 1;} else {$_ENV['wb_steps']++;}
-        if ($item == null) $item = $this->item;
-        if ($this->tagName == "head") $this->head = $this;
+        if ($this->strict or isset($this->fetched)) {
+            return;
+        }
+        if (!isset($_ENV['wb_steps'])) {
+            $_ENV['wb_steps'] = 1;
+        } else {
+            $_ENV['wb_steps']++;
+        }
+        if ($item == null) {
+            $item = $this->item;
+        }
+        if ($this->tagName == "head") {
+            $this->head = $this;
+        }
         $this->item = $item;
         $this->fetchParams();
         if ($this->is(":root")) {
-            if ($this->func or $this->funca) $this->fetchFunc(); // так нужно для рутовых тэгов
+            if ($this->func or $this->funca) {
+                $this->fetchFunc();
+            } // так нужно для рутовых тэгов
         }
         $childrens = $this->children();
         foreach ($childrens as $wb) {
             $wb->copy($this);
+            $wb->app = &$this->app;
             $wb->root = $this->root;
             $wb->fetchNode();
         }
@@ -213,18 +231,50 @@ class wbDom extends DomQuery
         $this->app->vars("_env.locale", $tmp);
         if ($this->app->vars('_sett.devmode') == 'on' && $this->is('[rel=preload]')) {
             $href = $this->attr('href');
-            if (!strpos('?',$href) && isset($_COOKIE['devmode'])) {
-                $this->attr('href',$href.'?'.$_COOKIE['devmode']);
+            if (!strpos('?', $href) && isset($_COOKIE['devmode'])) {
+                $this->attr('href', $href.'?'.$_COOKIE['devmode']);
             }
         }
-        if ($this->find('.nav-pagination[data-tpl]')->length) $this->fixPagination();
+        if ($this->find('.nav-pagination')->length) {
+            $this->fixPagination();
+        }
         return $this;
     }
+    public function fetchNode()
+    {
+        $this->fetchStrict();
+        if ($this->strict or isset($this->fetched)) {
+            return;
+        }
 
-    public function fixPagination() {
+        $this->fetchLang();
+        $this->fetchParams();
+        if ($this->role and ($this->func or $this->funca)) {
+            $this->fetchFunc();
+        }
+        if (!isset($_ENV['wb_steps'])) {
+            $_ENV['wb_steps'] = 1;
+        } else {
+            $_ENV['wb_steps']++;
+        }
+        $childrens = $this->children();
+        foreach ($childrens as $wb) {
+            $wb->copy($this);
+            $wb->root = $this->root;
+            $wb->fetchNode();
+        }
+        $this->setValues();
+        if ($this->find('.nav-pagination')->length) {
+            $this->fixPagination();
+        }
+        $this->fetched = true;
+    }
+
+    public function fixPagination()
+    {
         if ($this->find('.nav-pagination[data-tpl]:not(.fixed)')->length) {
             $pags = $this->find('.nav-pagination[data-tpl]');
-            foreach($pags as $pag) {
+            foreach ($pags as $pag) {
                 $pid = $pag->attr('data-tpl');
                 if ($this->find($pid.':not(template)')->length && $pag->parent($pid)->length) {
                     $pag->removeClass('nav-pagination');
@@ -233,27 +283,12 @@ class wbDom extends DomQuery
                     } else {
                         $this->find($pid.':not(template)')->parent()->append($pag->outer());
                     }
-                    
+
                     $pag->remove();
                 }
             }
         }
     }
-
-    public function fetchNode()
-    {
-        $this->fetchStrict();
-        if ($this->strict OR isset($this->fetched)) {
-            return;
-        }
-        $this->fetchParams();
-        if ($this->role and ($this->func or $this->funca)) {
-            $this->fetchFunc();
-        }
-        $this->fetch();
-        $this->fetched = true;
-    }
-
     public function fetchLang()
     {
         $langs = $this->children("wb-lang");
@@ -295,13 +330,14 @@ class wbDom extends DomQuery
 
     public function fetchStrict()
     {
-        
         if (in_array($this->tagName, ['template', 'code','textarea','pre','[wb-off]'])) {
             $this->strict = true;
             // set locale for template
-            if (strpos($this->outer(),'_lang.') !== 0) {
+            if (strpos($this->outer(), '_lang.') !== 0) {
                 $locale = $this->app->vars('_env.locale');
-                if (isset($locale[$_SESSION["lang"]])) $locale = $locale[$_SESSION["lang"]];
+                if (isset($locale[$_SESSION["lang"]])) {
+                    $locale = $locale[$_SESSION["lang"]];
+                }
                 $this->addParams(['locale'=>$locale]);
             }
             //isset($_ENV["locales"][$_SESSION["lang"]]) ? $data = ["_lang" => $_ENV["locales"][$_SESSION["lang"]]] : $data = [];
@@ -309,14 +345,19 @@ class wbDom extends DomQuery
         }
     }
 
-    public function addParams($data) {
+    public function addParams($data)
+    {
         $add = $data;
         if (!is_array($data)) {
             $add = json_decode($data, true);
-            if (!$add) parse_str($data, $add);
+            if (!$add) {
+                parse_str($data, $add);
+            }
         }
         $params = json_decode($this->attr('data-params'), true);
-        if (!$params) parse_str($this->attr('data-params'), $params);
+        if (!$params) {
+            parse_str($this->attr('data-params'), $params);
+        }
         !$params ? $params = [] : null;
         $params = array_merge($params, $add);
         $this->attr('data-params', json_encode($params));
@@ -380,7 +421,7 @@ class wbDom extends DomQuery
             }
             $this->params = (object)$params;
         }
-        
+
 
         if (isset($this->params->module)) {
             $this->role = "module";
@@ -421,7 +462,7 @@ class wbDom extends DomQuery
             $allow = wbArrayAttr($this->params->allow);
             if (trim($this->params('allow')) == "*") {
                 $this->params->allow = true;
-            } else if ($allow && !in_array($this->app->vars("_sess.user.role"), $allow)) {
+            } elseif ($allow && !in_array($this->app->vars("_sess.user.role"), $allow)) {
                 $this->params->allow = false;
                 $this->remove();
             } else {
@@ -433,7 +474,7 @@ class wbDom extends DomQuery
             if (trim($this->params('disallow')) == "*") {
                 $this->params->allow = false;
                 $this->remove();
-            } else if ($disallow && !in_array($this->app->vars("_sess.user.role"), $disallow)) {
+            } elseif ($disallow && !in_array($this->app->vars("_sess.user.role"), $disallow)) {
                 $this->params->allow = true;
             } else {
                 $this->params->allow = false;
@@ -443,13 +484,13 @@ class wbDom extends DomQuery
         }
         if ($this->params('disabled') > "") {
             $disabled = wbArrayAttr($this->params->disabled);
-            if ($disabled && in_array($this->app->vars("_sess.user.role"), $disabled) OR trim($this->params('disabled')) == '*') {
+            if ($disabled && in_array($this->app->vars("_sess.user.role"), $disabled) or trim($this->params('disabled')) == '*') {
                 $this->attr("disabled", true);
             }
         }
         if ($this->params('enabled') > "") {
             $enabled = wbArrayAttr($this->params->enabled);
-            if ($enabled && !in_array($this->app->vars("_sess.user.role"), $enabled) OR trim($this->params('enabled')) == '*') {
+            if ($enabled && !in_array($this->app->vars("_sess.user.role"), $enabled) or trim($this->params('enabled')) == '*') {
                 $this->attr("disabled", true);
             }
         }
@@ -466,7 +507,7 @@ class wbDom extends DomQuery
         $this->attr('data-params', $params);
         if ($this->attr("id") > '') {
             $tplId = $this->attr("id");
-        } else if (substr($this->tagName,0,3) == 'wb-' AND $this->parent()->attr("id") > '') {
+        } elseif (substr($this->tagName, 0, 3) == 'wb-' and $this->parent()->attr("id") > '') {
             $tplId = $this->parent()->attr("id");
         } else {
             $tplId = "tp_".md5($params);
@@ -494,10 +535,12 @@ class wbDom extends DomQuery
         foreach ($this->attributes as $at) {
             $atname = $at->name;
             $atval = $at->value;
-            if (substr($atname,0,1) == "_" && strpos($atname,".")) {
+            if (substr($atname, 0, 1) == "_" && strpos($atname, ".")) {
                 $this->removeAttr($atname);
                 $atname = $this->app->vars($atname);
-                if ($atname == '') break;
+                if ($atname == '') {
+                    break;
+                }
             }
             if (strpos($atname, "}}")) {
                 unset($this->attributes[$atname]);
@@ -540,7 +583,7 @@ class wbDom extends DomQuery
             $data->get('meta_title') ? $header = $data->get('meta_title') : null;
             $data->get('meta_keywords') ? $keywords = $data->get('meta_keywords') : null;
             $data->get('meta_description') ? $descr = $data->get('meta_description') : null;
-        } else if ($seo and isset($seo['seo']) and $seo['seo'] == 'on') {
+        } elseif ($seo and isset($seo['seo']) and $seo['seo'] == 'on') {
             $header = $seo['title'];
             $keywords = $seo['meta_keywords'];
             $descr = $seo['meta_description'];
@@ -552,7 +595,9 @@ class wbDom extends DomQuery
 
     public function setValues()
     {
-        if ($this->strict) return;
+        if ($this->strict) {
+            return;
+        }
         isset($this->item) ? null : $this->item = [];
         $fields = $this->app->dot($this->item);
         $inputs = $this->find("[name]:not([done])");
@@ -579,21 +624,24 @@ class wbDom extends DomQuery
                         }
                         $inp->params('oconv') > '' ? $inp->attr('data-oconv', $inp->params('oconv')) : null;
                         $inp->params('iconv') > '' ? $inp->attr('data-iconv', $inp->params('iconv')) : null;
-
                     } elseif ($inp->tagName == "select") {
                         if ((array)$value === $value) {
                             foreach ($value as $val) {
-                                    $tmp = $inp->find('[value]');
-                                    foreach ($tmp as $v) {
-                                        if ($v->attr('value') == $val) $v->attr('selected', true);
+                                $tmp = $inp->find('[value]');
+                                foreach ($tmp as $v) {
+                                    if ($v->attr('value') == $val) {
+                                        $v->attr('selected', true);
                                     }
+                                }
 
                                 $val > "" ? $inp->find("[value='{$val}']")->attr("selected", true) : null;
                             }
                         } elseif ($value > "") {
                             $tmp = $inp->find('[value]');
-                            foreach($tmp as $v) {
-                                if ($v->attr('value') == $value) $v->attr('selected', true);
+                            foreach ($tmp as $v) {
+                                if ($v->attr('value') == $value) {
+                                    $v->attr('selected', true);
+                                }
                             }
                         }
                     } elseif ($inp->tagName == "input") {
@@ -690,7 +738,7 @@ class wbApp
         $_ENV['app'] = &$this;
         if (method_exists($this, $func)) {
             $this->$func();
-        } else if (is_callable($wbfunc)) {
+        } elseif (is_callable($wbfunc)) {
             $prms = [];
             foreach ($params as $k => $i) {
                 $prms[] = '$params['.$k.']';
@@ -731,7 +779,8 @@ class wbApp
         $lastModified = filemtime($name);
     }
 
-    public function cacheControl() {
+    public function cacheControl()
+    {
         $this->vars('_sett.devmode') == 'on' ? $cache = null : $cache = true;
         if ($cache && isset($_SERVER['HTTP_CACHE_CONTROL'])) {
             parse_str($_SERVER['HTTP_CACHE_CONTROL'], $cc);
@@ -744,10 +793,10 @@ class wbApp
 
 
     public function getCache()
-    {          
+    {
         $cache = $this->cacheControl();
         if ($cache == null) {
-            header("Cache-Control: no-cache, no-store, must-revalidate"); 
+            header("Cache-Control: no-cache, no-store, must-revalidate");
             header("Pragma: no-cache");
             return null;
         }
@@ -758,7 +807,7 @@ class wbApp
         $name = $dir.'/'.$cid.'.html';
 
         if (is_file($name)) {
-            if ($this->vars('_sett.cache') > ''  AND ((time() - filectime($name)) >= intval($this->vars('_sett.cache')))) {
+            if ($this->vars('_sett.cache') > ''  and ((time() - filectime($name)) >= intval($this->vars('_sett.cache')))) {
                 // Делаем асинхронный запрос с обновлением кэша
                 header("Cache-Control: no-cache, no-store, must-revalidate");
                 header("Pragma: no-cache");
@@ -779,33 +828,36 @@ class wbApp
     public function shadow($uri)
     {
         // отправка url запроса без ожидания ответа
-            $url = $this->route->host.$uri; 
-            $cook = http_build_query($_COOKIE,'','; ');
-            $params = ['__token'=>$_SESSION["token"]];
-            foreach ($params as $key => &$val) {
-            if (is_array($val)) $val = implode(',', $val);
-                $post_params[] = $key.'='.urlencode($val);
+        $url = $this->route->host.$uri;
+        $cook = http_build_query($_COOKIE, '', '; ');
+        $params = ['__token'=>$_SESSION["token"]];
+        foreach ($params as $key => &$val) {
+            if (is_array($val)) {
+                $val = implode(',', $val);
             }
-            $post_string = implode('&', $post_params);
-            $parts=parse_url($url);
-            
-            
-            $out = "POST ".$uri." HTTP/1.1\r\n";
-            $out.= "Host: ".$this->route->hostname."\r\n";
-            $out.= "Cookie: {$cook}\r\n";
-            $out.= "Content-Type: application/x-www-form-urlencoded\r\n";
-            $out.= "Content-Length: ".strlen($post_string)."\r\n";
-            $out.= "Connection: Close\r\n\r\n";
-            if (isset($post_string)) $out.= $post_string;
-            /*
-            $fp = fsockopen($this->route->hostname, $this->route->port, $errno, $errstr, 30);
-            fwrite($fp, $out);
-            fclose($fp);
-            */
-            $b64 = base64_encode($out);
-            exec("cd {$this->route->path_engine} && php shadow.php host={$this->route->hostname} port={$this->route->port} headers={$b64} &");
-            //echo("php shadow.php host={$this->route->hostname} port={$this->route->port} headers={$b64}");
-            
+            $post_params[] = $key.'='.urlencode($val);
+        }
+        $post_string = implode('&', $post_params);
+        $parts=parse_url($url);
+
+
+        $out = "POST ".$uri." HTTP/1.1\r\n";
+        $out.= "Host: ".$this->route->hostname."\r\n";
+        $out.= "Cookie: {$cook}\r\n";
+        $out.= "Content-Type: application/x-www-form-urlencoded\r\n";
+        $out.= "Content-Length: ".strlen($post_string)."\r\n";
+        $out.= "Connection: Close\r\n\r\n";
+        if (isset($post_string)) {
+            $out.= $post_string;
+        }
+        /*
+        $fp = fsockopen($this->route->hostname, $this->route->port, $errno, $errstr, 30);
+        fwrite($fp, $out);
+        fclose($fp);
+        */
+        $b64 = base64_encode($out);
+        exec("cd {$this->route->path_engine} && php shadow.php host={$this->route->hostname} port={$this->route->port} headers={$b64} &");
+        //echo("php shadow.php host={$this->route->hostname} port={$this->route->port} headers={$b64}");
     }
 
     public function router()
@@ -824,13 +876,14 @@ class wbApp
         return $fields->get($fld);
     }
 
-    public function login($user) {
-        is_string($user) ? $user = $this->itemRead('users',$user) : null;
+    public function login($user)
+    {
+        is_string($user) ? $user = $this->itemRead('users', $user) : null;
         is_object($user) ? null : $user = $this->arrayToObj($user);
         isset($user->avatar) ? null : $user->avatar = [0=>['img'=>"",'alt'=>'User','title'=>'']];
         (array)$user->avatar === $user->avatar ? null : $user->avatar=['img'=>"/uploads/users/{$user->id}/{$user->avatar->img}",'alt'=>'User','title'=>''];
         $user->group = wbArrayToObj(wbItemRead("users", $user->role));
-        if (!$user->group OR $user->group->active !== 'on' OR $user->active !== 'on') {
+        if (!$user->group or $user->group->active !== 'on' or $user->active !== 'on') {
             return false;
         }
         $user->group->url_logout == "" ? $user->group->url_logout = "/" : null;
@@ -856,38 +909,40 @@ class wbApp
         $this->InitSettings($this);
         $this->InitFunctions($this);
         $this->controller();
-}
+    }
 
     public function driver()
     {
-            $this->settings->_driver = 'json';
-            if (is_file($this->route->path_app."/database/_driver.ini")) {
-                $drv = file_get_contents($this->route->path_app."/database/_driver.ini");
-                $drv = wbSetValuesStr($drv);
-                $drv = parse_ini_string($drv, true);
-                if (isset($drv["driver"])) {
-                    $drvlist = $drv["driver"];
-                    unset($drv["driver"]);
-                } else {
-                    $drvlist = [];
-                }
-                $flag = true;
-                foreach ($drv as $driver => $options) {
-                    if ($flag) {
-                        $this->settings->_driver = $driver;
-                        $flag = false;
-                    }
-                    $this->settings->driver_options[$driver] = $options;
-                }
-                $this->settings->driver_tables = &$drvlist;
+        $this->settings->_driver = 'json';
+        if (is_file($this->route->path_app."/database/_driver.ini")) {
+            $drv = file_get_contents($this->route->path_app."/database/_driver.ini");
+            $drv = wbSetValuesStr($drv);
+            $drv = parse_ini_string($drv, true);
+            if (isset($drv["driver"])) {
+                $drvlist = $drv["driver"];
+                unset($drv["driver"]);
+            } else {
+                $drvlist = [];
             }
+            $flag = true;
+            foreach ($drv as $driver => $options) {
+                if ($flag) {
+                    $this->settings->_driver = $driver;
+                    $flag = false;
+                }
+                $this->settings->driver_options[$driver] = $options;
+            }
+            $this->settings->driver_tables = &$drvlist;
+        }
         include_once $this->route->path_engine."/drivers/json/init.php";
         include_once $this->route->path_engine."/drivers/init.php";
     }
 
     public function controller($controller = null)
     {
-        if (is_callable('customRoute')) customRoute($this->route);
+        if (is_callable('customRoute')) {
+            customRoute($this->route);
+        }
 
         if ($this->route->controller !== 'module' && substr($this->mime($this->route->uri), 0, 6) == 'image/') {
             $this->route->controller = 'thumbnails';
@@ -952,7 +1007,7 @@ class wbApp
     public function fieldBuild($dict=[], $data=[])
     {
         (array)$dict == $dict ? $dict = wbArrayToObj($dict) : null;
-        
+
         if ($dict->name == "") {
             return "";
         }
@@ -1123,10 +1178,14 @@ class wbApp
     public function module()
     {
         $args = func_get_args();
-        if (!isset($args[0])) return null;
+        if (!isset($args[0])) {
+            return null;
+        }
         $mod = $args[0];
         unset($args[0]);
-        if (!count($args)) $args[]=$this;
+        if (!count($args)) {
+            $args[]=$this;
+        }
         $class = 'mod' . ucfirst($mod);
         /*
         if (is_file($this->vars('_env.path_app')."/modules/{$mod}/{$mod}.php")) {
@@ -1159,15 +1218,15 @@ class wbApp
         return $dot;
     }
 
-    public function cond($condition, $item) 
+    public function cond($condition, $item)
     {
         // пытаемся преобразовать в json строку с одинарными ковычками
         $re = '/\'\{(.*)\'(.*)\:(.*)}\'/mu';
-        preg_match($re,$condition,$matches);
+        preg_match($re, $condition, $matches);
         if (isset($matches[0])) {
-            $repl = substr($matches[0],1,-1);
-            $json = str_replace("'",'"',$repl);
-            $this->isJson($json) ? $condition = str_replace($repl,$json,$condition) : null;
+            $repl = substr($matches[0], 1, -1);
+            $json = str_replace("'", '"', $repl);
+            $this->isJson($json) ? $condition = str_replace($repl, $json, $condition) : null;
         }
         // ======
         if (in_array(substr(trim($condition), 0, 1), ['"',"'"])) {
@@ -1258,19 +1317,23 @@ class wbApp
                     ,"/forms/{$form}/{$modename}"
                     ,"/forms/common/common_{$modename}"
                 ];
-                
+
             foreach ($path as $form) {
-                    $current = wbNormalizePath($_ENV['path_app'].$form);
-                    if (is_file($current)) break;
-                    $current = wbNormalizePath($_ENV['path_engine'].$form);
-                    if (is_file($current)) break;
-                    $current = '';
+                $current = wbNormalizePath($_ENV['path_app'].$form);
+                if (is_file($current)) {
+                    break;
+                }
+                $current = wbNormalizePath($_ENV['path_engine'].$form);
+                if (is_file($current)) {
+                    break;
+                }
+                $current = '';
             }
 
             //unset($form);
             if ('' == $current) {
-                    strtolower(substr($mode, -4)) == '.php' ? $arg = $modename : $arg = $aCall;
-                    $out = $error = wbError('func', __FUNCTION__, 1012, [$arg]);
+                strtolower(substr($mode, -4)) == '.php' ? $arg = $modename : $arg = $aCall;
+                $out = $error = wbError('func', __FUNCTION__, 1012, [$arg]);
             } else {
                 if ($ini) {
                     $out = file_get_contents($current);
@@ -1356,13 +1419,13 @@ class wbApp
         }
         $cur > "" ? $out = $this->fromFile($cur) : null;
         $_ENV['tpl_realpath'] = dirname($cur);
-        $_ENV['tpl_path'] = substr(dirname($cur),strlen($_ENV['path_app']));
+        $_ENV['tpl_path'] = substr(dirname($cur), strlen($_ENV['path_app']));
 
         if (!$out) {
             $cur =  $path !== false ? wbNormalizePath($path."/{$tpl}") : wbNormalizePath($_ENV['path_tpl']."/{$tpl}");
             $cur=str_replace($_ENV["path_app"], "", $cur);
             wbError('func', __FUNCTION__, 1011, array($cur));
-        } else if (!$out->is('html')) {
+        } elseif (!$out->is('html')) {
             $out = $out->outer();
             $out = $this->fromString('<html>'.$out.'</html>');
         }
