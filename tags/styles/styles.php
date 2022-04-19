@@ -29,7 +29,6 @@ class tagStyles
     {
         $inner = wbSetValuesStr($this->inner, $dom->item);
         $arr = json_decode($inner, true);
-        $styles = '';
         foreach ($arr as $i => $src) {
             $this->info = (object)pathinfo($src);
             $ext = strtolower($this->info->extension);
@@ -42,12 +41,18 @@ class tagStyles
                     ]
                 ];
             }
-            $src = stream_is_local($src) ? file_get_contents($this->home.$src) : file_get_contents($src, false, stream_context_create($opts));
-            $styles .= "\r\n".$src;
-        }
+            $src = stream_is_local($src) ? $this->home.$src : file_get_contents($src, false, stream_context_create($opts));
 
-        $styles = gzencode($styles, 9);
-        $this->app->putContents($this->file, $styles);
+            if ($i == 0) {
+                $style = new Minify\CSS($src);
+            } else {
+                $style->add($src);
+            }
+        }
+        if (!isset($style)) {
+            return;
+        }
+        $style->gzip($this->file, 8);
         $this->dom->after('<script type="wbapp" remove >wbapp.loadStyles(["'.$this->src.'"])</script>'.PHP_EOL);
     }
 
