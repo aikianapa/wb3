@@ -258,10 +258,13 @@ class wbDom extends DomQuery
             $_ENV['wb_steps']++;
         }
         $childrens = $this->children();
+
         foreach ($childrens as $wb) {
-            $wb->copy($this);
-            $wb->root = $this->root;
-            $wb->fetchNode();
+            if (strpos($wb->outer(), 'wb')) {
+                $wb->copy($this);
+                $wb->root = $this->root;
+                $wb->fetchNode();
+            }
         }
         $this->setValues();
         if ($this->find('.nav-pagination')->length) {
