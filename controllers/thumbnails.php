@@ -19,7 +19,7 @@ class ctrlThumbnails
         $uri = $this->app->route->uri;
         $info = pathinfo($uri);
         $ext = $info['extension'];
-        $this->browser->name !== 'Safari' && in_array($ext, ['jpg','jpeg','png']) ? $ext = 'webp' : null;
+
         $cachefile=md5($uri).'.'.$ext;
         $cachedir=$this->app->route->path_app.'/uploads/_cache/'.substr($cachefile, 0, 2);
         $destination = $cachedir.'/'.$cachefile;
@@ -161,7 +161,6 @@ class ctrlThumbnails
                 $image = str_replace('<svg ', '<svg width="'.$app->vars('_route.w').'" height="'.$app->vars('_route.h').'" viewbox="0 0 '.$app->vars('_route.w').' '.$app->vars('_route.h').'" ', $imgdata);
                 $destination = $file;
             } else {
-                $this->browser->name !== 'Safari' && in_array($ext, ['jpg','jpeg','png']) ? $ext = 'webp' : null;
                 switch ($ext) {
                                     case 'jpg':
                                         $options = ['jpeg_quality'=>80];
