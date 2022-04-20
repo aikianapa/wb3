@@ -407,12 +407,14 @@ class tagForeach
             $url = parse_url($ajax);
             if (!isset($url['scheme'])) {
                 if ($this->app->vars('_sett.api_key_query') == 'on' and !isset($url['__token'])) {
-                    strpos($ajax, '?') ? $ajax .= '&' : $ajax .= '?';
-                    $ajax .= '__token='.$this->app->vars('_sess.token');
+                    $post = ['__token',$this->app->vars('_sess.token')];
+                } else {
+                    $post = null;
                 }
+                
             }
             $ajax = $this->app->vars('_route.host').$ajax;
-            $list = json_decode(str_replace("'", '"', wbAuthPostContents($ajax)), true);
+            $list = json_decode(str_replace("'", '"', wbAuthPostContents($ajax, $post)), true);
             !$list ? $list = [] : null;
             $count = count($list);
         }

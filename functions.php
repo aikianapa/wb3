@@ -200,7 +200,7 @@ function wbCheckAllow($allow = [],$disallow = [], $role = null) {
     function wbApikey($mode = null)
     {
         $app = &$_ENV['app'];
-        if ($app->vars('_sett.api_key_query') !== 'on') {
+        if ($app->vars('_sett.api_key_query') !== 'on' OR $app->route->localreq == true) {
             return true;
         }
         $mode == null ? $mode = $app->vars('_route.mode') : null;
@@ -236,8 +236,8 @@ function wbGetToken()
     $apikey = $app->vars('_sett.api_key');
     $role = $app->vars('_sess.user.role');
     $user = $app->vars('_sess.user.id');
-    !$user ? $user = microtime() : null;
-    !$role ? $role = microtime() : null;
+    !$app->route->localreq && !$user ? $user = microtime() : null;
+    !$app->route->localreq && !$role ? $role = microtime() : null;
     $app->vars('_sett.api_allow') ? $allow = explode(',', $app->vars('_sett.api_allow')) : $allow = [];
     $app->vars('_sett.api_disallow') ? $disallow = explode(',', $app->vars('_sett.api_disallow')) : $disallow = [];
     $flag = true;
