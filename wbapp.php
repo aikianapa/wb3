@@ -1015,6 +1015,8 @@ class wbApp
         if ($dict->name == "") {
             return "";
         }
+        unset($data['__token']);
+        unset($dict['__token']);
         $this->dict = $dict;
         isset($data["data"]) ? $this->item = $data["data"] : $this->item = [];
         $this->data = $data;

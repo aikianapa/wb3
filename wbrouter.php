@@ -193,6 +193,9 @@ final class wbRouter {
         else {
             $scheme='http';
         }
+        $ROUTE['token'] = isset($_REQUEST['__token']) ? $_REQUEST['__token'] : null;
+        unset($_REQUEST['__token'],$_POST['__token'],$_GET['__token']);
+
         $ROUTE['method'] = $_SERVER['REQUEST_METHOD'];
         $ROUTE['scheme']=$scheme;
         $ROUTE['hostname']=$_SERVER['HTTP_HOST'];
