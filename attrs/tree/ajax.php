@@ -16,6 +16,7 @@ class wbAjaxTree
     }
 
     function update() {
+        unset($_POST['__token']);
         $app = &$this->app;
         $tpl=$app->fromFile(__DIR__ ."/tree_ui.php",false);
         $tpl->fetch($_POST);
@@ -23,6 +24,7 @@ class wbAjaxTree
     }
 
     function form() {
+      unset($_POST['__token']);
         $app = $this->app;
         if ($app->vars->get("_route.params.1") == "prop") return $this->tagTreeProp();
         if ($app->vars->get("_route.params.1") == "lang") return $this->tagTreeProp("lang");
