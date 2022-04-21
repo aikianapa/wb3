@@ -9,8 +9,10 @@ class tagScripts
         $this->home = $dom->app->vars('_env.path_app');
         $this->path = '/assets/compress/js';
         $this->dir = $this->home.$this->path;
-        $this->filename = $this->dom->attr('src') ? $this->dom->attr('src') : md5($this->inner).'.jsgz';
-        strtolower(substr($this->filename, -5)) == '.jsgz' ? null : $this->filename.='.jsgz';
+        $this->ext = $dom->attr('compress') == 'true' ? 'jsgz' : 'js';
+        $this->filename = $this->dom->attr('src') ? $this->dom->attr('src') : md5($this->inner).'.'.$this->ext;
+        strtolower(substr($this->filename, -strlen($this->ext))) == $this->ext ? null : $this->filename.='.'.$this->ext;
+        $this->filename = str_replace('.jsgz.js', '.js', $this->filename);
         $this->file =  wbNormalizePath($this->dir.'/'.$this->filename);
         $this->access();
         $this->load();
@@ -39,17 +41,22 @@ class tagScripts
                 $this->app->vars('_env.tmp.modScripts', $this->loaded);
                 $src = stream_is_local($src) ? $this->home.$src : $src;
                 $tmp = file_get_contents($src);
-                //$tmp = wbMinifyJs($tmp);
-                $script .= $tmp.';'.PHP_EOL;
+                $script .= $tmp.';'.PHP_EOL.PHP_EOL;
             }
         }
         $this->app->vars('_env.tmp.modScripts',$this->loaded);
         if ($script == '') return;
         $this->dom->attr('trigger') > '' ? $script.='$(document).trigger("'.$this->dom->attr('trigger').'");'.PHP_EOL : null;
-        $script = $loaded.$script.PHP_EOL;
-        $script = gzencode($script, 9);
+        
+        if (strtolower(trim($this->dom->attr('src')) == 'wbapp')) {
+            $type = ' type="text/javascript" ';
+        } else {
+            $type = ' type="wbapp" ';
+            $script = '(function($) {'.$script.'})(jQuery);';
+        }
+        $script = $loaded.$script.PHP_EOL.PHP_EOL;
+        if ($this->ext == 'jsgz') $script = gzencode($script, 9);
         $this->app->putContents($this->file, $script);
-        $type = strtolower(trim($this->dom->attr('src')) == 'wbapp') ? '' : ' type="wbapp" ';
         $this->dom->after('<script '.$type.' src="'.$this->path.'/'.$this->filename.'"></script>'.PHP_EOL);
     }
 

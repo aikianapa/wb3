@@ -457,8 +457,8 @@ wbapp.lazyload = async function() {
 }
 
 wbapp.eventsInit = async function() {
-    $(document).undelegate("[data-ajax]:not(input,select)", "click");
-    $(document).delegate("[data-ajax]:not(input,select)", "click", async function(e, tid) {
+    $(document).undelegate("[data-ajax]:not(input,select)", wbapp.evClick);
+    $(document).delegate("[data-ajax]:not(input,select)", wbapp.evClick, async function(e, tid) {
         if (!$(this).is("input,select")) {
             let params = wbapp.parseAttr($(this).attr("data-ajax"));
             if (params.url == undefined && typeof params == 'string') {
