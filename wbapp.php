@@ -1010,13 +1010,14 @@ class wbApp
 
     public function fieldBuild($dict=[], $data=[])
     {
+        unset($data['__token']);
+        unset($dict['__token']);
+
         (array)$dict == $dict ? $dict = wbArrayToObj($dict) : null;
 
         if ($dict->name == "") {
             return "";
         }
-        unset($data['__token']);
-        unset($dict['__token']);
         $this->dict = $dict;
         isset($data["data"]) ? $this->item = $data["data"] : $this->item = [];
         $this->data = $data;
