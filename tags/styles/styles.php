@@ -40,8 +40,9 @@ class tagStyles
                 ];
             }
             $src = stream_is_local($src) ? file_get_contents($this->home.$src) : file_get_contents($src, false, stream_context_create($opts));
-            $styles.=$src.PHP_EOL.PHP_EOL;
+            $styles = $i == 0 ? new Minify\CSS($src) : $styles->add($src);
         }
+        $styles = $styles->minify();
         file_put_contents($this->file,$styles,LOCK_EX);
         $this->dom->after('<link rel="stylesheet" href="'.$this->src.'" >'.PHP_EOL);
     }
