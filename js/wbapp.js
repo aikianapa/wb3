@@ -1025,12 +1025,11 @@ wbapp.wbappScripts = async function() {
         } else if ($(this).is('[wb-app]')) {
             src = $(this).attr('wb-app');
         }
+        var that = this;
         if (src !== null && src > '') {
-            var that = this;
             var xhr = new XMLHttpRequest();
             xhr.open('GET', src, true);
             xhr.onload = function() {
-                console.log(src);
                 //eval(xhr.responseText);
                 $(that).after('<script type="text/javascript">'+xhr.responseText+'</script>').remove();
             };
@@ -1039,7 +1038,8 @@ wbapp.wbappScripts = async function() {
             var script = $(this).text();
             var hash = md5(script);
             if (!in_array(hash, done)) {
-                eval(script);
+                $(that).after('<script type="text/javascript">'+script+'</script>').remove();
+                //eval(script);
                 done.push(hash);
             }
         }

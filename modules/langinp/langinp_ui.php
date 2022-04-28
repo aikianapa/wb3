@@ -3,7 +3,7 @@
 
             <div class="input-group-prepend" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="input-group-text text-blue p-1">
-                    <img data-src="/module/myicons/language-translate.5.svg?size=24&stroke=323232" width="24" height="24">
+                    <img src="/module/myicons/language-translate.5.svg?size=24&stroke=323232" width="24" height="24">
                 </span>
             </div>
             <div class="dropdown-menu">
