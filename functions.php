@@ -1197,6 +1197,7 @@ function wbItemInit($table, $item = null)
     (!isset($item['_id']) or '_new' == $item['_id'] or $item['_id'] == "") ? $item['_id'] = wbNewId() : null;
     $item['id'] = $item['_id'];
     $item['_table'] = $item['_form'] = $table;
+    $item['_created'] = date('Y-m-d H:i:s');
     $tmp = (in_array('wbItemRead',wbCallStack()) OR in_array('wbItemList',wbCallStack())) ? null : $tmp = wbItemRead($item["_form"], $item["_id"]);
     (!$tmp or !isset($tmp['_created']) or '' == $tmp['_created']) or !isset($item["_created"]) ? $item['_created'] = date('Y-m-d H:i:s') : null;
     (!$tmp or !isset($tmp['_creator']) or '' == $tmp['_creator']) and !isset($item["_creator"]) ? $item['_creator'] = $app->vars("_sess.user.id") : null;

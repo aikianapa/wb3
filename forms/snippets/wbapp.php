@@ -2,7 +2,6 @@
     [   
          "/engine/js/php.js"
         ,"/engine/js/jquery.min.js"
-        ,"/engine/js/jquery-ui.min.js"
         ,"/engine/js/jquery.tap.js"
         ,"/engine/js/ractive.js"
         ,"/engine/js/topbar.min.js"

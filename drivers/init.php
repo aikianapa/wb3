@@ -170,8 +170,13 @@ function wbItemSave($form, $item = null, $flush = true)
     }
     $item = wbItemInit($form, $item);
     $item = wbDotFix($item);
-    $item = $db->itemSave($form, $item, $flush);
-    $item = wbTrigger('form', __FUNCTION__, 'afterItemSave', func_get_args(), $item);
+    try {
+        $item = $db->itemSave($form, $item, $flush);
+        $item = wbTrigger('form', __FUNCTION__, 'afterItemSave', func_get_args(), $item);
+    } catch (\Throwable $th) {
+        $item = null;
+    }
+    
     return $item;
 }
 

@@ -60,11 +60,11 @@ class modApi
         $post = $request->params;
         $check = $this->app->itemRead($table, $item);
         if ($check) {
-            header($app->route->method.' 409 Conflict', true, 409);
+            header($this->app->route->method.' 409 Conflict', true, 409);
         } else {
             ($item > '') ? $post['_id'] = $item : null;
             $data = $this->app->itemSave($table, $post);
-            header($app->route->method.' 201 Created', true, 201);
+            header($this->app->route->method.' 201 Created', true, 201);
             return $data;
         }
         die;
@@ -85,11 +85,11 @@ class modApi
         $post = $request->params;
         $check = $this->app->itemRead($table, $item);
         if (!$check) {
-            header($app->route->method.' 404 Not found', true, 404);
+            header($this->app->route->method.' 404 Not found', true, 404);
         } else {
             ($item > '') ? $post['_id'] = $item : null;
             $data = $this->app->itemSave($table, $post);
-            header($app->route->method.' 200 OK', true, 200);
+            header($this->app->route->method.' 200 OK', true, 200);
             return $data;
         }
         die;
@@ -108,12 +108,12 @@ class modApi
         if ($check) {
             $data = $this->app->itemRemove($table, $item);
             if (isset($data['_removed'])) {
-                header($app->route->method.' 204 Deleted', true, 204);
+                header($this->app->route->method.' 204 Deleted', true, 204);
             } else {
-                header($app->route->method.' 409 Conflict', true, 409);
+                header($this->app->route->method.' 409 Conflict', true, 409);
             }
         } else {
-            header($app->route->method.' 404 Not found', true, 404);
+            header($this->app->route->method.' 404 Not found', true, 404);
         }
     }
 
@@ -128,11 +128,11 @@ class modApi
         $user = $this->app->checkUser($post->login, $type, $post->password);
         if ($user) {
             $this->app->login($user);
-            header($app->route->method.' 200 OK', true, 200);
+            header($this->app->route->method.' 200 OK', true, 200);
             @$redirect = $user->group->url_login > '' ? $user->group->url_login : null;
             return ['login'=>true,'error'=>false,'msg'=>'You are successfully logged in','redirect'=>$redirect,'user'=>$this->app->user,'token'=>$this->app->token];
         } else {
-            header($app->route->method.' 401 Unauthorized', true, 401);
+            header($this->app->route->method.' 401 Unauthorized', true, 401);
             return ['login'=>false,'error'=>true,'msg'=>'Authorization has been denied for this request.','errno'=>401];
 
         }
@@ -199,7 +199,7 @@ class modApi
         if (isset($app->route->item)) {
             $json = $app->itemRead($table, $app->route->item);
             if (isset($app->route->field)) {
-                $fields = new Dot();
+                $fields = new $this->app->Dot();
                 $fields->setReference($json);
                 $json = $fields->get($app->route->field);
             }
@@ -222,7 +222,7 @@ class modApi
     private function apiOptions($arr)
     {
         // convert options array to string for __options
-        $options = http_build_query($options);
+        $options = http_build_query($arr);
         $options = str_replace(['&','%2C'], ';', $options);
         return $options;
     }
