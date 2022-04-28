@@ -1026,10 +1026,13 @@ wbapp.wbappScripts = async function() {
             src = $(this).attr('wb-app');
         }
         if (src !== null && src > '') {
+            var that = this;
             var xhr = new XMLHttpRequest();
             xhr.open('GET', src, true);
             xhr.onload = function() {
-                eval(xhr.responseText);
+                console.log(src);
+                //eval(xhr.responseText);
+                $(that).after('<script type="text/javascript">'+xhr.responseText+'</script>').remove();
             };
             xhr.send();
         } else {
