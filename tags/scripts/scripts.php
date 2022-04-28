@@ -41,20 +41,19 @@ class tagScripts
                 $this->app->vars('_env.tmp.modScripts', $this->loaded);
                 $src = stream_is_local($src) ? $this->home.$src : $src;
                 $tmp = file_get_contents($src);
-                $script .= $tmp.';'.PHP_EOL.PHP_EOL;
+                $script .= PHP_EOL.';'.PHP_EOL.$tmp;
             }
         }
         $this->app->vars('_env.tmp.modScripts',$this->loaded);
         if ($script == '') return;
-        $this->dom->attr('trigger') > '' ? $script.='$(document).trigger("'.$this->dom->attr('trigger').'");'.PHP_EOL : null;
+        $this->dom->attr('trigger') > '' ? $script.= PHP_EOL.'$(document).trigger("'.$this->dom->attr('trigger').'");'.PHP_EOL : null;
         
         if (strtolower(trim($this->dom->attr('src')) == 'wbapp')) {
             $type = ' type="text/javascript" ';
         } else {
             $type = ' type="wbapp" ';
-            $script = '(function($) {'.$script.'})(jQuery);';
         }
-        $script = $loaded.$script.PHP_EOL.PHP_EOL;
+        $script = $loaded.PHP_EOL.';'.PHP_EOL.$script;
         if ($this->ext == 'jsgz') $script = gzencode($script, 9);
         $this->app->putContents($this->file, $script);
         $this->dom->after('<script '.$type.' src="'.$this->path.'/'.$this->filename.'"></script>'.PHP_EOL);
