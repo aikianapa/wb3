@@ -220,7 +220,9 @@ class modYonger
         isset($item['lang']) ? $data = array_merge($item,$item['lang'][$this->app->vars('_sess.lang')]) : $data = &$item;
         $result = (object)$res->attributes();
         $res->fetch($data); // не удалять, иначе слюстрока не работает как нужно... шайтанама! :(
-        $this->dom->app->vars('_sett.devmode') == 'on' ? $res->children()->prepend('<!-- Is block: '.$form.' -->') : null;
+        if ($this->dom->app->vars('_sett.devmode') == 'on' && !$res->is('script')) {
+            $res->prepend('<!-- Is block: '.$form.' -->');
+        }
         $section = $this->dom->app->fromString('<html>'.$res->fetch($data)->inner().'</html>');
         isset($item['block_id']) && $item['block_id'] ? $section->children()->children(':first-child')->attr('id',$item['block_id']) : null;
         isset($item['block_class']) && $item['block_class'] ? $section->children()->children(':first-child')->addClass($item['block_class']) : null;
