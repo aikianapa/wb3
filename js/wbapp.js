@@ -16,12 +16,7 @@ setTimeout(async function() {
     }
 
     wbapp.devmode = get_cookie('devmode');
-    if ('ontouchstart' in document.documentElement) {
-        wbapp.evClick = 'touchstart';
-    } else {
-        wbapp.evClick = 'tap click';
-    }
-    
+    wbapp.evClick = 'tap click';
     wbapp.start();
 }, 5);
 
