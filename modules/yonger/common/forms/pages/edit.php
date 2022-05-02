@@ -112,8 +112,6 @@
 </div>
 
 <script wb-app remove>
-let timeout = 50;
-// ==============
 yonger.pageEditor = function() {
     let $form = $('#{{_form}}EditForm');
     $form.undelegate('[name=path]', 'change');

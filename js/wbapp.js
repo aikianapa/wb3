@@ -784,7 +784,8 @@ wbapp.data = function(key, value = undefined, binds = true) {
             if (i == 0) {
                 key = k;
                 data = sessionStorage.getItem(key);
-                if (i + 1 !== last && data == null) {
+                //if (i + 1 !== last && data == null) {
+                if (i + 1 !== last || data == null) {
                     data = {}
                 } else {
                     try {
