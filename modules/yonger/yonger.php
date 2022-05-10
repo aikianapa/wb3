@@ -240,6 +240,22 @@ class modYonger
         return $result;
     }
 
+    function blockpreview() {
+        $tpl = $this->app->getTpl('page.php');
+        $block = $this->app->vars('_get.block');
+        $ypg = new yongerPage($this->dom);
+        $form = $ypg->blockfind($block);
+        $preview = $ypg->blockpreview($form);
+        if ($preview) {
+            $preview->fetch();
+            $tpl->find('wb-module[wb="module=yonger&mode=render"]')->after($preview);
+        } else {
+            $tpl->find('wb-module[wb="module=yonger&mode=render"]')->attr("wb","module=yonger&mode=render&view={$block}");            
+        }
+        $tpl->fetch();
+        echo $tpl;
+        die;
+    }
 
     private function block() {
         $app = &$_ENV['app'];
