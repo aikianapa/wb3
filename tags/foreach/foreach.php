@@ -1,6 +1,11 @@
 <?php
 
 use Nahid\JsonQ\Jsonq;
+/*
+    Доступ к данным справочника
+    <wb-foreach wb="table=catalogs&item=srvcat&from=tree.data">
+*/
+
 
 class tagForeach
 {

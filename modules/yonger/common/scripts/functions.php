@@ -12,6 +12,7 @@
                 $app->route->controller = 'form';
                 $app->route->mode = 'show';
                 $app->route->table = $map[$idx]['f'];
+                $app->route->form = $map[$idx]['f'];
                 $app->route->item = $map[$idx]['i'];
                 $app->route->name = $map[$idx]['n'];
                 isset($app->route->tpl) ? null : $app->route->tpl = $map[$idx]['f'].".php";
