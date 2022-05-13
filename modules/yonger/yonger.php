@@ -27,8 +27,8 @@ class modYonger
         } 
 
 
-        in_array($mode,explode(',','render,workspace,logo,signin,signup,signrc,createSite,removeSite'))? null : $app->apikey('module');
-        if (in_array($mode,explode(',','createSite,removeSite')) AND $app->getDomain( $app->route->refferer) !== $app->route->domain ) {
+        in_array($mode,explode(',','render,workspace,logo,signin,signup,signrc,createSite,blockpreview'))? null : $app->apikey('module');
+        if (in_array($mode,explode(',','createSite')) AND $app->getDomain( $app->route->refferer) !== $app->route->domain ) {
             echo json_encode(['error'=>true,'msg'=>'Access denied']);
             die;
         }
