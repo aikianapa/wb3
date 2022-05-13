@@ -39,7 +39,7 @@ class modApi
     {
         $methods = (array)$methods;
         if (!in_array(strtolower($this->app->route->method), $methods)) {
-            header($app->route->method." 405 Method Not Allowed", true, 405);
+            header($this->app->route->method." 405 Method Not Allowed", true, 405);
             die;
         }
         $this->method = strtolower($this->app->route->method);

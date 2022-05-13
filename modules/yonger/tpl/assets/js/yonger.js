@@ -35,6 +35,9 @@ $(document).on("wb-save-error", function(e, params) {
         $(e.target).find(".spinner-border").remove();
         $(e.target).find("i").removeClass("d-none");
         $(e.target).prop("disabled", false);
+        if (params.params.silent !== "true" && params.params.silent !== true && params.data !== undefined && params.data.msg !== undefined) {
+            wbapp.toast("Ошибка сохранения", params.data.msg, { target: '.content-toasts', 'bgcolor': 'warning', 'txcolor': 'white' });
+        }
     }
 });
 

@@ -2,11 +2,13 @@
 
     function customRoute(&$route = [])
     {
-        $app = &$_ENV['app'];
+        $app = $_ENV['app'];
         $map = $app->vars('_env.dba').'/_yonmap.json';
         $app->route->uri == '/' ? $uri = '/home' : $uri = $app->route->uri;
+        $app->yonmap = [];
         if (is_file($map)) {
             $map = (array)json_decode(file_get_contents($map), true);
+            $app->yonmap = &$map;
             $idx = md5($uri);
             if (isset($map[$idx])) {
                 $app->route->controller = 'form';
@@ -155,5 +157,24 @@
         $app = &$_ENV['app'];
         $item['_site'] = $app->vars('_sett.site');
         $item['_login'] = $app->vars('_sett.login');
+
         return $item;
+    }
+
+    function yongerCheckUrl($url, $form = 'pages', $id = null) {
+        $res = false;
+        $app = $_ENV['app'];
+        $map = &$app->yonmap;
+        $md5 = md5($url);
+        if (isset($map[$md5])) {
+            $data = $map[$md5];
+            if ($id == null) {
+                $res = true;
+            } else if ($data['i'] == $id && $data['f'] == $form) {
+                $res = true;
+            }
+        } else {
+            $res = true;
+        }
+        return $res;
     }
