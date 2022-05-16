@@ -435,7 +435,7 @@
 
         let blockEdit = function(id) {
             $('#{{_var.ypb}}').data('current', undefined);
-            let $modal = $blockform.parents('.modal');
+            let $modal = $blockform.parents('.modal[id^=modal][id*=Edit]');
             let item = wbapp.storage('yonger.{{_var.ypb}}.blocks.' + id);
             if ($('#{{_var.ypb}} .dd-item[data-id="' + id + '"]').length == 0) {
 
@@ -445,7 +445,7 @@
             }, function(editor) {
                 $modal.find('.modal-header .header').text($(editor).attr("header"));
                 $blockform.html($(editor).html());
-                $blockform.find('#yongerEditorBtnEdit').appendTo($modal.find('.modal-header .header'));
+                $blockform.find('#yongerEditorBtnEdit').appendTo($modal.find('.modal-header:first .header'));
                 wbapp.refresh();
                 $blockform.undelegate('[name=header]:first', 'change');
                 $blockform.delegate('[name=header]:first', 'change', function() {

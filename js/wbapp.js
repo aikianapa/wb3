@@ -1814,6 +1814,12 @@ wbapp.modalsInit = async function() {
                     $(".modal-backdrop:not([data-zidx])").css("z-index", (wbapp.modalZndx - 5)).attr('data-zidx', wbapp.modalZndx - 5);
                 }
             }
+
+            let bh = $(this).find('.modal-body').height()
+            if (bh > 0) {
+                $(this).find('.modal-body .modal-h').height(bh)
+            }
+
             window.dispatchEvent(new Event('resize'));
         });
 
