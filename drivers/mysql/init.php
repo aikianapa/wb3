@@ -81,9 +81,9 @@ class mysqlDrv
             $item = $this->db->getOne($form);
             if ($item) {
                 $item = $this->app->objToArray($item);
+                $item = $this->app->ItemInit($form, $item);
+                $this->ItemOconv($item);
             }
-            $item = $this->app->ItemInit($form, $item);
-            $this->ItemOconv($item);
         }
         return $item;
     }
