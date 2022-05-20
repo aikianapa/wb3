@@ -106,7 +106,7 @@ class modYonger
             } else {
                 $list = $this->app->itemList('pages', [
                     'sort' => 'url',
-                    'return' => 'url,header',
+                    'return' => 'id,active,url,header,_site',
                     'filter'=> ['active'=>'on','_site' => ['$in'=> [null,$this->app->vars('_sett.site')]], 'id'=> ['$nin'=>['_header','_footer']]]
                 ]);
                 $list = array_values($list['list']);

@@ -61,13 +61,9 @@ class mysqlDrv
     public function ItemOconv(&$item)
     {
         $form = $item['_form'];
-        if (!isset($item['_json'])) {
-            $json = [];
-        } else {
-            $json = json_decode($item['_json'], true);
-        }
-        if (!$json) {
-            $json = [];
+        $json = isset($item['_json']) ? json_decode($item['_json'], true) : [];
+        foreach ($item as $fld => &$val) {
+            if (wbIsJson($val)) $val = json_decode($val,true);
         }
         $item['_json'] = $json;
         $item = array_merge($json, $item);
@@ -136,19 +132,21 @@ class mysqlDrv
             $json = [];
             $item[$this->keys->$form] = $id;
         }
-
         $fields = array_column($this->fields->$form, 'name');
         foreach ($item as $fld => $val) {
             if (!in_array($fld, $fields) and !in_array($fld, ['id','_id'])) {
                 $json[$fld] = $val;
                 unset($item[$fld]);
+            } else if (in_array($fld, $fields) && is_array($val)) {
+                $val = json_encode($val,JSON_UNESCAPED_UNICODE);
+                $item[$fld] = $val;
             }
         }
-
         if (!in_array('id', $fields)) {
             unset($item['id']);
         }
         $item['_json'] = $this->app->jsonEncode($json);
+
         if ($check) {
             $this->db->where($this->keys->$form, $id);
             $this->db->update($form, $item);
@@ -158,7 +156,6 @@ class mysqlDrv
                 $id = $newid;
             }
         }
-
         if ($this->db->count) {
             $item['id'] = $item['_id'] = $id;
             $item['_json'] = $json;

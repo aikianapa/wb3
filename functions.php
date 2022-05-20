@@ -651,6 +651,7 @@ function wbInitFunctions(&$app)
             }
         }
     }
+    wbTrigger('func', __FUNCTION__, 'after');
 }
 
 function wbGetUserUi($details=false)
@@ -948,6 +949,7 @@ function wbInitDatabase()
         @mkdir($_ENV['dbac'], 0766);
     }
     $_ENV['tables'] = wbTableList();
+    wbTrigger('func', __FUNCTION__, 'after');
 }
 
 function wbTreeToArray($tree, $data = false)
