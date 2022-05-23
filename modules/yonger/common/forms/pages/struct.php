@@ -67,7 +67,7 @@
                 <div class="modal-body p-0 pb-5 scroll-y">
                     <div class="list-group">
                         {{#each blocks}}
-                            <a class="list-group-item d-flex align-items-center" href="javascript:void(0)" data-name="{{name}}" data-id="{{id}}">
+                            <a class="list-group-item d-flex align-items-center" href="javascript:void(0)" data-name="{{name}}" data-id="{{id}}" data-header="{{header}}">
                                 <img src="/module/myicons/search-checkmark-circle.svg?size=30&stroke=323232" class="wd-30 wh-30 rounded-circle mg-r-15"
                                 alt="" data-name="{{name}}" on-mouseenter="['viewPreview',true]" on-mouseleave="['viewPreview',false]">
                                 <div>
@@ -321,7 +321,7 @@
 
                         let data = {
                             'id': id,
-                            'header': block.name,
+                            'header': block.header,
                             'name': block.name,
                             'form': block.path,
                             'active': 'on'

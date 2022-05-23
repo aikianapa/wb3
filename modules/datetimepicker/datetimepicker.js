@@ -1,15 +1,18 @@
 $(document).off("datatimepicker-js");
 $(document).on("datatimepicker-js",function() {
+  let lang = wbapp._session.lang;
   wbapp.loadStyles(["/engine/modules/datetimepicker/datetimepicker/bootstrap-datetimepicker.min.css",
                     "/engine/modules/datetimepicker/datetimepicker.less",
                     "/engine/lib/fonts/font-awesome/css/font-awesome.min.css"]);
-  var scripts = ["/engine/js/php.js","/engine/modules/datetimepicker/datetimepicker/bootstrap-datetimepicker.min.js"];
+  var scripts = ["/engine/js/php.js",
+                "/engine/modules/datetimepicker/datetimepicker/bootstrap-datetimepicker.min.js",
+                "/engine/modules/datetimepicker/datetimepicker/locales/bootstrap-datetimepicker." + lang + ".js"];
 
   wbapp.loadScripts(scripts, "datetimepicker-js-init");
 
   $(document).off("datetimepicker-js-init");
   $(document).on("datetimepicker-js-init", function() {
-        $(".dtpmod:not(.wb-done)").each(function(){
+        $(".dtpmod:not(.wb-done)").each(async function(){
             $(this).addClass("wb-done");
             var input = this;
             var picker = $(input).prev("input");
@@ -47,15 +50,7 @@ $(document).on("datatimepicker-js",function() {
             if ($(picker).data('date-end') !== undefined) options.endDate = $(picker).data('date-end');
             if ($(picker).data('position') !== undefined) options.pickerPosition = 'bottom-' + $(picker).data('position');
 
-            if (lang !== undefined) {
-                wbapp.loadScripts(["/engine/modules/datetimepicker/datetimepicker/locales/bootstrap-datetimepicker." + lang + ".js"],null,function(){
-                  datetimepicker_start();
-                });
-            } else {
-                datetimepicker_start()
-            }
-
-            function datetimepicker_start() {
+            var datetimepicker_start = function() {
               $(picker).datetimepicker(options).datetimepicker("show").datetimepicker("hide").off("change");
               $(picker).datetimepicker(options).datetimepicker("show").datetimepicker("hide").on("change",function(){
                   if ($(picker).attr("type")=="datetimepicker") {
@@ -69,6 +64,13 @@ $(document).on("datatimepicker-js",function() {
               });
             }
 
+            if (lang !== undefined) {
+                wbapp.loadScripts(["/engine/modules/datetimepicker/datetimepicker/locales/bootstrap-datetimepicker." + lang + ".js"],null,function(){
+                  datetimepicker_start();
+                });
+            } else {
+                datetimepicker_start()
+            }
         });
   });
 
