@@ -14,9 +14,6 @@ function wbSetDb($form)
 {
     $app = &$_ENV["app"];
     isset($app->drivers) ? null : $app->drivers = (object)[];
-    if (isset($app->drivers->$form)) {
-        return $app->drivers->$form;
-    }
     isset($app->settings->driver_tables[$form]) ? $driver = $app->settings->driver_tables[$form] : $driver = $app->settings->_driver;
     $form == '_settings' ? $driver = 'json' : null;
     $path = "/drivers/{$driver}/init.php";
