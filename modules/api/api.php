@@ -153,7 +153,7 @@ class modApi
         /*
         Вызов функции из класса формы
         Если требуется доступ по токену, то соответствующая проверка должна быть в функции
-        /api/v2/list/{{table}}/{{func}}
+        /api/v2/func/{{table}}/{{func}}
         */
         $app = &$this->app;
         $form = $app->route->form;

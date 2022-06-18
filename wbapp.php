@@ -628,6 +628,7 @@ class wbDom extends DomQuery
                         }
                         $inp->params('oconv') > '' ? $inp->attr('data-oconv', $inp->params('oconv')) : null;
                         $inp->params('iconv') > '' ? $inp->attr('data-iconv', $inp->params('iconv')) : null;
+                        $inp->attr("done", "");
                     } elseif ($inp->tagName == "select") {
                         if ((array)$value === $value) {
                             foreach ($value as $val) {
@@ -637,7 +638,6 @@ class wbDom extends DomQuery
                                         $v->attr('selected', true);
                                     }
                                 }
-
                                 $val > "" ? $inp->find("[value='{$val}']")->attr("selected", true) : null;
                             }
                         } elseif ($value > "") {
@@ -648,20 +648,22 @@ class wbDom extends DomQuery
                                 }
                             }
                         }
+                        $inp->attr("done", "");
                     } elseif ($inp->tagName == "input") {
                         if ($inp->attr("type") == "radio") {
                             $inp->attr("value") == $value and $value > '' ? $inp->attr('checked', 'checked') : null;
+                            $inp->attr("done", "");
                         } else {
                             $inp->attr("value", $value);
                             if ($inp->attr("type") == "checkbox") {
                                 if ($value == "on" or $value == "true"  or $value == "1") {
                                     $inp->attr("checked", true);
                                     $inp->removeAttr("value");
+                                    $inp->attr("done", "");
                                 }
                             }
                         }
                     }
-                    $inp->attr("done", "");
                 } elseif ($inp->hasAttr('type') && !$inp->hasAttr("done")) {
                     $inp->attr("value", $value);
                     $inp->attr("done", "");

@@ -120,7 +120,12 @@
         return $list;
     }
 
-
+    function yongerFreecode($str) {
+        $str = html_entity_decode($str);
+        $str = str_replace("%7B%7B", "{{", $str);
+        $str = str_replace("%7D%7D", "}}", $str);
+        return $str;
+    }
 
     function yongerIsPage($link)
     {
