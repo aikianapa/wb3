@@ -183,7 +183,8 @@ class modApi
 
         options:
             &@return=id,name     - return selected fields only
-            &@size=10            - chunk by value items and return
+            &@size=10            - break list and return current page
+            &@chunk=10           - chunk list and return 
             &@page=2             - return page by value
             &@sort=name:d        - sort list by field :d(desc) :a(asc)
         */
@@ -208,7 +209,9 @@ class modApi
             $json = $app->itemList($table, $options);
             $json['list'] = (object)$json['list'];
             $options = (object)$options;
-            if (!isset($options->size)) {
+            if (isset($options->chunk)) {
+                return (array)$json;
+            } elseif (!isset($options->size)) {
                 //return $app->jsonEncode(array_values((array)$json['list']));
                 return array_values((array)$json['list']);
             } else {
@@ -231,39 +234,6 @@ class modApi
     {
         $query = (array)$query;
         $options = [];
-        if (isset($query['__options111'])) {
-            $opt = $query['__options'];
-            $list = explode(';', $opt);
-            foreach ($list as $key => $item) {
-                $item = explode('=', $list[$key]);
-                if ($item[0] == 'sort') {
-                    $sort = $item[1];
-                    $sarr = [];
-                    $sort = explode(',', $sort);
-                    foreach ($sort as $key => $fld) {
-                        $fld = explode(':', $sort[$key]);
-                        if (!isset($fld[1])) {
-                            $fld[1] = '1';
-                        }
-                        if ($fld[1] == 'a' || $fld[1] == 'asc' || $fld[1] == '1') {
-                            $sarr[$fld[0]] = 1;
-                        }
-                        if ($fld[1] == 'd' || $fld[1] == 'desc' || $fld[1] == '-1') {
-                            $sarr[$fld[0]] = -1;
-                        }
-                    }
-                    $item[1] = $sarr;
-                } elseif ($item[0] == 'return') {
-                    $item[0] = 'projection';
-                    $item[1] = explode(',', $item[1]);
-                } elseif (isset($item[1]) && is_numeric($item[1])) {
-                    $item[1] = $item[1] * 1;
-                }
-                isset($item[1]) ? $options[$item[0]] = $item[1] : null;
-            }
-            unset($query['__options']);
-        }
-
 
         foreach ($query as $key => $val) {
             if (substr($key, 0, 1) == '@') {

@@ -25,10 +25,14 @@
         }
 
         if ($app->vars('_route.controller') == 'form' && $app->vars('_route.mode') == 'show') {
-            $path = explode('/', $uri);
-            $name = array_pop($path);
-            $path = implode('/', $path);
-
+            if (isset($app->route->name)) {
+               $name=  $app->route->name;
+               $path = '';
+            } else {
+                $path = explode('/', $uri);
+                array_pop($path);
+                $path = implode('/', $path);
+            }
             $uri == '/' && $name == '' ? $name = 'home' : null;
             if (isset($app->route->item) && $app->route->item !== $name) {
                 $app->route->alias = $name;
@@ -36,7 +40,6 @@
                 $uri = $path.'/'.$name;
             };
             $uri == '/home' ? $uri = '/' : null;
-
             $pages = $app->itemList('pages', ['filter'=>[
             '_site' => [
                 '$in'=> [null,'{{_sett.site}}']
@@ -46,7 +49,7 @@
             'path' => $path
         ]]);
             foreach ($pages['list'] as $page) {
-                if ($page['url'] == $uri) {
+                if ($page['url'] == $uri OR (isset($app->route->name) && $app->route->name == $page["name"])) {
                     $app->route->controller = 'form';
                     $app->route->mode = 'show';
                     $app->route->table = 'pages';

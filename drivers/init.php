@@ -7,6 +7,11 @@ function wbItemList($form = 'pages', $options=[])
     ini_set('max_execution_time', 900);
     ini_set('memory_limit', '1024M');
     $res = $db->ItemList($form, $options);
+    if (isset($options['chunk']) && $options['chunk'] > 0) {
+        $res['list'] = array_chunk($res['list'], intval($options['chunk']));
+        $res['size'] = intval($options['chunk']);
+        $res['pages'] = count($res['list']);
+    }
     return $res;
 }
 
