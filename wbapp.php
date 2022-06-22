@@ -242,10 +242,10 @@ class wbDom extends DomQuery
     }
     public function fetchNode()
     {
-        if (!strpos($this->outer(), 'wb') && !strpos($this->outer(), '}}') && !strpos($this->outer(), '%7D%7D')) {
+        $outer = $this->outer();
+        if (!strpos($outer, 'wb') && !strpos($outer, '}}') && !strpos($outer, '%7D%7D')) {
             return;
         }
-
         $this->fetchStrict();
         if ($this->strict or isset($this->fetched)) {
             return;
@@ -287,7 +287,6 @@ class wbDom extends DomQuery
                     } else {
                         $this->find($pid.':not(template)')->parent()->append($pag->outer());
                     }
-
                     $pag->remove();
                 }
             }
