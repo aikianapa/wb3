@@ -658,9 +658,9 @@ class wbDom extends DomQuery
                                 if ($value == "on" or $value == "true"  or $value == "1") {
                                     $inp->attr("checked", true);
                                     $inp->removeAttr("value");
-                                    $inp->attr("done", "");
                                 }
                             }
+                            $inp->attr("done", "");
                         }
                     }
                 } elseif ($inp->hasAttr('type') && !$inp->hasAttr("done")) {
