@@ -156,7 +156,7 @@ class mysqlDrv
                 $id = $newid;
             }
         }
-        if ($this->db->count) {
+        if (!$this->db->getLastErrno()) {
             $item['id'] = $item['_id'] = $id;
             $item['_json'] = $json;
             return $item;

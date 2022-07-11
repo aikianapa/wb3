@@ -155,7 +155,7 @@
 
     function _beforeItemSave(&$item)
     {
-        if ($item['_table'] == 'pages') {
+        if (isset($item['_table']) && $item['_table'] == 'pages') {
             isset($item['path']) ? null : $item['path'] = '';
 
             isset($item['name']) ? null : $item['name'] = '';

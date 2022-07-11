@@ -18,7 +18,7 @@ class ctrlThumbnails
     function cache() {
         $uri = $this->app->route->uri;
         $info = pathinfo($uri);
-        $ext = $info['extension'];
+        $ext = isset($info['extension']) ? $info['extension'] : "";
 
         $cachefile=md5($uri).'.'.$ext;
         $cachedir=$this->app->route->path_app.'/uploads/_cache/'.substr($cachefile, 0, 2);
