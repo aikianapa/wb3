@@ -928,6 +928,7 @@ class wbApp
                 unset($drv["driver"]);
             } else {
                 $drvlist = [];
+                $drv=[];
             }
             $flag = true;
             foreach ($drv as $driver => $options) {
