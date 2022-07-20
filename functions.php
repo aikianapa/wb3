@@ -200,31 +200,18 @@ function wbCheckAllow($allow = [],$disallow = [], $role = null) {
     function wbApikey($mode = null)
     {
         $app = &$_ENV['app'];
-        if ($app->vars('_sett.api_key_query') !== 'on') {
+        if ($app->vars('_sett.api_key_query') !== 'on' OR $app->route->localreq == true) {
             return true;
         }
         $mode == null ? $mode = $app->vars('_route.mode') : null;
         $token = $app->vars("_sess.token");
-        $access = $app->checkToken($app->vars('_req.__token'));
+        $access = $app->checkToken($app->vars('$app->route->token'));
 
         if (!in_array($mode,['ajax','save']) && $app->vars('_sett.api_key_'.$mode) !== 'on') $access = true;
 
         if (!$access) {
             echo json_encode(['error'=>true,'msg'=>'Access denied']);
             die;
-        }
-
-        if ($app->vars('_req.__apikey')) {
-            unset($_REQUEST['__apikey']);
-            unset($_POST['__apikey']);
-            unset($_GET['__apikey']);
-            unset($app->route->query->__apikey);
-        }
-        if ($app->vars('_req.__token')) {
-            unset($_REQUEST['__token']);
-            unset($_POST['__token']);
-            unset($_GET['__token']);
-            unset($app->route->query->__token);
         }
         return true;
     }
@@ -236,8 +223,8 @@ function wbGetToken()
     $apikey = $app->vars('_sett.api_key');
     $role = $app->vars('_sess.user.role');
     $user = $app->vars('_sess.user.id');
-    !$user ? $user = microtime() : null;
-    !$role ? $role = microtime() : null;
+    !$app->route->localreq && !$user ? $user = microtime() : null;
+    !$app->route->localreq && !$role ? $role = microtime() : null;
     $app->vars('_sett.api_allow') ? $allow = explode(',', $app->vars('_sett.api_allow')) : $allow = [];
     $app->vars('_sett.api_disallow') ? $disallow = explode(',', $app->vars('_sett.api_disallow')) : $disallow = [];
     $flag = true;
@@ -250,6 +237,7 @@ function wbGetToken()
 
 function wbCheckToken($token = null) {
     $app = &$_ENV['app'];
+    $token = ($token == null) ? $app->route->token : $token;
     $form = null;
     $app->vars('_route.form') > '' ? $form = $app->vars('_route.form') : null;
     $app->vars('_route.table') > '' ? $form = $app->vars('_route.table') : null;
@@ -266,7 +254,6 @@ function wbCheckToken($token = null) {
     $apikey = $app->vars('_sett.api_key');
     $app->vars('_sess.user.id') == '' ? $user = microtime() : $user = $app->vars('_sess.user.id');
     $app->vars('_sess.user.role') == '' ? $role = microtime() : $role = $app->vars('_sess.user.role');
-    $token = ($token == null) ? $app->vars('_req.__token') : $token;
     $res = password_verify($app->route->host.session_id().$apikey.$role.$user,$token);
     return $res;
 }
@@ -491,7 +478,18 @@ function wbMail(
         if (!is_array($attach) and is_string($attach)) {
             $attach=array($attach);
         }
-        if (is_array($attach)) {
+
+        if ($attach == $_FILES) {
+            foreach($attach as $fld => $files) {
+                if (is_array($files['tmp_name'])) {
+                    foreach($files['tmp_name'] as $key => $name) {
+                        $mail->AddAttachment($files['tmp_name'][$key], $files['name'][$key]);
+                    }
+                } else {
+                    $mail->AddAttachment($files['tmp_name'], $files['name']);
+                }
+            }
+        } if (is_array($attach)) {
             foreach ($attach as $a) {
                 if (is_string($a) and substr($a, 0, 5) == "data:") {
                     preg_match('/^data:(.*);base64,/', substr($a, 0, 50), $matches, PREG_OFFSET_CAPTURE);
@@ -653,6 +651,7 @@ function wbInitFunctions(&$app)
             }
         }
     }
+    wbTrigger('func', __FUNCTION__, 'after');
 }
 
 function wbGetUserUi($details=false)
@@ -950,6 +949,7 @@ function wbInitDatabase()
         @mkdir($_ENV['dbac'], 0766);
     }
     $_ENV['tables'] = wbTableList();
+    wbTrigger('func', __FUNCTION__, 'after');
 }
 
 function wbTreeToArray($tree, $data = false)
@@ -1211,8 +1211,10 @@ function wbItemInit($table, $item = null)
     $item['id'] = $item['_id'];
     $item['_table'] = $item['_form'] = $table;
     $tmp = (in_array('wbItemRead',wbCallStack()) OR in_array('wbItemList',wbCallStack())) ? null : $tmp = wbItemRead($item["_form"], $item["_id"]);
-    (!$tmp or !isset($tmp['_created']) or '' == $tmp['_created']) or !isset($item["_created"]) ? $item['_created'] = date('Y-m-d H:i:s') : null;
-    (!$tmp or !isset($tmp['_creator']) or '' == $tmp['_creator']) and !isset($item["_creator"]) ? $item['_creator'] = $app->vars("_sess.user.id") : null;
+    (!$tmp or !isset($tmp['_created']) or '' == $tmp['_created']) ? $item['_created'] = date('Y-m-d H:i:s') : null;
+    (!$tmp or !isset($tmp['_creator']) or '' == $tmp['_creator']) ? $item['_creator'] = $app->vars("_sess.user.id") : null;
+    !isset($item['_created']) ? $item['_created'] = date('Y-m-d H:i:s') : null;
+    !isset($item['_creator']) ? $item['_creator'] = $app->vars("_sess.user.id") : null;
     $item['_lastdate'] = date('Y-m-d H:i:s');
     $item['_lastuser'] = $app->vars("_sess.user.id");
     $item['_sort'] = isset($item['_sort']) ? wbSortIndex($item['_sort']) : wbSortIndex();

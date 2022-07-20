@@ -1,6 +1,11 @@
 <?php
 
 use Nahid\JsonQ\Jsonq;
+/*
+    Доступ к данным справочника
+    <wb-foreach wb="table=catalogs&item=srvcat&from=tree.data">
+*/
+
 
 class tagForeach
 {
@@ -205,8 +210,14 @@ class tagForeach
         $lines = '';
         foreach ((array) $list as $key => $val) {
             $value = $val;
+
+            if ($dom->params('parent') == "true") {
+                $val =  $parent;
+            }
+
             $val = (object) $val;
             $val->_key = $key;
+            
             if (!isset($val->__total)) {
                 $table = $dom->params('table');
                 $val->_page = $page;
@@ -214,7 +225,7 @@ class tagForeach
                 $val->_idx = $idx;
                 $val->_ndx = $ndx;
                 $val->_val = $value;
-                $val->_parent = &$parent;
+                if ($dom->params('parent') !== "true") $val->_parent = &$parent;
 
                 if ($even) {
                     $val->_even = $even = false;
@@ -226,6 +237,7 @@ class tagForeach
 
                 isset($val->_table) && $table == '' ? $table = $val->_table : null;
                 !isset($val->_id) and isset($val->id) ? $val->_id = $val->id : $val->_id = $idx;
+
                 $table > "" ? $val = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], (array) $val) : null;
             }
 
@@ -348,6 +360,7 @@ class tagForeach
         !count((array)$list) ? $dom->inner($empty->inner()) : null;
 
         $dom->before($dom->inner());
+        $dom->fetched = true;
         $dom->remove();
     }
 
@@ -399,12 +412,14 @@ class tagForeach
             $url = parse_url($ajax);
             if (!isset($url['scheme'])) {
                 if ($this->app->vars('_sett.api_key_query') == 'on' and !isset($url['__token'])) {
-                    strpos($ajax, '?') ? $ajax .= '&' : $ajax .= '?';
-                    $ajax .= '__token='.$this->app->vars('_sess.token');
+                    $post = ['__token'=>$this->app->vars('_sess.token')];
+                } else {
+                    $post = null;
                 }
+                
             }
             $ajax = $this->app->vars('_route.host').$ajax;
-            $list = json_decode(str_replace("'", '"', wbAuthPostContents($ajax)), true);
+            $list = json_decode(str_replace("'", '"', wbAuthPostContents($ajax, $post)), true);
             !$list ? $list = [] : null;
             $count = count($list);
         }
@@ -434,7 +449,7 @@ class tagForeach
 
         $this->options = $options;
         $this->sort($list);
-        if ($dom->params('count') > "") {
+        if (!in_array($dom->params('count'),["0",""])) {
             isset($list) ? $$item = $list : $item = [];
             $list = [];
             $start = 1;

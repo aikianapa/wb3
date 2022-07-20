@@ -16,7 +16,7 @@ $(document).one("pagination-js", function() {
     });
 
     $(document).on('scroll', function(ev) {
-        $(document).find(".pagination .page-more").each(function() {
+        $(document).find(".pagination .page-more[data-trigger=auto]").each(function() {
             is_visible(this) ? $(this).find(".page-link").trigger("click") : null;
         })
     });

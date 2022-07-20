@@ -52,7 +52,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <wb-module wb="module=yonger&mode=structure" />
+                            <wb-module wb="module=yonger&mode=structure&preset=news" />
                         </form>
                     </div>
 

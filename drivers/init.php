@@ -7,6 +7,11 @@ function wbItemList($form = 'pages', $options=[])
     ini_set('max_execution_time', 900);
     ini_set('memory_limit', '1024M');
     $res = $db->ItemList($form, $options);
+    if (isset($options['chunk']) && $options['chunk'] > 0) {
+        $res['list'] = array_chunk($res['list'], intval($options['chunk']));
+        $res['size'] = intval($options['chunk']);
+        $res['pages'] = count($res['list']);
+    }
     return $res;
 }
 
@@ -14,9 +19,6 @@ function wbSetDb($form)
 {
     $app = &$_ENV["app"];
     isset($app->drivers) ? null : $app->drivers = (object)[];
-    if (isset($app->drivers->$form)) {
-        return $app->drivers->$form;
-    }
     isset($app->settings->driver_tables[$form]) ? $driver = $app->settings->driver_tables[$form] : $driver = $app->settings->_driver;
     $form == '_settings' ? $driver = 'json' : null;
     $path = "/drivers/{$driver}/init.php";
@@ -170,8 +172,13 @@ function wbItemSave($form, $item = null, $flush = true)
     }
     $item = wbItemInit($form, $item);
     $item = wbDotFix($item);
-    $item = $db->itemSave($form, $item, $flush);
-    $item = wbTrigger('form', __FUNCTION__, 'afterItemSave', func_get_args(), $item);
+    try {
+        $item = $db->itemSave($form, $item, $flush);
+        $item = wbTrigger('form', __FUNCTION__, 'afterItemSave', func_get_args(), $item);
+    } catch (\Throwable $th) {
+        $item = null;
+    }
+    
     return $item;
 }
 

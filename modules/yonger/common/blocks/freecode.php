@@ -1,6 +1,6 @@
 <html>
 <view>
-{{html_entity_decode({{freecode}})}}
+{{freecode}}
 </view>
 <edit header="{{_lang.header}}">
     <div>

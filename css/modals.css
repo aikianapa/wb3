@@ -49,6 +49,7 @@
 }
 .modal.left .modal-dialog.modal-sm {
   max-width: 300px;
+  min-width: 300px;
 }
 .modal .modal-open .modal.show .modal-dialog {
   height: 100vh;
@@ -63,6 +64,7 @@
 }
 .modal.right .modal-dialog.modal-sm {
   max-width: 300px;
+  min-width: 300px;
 }
 .modal.left .modal-content,
 .modal.right .modal-content {

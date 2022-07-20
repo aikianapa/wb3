@@ -11,11 +11,25 @@ class ctrlForm
     public function __call($mode, $params)
     {
         if (!isset($this->app->route->form)) return;
-        $form = $this->app->route->form;
-        $class=$this->app->formClass($form);
+        $form = $this->app->vars('_route.form');
+        $item = $this->app->vars('_route.item');
+        $tpl = $this->app->vars('_route.tpl');
+        $class = $this->app->formClass($form);
         if (method_exists($class,$mode)) {
             echo $class->$mode();
             die;
+        } else {
+            if ($tpl > '')  {
+                $out = $this->app->getTpl($tpl);
+            } else {
+                $out = $this->app->getForm($form,$mode);
+            }
+            if ($out) {
+                if ($item > '') $out->item = $this->app->itemRead($form,$item);
+                $out->fetch();
+                echo $out->outer();
+                die;
+            }
         }
         if (!is_callable(@$this->$mode)) {
             header('HTTP/1.1 404 Not Found');
@@ -74,9 +88,9 @@ class ctrlForm
             }
 
             $out = isset($this->target) ? '<div>'.$dom->find($this->target)->outer().'</div>' : $out = $dom->outer();
-            $out = $this->app->fromString($out);
-            $this->app->module('compress',$out);
-            $out = $out->outer();
+            //$out = $this->app->fromString($out);
+            //$this->app->module('compress',$out);
+            //$out = $out->outer();
             !strpos(' '.trim($out), '<!DOCTYPE') ? $out = '<!DOCTYPE html>'.$out : null;
             echo $out;
             $app->setCache($out);

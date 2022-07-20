@@ -59,7 +59,7 @@ class modMyicons
         ob_start();
         $html = '<html>';
         $html .= '<head>';
-        $html .= '<script src="/engine/js/wbapp.js"></script><script type="wbapp">wbapp.lazyload()</script>';
+        $html .= '<script src="/engine/js/wbapp.js"></script>';
         $html .= '<link rel="stylesheet" href="/engine/modules/cms/tpl/assets/css/dashforge.css">';
         $html .= '</head><body><div class="container"><div class="row">';
         echo $html; ob_flush();
@@ -71,7 +71,7 @@ class modMyicons
                     if ($letter > '') echo '<div class="col-12 divider-text">'.$letter.'</div>';
                 }
                 $i++;
-                $html = "<div class='col-2 text-center'><img data-src='/module/myicons/{$svg}?size=50&stroke=000000' ><br>{$svg}</div>";
+                $html = "<div class='col-2 text-center'><img loading='lazy' src='/module/myicons/{$svg}?size=50&stroke=000000' ><br>{$svg}</div>";
                 echo $html; ob_flush();
             }
 
@@ -91,23 +91,7 @@ class modMyicons
         substr($this->fill,0,1) !== '#' ? $this->fill = '#'.$this->fill : null;
 
         
-        $app->vars('_sett.devmode') == 'on' ? $cache=false : $cache = true;
 
-        if (isset($_SERVER['HTTP_CACHE_CONTROL'])) {
-            
-            parse_str($_SERVER['HTTP_CACHE_CONTROL'], $cc);
-            isset($cc['no-cache']) ? $cache=false : null;
-            isset($cc['nocache']) ? $cache=false : null;
-        }
-
-        $cachefile = md5($file."{$this->size}{$this->stroke}{$this->fill}");
-        $cachedir=$app->vars('_env.path_app').'/uploads/_cache/module/myicons/'.substr($cachefile, 0, 2);
-        $destination = $cachedir.'/'.$cachefile;
-        is_dir($cachedir) ? null : mkdir($cachedir, 0777, true);
-
-        $cache = false; // пока отключил кэширование, возможно, оно и не нужно
-        
-        if (!is_file($destination) or $cache == false) {
             $sprite = $app->fromFile($file);
             if (!$sprite) {
                 return false;
@@ -142,7 +126,7 @@ class modMyicons
             }
 
 
-            $svg = $app->fromFile(__DIR__.'/myicon_ui.php');
+            $svg = $app->fromString('<svg version="1.1" xmlns="http://www.w3.org/2000/svg"><use href=""></use></svg>');
             $svg->find('[viewBox]')->removeAttr('viewBox');
             $svg->find('use')->attr('href', $file.'#'.$id);
             $svg->find('use')->after($sprite->inner());
@@ -154,11 +138,8 @@ class modMyicons
                 $svg->attr('viewBox', "0 0 24 24");
             }
 
-            file_put_contents($destination, $svg->outer());
+            //file_put_contents($destination, $svg->outer());
             return $svg->outer();
-        } else {
-            return file_get_contents($destination);
-        }
     }
 
     public function name() {

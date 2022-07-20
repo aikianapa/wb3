@@ -9,8 +9,29 @@ class ctrlThumbnails
 {
     public function __construct($app)
     {
+        $this->app = &$app;
+        $this->cache();
         $this->thumbnails($app);
     }
+
+
+    function cache() {
+        $uri = $this->app->route->uri;
+        $info = pathinfo($uri);
+        $ext = isset($info['extension']) ? $info['extension'] : "";
+
+        $cachefile=md5($uri).'.'.$ext;
+        $cachedir=$this->app->route->path_app.'/uploads/_cache/'.substr($cachefile, 0, 2);
+        $destination = $cachedir.'/'.$cachefile;
+        if (is_file($destination)) {
+            $image=file_get_contents($destination);
+            $mime = wbMime($destination);
+            header('Content-Type: '.$mime);
+            echo $image;
+            die;
+        } 
+    }
+
     public function thumbnails($app)
     {
         $_GET = $app->vars('_get');
@@ -140,7 +161,6 @@ class ctrlThumbnails
                 $image = str_replace('<svg ', '<svg width="'.$app->vars('_route.w').'" height="'.$app->vars('_route.h').'" viewbox="0 0 '.$app->vars('_route.w').' '.$app->vars('_route.h').'" ', $imgdata);
                 $destination = $file;
             } else {
-                $this->browser->name !== 'Safari' && in_array($ext, ['jpg','jpeg','png']) ? $ext = 'webp' : null;
                 switch ($ext) {
                                     case 'jpg':
                                         $options = ['jpeg_quality'=>80];
@@ -154,9 +174,10 @@ class ctrlThumbnails
                                 }
                 $options['resolution-x'] = 300;
                 $options['resolution-y'] = 300;
-                $cachefile=md5($file.'_'.$app->vars('_route.w').'_'.$app->vars('_route.h').'_'.$app->vars('_get.zc').'_'.json_encode($options)).'.'.$ext;
+                $cachefile=md5($app->route->uri).'.'.$ext;
                 $cachedir=$app->vars('_env.path_app').'/uploads/_cache/'.substr($cachefile, 0, 2);
                 $destination = $cachedir.'/'.$cachefile;
+
                 is_dir($cachedir) ? null : mkdir($cachedir, 0777, true);
 
                 if (!is_file($destination) or $cache == false) {

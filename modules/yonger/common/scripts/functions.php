@@ -2,17 +2,21 @@
 
     function customRoute(&$route = [])
     {
-        $app = &$_ENV['app'];
+        $app = $_ENV['app'];
         $map = $app->vars('_env.dba').'/_yonmap.json';
         $app->route->uri == '/' ? $uri = '/home' : $uri = $app->route->uri;
+        $app->yonmap = [];
         if (is_file($map)) {
-            $map = (array)json_decode(file_get_contents($map),true);
+            $map = (array)json_decode(file_get_contents($map), true);
+            $app->yonmap = &$map;
             $idx = md5($uri);
             if (isset($map[$idx])) {
                 $app->route->controller = 'form';
                 $app->route->mode = 'show';
                 $app->route->table = $map[$idx]['f'];
+                $app->route->form = $map[$idx]['f'];
                 $app->route->item = $map[$idx]['i'];
+                $app->route->name = $map[$idx]['n'];
                 isset($app->route->tpl) ? null : $app->route->tpl = $map[$idx]['f'].".php";
                 $app->vars('_route', $app->objToArray($app->route));
                 $route = $app->route;
@@ -21,10 +25,14 @@
         }
 
         if ($app->vars('_route.controller') == 'form' && $app->vars('_route.mode') == 'show') {
-            $path = explode('/', $uri);
-            $name = array_pop($path);
-            $path = implode('/', $path);
-
+            if (isset($app->route->name)) {
+               $name=  $app->route->name;
+               $path = '';
+            } else {
+                $path = explode('/', $uri);
+                array_pop($path);
+                $path = implode('/', $path);
+            }
             $uri == '/' && $name == '' ? $name = 'home' : null;
             if (isset($app->route->item) && $app->route->item !== $name) {
                 $app->route->alias = $name;
@@ -32,7 +40,6 @@
                 $uri = $path.'/'.$name;
             };
             $uri == '/home' ? $uri = '/' : null;
-
             $pages = $app->itemList('pages', ['filter'=>[
             '_site' => [
                 '$in'=> [null,'{{_sett.site}}']
@@ -42,11 +49,12 @@
             'path' => $path
         ]]);
             foreach ($pages['list'] as $page) {
-                if ($page['url'] == $uri) {
+                if ($page['url'] == $uri OR (isset($app->route->name) && $app->route->name == $page["name"])) {
                     $app->route->controller = 'form';
                     $app->route->mode = 'show';
                     $app->route->table = 'pages';
                     $app->route->item = $page['_id'];
+                    $app->route->name = $name;
                     isset($app->route->tpl) ? null : $app->route->tpl = "page.php";
                     $app->vars('_route', $app->objToArray($app->route));
                     $route = $app->route;
@@ -115,12 +123,19 @@
         return $list;
     }
 
-
+    function yongerFreecode($str) {
+        $str = html_entity_decode($str);
+        $str = str_replace("%7B%7B", "{{", $str);
+        $str = str_replace("%7D%7D", "}}", $str);
+        return $str;
+    }
 
     function yongerIsPage($link)
     {
         $app = &$_ENV['app'];
-        if (substr($link,-1) == '/') $link = substr($link,0,-1);
+        if (substr($link, -1) == '/') {
+            $link = substr($link, 0, -1);
+        }
         if (!$app->vars('_env.yonger.pages')) {
             $list = $app->itemList('pages', ['filter'=>[
             'active'=>'on'
@@ -131,20 +146,43 @@
                 '$nin'=>['_header','_footer']
             ]
             ]]);
-            $list = array_column($list['list'],'url');
-            $app->vars('_env.yonger.pages',$list);
-        } 
+            $list = array_column($list['list'], 'url');
+            $app->vars('_env.yonger.pages', $list);
+        }
         return in_array($link, $app->vars('_env.yonger.pages'));
     }
 
+
     function _beforeItemSave(&$item)
     {
+        if (isset($item['_table']) && $item['_table'] == 'pages') {
+            isset($item['path']) ? null : $item['path'] = '';
+
+            isset($item['name']) ? null : $item['name'] = '';
+            $item['url'] = $item['path'] . '/' . $item['name'];
+            $item['url'] == '/home' ? $item['url'] = '/' : null;
+        }
         $app = &$_ENV['app'];
-        isset($item['path']) ? null : $item['path'] = '';
-        isset($item['name']) ? null : $item['name'] = '';
         $item['_site'] = $app->vars('_sett.site');
         $item['_login'] = $app->vars('_sett.login');
-        $item['url'] = $item['path'] . '/' . $item['name'];
-        $item['url'] == '/home' ? $item['url'] = '/' : null;
+
         return $item;
+    }
+
+    function yongerCheckUrl($url, $form = 'pages', $id = null) {
+        $res = false;
+        $app = $_ENV['app'];
+        $map = &$app->yonmap;
+        $md5 = md5($url);
+        if (isset($map[$md5])) {
+            $data = $map[$md5];
+            if ($id == null) {
+                $res = true;
+            } else if ($data['i'] == $id && $data['f'] == $form) {
+                $res = true;
+            }
+        } else {
+            $res = true;
+        }
+        return $res;
     }

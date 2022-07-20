@@ -39,7 +39,7 @@ class modApi
     {
         $methods = (array)$methods;
         if (!in_array(strtolower($this->app->route->method), $methods)) {
-            header($app->route->method." 405 Method Not Allowed", true, 405);
+            header($this->app->route->method." 405 Method Not Allowed", true, 405);
             die;
         }
         $this->method = strtolower($this->app->route->method);
@@ -60,11 +60,11 @@ class modApi
         $post = $request->params;
         $check = $this->app->itemRead($table, $item);
         if ($check) {
-            header($app->route->method.' 409 Conflict', true, 409);
+            header($this->app->route->method.' 409 Conflict', true, 409);
         } else {
             ($item > '') ? $post['_id'] = $item : null;
             $data = $this->app->itemSave($table, $post);
-            header($app->route->method.' 201 Created', true, 201);
+            header($this->app->route->method.' 201 Created', true, 201);
             return $data;
         }
         die;
@@ -85,11 +85,11 @@ class modApi
         $post = $request->params;
         $check = $this->app->itemRead($table, $item);
         if (!$check) {
-            header($app->route->method.' 404 Not found', true, 404);
+            header($this->app->route->method.' 404 Not found', true, 404);
         } else {
             ($item > '') ? $post['_id'] = $item : null;
             $data = $this->app->itemSave($table, $post);
-            header($app->route->method.' 200 OK', true, 200);
+            header($this->app->route->method.' 200 OK', true, 200);
             return $data;
         }
         die;
@@ -108,12 +108,12 @@ class modApi
         if ($check) {
             $data = $this->app->itemRemove($table, $item);
             if (isset($data['_removed'])) {
-                header($app->route->method.' 204 Deleted', true, 204);
+                header($this->app->route->method.' 204 Deleted', true, 204);
             } else {
-                header($app->route->method.' 409 Conflict', true, 409);
+                header($this->app->route->method.' 409 Conflict', true, 409);
             }
         } else {
-            header($app->route->method.' 404 Not found', true, 404);
+            header($this->app->route->method.' 404 Not found', true, 404);
         }
     }
 
@@ -128,11 +128,11 @@ class modApi
         $user = $this->app->checkUser($post->login, $type, $post->password);
         if ($user) {
             $this->app->login($user);
-            header($app->route->method.' 200 OK', true, 200);
+            header($this->app->route->method.' 200 OK', true, 200);
             @$redirect = $user->group->url_login > '' ? $user->group->url_login : null;
             return ['login'=>true,'error'=>false,'msg'=>'You are successfully logged in','redirect'=>$redirect,'user'=>$this->app->user,'token'=>$this->app->token];
         } else {
-            header($app->route->method.' 401 Unauthorized', true, 401);
+            header($this->app->route->method.' 401 Unauthorized', true, 401);
             return ['login'=>false,'error'=>true,'msg'=>'Authorization has been denied for this request.','errno'=>401];
 
         }
@@ -153,7 +153,7 @@ class modApi
         /*
         Вызов функции из класса формы
         Если требуется доступ по токену, то соответствующая проверка должна быть в функции
-        /api/v2/list/{{table}}/{{func}}
+        /api/v2/func/{{table}}/{{func}}
         */
         $app = &$this->app;
         $form = $app->route->form;
@@ -183,7 +183,8 @@ class modApi
 
         options:
             &@return=id,name     - return selected fields only
-            &@size=10            - chunk by value items and return
+            &@size=10            - break list and return current page
+            &@chunk=10           - chunk list and return 
             &@page=2             - return page by value
             &@sort=name:d        - sort list by field :d(desc) :a(asc)
         */
@@ -199,7 +200,7 @@ class modApi
         if (isset($app->route->item)) {
             $json = $app->itemRead($table, $app->route->item);
             if (isset($app->route->field)) {
-                $fields = new Dot();
+                $fields = new $this->app->Dot();
                 $fields->setReference($json);
                 $json = $fields->get($app->route->field);
             }
@@ -208,7 +209,9 @@ class modApi
             $json = $app->itemList($table, $options);
             $json['list'] = (object)$json['list'];
             $options = (object)$options;
-            if (!isset($options->size)) {
+            if (isset($options->chunk)) {
+                return (array)$json;
+            } elseif (!isset($options->size)) {
                 //return $app->jsonEncode(array_values((array)$json['list']));
                 return array_values((array)$json['list']);
             } else {
@@ -222,7 +225,7 @@ class modApi
     private function apiOptions($arr)
     {
         // convert options array to string for __options
-        $options = http_build_query($options);
+        $options = http_build_query($arr);
         $options = str_replace(['&','%2C'], ';', $options);
         return $options;
     }
@@ -231,39 +234,6 @@ class modApi
     {
         $query = (array)$query;
         $options = [];
-        if (isset($query['__options111'])) {
-            $opt = $query['__options'];
-            $list = explode(';', $opt);
-            foreach ($list as $key => $item) {
-                $item = explode('=', $list[$key]);
-                if ($item[0] == 'sort') {
-                    $sort = $item[1];
-                    $sarr = [];
-                    $sort = explode(',', $sort);
-                    foreach ($sort as $key => $fld) {
-                        $fld = explode(':', $sort[$key]);
-                        if (!isset($fld[1])) {
-                            $fld[1] = '1';
-                        }
-                        if ($fld[1] == 'a' || $fld[1] == 'asc' || $fld[1] == '1') {
-                            $sarr[$fld[0]] = 1;
-                        }
-                        if ($fld[1] == 'd' || $fld[1] == 'desc' || $fld[1] == '-1') {
-                            $sarr[$fld[0]] = -1;
-                        }
-                    }
-                    $item[1] = $sarr;
-                } elseif ($item[0] == 'return') {
-                    $item[0] = 'projection';
-                    $item[1] = explode(',', $item[1]);
-                } elseif (isset($item[1]) && is_numeric($item[1])) {
-                    $item[1] = $item[1] * 1;
-                }
-                isset($item[1]) ? $options[$item[0]] = $item[1] : null;
-            }
-            unset($query['__options']);
-        }
-
 
         foreach ($query as $key => $val) {
             if (substr($key, 0, 1) == '@') {

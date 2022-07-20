@@ -299,7 +299,6 @@ function tagTreeUl( &$dom, $Item = array(), $param = null, $srcVal = array() ) {
             if ( $parent_id>'' ) $item['%id'] = $parent_id;
             $line = $dom->app->fromString( '<level>'.$tpl.'</level>' );
             $child = $dom->app->fromString( $tpl );
-
             $line->fetch( $item );
             if ( $parent == 0 OR ( isset( $item['children'] ) AND ( array )$item['children'] === $item['children'] AND count( $item['children'] ) ) ) {
                 if ( $pardis == 1 AND ( $limit !== $lvl-1 ) ) $line->attr( 'disabled', true );
@@ -321,10 +320,9 @@ function tagTreeUl( &$dom, $Item = array(), $param = null, $srcVal = array() ) {
             $lvl--;
             if ( isset( $line ) ) {
                 if ( $line->tag() == 'level' ) {
-                    $dom->append( $line->inner() );
+                    $dom->inner( $dom->inner().$line->inner() );
                 } else {
                     $dom->append( $line->outer() );
-
                 }
 
             }

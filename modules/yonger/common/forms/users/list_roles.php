@@ -34,7 +34,7 @@
                 </tr>
             </thead>
             <tbody id="usersList">
-                <wb-foreach wb="table=users&sort=_created:d&bind=cms.list.users"
+                <wb-foreach wb="table=users&sort=_created:d&bind=cms.list.roles"
                     wb-filter="{'isgroup':'on' }">
                     <tr>
                         <td>{{name}}</td>
@@ -54,7 +54,7 @@
                                 <img src="/module/myicons/content-edit-pen.svg?size=24&stroke=323232">
                             </a>
                             <a href="javascript:"
-                                data-ajax="{'url':'/ajax/rmitem/users/{{id}}','update':'cms.list.users','html':'modals'}"
+                                data-ajax="{'url':'/ajax/rmitem/users/{{id}}','update':'cms.list.roles','html':'modals'}"
                                 class="d-inline">
                                 <img src="/module/myicons/trash-delete-bin.2.svg?size=24&stroke=323232"
                                     class="d-inline">

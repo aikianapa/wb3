@@ -39,7 +39,7 @@
                 <li class="dd-item row" data-item="{{id}}" data-name="{{name}}" data-path="{{url}}"
                     data-form="{{_form}}" data-inner="pages">
                     <span class="dd-handle"></span>
-                    <span class="dd-text d-none d-sm-flex col-sm-9 ellipsis">
+                    <span class="dd-text d-flex col-sm-9 ellipsis">
                         <span>{{header}}
                             <br>
                             <span class="dd-path ellipsis" data-path="{{url}}">
@@ -173,6 +173,7 @@
 
             $(document).off('bind-cms.list.pages');
             $(document).on('bind-cms.list.pages', function() {
+                $('#yongerPagesTree').nestable('destroy')
                 $('#yongerPagesTree').nestable({
                     maxDepth: 5,
                     callback: function(l, e) {

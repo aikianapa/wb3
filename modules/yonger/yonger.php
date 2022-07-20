@@ -27,8 +27,8 @@ class modYonger
         } 
 
 
-        in_array($mode,explode(',','workspace,logo,signin,signup,signrc,createSite,removeSite'))? null : $app->apikey('module');
-        if (in_array($mode,explode(',','createSite,removeSite')) AND $app->getDomain( $app->route->refferer) !== $app->route->domain ) {
+        in_array($mode,explode(',','render,workspace,logo,signin,signup,signrc,createSite,blockpreview'))? null : $app->apikey('module');
+        if (in_array($mode,explode(',','createSite')) AND $app->getDomain( $app->route->refferer) !== $app->route->domain ) {
             echo json_encode(['error'=>true,'msg'=>'Access denied']);
             die;
         }
@@ -106,7 +106,7 @@ class modYonger
             } else {
                 $list = $this->app->itemList('pages', [
                     'sort' => 'url',
-                    'return' => 'url,header',
+                    'return' => 'id,active,url,header,_site',
                     'filter'=> ['active'=>'on','_site' => ['$in'=> [null,$this->app->vars('_sett.site')]], 'id'=> ['$nin'=>['_header','_footer']]]
                 ]);
                 $list = array_values($list['list']);
@@ -220,7 +220,9 @@ class modYonger
         isset($item['lang']) ? $data = array_merge($item,$item['lang'][$this->app->vars('_sess.lang')]) : $data = &$item;
         $result = (object)$res->attributes();
         $res->fetch($data); // не удалять, иначе слюстрока не работает как нужно... шайтанама! :(
-        $this->dom->app->vars('_sett.devmode') == 'on' ? $res->children()->prepend('<!-- Is block: '.$form.' -->') : null;
+        if ($this->dom->app->vars('_sett.devmode') == 'on' && !$res->is('script')) {
+            $res->prepend('<!-- Is block: '.$form.' -->');
+        }
         $section = $this->dom->app->fromString('<html>'.$res->fetch($data)->inner().'</html>');
         isset($item['block_id']) && $item['block_id'] ? $section->children()->children(':first-child')->attr('id',$item['block_id']) : null;
         isset($item['block_class']) && $item['block_class'] ? $section->children()->children(':first-child')->addClass($item['block_class']) : null;
@@ -238,6 +240,22 @@ class modYonger
         return $result;
     }
 
+    function blockpreview() {
+        $tpl = $this->app->getTpl('page.php');
+        $block = $this->app->vars('_get.block');
+        $ypg = new yongerPage($this->dom);
+        $form = $ypg->blockfind($block);
+        $preview = $ypg->blockpreview($form);
+        if ($preview) {
+            $preview->fetch();
+            $tpl->find('wb-module[wb="module=yonger&mode=render"]')->after($preview);
+        } else {
+            $tpl->find('wb-module[wb="module=yonger&mode=render"]')->attr("wb","module=yonger&mode=render&view={$block}");            
+        }
+        $tpl->fetch();
+        echo $tpl;
+        die;
+    }
 
     private function block() {
         $app = &$_ENV['app'];

@@ -99,6 +99,22 @@ class yongerPage {
         return $out;
     }
 
+    function blockpreview($file = null) {
+        if ($file == null) return;
+        $src = $file;
+        strpos(' '.$file,'_yonger_') ? $file = str_replace('/_yonger_',__DIR__,$file) : null;
+        strpos(' '.$file, '_app_') ? $file = str_replace('/_app_',$this->app->route->path_app, $file) : null;
+        !is_file($file) ? $file = __DIR__ . '/common/blocks/'.$file : null; // если не прописане полный путь
+        if (!is_file($file)) {
+            $out = null;
+        } else {
+            $out = $this->app->fromFile($file);
+            $out = $out->find('preview');
+            if (!$out->length) $out = null;
+        }
+        return $out;
+    }
+
     function blockedit($file = null) {
         if ($file == null) return;
         $src = $file;

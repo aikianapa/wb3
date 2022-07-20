@@ -152,6 +152,7 @@ $(document).on('cart-mod-js', function() {
         updateCart();
         wbapp.trigger('mod-cart-remove', index);
         e.stopPropagation();
+        return false
     });
 
     $(document).delegate('.mod-cart-item :input', 'change blur', function() {

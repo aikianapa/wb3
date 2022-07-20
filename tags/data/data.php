@@ -9,6 +9,7 @@ class tagData {
     $save = $dom->item;
     $data = new Dot();
     if ($dom->is(":root")) $dom->rootError();
+
     if ($dom->params("table") AND $dom->params("item")) {
         $dom->item = wbItemRead($dom->params->table, $dom->params->item);
     } else if ($dom->params("json")) {
@@ -24,6 +25,29 @@ class tagData {
         $dom->item = [];
     }
     $dom->item == null ? $dom->item = [] : null;
+
+    if ($dom->params('ajax')) {
+        $ajax = $dom->params('ajax');
+        if ($dom->params("size") == '') {
+            $dom->params->size = 999999999;
+        }
+        $url = parse_url($ajax);
+        if (!isset($url['scheme'])) {
+            if ($dom->app->vars('_sett.api_key_query') == 'on' and !isset($url['__token'])) {
+                $post = ['__token'=>$dom->app->vars('_sess.token')];
+            } else {
+                $post = null;
+            }
+            
+        }
+        $ajax = $dom->app->vars('_route.host').$ajax;
+        $list = json_decode(str_replace("'", '"', wbAuthPostContents($ajax, $post)), true);
+        $list === (array)$list ? null : $list = (array)$list;
+        $dom->item = &$list;
+    }
+
+
+
     if (isset($dom->item["_table"])) $dom->item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$dom->item["_table"]], $dom->item);
     if ($dom->params("field")) {
         $data = new Dot();

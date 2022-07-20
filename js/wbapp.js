@@ -16,7 +16,7 @@ setTimeout(async function() {
     }
 
     wbapp.devmode = get_cookie('devmode');
-    wbapp.evClick = 'tap click touchstart';
+    wbapp.evClick = 'tap click';
     wbapp.start();
 }, 5);
 
@@ -303,8 +303,24 @@ wbapp.start = async function() {
             $(this).attr("name", $(this).attr("wb-tmp-name"));
             $(this).removeAttr("wb-tmp-name");
         });
-
-        return data;
+        // fix dot notation
+        let obj = {}
+        $.each(data,function(name,value) {
+            if (strpos(name,".")) {
+                let chunks = explode(".",name);
+                let idx = ""
+                $.each(chunks,function(i,key){
+                    if (i < chunks.length) {
+                        idx == "" ? idx = key : idx += "."+key
+                        eval(`if (obj.${idx} == undefined) obj.${idx} = {}`);        
+                    }
+                })
+                eval(`obj.${name} = value`);
+            } else {
+                eval(`obj.${name} = value`);
+            }
+        })
+        return obj;
     }
 
     $.fn.jsonVal = function(data = undefined) {
@@ -441,8 +457,8 @@ wbapp.lazyload = async function() {
 }
 
 wbapp.eventsInit = async function() {
-    $(document).undelegate("[data-ajax]:not(input,select)", "click");
-    $(document).delegate("[data-ajax]:not(input,select)", "click", async function(e, tid) {
+    $(document).undelegate("[data-ajax]:not(input,select)", wbapp.evClick);
+    $(document).delegate("[data-ajax]:not(input,select)", wbapp.evClick, async function(e, tid) {
         if (!$(this).is("input,select")) {
             let params = wbapp.parseAttr($(this).attr("data-ajax"));
             if (params.url == undefined && typeof params == 'string') {
@@ -768,7 +784,8 @@ wbapp.data = function(key, value = undefined, binds = true) {
             if (i == 0) {
                 key = k;
                 data = sessionStorage.getItem(key);
-                if (i + 1 !== last && data == null) {
+                //if (i + 1 !== last && data == null) {
+                if (i + 1 !== last || data == null) {
                     data = {}
                 } else {
                     try {
@@ -935,6 +952,11 @@ wbapp.save = async function(obj, params, func = null) {
                 params: params,
                 data: data,
             });
+            wbapp.console("Trigger: wb-form-save "+params.form);
+            $(params.form).trigger("wb-form-save", {
+                params: params,
+                data: data,
+            });
 
             if (func !== null) return func(data);
 
@@ -963,11 +985,15 @@ wbapp.updateView = function(params = {}, data = {}) {
             if (prms._params !== undefined && prms._params.update !== undefined) prms.update = prms._params.update;
             if (prms.route !== undefined && prms.route._post !== undefined) post = prms.route._post;
             if (prms.url == undefined && prms.route.url !== undefined) prms.url = prms.route.url;
-
             if (params.update == prms.update) {
                 let target = prms.target;
                 if (post && prms.url !== undefined) {
-                    wbapp.post(prms.url, post, function(res) {
+                    fetch(prms.url, {
+                        method: 'POST',
+                        body: post
+                    })
+                    .then((resp)=>resp.text())
+                    .then(function(res){
                         let html = $(res).find(target).html();
                         $(document).find(target).html(html);
                         wbapp.refresh();
@@ -1004,18 +1030,21 @@ wbapp.wbappScripts = async function() {
         } else if ($(this).is('[wb-app]')) {
             src = $(this).attr('wb-app');
         }
+        var that = this;
         if (src !== null && src > '') {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', src, true);
             xhr.onload = function() {
-                eval(xhr.responseText);
+                //eval(xhr.responseText);
+                $(that).after('<script type="text/javascript">'+xhr.responseText+'</script>').remove();
             };
             xhr.send();
         } else {
             var script = $(this).text();
             var hash = md5(script);
             if (!in_array(hash, done)) {
-                eval(script);
+                $(that).after('<script type="text/javascript">'+script+'</script>').remove();
+                //eval(script);
                 done.push(hash);
             }
         }
@@ -1230,7 +1259,7 @@ wbapp.ajax = async function(params, func = null) {
                     $(target.target)[0].filter = {}
                 }
             }
-            console.log($(target.target)[0].filter);
+            
             target.filter = $(target.target)[0].filter;
             if (target._params == undefined) target._params = {};
             let clearval = null;
@@ -1245,7 +1274,18 @@ wbapp.ajax = async function(params, func = null) {
                 if (key == 'filter_clear') {
                     clearval = val;
                 }
-                if (key == 'filter_remove' && target.filter[val] !== undefined) delete target.filter[val];
+                if (key == 'filter_remove') {
+                    if (typeof val == "string") {
+                        val = val.trim().split(' ');
+                        delete target.filter[val];
+                    } 
+                    if (typeof val == "object") {
+                        $.each(val,function(i,v){
+                            delete target.filter[v];
+                        })
+                    }
+                    
+                }
                 if (key == 'filter_add') {
                     $.each(val, function(k, v) {
                         target.filter[k] = v;
@@ -1505,7 +1545,7 @@ wbapp.tplInit = async function() {
         });
     }
 
-    $(document).find("template").each(async function() {
+    $(document).find("template:not([nowb])").each(async function() {
         if (this.done !== undefined) return
         else this.done = true;
         var tid
@@ -1790,6 +1830,12 @@ wbapp.modalsInit = async function() {
                     $(".modal-backdrop:not([data-zidx])").css("z-index", (wbapp.modalZndx - 5)).attr('data-zidx', wbapp.modalZndx - 5);
                 }
             }
+
+            let bh = $(this).find('.modal-body').height()
+            if (bh > 0) {
+                $(this).find('.modal-body .modal-h').height(bh)
+            }
+
             window.dispatchEvent(new Event('resize'));
         });
 

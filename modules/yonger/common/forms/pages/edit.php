@@ -17,8 +17,9 @@
             </div>
             <div class="modal-body pd-20">
                 <div class="row">
-                    <div class="col-5 col-lg-4">
+                    <div class="col-5 col-lg-4 scroll-y modal-h">
                         <form id="{{_form}}EditForm">
+                            <input type="hidden" name="id" value="{{_route.id}}" wb-if="'{{_route.id}}' == '_header' OR '{{_route.id}}' == '_footer'">
                             <div wb-if="'{{_route.id}}' !== '_header' && '{{_route.id}}' !== '_footer'">
                                 <div class="form-group row mb-2">
                                     <div class="col-12">
@@ -94,7 +95,7 @@
                         </form>
                     </div>
 
-                    <div class="col-7 col-lg-8">
+                    <div class="col-7 col-lg-8 scroll-y modal-h">
                         <div id="yongerBlocksForm">
                             <form method="post">
 
@@ -111,8 +112,6 @@
 </div>
 
 <script wb-app remove>
-let timeout = 50;
-// ==============
 yonger.pageEditor = function() {
     let $form = $('#{{_form}}EditForm');
     $form.undelegate('[name=path]', 'change');
