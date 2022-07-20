@@ -1259,7 +1259,7 @@ wbapp.ajax = async function(params, func = null) {
                     $(target.target)[0].filter = {}
                 }
             }
-            console.log($(target.target)[0].filter);
+            
             target.filter = $(target.target)[0].filter;
             if (target._params == undefined) target._params = {};
             let clearval = null;
@@ -1274,7 +1274,18 @@ wbapp.ajax = async function(params, func = null) {
                 if (key == 'filter_clear') {
                     clearval = val;
                 }
-                if (key == 'filter_remove' && target.filter[val] !== undefined) delete target.filter[val];
+                if (key == 'filter_remove') {
+                    if (typeof val == "string") {
+                        val = val.trim().split(' ');
+                        delete target.filter[val];
+                    } 
+                    if (typeof val == "object") {
+                        $.each(val,function(i,v){
+                            delete target.filter[v];
+                        })
+                    }
+                    
+                }
                 if (key == 'filter_add') {
                     $.each(val, function(k, v) {
                         target.filter[k] = v;
