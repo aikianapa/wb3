@@ -190,6 +190,7 @@ class wbDom extends DomQuery
 
     public function fetch($item = null)
     {
+
         if (!$this->app) {
             $this->app = $_ENV["app"];
         }
@@ -238,6 +239,7 @@ class wbDom extends DomQuery
         if ($this->find('.nav-pagination')->length) {
             $this->fixPagination();
         }
+
         return $this;
     }
     public function fetchNode()
