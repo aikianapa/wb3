@@ -952,6 +952,11 @@ wbapp.save = async function(obj, params, func = null) {
                 params: params,
                 data: data,
             });
+            wbapp.console("Trigger: wb-form-save "+params.form);
+            $(params.form).trigger("wb-form-save", {
+                params: params,
+                data: data,
+            });
 
             if (func !== null) return func(data);
 
