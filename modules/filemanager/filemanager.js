@@ -491,7 +491,7 @@
     }
 
     function filemanager_reload_list() {
-        $("#filemanager").find(".breadcrumb .breadcrumb-item.active > a").trigger("click");
+        $("#filemanager").find(".breadcrumb .breadcrumb-item:last > a").trigger("click");
     }
 
     function filemanagerSave() {

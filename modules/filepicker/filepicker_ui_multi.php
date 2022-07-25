@@ -55,7 +55,10 @@
                                             <label>alt</label>
                                             <input class="form-control mg-b-2" data-alt type="text" placeholder="alt">
                                         </div>
-
+                                        <div class="col-12">
+                                            <label>path</label>
+                                            <input class="form-control mg-b-2" value="{{img}}" type="text" placeholder="path" readonly>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -94,7 +97,10 @@
                                             <label>alt</label>
                                             <input class="form-control mg-b-2" data-alt type="text" placeholder="alt">
                                         </div>
-
+                                        <div class="col-12">
+                                            <label>path</label>
+                                            <input class="form-control mg-b-2" value="{{img}}" type="text" placeholder="path" readonly>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
