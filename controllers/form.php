@@ -83,8 +83,9 @@ class ctrlForm
             $dom->setSeo();
 
             $ttls = $dom->find('title');
+            $title_prepend = $app->vars('_var.title_prepend');
             foreach ($ttls as $t) {
-                $dom->find('head title')->inner($t->text());
+                $dom->find('head title')->inner(trim($title_prepend.' '.$t->text()));
             }
 
             $out = isset($this->target) ? '<div>'.$dom->find($this->target)->outer().'</div>' : $out = $dom->outer();
