@@ -81,7 +81,6 @@ class mysqlDrv
             $item = $this->db->getOne($form);
             if ($item) {
                 $item = $this->app->objToArray($item);
-                $item = $this->app->ItemInit($form, $item);
                 $this->ItemOconv($item);
             }
         }
@@ -244,7 +243,6 @@ class mysqlDrv
             if (isset($this->keys->$form) and isset($doc[$this->keys->$form])) {
                 $doc['_id'] = $doc['id'] = $doc[$this->keys->$form];
             }
-            $doc = $this->app->ItemInit($form, $doc);
             $this->ItemOconv($doc);
             $doc = wbTrigger('form', __FUNCTION__, 'afterItemRead', func_get_args(), $doc);
             if ($doc !== null) {
