@@ -197,10 +197,12 @@ class mongodbDrv
             }
         }
         foreach ($filter as $key => $node) {
-            if (substr($key,0,1) !== '@') {
-                (array)$node === $node ? $node = $this->filterPrepare($node,$params) : null;
+            if (!in_array(substr($key, 0, 1), ['@','*'])) {
+                (array)$node === $node ? $node = $this->filterPrepare($node, $params) : null;
                 $filter[$key] = $node;
-            } else {
+            } else if (substr($key,0,1) == '*') {
+                unset($filter[$key]);
+            } else if (substr($key,0,1) == '@') {
                 unset($filter[$key]);
                 $params['limit'] = null;
             }
@@ -221,6 +223,8 @@ class mongodbDrv
             if (substr($key, 0, 1) == '@') {
                 unset($filter[$key]);
                 $key = substr($key, 1);
+            } else if (substr($key,0,1) == '*') {
+                unset($filter[$key]);
             }
             (array)$node === $node ? $node = $this->filterPrepare($node, $params) : null;
             $filter[$key] = $node;

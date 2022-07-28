@@ -1701,16 +1701,20 @@ function wbArrayFilter($list,$options) {
 
 function wbItemFilter($item, $options, $field = null)
 {
+    // если поле вычисляемое, напримера в afterItemRead, его имя в запросе начинается с *
+    // например /list?*status=ready (не актуально для json)
+
+    substr($field,0,1) == '*' ? $field = substr($field,1) : null;
     (isset($item['id']) && !isset($item['_id'])) ? $item['_id'] = $item['id'] : null ;
     isset($options->filter) ? $filter = $options->filter : $filter = $options;
     isset($options->context) ? $context = wbAttrToArray($options->context) : $context = ['_id','header','text','articul'];
     isset($item['_form']) ? $item = wbTrigger('form', __FUNCTION__, 'beforeItemFilter', [$item['_form']] , $item) : null;
-
     $fields = new Dot();
     $fields->setReference($item);
     if (count($context)) {
         $text = [];
         foreach ($context as $c) {
+            substr($c,0,1) == '*' ? $c = substr($c,1) : null;
             $val = $fields->get($c);
             (array)$val === $val ? $fld = json_encode($val) : null;
             $text[] = $val;
@@ -1720,6 +1724,7 @@ function wbItemFilter($item, $options, $field = null)
     }
     $result = true;
     foreach ((array)$filter as $fld => $expr) {
+        substr($fld,0,1) == '*' ? $fld = substr($fld,1) : null;
         if ((array)$expr !== $expr && substr($fld,0,1) !== '$') {
 					if (is_bool($fields->get($fld)) AND !is_bool($expr)) {
 							if ($expr == 'true') {
