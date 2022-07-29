@@ -1988,11 +1988,18 @@ function wbAuthGetContents($url, $get=null, $username=null, $password=null)
     if (!is_array($get)) {
         $get=(array)$get;
     }
+    if (isset($_ENV['app']) && $password==null && $username == null) {
+        $app = $_ENV['app'];
+        $username = $app->vars('_sett.basicAuthLogin');
+        $password = $app->vars('_sett.basicAuthPass');
+    }
     $cred = sprintf('Authorization: Basic %s', base64_encode("$username:$password"));
     $opts = array(
                 'http'=>array(
                     'method'=>'GET',
                     'header'=>$cred
+                    ."\r\nCache-Control: no-cache"
+                    ."\r\nPragma: no-cache"
                     ."\r\nCookie: ".session_name()."=".session_id()
                     ."\r\nContent-Type: application/x-www-form-urlencoded",
                     'content'=>$get

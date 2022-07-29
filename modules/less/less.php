@@ -39,9 +39,9 @@ class modLess {
         $cssminfile = $this->cpath.'/'.$this->cmfile;
         if ($cache) {
             if ($this->minify && is_file($cssminfile)) {
-                $css = file_get_contents($cssminfile);
+                $css = $this->app->authGetContents($cssminfile);
             } elseif (!$this->minify && is_file($cssfile)) {
-                $css = file_get_contents($cssfile);
+                $css = $this->app->authGetContents($cssfile);
             } else {
                 $cache = false;
             }

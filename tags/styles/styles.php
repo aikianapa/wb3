@@ -36,16 +36,11 @@ class tagStyles
             $opts = [];
             if (stream_is_local($src) && in_array($ext, ['less','scss'])) {
                 $src = $this->app->route->host.$src;
-                $opts = ['http' => [
-                    'header' => "Cache-Control: no-cache\r\n" .
-                    "Pragma: no-cache\r\n"
-                    ]
-                ];
             }
             if (stream_is_local($src)) {
                 $styles->addFile($this->home.$src);
             } else {
-                $src = file_get_contents($src, false, stream_context_create($opts));
+                $src = wbAuthGetContents($src);
                 $styles->add($src);
             }
         }
