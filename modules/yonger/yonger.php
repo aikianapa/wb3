@@ -335,7 +335,6 @@ class modYonger
 
         $head = $html->find('head');
         $body = $html->find('body');
-
         foreach($blocks as $id => $block) {
             if ($block === (array)$block) {
                 isset($block['active']) ? null : $block['active'] = '';
@@ -347,11 +346,9 @@ class modYonger
                     if ($res->head) {
                         $head->$method($res->head);
                     } else {
-
-                    $head->length && isset($res->head) ? $head->$method($res->head) : null;
-                    $body->length && isset($res->body) ? $body->$method($res->body) : null;
-                    $dom->$method($res->result);
-
+                        $head->length && isset($res->head) ? $head->$method($res->head) : null;
+                        $body->length && isset($res->body) ? $body->$method($res->body) : null;
+                        $dom->$method($res->result);
                     }
 
                 }

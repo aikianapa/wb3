@@ -88,6 +88,7 @@ class ctrlForm
                 $dom->find('head title')->inner(trim($title_prepend.' '.$t->text()));
             }
 
+            $dom->find('body body')->remove();
             $out = isset($this->target) ? '<div>'.$dom->find($this->target)->outer().'</div>' : $out = $dom->outer();
             //$out = $this->app->fromString($out);
             //$this->app->module('compress',$out);

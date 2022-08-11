@@ -577,9 +577,10 @@ class wbDom extends DomQuery
     {
         $descr = $this->find("meta[name=description]")->inner();
         $keywords = $this->find("meta[name=keywords]")->inner();
-        $this->find("title")->remove();
-        $this->find("meta[name=description]")->remove();
-        $this->find("meta[name=keywords]")->remove();
+        $header = $this->find("title")->text();
+        $this->find("title:not([seo])")->remove();
+        $this->find("meta[name=description]:not([seo])")->remove();
+        $this->find("meta[name=keywords]:not([seo])")->remove();
         $seo = $this->app->ItemRead('_settings', 'seo');
         $data = $this->app->dot($this->item);
         isset($this->item['header']) ? $header = $this->item['header'] : $header = $this->app->vars('_sett.header');
@@ -592,9 +593,10 @@ class wbDom extends DomQuery
             $keywords = $seo['meta_keywords'];
             $descr = $seo['meta_description'];
         }
-        $this->find('head')->prepend("<meta name='description' content='{$descr}' />");
-        $this->find('head')->prepend("<meta name='keywords' content='{$keywords}' />");
-        $this->find('head')->prepend("<title>{$header}</title>");
+        $this->find("meta[name=description][seo]")->length && $this->find("meta[name=description][seo]")->attr('content') > '' ? null : $this->find('head')->prepend("<meta name='description' content='{$descr}' />");
+        $this->find("meta[name=keywords][seo]")->length && $this->find("meta[name=keywords][seo]")->attr('content') > '' ? null : $this->find('head')->prepend("<meta name='keywords' content='{$keywords}' />");
+        $this->find("title[seo]")->length && $this->find("title[seo]")->text() > '' ? null : $this->find('head')->prepend("<title>{$header}</title>");
+        $this->find('title[seo],meta[seo]')->removeAttr('seo');
     }
 
     public function setValues()
