@@ -30,7 +30,11 @@
         });
         $form.find('button').off('tap click');
         $form.find('button').on('tap click',function(){
-            $form.find('input[name=password]').val(md5($form.find('input[type=password].pwd').val()));
+            $.post('/api/genpass/post',{'pass':$form.find('input[type=password].pwd').val()},function(data){
+                if (data.result !== undefined) {
+                    $form.find('input[name=password]').val(data.result);
+                }
+            })
         });
       }
       commonChangePassword();

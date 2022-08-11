@@ -102,33 +102,6 @@ class ctrlAjax
         } else {
             return json_encode(['login'=>false,'error'=>'Unknown']);
         }
-
-
-
-        die;
-        $user = $app->itemList('users', ['filter'=> [$fld => $post->login ], 'limit'=>1 ]);
-        if (intval($user['count']) > 0) {
-            $user = array_shift($user['list']);
-        } else {
-            return json_encode(['login'=>false,'error'=>'Unknown']);
-        }
-        $user = (object)$user;
-		!isset($user->role) ? $user->role = '' : null;
-        if (isset($post->password) and isset($user->password) and $app->passwordCheck($post->password, $user->password)) {
-            $role = (object)$app->itemRead('users', $user->role);
-            $url = '/cms';
-            if ($user->role !== 'admin' and (!isset($role->active) or $role->active !== 'on') or $user->active !== 'on') {
-                return json_encode(['login'=>false,'error'=>'Account is not active']);
-            }
-            if (isset($role->url_login) and $role->url_login > '') {
-                $url = $role->url_login;
-            }
-            $user->group = &$role;
-            $app->login($user);
-            return json_encode(['login'=>true,'error'=>false,'redirect'=>$url,'user'=>$user,'role'=>$role]);
-        } else {
-            return json_encode(['login'=>false,'error'=>'Wrong password']);
-        }
     }
 
 

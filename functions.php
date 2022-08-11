@@ -2050,7 +2050,8 @@ function wbAuthPostContents($url, $post=null, $username=null, $password=null)
 
 function wbPasswordCheck($str, $pass)
 {
-    wbPasswordMake($str) == $pass ? $res=true : $res = false;
+    (password_verify($str, $pass)) ? $res = true : $res = false;
+    ($res == false && md5($str) == $pass) ? $res = true : null;
     return $res;
 }
 
@@ -2059,7 +2060,7 @@ function wbPasswordMake($str)
     if (is_callable('passwordMake')) {
         return passwordMake($str);
     } else {
-        return md5($str);
+        return password_hash($str,$_ENV['hash_algorithm']);
     }
 }
 

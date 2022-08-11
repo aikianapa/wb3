@@ -140,6 +140,14 @@ class ctrlApi
         
     }
 
+    function genpass() {
+        $app = &$this->app;
+        $method = $app->route->table;
+        $pass = password_hash($app->vars("_{$method}.pass"),$app->vars('_env.hash_algorithm'));
+        return $app->jsonEncode(['result'=>$pass]);
+    }
+
+
     public function query()
     {
         $app = &$this->app;
