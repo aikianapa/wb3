@@ -196,7 +196,7 @@ class wbDom extends DomQuery
         }
         $tmp = $this->app->vars('_env.locale');
         isset($this->root) ? null : $this->root = $this->parents(':root')[0];
-
+        if ($this->is('wb-off')) return;
         $this->fetchStrict();
         $this->fetchLang();
         if ($this->strict or isset($this->fetched)) {
@@ -335,7 +335,7 @@ class wbDom extends DomQuery
 
     public function fetchStrict()
     {
-        if (in_array($this->tagName, ['template', 'code','textarea','pre','[wb-off]'])) {
+        if ($this->is('[wb-off]') OR in_array($this->tagName, ['template', 'code','textarea','pre'])) {
             $this->strict = true;
             // set locale for template
             if (strpos($this->outer(), '_lang.') !== 0) {
@@ -346,7 +346,6 @@ class wbDom extends DomQuery
                 $this->addParams(['locale'=>$locale]);
             }
             //isset($_ENV["locales"][$_SESSION["lang"]]) ? $data = ["_lang" => $_ENV["locales"][$_SESSION["lang"]]] : $data = [];
-            $this->setValues();
         }
     }
 
@@ -408,7 +407,7 @@ class wbDom extends DomQuery
                 if ($atname == "wb" or substr($atname, 0, 3) == "wb-") {
                     $name = $atname;
                     $name !== "wb" ? $name = substr($atname, 3) : null;
-                    if (in_array($name, ['if','where','change','ajax','save'])) {
+                    if (in_array($name, ['if','where','change','ajax','save','off'])) {
                         $prms = [$name => $atval];
                         $this->atrs->$name = $atval;
                     } else {
@@ -603,6 +602,7 @@ class wbDom extends DomQuery
         if ($this->strict) {
             return;
         }
+
         isset($this->item) ? null : $this->item = [];
         $fields = $this->app->dot($this->item);
         $inputs = $this->find("[name]:not([done])");
@@ -671,7 +671,7 @@ class wbDom extends DomQuery
                 }
             }
         }
-        $unset = $this->find("template,textarea,code,pre");
+        $unset = $this->find("template,textarea,code,pre,[wb-off]");
         foreach ($unset as $t) {
             $t->inner(str_replace("{{", "_{_{_", $t->inner()));
         }
@@ -684,7 +684,7 @@ class wbDom extends DomQuery
                 $this->inner($html);
             }
         }
-        $unset = $this->find("template,textarea,code,pre");
+        $unset = $this->find("template,textarea,code,pre,[wb-off]");
         foreach ($unset as $t) {
             $t->inner(str_replace("_{_{_", "{{", $t->inner()));
         }

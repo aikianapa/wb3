@@ -377,7 +377,7 @@ wbapp.start = async function() {
                 if ($(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").length) $(".modal.show:not(:visible),.modal[data-show=true]:not(:visible)").modal("show");
                 if ($.fn.tooltip) $('[data-toggle="tooltip"]').tooltip();
             });
-
+            wbapp.trigger("wb-ready");
         });
     }, wbapp.delay);
 
