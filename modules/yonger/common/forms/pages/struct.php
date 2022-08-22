@@ -116,6 +116,7 @@
 
 <script wb-app remove>
     "use strict"
+    wbapp.storage('yonger',null);
     // ===============
     $('.content-body #yongerBlockPrewiew').remove()
     $("#yongerBlockPrewiew").css('z-index',999999).hide()

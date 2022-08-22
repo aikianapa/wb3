@@ -45,5 +45,6 @@ $(document).on('langinp-mod-js', async function() {
             json[$(this).attr('data-name')] = $(this).val();
         })
         $(this).closest('.input-group').find('textarea.mod-langinp').html(json_encode(json));
+        $(this).closest('.input-group').find('textarea.mod-langinp').trigger('change');
     });
 });
