@@ -1,4 +1,5 @@
 # wb3
+
 WebBasic v.3
 
 Клонировать репозиторий в папку /engine в основной папке проекта
@@ -10,6 +11,7 @@ git clone https://github.com/aikianapa/wb3.git engine
 
 Вход в админку http://yourdomain/cms/login
 
+sudo a2enmod rewrite
 sudo apt-get install php-dom
 sudo apt-get install php-mbstring
 sudo apt-get install php-gd

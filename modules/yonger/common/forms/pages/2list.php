@@ -12,7 +12,7 @@
                 <img src="/module/myicons/24/FFFFFF/menubar-arrow-down.svg" width="24" height="24" /> Подвал
             </a>
             <a href="#" data-ajax="{'url':'/cms/ajax/form/pages/edit/_new','html':'modals'}" class="btn btn-primary">
-                <img src="/module/myicons/24/FFFFFF/item-select-plus-add.svg" width="24" height="24" /> Добавить
+                <img src="/module/myicons/24/FFFFFF/item-select-plus-add.svg" width="24" height="24" /> Добавить1
                 страницу
             </a>
         </div>
@@ -23,7 +23,7 @@
             <div class="header p-2">
                 <span clsss="row">
                     <div class="col-3">
-                        <input type="search" class="form-control" placeholder="Поиск страницы5445245"
+                        <input type="search" class="form-control" placeholder="Поиск страницы"
                             data-ajax="{'target':'#{{_form}}List','filter_add':{'$or':[{ 'header': {'$like' : '$value'} }, { 'url': {'$like' : '$value'} }  ]} }">
                     </div>
                 </span>
@@ -48,16 +48,7 @@
                         </span>
                     </span>
                     <span class="dd-info col-sm-3">
-               <style>
-   .sane {
-    //background: #fc3; /* Цвет фона */
-   // border: 2px solid black; /* Параметры рамки */
-  //  padding: 20px; /* Поля вокруг текста */
-    margin-top: 4%; /* Отступ сверху */
-   }
-  </style>
- <div class="sane">
-   <form method="post" class="text-right m-0">
+                        <form method="post" class="text-right m-0">
                             <wb-var wb-if='"{{active}}" == ""' stroke="FC5A5A" else="82C43C" />
                             <input type="checkbox" name="active" class="d-none">
                             <img src="/module/myicons/24/0168fa/item-select-plus-add.svg" class="dd-add cursor-pointer"
@@ -71,7 +62,6 @@
                             <img src="/module/myicons/24/FC5A5A/trash-delete-bin.2.svg" width="24" height="24"
                                 class="dd-remove" wb-allow="admin">
                         </form>
-  </div>
                     </span>
                 </li>
             </wb-foreach>
