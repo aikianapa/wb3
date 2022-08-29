@@ -4,7 +4,7 @@ host = hostname
 port = port
 headers = headers (cookie + post data)
 */
-if (!isset($args)) die;
+if (!isset($argv)) die;
 foreach($argv as $arg) {
     $pos = strpos($arg,'=');
     if ($pos) {
@@ -13,12 +13,8 @@ foreach($argv as $arg) {
         $$fld = $val;
     }
 }
-
 $fp = fsockopen($host, $port, $errno, $errstr, 30);
 $headers = base64_decode($headers);
 fwrite($fp, $headers);
 fclose($fp);
-echo "\n\r";
-
-die;
 ?>
