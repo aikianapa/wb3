@@ -703,6 +703,8 @@ class wbApp
     public $template;
     public $router;
     public $render;
+    public $vars;
+    public $lang;
 
     public function __construct($settings=[])
     {
@@ -1312,7 +1314,8 @@ class wbApp
         $eCall = $form.'__'.$mode;
 
         $loop=false;
-        foreach (debug_backtrace() as $func) {
+        $bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,20);
+        foreach ($bt as $func) {
             $aCall==$func["function"] ? $loop=true : null;
             $eCall==$func["function"] ? $loop=true : null;
         }

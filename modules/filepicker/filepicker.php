@@ -3,7 +3,7 @@ class modFilepicker
 {
     public function __construct($dom)
     {
-        $this->init($dom);
+        if (wbIsDom($dom)) $this->init($dom);
     }
     public function init($dom)
     {

@@ -329,11 +329,12 @@ function wbModuleClass($module)
     } elseif (is_file($app->vars("_env.path_engine")."/modules/{$module}/{$module}.php")) {
         require_once($app->vars("_env.path_engine")."/modules/{$module}/{$module}.php");
     }
-    $module = ucwords($module);
-    return new $module($app);
+    $module = 'mod'.ucwords($module);
+    if (class_exists($module)) {
+        return new $module($app);
+    } 
+    return null;
 }
-
-
 
 function wbFormClass($form = null) {
   $app = &$_ENV['app'];
@@ -1406,6 +1407,15 @@ function wbOconv($value, $oconv)
     }
 }
 
+    function wbCheckBacktrace($func, $limit = 5) {
+        $bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,$limit);
+        foreach ($bt as $line) {
+            if ($line["function"] == $func) {
+                return true;
+            }
+        }
+        return false;
+    }
 function wbEnvData($index, $value="__wb__null__data__")
 {
     $loop=explode("->", $index);

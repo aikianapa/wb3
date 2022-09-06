@@ -5,10 +5,11 @@
         <wb-module wb="module=switch" name="active" />
     </div>
 </div>
+
 <div class="form-group row">
-    <label class="form-control-label col-sm-4">Режимы свободного доступа</label>
-    <div class="col-sm-8">
-        <wb-module wb="module=tagsinput" name="allow" />
+    <label class="col-lg-4 form-control-label">Режимы свободного доступа</label>
+    <div class="col-lg-8">
+        <wb-multiinput name="allowmode" />
     </div>
 </div>
 
@@ -17,12 +18,12 @@
     <div class="col-lg-8">
         <wb-multiinput name="tokens">
         <div class="input-group">
-            <div class="input-group-prepend">
+            <input type="text" class="form-control" name="tokens">
+        <div class="input-group-append">
                 <span class="input-group-text p-1 cursor-pointer">
                     <img src="/module/myicons/24/3b6998/key-circle.1.svg">
                 </span>
             </div>
-            <input type="text" class="form-control" name="tokens">
         </div>
         </wb-multiinput>
     </div>

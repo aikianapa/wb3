@@ -5,12 +5,28 @@ use Notihnio\RequestParser\RequestParser;
 
 class modApi
 {
-    public function __construct($app)
+    private $app;
+    private $table;
+    private $mode;
+    private $method;
+
+    function __construct($app)
     {
+        if (!wbCheckBacktrace("wbModuleClass")) {
+            $this->init($app);
+        }
+    }
+
+    function ajaxSettings($sett = null) {
+        $sett = [];
+        return $sett;
+    }
+    function init($app) {
         set_time_limit(60);
         header('Content-Type: charset=utf-8');
         header('Content-Type: application/json');
         $this->app = &$app;
+        $app->api = &$this;
         $this->checkMethod(['get','post','put','auth','delete']);
         $mode = $this->mode = $app->vars('_route.mode');
         $table = $this->table = $app->vars('_route.table');
@@ -25,7 +41,6 @@ class modApi
             }
             echo $app->jsonEncode($result);
         }
-        die;
     }
     function apikey($mode = null)
     {
@@ -33,6 +48,7 @@ class modApi
         if (in_array($this->mode, ['login','logout','token'])) {
             return true;
         }
+
         if ($app->vars('_sett.modules.api.active') !== 'on' or ($app->route->localreq == true && !$app->vars('_route.token'))) {
             return true;
         }
@@ -40,10 +56,22 @@ class modApi
         if ($app->vars('_route.token') && in_array($app->vars('_route.token'),$app->vars('_sett.modules.api.tokens'))) {
             return true;
         }
+
+        foreach ($app->vars('_sett.modules.api.allowmode') as $am) {
+            $amm = str_replace('//', '/', '/api/v2/'.$am);
+            if (substr($amm, -1) == '/') {
+                $amm = substr($amm, 0, -1);
+            }
+            if ($am > '' && substr($this->app->vars('_route.uri'), 0, strlen($amm)) == $amm) {
+                return true;
+            }
+        }
+
         $mode == null ? $mode = $app->vars('_route.mode') : null;
         $access = $app->checkToken($app->vars('_route.token'));
 
         if (!$access) {
+            header("HTTP/1.1 401 Unauthorized", true, 401);
             echo json_encode(['error'=>true,'msg'=>'Access denied']);
             die;
         }
@@ -58,88 +86,102 @@ class modApi
         return ['token' => $token];
     }
 
-    private function checkMethod($methods)
+    function checkMethod($methods)
     {
         $methods = (array)$methods;
         if (!in_array(strtolower($this->app->route->method), $methods)) {
-            header($this->app->route->method." 405 Method Not Allowed", true, 405);
+            header('HTTP/1.1 405 Method Not Allowed', true, 405);
             die;
         }
         $this->method = strtolower($this->app->route->method);
     }
 
-    private function create()
+    function create()
     {
         /*
         /api/v2/create/{{table}}/{{id}}
         */
 
-        $this->checkMethod(['post','put']);
+        $this->checkMethod(['post','put','get']);
         $table = $this->table;
-        $item = $this->vars('_route.item');
+
         $request = RequestParser::parse(); // PUT, DELETE, etc.. support
         //$_POST = $request->params;
-        //$_FILES = $request->files;
-        $post = $request->params;
+        $_FILES = $request->files;
+        
+        if ($this->method == 'get') {
+            $post = &$_GET;
+        } else {
+            $post = $request->params;
+        }
+        $item = $this->app->vars('_route.item');
+
+        ($item == '' && isset($post['id'])) ? $item = $post['id'] : null;
+        
         $check = $this->app->itemRead($table, $item);
         if ($check) {
-            header($this->app->route->method.' 409 Conflict', true, 409);
+            header('HTTP/1.1 409 Conflict', true, 409);
         } else {
-            ($item > '') ? $post['_id'] = $item : null;
+            ($item > '') ? $post['id'] = $item : null;
             $data = $this->app->itemSave($table, $post);
-            header($this->app->route->method.' 201 Created', true, 201);
+            header('HTTP/1.1 201 Created', true, 201);
             return $data;
         }
         die;
     }
 
-        private function read()
+        function read()
         {
             /*
             /api/v2/read/{{table}}/{{id}}
             */
 
-            $this->checkMethod(['post','put']);
+            $this->checkMethod(['post','put','get']);
             $table = $this->table;
-            $item = $this->vars('_route.item');
+            $item = $this->app->vars('_route.item');
             $request = RequestParser::parse(); // PUT, DELETE, etc.. support
             //$_POST = $request->params;
             //$_FILES = $request->files;
             $post = $request->params;
             $item = $this->app->itemRead($table, $item);
             if (!$item) {
-                header($this->app->route->method.' 404 Not found', true, 404);
+                header('HTTP/1.1 404 Not found', true, 404);
+                return ['error'=>true,'msg'=>"Item {$item} not found",'errno'=>404];
             } else {
                 return $item;
             }
-            die;
         }
-    private function update()
+    function update()
     {
         /*
         /api/v2/update/{{table}}/{{id}}
         */
 
-        $this->checkMethod(['post','put']);
+        $this->checkMethod(['post','put','get']);
         $table = $this->table;
-        $item = $this->vars('_route.item');
+        $item = $this->app->vars('_route.item');
         $request = RequestParser::parse(); // PUT, DELETE, etc.. support
         //$_POST = $request->params;
-        //$_FILES = $request->files;
-        $post = $request->params;
+        $_FILES = $request->files;
+        if ($this->method == 'get') {
+            $post = &$_GET;
+        } else {
+            $post = $request->params;
+        }
         $check = $this->app->itemRead($table, $item);
         if (!$check) {
-            header($this->app->route->method.' 404 Not found', true, 404);
+            header('HTTP/1.1 404 Not found', true, 404);
+            return ['error'=>true,'msg'=>"Item {$item} not found",'errno'=>404];
         } else {
             ($item > '') ? $post['_id'] = $item : null;
             $data = $this->app->itemSave($table, $post);
-            header($this->app->route->method.' 200 OK', true, 200);
+            header('HTTP/1.1 200 OK', true, 200);
             return $data;
         }
         die;
     }
 
-    private function delete()
+    function delete()
     {
         /*
         /api/v2/delete/{{table}}/{{id}}
@@ -147,21 +189,23 @@ class modApi
 
         $this->checkMethod(['get','post','delete']);
         $table = $this->table;
-        $item = $this->vars('_route.item');
+        $item = $this->app->vars('_route.item');
         $check = $this->app->itemRead($table, $item);
         if ($check) {
             $data = $this->app->itemRemove($table, $item);
             if (isset($data['_removed'])) {
-                header($this->app->route->method.' 204 Deleted', true, 204);
+                header('HTTP/1.1 204 Deleted', true, 204);
+                return ['error'=>false,'msg'=>"Item {$item} deleted",'errno'=>204];
             } else {
-                header($this->app->route->method.' 409 Conflict', true, 409);
+                header('HTTP/1.1 409 Conflict', true, 409);
+                return ['error'=>true,'msg'=>"Item {$item} don't deleted",'errno'=>409];
             }
         } else {
-            header($this->app->route->method.' 404 Not found', true, 404);
+            header('HTTP/1.1 404 Not found', true, 404);
         }
     }
 
-    private function login()
+    function login()
     {
         $this->checkMethod(['post','put','get','auth']);
         $type = $this->table ? $this->table : $this->app->vars('_sett.modules.login.loginby');
@@ -188,7 +232,7 @@ class modApi
         }
     }
 
-    private function logout()
+    function logout()
     {
         $group = (object)$this->app->user->group;
         @$redirect = $group->url_logout > '' ? $group->url_logout : '/';
@@ -200,22 +244,27 @@ class modApi
     }
 
 
-    private function func()
+    function func()
     {
         /*
         Вызов функции из класса формы
         Если требуется доступ по токену, то соответствующая проверка должна быть в функции
         /api/v2/func/{{table}}/{{func}}
         */
+        $this->checkMethod(['post','get']);
         $app = &$this->app;
         $form = $app->route->form;
         $func = $app->route->func;
         $class = $app->formClass($form);
+        if (!method_exists($class,$func)) {
+            header('HTTP/1.1 404 Not found', true, 404);
+            return ['error'=>true,'msg'=>"Function {$func} not found",'errno'=>404];
+        }
         return $class->$func();
     }
 
 
-    private function list()
+    function list()
     {
         /*
         /api/v2/list/{{table}}
@@ -276,7 +325,7 @@ class modApi
         }
     }
 
-    private function apiOptions($arr)
+    function apiOptions($arr)
     {
         // convert options array to string for __options
         $options = http_build_query($arr);
@@ -284,7 +333,7 @@ class modApi
         return $options;
     }
 
-    private function prepQuery($query)
+    function prepQuery($query)
     {
         $query = (array)$query;
         $options = [];
