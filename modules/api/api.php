@@ -15,7 +15,7 @@ class modApi
         $mode = $this->mode = $app->vars('_route.mode');
         $table = $this->table = $app->vars('_route.table');
         $result = null;
-        if ($this->apikey() or in_array($mode, ['login','logout','token'])) {
+        if ($this->apikey()) {
             if (method_exists($this, $mode)) {
                 $result = $this->$mode();
             } elseif ($table > '') {
@@ -32,6 +32,9 @@ class modApi
     function apikey($mode = null)
     {
         $app = &$this->app;
+        if (in_array($this->mode, ['login','logout','token'])) {
+            return true;
+        }
         if ($app->vars('_sett.modules.api.active') !== 'on' or ($app->route->localreq == true && !$app->vars('_route.token'))) {
             return true;
         }
