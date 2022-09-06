@@ -27,8 +27,6 @@ class modApi
         }
         die;
     }
-
-
     function apikey($mode = null)
     {
         $app = &$this->app;
@@ -36,6 +34,10 @@ class modApi
             return true;
         }
         if ($app->vars('_sett.modules.api.active') !== 'on' or ($app->route->localreq == true && !$app->vars('_route.token'))) {
+            return true;
+        }
+
+        if ($app->vars('_route.token') && in_array($app->vars('_route.token'),$app->vars('_sett.modules.api.tokens'))) {
             return true;
         }
         $mode == null ? $mode = $app->vars('_route.mode') : null;
