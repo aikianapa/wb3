@@ -7,15 +7,15 @@ class modApi
 {
     public function __construct($app)
     {
-        set_time_limit(10);
+        set_time_limit(60);
         header('Content-Type: charset=utf-8');
         header('Content-Type: application/json');
         $this->app = &$app;
         $this->checkMethod(['get','post','put','auth','delete']);
         $mode = $this->mode = $app->vars('_route.mode');
-        $table = $app->vars('_route.table');
+        $table = $this->table = $app->vars('_route.table');
         $result = null;
-        if ($app->apikey() or in_array($mode, ['login','logout','token'])) {
+        if ($this->apikey() or in_array($mode, ['login','logout','token'])) {
             if (method_exists($this, $mode)) {
                 $result = $this->$mode();
             } elseif ($table > '') {
@@ -27,6 +27,24 @@ class modApi
         }
         die;
     }
+
+
+    function apikey($mode = null)
+    {
+        $app = &$this->app;
+        if ($app->vars('_sett.modules.api.active') !== 'on' or ($app->route->localreq == true && !$app->vars('_route.token'))) {
+            return true;
+        }
+        $mode == null ? $mode = $app->vars('_route.mode') : null;
+        $access = $app->checkToken($app->vars('_route.token'));
+
+        if (!$access) {
+            echo json_encode(['error'=>true,'msg'=>'Access denied']);
+            die;
+        }
+        return true;
+    }
+
 
     public function token()
     {
@@ -52,8 +70,8 @@ class modApi
         */
 
         $this->checkMethod(['post','put']);
-        $table = $this->app->route->table;
-        $item = $this->app->route->item;
+        $table = $this->table;
+        $item = $this->vars('_route.item');
         $request = RequestParser::parse(); // PUT, DELETE, etc.. support
         //$_POST = $request->params;
         //$_FILES = $request->files;
@@ -70,6 +88,27 @@ class modApi
         die;
     }
 
+        private function read()
+        {
+            /*
+            /api/v2/read/{{table}}/{{id}}
+            */
+
+            $this->checkMethod(['post','put']);
+            $table = $this->table;
+            $item = $this->vars('_route.item');
+            $request = RequestParser::parse(); // PUT, DELETE, etc.. support
+            //$_POST = $request->params;
+            //$_FILES = $request->files;
+            $post = $request->params;
+            $item = $this->app->itemRead($table, $item);
+            if (!$item) {
+                header($this->app->route->method.' 404 Not found', true, 404);
+            } else {
+                return $item;
+            }
+            die;
+        }
     private function update()
     {
         /*
@@ -77,8 +116,8 @@ class modApi
         */
 
         $this->checkMethod(['post','put']);
-        $table = $this->app->route->table;
-        $item = $this->app->route->item;
+        $table = $this->table;
+        $item = $this->vars('_route.item');
         $request = RequestParser::parse(); // PUT, DELETE, etc.. support
         //$_POST = $request->params;
         //$_FILES = $request->files;
@@ -102,8 +141,8 @@ class modApi
         */
 
         $this->checkMethod(['get','post','delete']);
-        $table = $this->app->route->table;
-        $item = $this->app->route->item;
+        $table = $this->table;
+        $item = $this->vars('_route.item');
         $check = $this->app->itemRead($table, $item);
         if ($check) {
             $data = $this->app->itemRemove($table, $item);
@@ -117,28 +156,35 @@ class modApi
         }
     }
 
-    private function login() {
+    private function login()
+    {
         $this->checkMethod(['post','put','get','auth']);
-        $type = $this->app->table ? $this->app->table : $this->app->vars('_sett.modules.login.loginby');
+        $type = $this->table ? $this->table : $this->app->vars('_sett.modules.login.loginby');
         $type == '' ? $type = 'login' : null;
         $request = RequestParser::parse();
         $post = $request->params;
-        $this->method == 'get' ? $post = array_merge($post,$this->app->vars('_get')) : null;
+        $this->method == 'get' ? $post = array_merge($post, $this->app->vars('_get')) : null;
         $post = (object)$post;
-        $user = $this->app->checkUser($post->login, $type, $post->password);
+        $login = isset($post->login) ? $post->login : null;
+        $password = isset($post->password) ? $post->password : null;
+        $user = $this->app->checkUser($login, $type, $password);
         if ($user) {
             $this->app->login($user);
-            header($this->app->route->method.' 200 OK', true, 200);
+            header('HTTP/1.1 200 OK', true, 200);
             @$redirect = $user->group->url_login > '' ? $user->group->url_login : null;
             return ['login'=>true,'error'=>false,'msg'=>'You are successfully logged in','redirect'=>$redirect,'user'=>$this->app->user,'token'=>$this->app->token];
         } else {
-            header($this->app->route->method.' 401 Unauthorized', true, 401);
+            setcookie("user", null, time()-3600, "/");
+            unset($_SESSION['user']);
+            session_regenerate_id();
+            session_destroy();
+            header("HTTP/1.1 401 Unauthorized", true, 401);
             return ['login'=>false,'error'=>true,'msg'=>'Authorization has been denied for this request.','errno'=>401];
-
         }
     }
 
-    private function logout() {
+    private function logout()
+    {
         $group = (object)$this->app->user->group;
         @$redirect = $group->url_logout > '' ? $group->url_logout : '/';
         setcookie("user", null, time()-3600, "/");
@@ -149,7 +195,8 @@ class modApi
     }
 
 
-    private function func() {
+    private function func()
+    {
         /*
         Вызов функции из класса формы
         Если требуется доступ по токену, то соответствующая проверка должна быть в функции
@@ -180,11 +227,13 @@ class modApi
             &field*=val          - field like 'val'
             &field>=val          - field >= 'val'
             &field<=val          - field <= 'val'
+            &field>>=val          - field > 'val'
+            &field<<=val          - field < 'val'
 
         options:
             &@return=id,name     - return selected fields only
             &@size=10            - break list and return current page
-            &@chunk=10           - chunk list and return 
+            &@chunk=10           - chunk list and return
             &@page=2             - return page by value
             &@sort=name:d        - sort list by field :d(desc) :a(asc)
         */
@@ -242,41 +291,55 @@ class modApi
             } else {
                 (array)$val === $val ? $val = json_encode($val) : null;
                 if (substr($val, -1) == "]" && substr($val, 0, 1) == "[") {
-                    // считаем что в val массив и разбтраем его
+                    // считаем что в val массив и разбираем его
                     $val = explode(",", substr($val, 1, strlen($val) -2));
                     switch (substr($key, -1)) {
-                default:
-                    $query[$key] = ['$in' => $val];
-                                        break;
-                case '!':
-                    unset($query[$key]);
-                    $query[substr($key, 0, strlen($key) -1)] =  ['$nin'=> $val];
-                    break;
-                }
+                        default:
+                            $query[$key] = ['$in' => $val];
+                            break;
+                        case '!':
+                            unset($query[$key]);
+                            $query[substr($key, 0, strlen($key) -1)] =  ['$nin'=> $val];
+                            break;
+                    }
                 } else {
-                    switch (substr($key, -1)) {
-                case '<': // меньше (<)
-                      $query[substr($key, 0, strlen($key) -1)] = ['$lte'=>$val];
-                      unset($query[$key]);
-                      break;
-                case '>': // больше (>)
-                      $query[substr($key, 0, strlen($key) -1)] = ['$gte'=>$val];
-                      unset($query[$key]);
-                      break;
-                case '"': // двойная кавычка (") без учёта регистра
-                      $query[substr($key, 0, strlen($key) -1)] = ['$regex' => '(?mi)^'.$val."$"];
-                      unset($query[$key]);
-                      break;
-                case '*':
-                      //var regex = new RegExp(val, "i");
-                      $query[substr($key, 0, strlen($key) -1)] = ['$like'=>$val];
-                      unset($query[$key]);
-                      break;
-                case '!':
-                      $query[substr($key, 0, strlen($key) -1)] = ['$ne'=>$val];
-                      unset($query[$key]);
-                      break;
-              }
+
+                    switch (substr($key, -2)) {
+                        case '<<': // меньше (<)
+                            $query[substr($key, 0, strlen($key) -2)] = ['$lt'=>$val];
+                            unset($query[$key]);
+                            break;
+                        case '>>': // больше (>)
+                            $query[substr($key, 0, strlen($key) -2)] = ['$gt'=>$val];
+                            unset($query[$key]);
+                            break;
+                    }
+
+                    if (isset($query[$key])) {
+                        switch (substr($key, -1)) {
+                            case '<': // меньше или равно (<=)
+                                $query[substr($key, 0, strlen($key) -1)] = ['$lte'=>$val];
+                                unset($query[$key]);
+                                break;
+                            case '>': // больше или равно (>=)
+                                $query[substr($key, 0, strlen($key) -1)] = ['$gte'=>$val];
+                                unset($query[$key]);
+                                break;
+                            case '"': // двойная кавычка (") без учёта регистра
+                                $query[substr($key, 0, strlen($key) -1)] = ['$regex' => '(?mi)^'.$val."$"];
+                                unset($query[$key]);
+                                break;
+                            case '~':
+                                //var regex = new RegExp(val, "i");
+                                $query[substr($key, 0, strlen($key) -1)] = ['$like'=>$val];
+                                unset($query[$key]);
+                                break;
+                            case '!':
+                                $query[substr($key, 0, strlen($key) -1)] = ['$ne'=>$val];
+                                unset($query[$key]);
+                                break;
+                        }
+                    }
                 }
             }
         }
