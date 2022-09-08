@@ -10,6 +10,7 @@ class attrSelect2 {
         if ($dom->params('options')>'') $dom->attr('wb-options', json_encode($dom->params('options')));
         $dom->addClass('select2');
         $script = "
+        <html>
         <script type='wbapp' remove>
             wbapp.loadStyles(['/engine/lib/js/select2/select2.min.css'],'select2-css');
             wbapp.loadScripts(['/engine/lib/js/select2/select2.min.js'],'select2-js',function(){
@@ -44,6 +45,7 @@ class attrSelect2 {
             });
 
         </script>
+        </html>
       ";
       $dom->append($script);
     }
