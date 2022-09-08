@@ -305,14 +305,14 @@ wbapp.start = async function() {
         });
         // fix dot notation
         let obj = {}
-        $.each(data,function(name,value) {
-            if (strpos(name,".")) {
-                let chunks = explode(".",name);
+        $.each(data, function(name, value) {
+            if (strpos(name, ".")) {
+                let chunks = explode(".", name);
                 let idx = ""
-                $.each(chunks,function(i,key){
+                $.each(chunks, function(i, key) {
                     if (i < chunks.length) {
-                        idx == "" ? idx = key : idx += "."+key
-                        eval(`if (obj.${idx} == undefined) obj.${idx} = {}`);        
+                        idx == "" ? idx = key : idx += "." + key
+                        eval(`if (obj.${idx} == undefined) obj.${idx} = {}`);
                     }
                 })
                 eval(`obj.${name} = value`);
@@ -952,7 +952,7 @@ wbapp.save = async function(obj, params, func = null) {
                 params: params,
                 data: data,
             });
-            wbapp.console("Trigger: wb-form-save "+params.form);
+            wbapp.console("Trigger: wb-form-save " + params.form);
             $(params.form).trigger("wb-form-save", {
                 params: params,
                 data: data,
@@ -989,15 +989,15 @@ wbapp.updateView = function(params = {}, data = {}) {
                 let target = prms.target;
                 if (post && prms.url !== undefined) {
                     fetch(prms.url, {
-                        method: 'POST',
-                        body: post
-                    })
-                    .then((resp)=>resp.text())
-                    .then(function(res){
-                        let html = $(res).find(target).html();
-                        $(document).find(target).html(html);
-                        wbapp.refresh();
-                    })
+                            method: 'POST',
+                            body: post
+                        })
+                        .then((resp) => resp.text())
+                        .then(function(res) {
+                            let html = $(res).find(target).html();
+                            $(document).find(target).html(html);
+                            wbapp.refresh();
+                        })
                 } else {
                     wbapp.renderServer(prms, data);
                 }
@@ -1036,14 +1036,14 @@ wbapp.wbappScripts = async function() {
             xhr.open('GET', src, true);
             xhr.onload = function() {
                 //eval(xhr.responseText);
-                $(that).after('<script type="text/javascript">'+xhr.responseText+'</script>').remove();
+                $(that).after('<script type="text/javascript">' + xhr.responseText + '</script>').remove();
             };
             xhr.send();
         } else {
             var script = $(this).text();
             var hash = md5(script);
             if (!in_array(hash, done)) {
-                $(that).after('<script type="text/javascript">'+script+'</script>').remove();
+                $(that).after('<script type="text/javascript">' + script + '</script>').remove();
                 //eval(script);
                 done.push(hash);
             }
@@ -1259,7 +1259,7 @@ wbapp.ajax = async function(params, func = null) {
                     $(target.target)[0].filter = {}
                 }
             }
-            
+
             target.filter = $(target.target)[0].filter;
             if (target._params == undefined) target._params = {};
             let clearval = null;
@@ -1278,13 +1278,13 @@ wbapp.ajax = async function(params, func = null) {
                     if (typeof val == "string") {
                         val = val.trim().split(' ');
                         delete target.filter[val];
-                    } 
+                    }
                     if (typeof val == "object") {
-                        $.each(val,function(i,v){
+                        $.each(val, function(i, v) {
                             delete target.filter[v];
                         })
                     }
-                    
+
                 }
                 if (key == 'filter_add') {
                     $.each(val, function(k, v) {
@@ -1515,10 +1515,10 @@ wbapp.toast = async function(title, text, params = {}) {
     let last = $(document).find(options.target).find(".toast:last-child")
     if (last.length && last.toast !== undefined) {
         last.toast('show')
-        .off('hidden.bs.toast')
-        .on('hidden.bs.toast', function(e) {
-            $(e.currentTarget).remove();
-        });
+            .off('hidden.bs.toast')
+            .on('hidden.bs.toast', function(e) {
+                $(e.currentTarget).remove();
+            });
     }
 }
 

@@ -194,8 +194,7 @@ class modApi
         if ($check) {
             $data = $this->app->itemRemove($table, $item);
             if (isset($data['_removed'])) {
-                header('HTTP/1.1 204 Deleted', true, 204);
-                return ['error'=>false,'msg'=>"Item {$item} deleted",'errno'=>204];
+                return ['error'=>false,'msg'=>"Item {$item} deleted",'errno'=>204, 'data'=>$data];
             } else {
                 header('HTTP/1.1 409 Conflict', true, 409);
                 return ['error'=>true,'msg'=>"Item {$item} don't deleted",'errno'=>409];
