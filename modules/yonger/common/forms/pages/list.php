@@ -23,7 +23,7 @@
             <div class="header p-2">
                 <span clsss="row">
                     <div class="col-3">
-                        <input type="search" class="form-control" placeholder="Поиск страницы5445245"
+                        <input type="search" class="form-control" placeholder="Поиск страницы"
                             data-ajax="{'target':'#{{_form}}List','filter_add':{'$or':[{ 'header': {'$like' : '$value'} }, { 'url': {'$like' : '$value'} }  ]} }">
                     </div>
                 </span>

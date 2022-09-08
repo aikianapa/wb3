@@ -302,7 +302,7 @@ class modApi
         if (isset($app->route->item)) {
             $json = $app->itemRead($table, $app->route->item);
             if (isset($app->route->field)) {
-                $fields = new $this->app->Dot();
+                $fields = $app->Dot();
                 $fields->setReference($json);
                 $json = $fields->get($app->route->field);
             }

@@ -157,6 +157,7 @@ function wbItemCopy($form = null, $old = null, $new = null, $flush = true)
 function wbItemSave($form, $item = null, $flush = true)
 {
     $db = wbSetDb($form);
+    if (isset($item['__token'])) unset($item['__token']);
     $item = wbTrigger('form', __FUNCTION__, 'beforeItemSave', func_get_args(), $item);
     if (!isset($item['id'])) {
         if (isset($item['_id']) && $item['_id'] > '') {
