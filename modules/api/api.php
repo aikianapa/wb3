@@ -41,6 +41,7 @@ class modApi
             }
             echo $app->jsonEncode($result);
         }
+        die;
     }
     function apikey($mode = null)
     {
@@ -240,6 +241,52 @@ class modApi
         session_regenerate_id();
         session_destroy();
         return ['login'=>false,'error'=>false,'redirect'=>$redirect,'user'=>null,'role'=>null];
+    }
+
+
+
+    function upload()
+    {
+        /*
+        Загрузка файлов
+        Обязательно указание таблицы
+        /api/v2/upload/{{table}}
+        */
+        $this->checkMethod(['post']);
+        $uploads = $this->app->vars("_env.path_app").'/uploads';
+        if ($this->table > '') {
+            $uploads .= $this->table;
+        }
+
+        if ($this->app->vars('_post.path')) {
+            $uploads .= $this->app->vars('_post.path');
+        }
+
+        $uploads = wbNormalizePath($uploads);
+        if (!is_dir($uploads)) {
+            mkdir($uploads, 0777, true);
+        }
+        $error = true;
+        $request = RequestParser::parse();
+        $_FILES = $request->files;
+        $filename = basename($_FILES['file']['name']);
+        $file = str_replace('//','/',$uploads .'/'. $filename);
+        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        if (move_uploaded_file($_FILES['file']['tmp_name'], $file)) {
+            $msg = 'File uploaded';
+            header('HTTP/1.1 200 '.$msg, true, 200);
+            return ['error'=>false,
+                    'msg'=>$msg,
+                    'file'=>$file,
+                    'filename'=>$filename,
+                    'errno'=>200
+            ];
+        } else {
+            $msg = "Unsupported Media Type";
+        }
+        header('HTTP/1.1 415 '.$msg, true, 415);
+        return ['error'=>true,'msg'=>$msg,'errno'=>415];
+
     }
 
 
