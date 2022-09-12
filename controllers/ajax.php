@@ -1,6 +1,9 @@
 <?php
 class ctrlAjax
 {
+    private $app;
+    private $route;
+    private $ajax;
     public function __construct($app)
     {
         header('Content-Type: charset=utf-8');
@@ -225,6 +228,11 @@ class ctrlAjax
 
     public function getsess()
     {
+        $uid = $this->app->vars('_sess.user.id');
+        if ($uid > '')  {
+            $user = $this->app->itemRead('users', $uid);
+            $this->app->vars('_sess.user', $user);
+        }
         echo json_encode($this->app->vars('_sess'));
     }
 
