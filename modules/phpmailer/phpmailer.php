@@ -21,7 +21,11 @@ function init()
         }
         die;
     } else {
+	if (is_callable("phpmailer__checkout") {
         return phpmailer__checkout();
+	} else {
+	    return false;
+	}
     }
 }
 
