@@ -103,7 +103,7 @@ function wbInitSettings(&$app)
         isset($app->user->id) ? $cookuser = $app->user->id : $cookuser = "";
         setcookie("user", $cookuser, time()+3600, "/"); // срок действия час
     } else {
-        $_SESSION['user'] = $_ENV["user"] = null;
+        $_SESSION['user'] = $_SESSION['user_role'] = $_ENV["user"] = null;
         setcookie("user", null, time()-3600, "/");
     }
     $variables = [];
