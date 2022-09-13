@@ -8,6 +8,7 @@ class modPhpmailer
 
   public function __construct($dom)
   {
+        print_r($this->app->route);
       $this->init($dom);
   }
 
@@ -21,7 +22,7 @@ function init()
         }
         die;
     } else {
-	if (is_callable("phpmailer__checkout") {
+	if (is_callable("phpmailer__checkout")) {
         return phpmailer__checkout();
 	} else {
 	    return false;
