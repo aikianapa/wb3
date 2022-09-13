@@ -3,7 +3,7 @@
     <!-- Button Bar -->
     <div class="button-bar">
         <div class="btn btn-success fileinput">
-            <i class="fa fa-image"></i><span class="d-none d-md-inline"> {{_lang.choose}}</span>
+            <i class="fa fa-image"></i><span class="d-none d-md-inline btn-text"> {{_lang.choose}}</span>
             <input type="file" name="files[]" multiple class="wb-unsaved">
             <input type="hidden" name="upload_url" class="wb-unsaved">
         </div>
