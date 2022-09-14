@@ -253,24 +253,24 @@ class modApi
         /api/v2/upload/{{table}}
         */
         $this->checkMethod(['post']);
-        $uploads = $this->app->vars("_env.path_app").'/uploads';
+        $uploads = '/uploads'.$this->app->vars('_post.path');
         if ($this->table > '') {
             $uploads .= $this->table;
         }
 
         if ($this->app->vars('_post.path')) {
-            $uploads .= $this->app->vars('_post.path');
+            $path = $this->app->vars("_env.path_app").$uploads;
         }
 
-        $uploads = wbNormalizePath($uploads);
-        if (!is_dir($uploads)) {
-            mkdir($uploads, 0777, true);
+        $path = wbNormalizePath($path);
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
         }
         $error = true;
         $request = RequestParser::parse();
         $_FILES = $request->files;
         $filename = basename($_FILES['file']['name']);
-        $file = str_replace('//','/',$uploads .'/'. $filename);
+        $file = str_replace('//','/',$path .'/'. $filename);
         $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
         if (move_uploaded_file($_FILES['file']['tmp_name'], $file)) {
             $msg = 'File uploaded';
@@ -278,6 +278,7 @@ class modApi
             return ['error'=>false,
                     'msg'=>$msg,
                     'file'=>$file,
+                    'uri'=>$uploads.'/'.$filename,
                     'filename'=>$filename,
                     'errno'=>200
             ];
