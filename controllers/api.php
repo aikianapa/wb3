@@ -114,7 +114,16 @@ class ctrlApi
             !$item ? $item = [] : null;
             $item = array_merge($srci, $item);
         }
-        $item = $app->itemSave($app->route->table, $item);
+        unset($item['__token']);
+        if ($app->route->table == '_settings' && isset($fld) && isset($fld['__jsonfile']) && is_file($fld['__jsonfile'])) {
+            $jsonfile = $fld['__jsonfile'];
+            unset($fld['__jsonfile']);
+            $result = wbJsonEncode($fld);
+            file_put_contents($jsonfile, $result);
+            return $result;
+        } else {
+            $item = $app->itemSave($app->route->table, $item);
+        }
         return $app->jsonEncode($item);
     }
 
