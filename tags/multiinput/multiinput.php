@@ -49,7 +49,7 @@ class tagMultiinput {
 		function buildInner() {
 				$app = &$this->app;
 				$dom = &$this->dom;
-				$col = $dom->app->fromString($this->col);
+				$col = $dom->app->fromString($this->col->outer());
         $out = '';
 				foreach($dom->dict->prop->multiflds as $i => $fld) {
 						$col->inner($app->fieldBuild($fld));

@@ -1018,9 +1018,6 @@ class wbApp
 
     public function fieldBuild($dict=[], $data=[])
     {
-        unset($data['__token']);
-        unset($dict['__token']);
-
         (array)$dict == $dict ? $dict = wbArrayToObj($dict) : null;
 
         if ($dict->name == "") {
@@ -1055,6 +1052,14 @@ class wbApp
         $mult = $this->tpl;
         $mult->item = $this->item;
         $mult->dict = $this->dict;
+        if (isset($mult->dict->prop->multiflds)) {
+            $lang = $_SESSION['lang'];
+            foreach($mult->dict->prop->multiflds as &$fld) {
+                if (isset($fld->label->$lang)) {
+                    $fld->label = $fld->label->$lang;
+                }
+            }
+        }
         $mult->fetch();
         return $mult;
     }
@@ -1121,8 +1126,13 @@ class wbApp
             }
         }
         $res = $this->tpl->fetch(["enum" => $lines]);
-        if (isset($this->data['data'][$this->dict->name]) && $this->data['data'][$this->dict->name] > '') {
-            $res->find('option[value="'.$this->data['data'][$this->dict->name].'"]')->attr("selected", true);
+        $val = $this->data['data'][$this->dict->name];
+
+        if ((array)$val === $val) {
+            $val = wbJsonEncode($val);
+        }
+        if (isset($this->data['data'][$this->dict->name]) && $val > '') {
+            $res->find('option[value="'.$val)->attr("selected", true);
         } else {
             $res->find("option[value]:first")->attr("selected", true);
         }

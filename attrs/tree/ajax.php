@@ -35,7 +35,6 @@ class wbAjaxTree
             echo wb_json_encode(["content"=>$dict->outer(),"post"=>$_POST]);
             die;
         }
-
         $data = $this->tagTreeForm($app->vars("_post.dict"),$app->vars("_post.data"));
         $data = $app->fromString($data);
         $data->fetch($app->vars("_post.data.data"));
@@ -93,17 +92,14 @@ class wbAjaxTree
               $fld['label'] = $label;
               $set->fetch($fld);
               //if ($fld['name'] == 'test') echo $app->fieldBuild($fld, $data);
-              $set->find("div.col-12")->append($app->fieldBuild($fld,$data));
+              $field = $app->fieldBuild($fld, $data);
+              $set->find("div.col-12")->append($field);
               $out .= $set->outer()."\n";
             }
         }
         $app->vars('_env.locale',$env);
         return $out;
     }
-
-
-
-
 }
 
 ?>
