@@ -30,6 +30,17 @@
     </form>
 </template>
 
+<template type="include">
+    <form data-title="{{_lang.include}}: " action="javascript:void(0);">
+        <div class="form-group row">
+            <label class="col-sm-3 form-control-label">{{_lang.include}}</label>
+            <div class="col-sm-9">
+                <input class="form-control" placeholder="{{_lang.include}}" type="text" name="file">
+            </div>
+        </div>
+    </form>
+</template>
+
 <template type="forms">
     <form data-title="{{_lang.form}}: " action="javascript:void(0);">
         <div class="form-group row">
@@ -157,6 +168,7 @@
     catalog = "Catalog"
     branch = "Branch"
     multiple = "Multiple"
+    include = "Include"
     [ru]
     label = "Метка"
     name = "Имя поля"
@@ -181,6 +193,7 @@
     catalog = "Справочник"
     branch = "Ветка"
     multiple = "Multiple"
+    include = "Include"
 </wb-lang>
 
 </html>

@@ -1104,6 +1104,16 @@ class wbApp
         return $form;
     }
 
+    public function fieldBuild_include()
+    {
+        $form = $this->tpl;
+        $form->item = $this->item;
+        $form->dict = $this->dict;
+        $form->find("wb-include")->setAttributes($form->dict->prop);
+        $form->fetch();
+        return $form;
+    }
+
     public function fieldBuild_common()
     {
         $common = &$this->tpl;

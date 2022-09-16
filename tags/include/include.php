@@ -13,6 +13,7 @@ class tagInclude {
         $src = realpath($dom->path . '/' . $dom->params("src"));
         if (substr($dom->params("src"),0,2) == './' && $dom->path > '') $src = $dom->path . '/' . $dom->params("src");
         if (substr($dom->params("src"),0,1) == '/' OR !$dom->path) $src = $_ENV['path_app'].'/'.$dom->params("src");
+
         $src = realpath($src);
         if ($src) {
             $inc = $dom->app->fromFile(realpath($src));
