@@ -12,8 +12,11 @@ class modApi
 
     function __construct($app)
     {
+        $mode = $this->mode = $app->vars('_route.mode');
         if (!wbCheckBacktrace("wbModuleClass")) {
             $this->init($app);
+        } else if (in_array(strtolower($mode),['getsett'])) {
+            $this->ajaxSettings($app);
         }
     }
 
@@ -41,7 +44,6 @@ class modApi
             }
             echo $app->jsonEncode($result);
         }
-        die;
     }
     function apikey($mode = null)
     {
