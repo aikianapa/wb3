@@ -44,15 +44,17 @@ class tagStyles
                 $styles->add($src);
             }
         }
-        if ($this->app->vars('_sett.devmode') == 'on') {
+
+//        if ($this->app->vars('_sett.devmode') == 'on') {
             $this->file = str_replace('.css.cssgz', '.css', $this->file);
             $this->src = str_replace('.css.cssgz', '.css', $this->src);
-            file_put_contents($this->file, $css);
             $styles->minify($this->file);
+/*            
         } else {
             $styles->minify();
             $styles->gzip($this->file, 8);
         }
+*/
         $this->dom->after('<script type="wbapp" remove >wbapp.loadStyles(["'.$this->src.'"])</script>'.PHP_EOL);
     }
 
