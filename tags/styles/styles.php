@@ -30,7 +30,6 @@ class tagStyles
         $inner = wbSetValuesStr($this->inner, $dom->item);
         $arr = json_decode($inner, true);
         $styles = new Minify\CSS();
-        $css = '';
         foreach ($arr as $i => $src) {
             $this->info = (object)pathinfo($src);
             $ext = strtolower($this->info->extension);
@@ -40,17 +39,16 @@ class tagStyles
             }
             if (stream_is_local($src)) {
                 $styles->addFile($this->home.$src);
-                $css .= "\n\r".file_get_contents($this->home.$src);
             } else {
                 $src = wbAuthGetContents($src);
                 $styles->add($src);
-                $css .= "\n\r".file_get_contents($src);
             }
         }
         if ($this->app->vars('_sett.devmode') == 'on') {
             $this->file = str_replace('.css.cssgz', '.css', $this->file);
             $this->src = str_replace('.css.cssgz', '.css', $this->src);
             file_put_contents($this->file, $css);
+            $styles->minify($this->file);
         } else {
             $styles->minify();
             $styles->gzip($this->file, 8);
