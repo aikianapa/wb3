@@ -30,11 +30,11 @@ class tagStyles
         $inner = wbSetValuesStr($this->inner, $dom->item);
         $arr = json_decode($inner, true);
         $styles = new Minify\CSS();
+        $css = '';
         foreach ($arr as $i => $src) {
             $this->info = (object)pathinfo($src);
             $ext = strtolower($this->info->extension);
             $opts = [];
-            $css = '';
             if (stream_is_local($src) && in_array($ext, ['less','scss'])) {
                 $src = $this->app->route->host.$src;
             }
