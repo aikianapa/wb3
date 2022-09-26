@@ -60,7 +60,7 @@ class mysqlDrv
 
     public function ItemOconv(&$item)
     {
-        $form = $item['_form'];
+        @$form = $item['_form'];
         $json = isset($item['_json']) ? json_decode($item['_json'], true) : [];
         foreach ($item as $fld => &$val) {
             if (wbIsJson($val)) $val = json_decode($val,true);

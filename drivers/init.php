@@ -37,7 +37,7 @@ function wbSetDb($form)
         'wbTableCreate'==$func["function"] ? $loop=true : null;
     }
     $exists = $app->drivers->$form->tableExist($form);
-    if (!$exists && !$loop) {
+    if (!$exists && !$loop && $app->vars('_sess.user.role')=='admin') {
         if (in_array($form,$app->listForms()) OR $app->vars('_route.mode') == 'save') {
             $app->tableCreate($form);
             $app->_db->tableCreate($form);
