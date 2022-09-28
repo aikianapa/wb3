@@ -13,17 +13,15 @@ class attrChange
     {
         $params = $dom->params;
         $app = &$dom->app;
+        !isset($params->change) ? $params->change=$dom->attr('wb-change') : null;
         $dom->removeAttr('wb-change');
-
-
         parse_str($params->change, $ini);
-        
         if (isset($ini['filter']) && isset($ini['target'])) {
             return $this->filter($dom, $ini);
         }
 
-
         $chlist = explode(',', $params->change);
+        
         $sl = [];
         $fn = [];
         foreach ($chlist as $selector) {
