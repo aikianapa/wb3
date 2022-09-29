@@ -1,7 +1,7 @@
 <html>
 <div class="chat-wrapper chat-wrapper-two">
   <div class="chat-sidebar">
-    <div class="chat-sidebar-body bg-light" style="top:0;bottom:0;">
+    <div class="chat-sidebar-body bg-light hv-100p" style="top:0;bottom:0;">
       <div class="flex-fill pd-y-20 pd-x-10">
         <div class="d-flex align-items-center justify-content-between pd-x-10 mg-b-10">
           <span class="tx-30 tx-medium tx-gray-900 tx-sans tx-spacing-1"> {{_lang.settings}}</span>
