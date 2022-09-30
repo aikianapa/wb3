@@ -11,11 +11,14 @@
             <div class="col-sm-4">
                 <input class="form-control" type="search" placeholder="Поиск (минимум 3 символа)" on-keyup="find">
             </div>
+            <div class="col-sm-4">
+                <button type="button" class="btn btn-secondary" on-click="clear">Сброс</button>
+            </div>
         </form>
         <div class="row list d-none">
             {{#each list}}
             <div class='col-2 text-center'>
-                <img loading="lazy" src='/module/myicons/{{.}}?size=50&stroke={{~/stroke}}'>
+                <img loading="lazy" data-src='/module/myicons/{{.}}?size=50&stroke={{~/stroke}}'>
                 <br>{{.}}
             </div>
             {{/each}}
@@ -37,6 +40,7 @@ var myicons = new Ractive({
             wbapp.post('/module/myicons/getlist',function(data){
                 that.set('data', data);
                 $('#myIcons .list').removeClass('d-none')
+                $('#myIcons input[type=search]').focus()
             })
         },
         find(ev) {
@@ -52,12 +56,20 @@ var myicons = new Ractive({
             }
             });
             myicons.set('list',list)
+            wbapp.lazyload()
         },
         stroke(ev) {
             let str = $(ev.node).val()
             str = str.replace('#','')
             myicons.set('stroke',str)
+        },
+        clear() {
+            window.stop()
+            $('#myIcons input[type=search]').val('').focus()
+            myicons.set('list',[])
         }
+
+
     }
 })
 </script>
