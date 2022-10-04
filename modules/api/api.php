@@ -42,9 +42,8 @@ class modApi
                 $func = 'api'.$mode;
                 method_exists($form, $func) ? $result = $form->$func() : null;
             }
-            echo $app->jsonEncode($result);
+            echo $this->app->jsonEncode($result);
         }
-        exit;
     }
     function apikey($mode = null)
     {
@@ -130,7 +129,7 @@ class modApi
             $data = $this->app->itemSave($table, $post);
             echo 1;
             header('HTTP/1.1 201 Created', true, 201);
-            return $data;
+            echo $this->app->jsonEncode($data);
         }
         exit;
     }
@@ -153,8 +152,9 @@ class modApi
                 header('HTTP/1.1 404 Not found', true, 404);
                 return ['error'=>true,'msg'=>"Item {$item} not found",'errno'=>404];
             } else {
-                return $item;
+                echo $this->app->jsonEncode($item);
             }
+            exit;
         }
     function update()
     {
@@ -181,7 +181,7 @@ class modApi
             ($item > '') ? $post['_id'] = $item : null;
             $data = $this->app->itemSave($table, $post);
             header('HTTP/1.1 200 OK', true, 200);
-            return $data;
+            echo $this->app->jsonEncode($data);
         }
         exit;
     }
@@ -199,14 +199,16 @@ class modApi
         if ($check) {
             $data = $this->app->itemRemove($table, $item);
             if (isset($data['_removed'])) {
-                return ['error'=>false,'msg'=>"Item {$item} deleted",'errno'=>204, 'data'=>$data];
+                $data = ['error'=>false,'msg'=>"Item {$item} deleted",'errno'=>204, 'data'=>$data];
             } else {
                 header('HTTP/1.1 409 Conflict', true, 409);
-                return ['error'=>true,'msg'=>"Item {$item} don't deleted",'errno'=>409];
+                $data = ['error'=>true,'msg'=>"Item {$item} don't deleted",'errno'=>409];
             }
         } else {
             header('HTTP/1.1 404 Not found', true, 404);
         }
+        echo $this->app->jsonEncode($data);
+        exit;
     }
 
     function login()
@@ -225,15 +227,17 @@ class modApi
             $this->app->login($user);
             header('HTTP/1.1 200 OK', true, 200);
             @$redirect = $user->group->url_login > '' ? $user->group->url_login : null;
-            return ['login'=>true,'error'=>false,'msg'=>'You are successfully logged in','redirect'=>$redirect,'user'=>$this->app->user,'token'=>$this->app->token];
+            $data = ['login'=>true,'error'=>false,'msg'=>'You are successfully logged in','redirect'=>$redirect,'user'=>$this->app->user,'token'=>$this->app->token];
         } else {
             setcookie("user", null, time()-3600, "/");
             unset($_SESSION['user']);
             session_regenerate_id();
             session_destroy();
             header("HTTP/1.1 401 Unauthorized", true, 401);
-            return ['login'=>false,'error'=>true,'msg'=>'Authorization has been denied for this request.','errno'=>401];
+            $data = ['login'=>false,'error'=>true,'msg'=>'Authorization has been denied for this request.','errno'=>401];
         }
+        echo $this->app->jsonEncode($data);
+        exit;
     }
 
     function logout()
@@ -244,7 +248,10 @@ class modApi
         unset($_SESSION['user']);
         session_regenerate_id();
         session_destroy();
-        return ['login'=>false,'error'=>false,'redirect'=>$redirect,'user'=>null,'role'=>null];
+        $data = ['login'=>false,'error'=>false,'redirect'=>$redirect,'user'=>null,'role'=>null];
+        echo $this->app->jsonEncode($data);
+        exit;
+
     }
 
 
@@ -290,7 +297,11 @@ class modApi
             $msg = "Unsupported Media Type";
         }
         header('HTTP/1.1 415 '.$msg, true, 415);
-        return ['error'=>true,'msg'=>$msg,'errno'=>415];
+        $data = ['error'=>true,'msg'=>$msg,'errno'=>415];
+    
+        echo $this->app->jsonEncode($data);
+        exit;
+
     }
 
 
@@ -365,7 +376,7 @@ class modApi
             if (isset($options->chunk)) {
                 return (array)$json;
             } elseif (!isset($options->size)) {
-                //return $app->jsonEncode(array_values((array)$json['list']));
+                //return $this->app->jsonEncode(array_values((array)$json['list']));
                 return array_values((array)$json['list']);
             } else {
                 $pages = ceil($json['count'] / $options->size);
