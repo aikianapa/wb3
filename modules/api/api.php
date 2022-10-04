@@ -281,6 +281,9 @@ class modApi
         $_FILES = $request->files;
         $filename = basename($_FILES['file']['name']);
         $file = str_replace('//','/',$path .'/'. $filename);
+        if (!is_dir(dirname($file))) {
+            mkdir(dirname($file), 0777);
+        }
         $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
         if (move_uploaded_file($_FILES['file']['tmp_name'], $file)) {
             $msg = 'File uploaded';
