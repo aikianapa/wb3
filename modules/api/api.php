@@ -127,7 +127,6 @@ class modApi
         } else {
             ($item > '') ? $post['id'] = $item : null;
             $data = $this->app->itemSave($table, $post);
-            echo 1;
             header('HTTP/1.1 201 Created', true, 201);
             echo $this->app->jsonEncode($data);
         }
