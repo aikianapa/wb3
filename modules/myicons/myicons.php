@@ -83,20 +83,14 @@ class modMyicons
         $file = $this->path.$icon;
         substr($this->stroke, 0, 1) !== '#' ? $this->stroke = '#'.$this->stroke : null;
         substr($this->fill, 0, 1) !== '#' ? $this->fill = '#'.$this->fill : null;
+        if (!is_file($file)) {
+            return false;
+        }
         $sprite = $app->fromFile($file);
         if (!$sprite) {
             return false;
         }
         $id = $sprite->attr('id');
-        /*
-                if ($id == '') {
-                    $id = 'Layer';
-                    $sprite->attr('id', $id);
-                    file_put_contents($file,$sprite->outer());
-                }
-        */
-
-
         $this->stroke > '#' ? $sprite->find('[stroke]')->attr('stroke', $this->stroke) : null;
         $this->fill > '#' ? $sprite->find('[fill]')->attr('fill', $this->fill) : null;
 
@@ -128,8 +122,6 @@ class modMyicons
             $svg->attr('height', $this->size);
             $svg->attr('viewBox', "0 0 24 24");
         }
-
-        //file_put_contents($destination, $svg->outer());
         return $svg->outer();
     }
 
