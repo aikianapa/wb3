@@ -175,13 +175,13 @@ class modApi
         $check = $this->app->itemRead($table, $item);
         if (!$check) {
             header('HTTP/1.1 404 Not found', true, 404);
-            return ['error'=>true,'msg'=>"Item {$item} not found",'errno'=>404];
+            $data = ['error'=>true,'msg'=>"Item {$item} not found",'errno'=>404];
         } else {
             ($item > '') ? $post['_id'] = $item : null;
             $data = $this->app->itemSave($table, $post);
             header('HTTP/1.1 200 OK', true, 200);
-            echo $this->app->jsonEncode($data);
         }
+        echo $this->app->jsonEncode($data);
         exit;
     }
 
@@ -203,10 +203,10 @@ class modApi
                 header('HTTP/1.1 409 Conflict', true, 409);
                 $data = ['error'=>true,'msg'=>"Item {$item} don't deleted",'errno'=>409];
             }
+            echo $this->app->jsonEncode($data);
         } else {
             header('HTTP/1.1 404 Not found', true, 404);
         }
-        echo $this->app->jsonEncode($data);
         exit;
     }
 
@@ -285,7 +285,7 @@ class modApi
         if (move_uploaded_file($_FILES['file']['tmp_name'], $file)) {
             $msg = 'File uploaded';
             header('HTTP/1.1 200 '.$msg, true, 200);
-            return ['error'=>false,
+            $data = ['error'=>false,
                     'msg'=>$msg,
                     'file'=>$file,
                     'uri'=>$uploads.'/'.$filename,
