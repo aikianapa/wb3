@@ -347,11 +347,14 @@ class modApi
         $table = $app->route->table;
         $query = (array)$app->route->query;
         $options = $this->prepQuery($app->route->query);
-
+        $form = $app->formClass($table);
         $app->vars('_post.filter') > '' ? $options['filter'] = $app->vars('_post.filter') : null;
 
         if (isset($app->route->item)) {
-            $json = $app->itemRead($table, $app->route->item);
+            $json = $app->itemRead($table, $app->route->item);        
+            if ($form && @method_exists($form, 'beforeItemShow')) {
+                $json = $form->beforeItemShow($json);
+            }
             if (isset($app->route->field)) {
                 $fields = $app->Dot();
                 $fields->setReference($json);
@@ -360,7 +363,12 @@ class modApi
             return $json;
         } else {
             $json = $app->itemList($table, $options);
-            $json['list'] = (object)$json['list'];
+            $json['list'] = (array)$json['list'];
+
+            if ($form && @method_exists($form, 'beforeItemShow')) {
+                foreach($json['list'] as &$item) $form->beforeItemShow($item);
+            }
+
             $options = (object)$options;
             if (isset($options->chunk)) {
                 return (array)$json;
