@@ -105,7 +105,7 @@ class ctrlForm
         }
         if ($app->vars('_sett.showstats') == 'on')  echo wbUsageStat();
         ob_get_contents();
-        ob_end_flush();
+        @ob_end_flush();
         die;
     }
 

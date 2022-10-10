@@ -25,6 +25,7 @@
         }
 
         if ($app->vars('_route.controller') == 'form' && $app->vars('_route.mode') == 'show') {
+            $name = '';
             if (isset($app->route->name)) {
                $name=  $app->route->name;
                $path = '';
@@ -34,7 +35,7 @@
                 $path = implode('/', $path);
             }
             $uri == '/' && $name == '' ? $name = 'home' : null;
-            if (isset($app->route->item) && $app->route->item !== $name) {
+            if ($app->vars('_route.item') !== $name) {
                 $app->route->alias = $name;
                 $name = $app->route->item;
                 $uri = $path.'/'.$name;

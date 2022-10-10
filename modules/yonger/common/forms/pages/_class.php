@@ -44,17 +44,18 @@ class pagesClass extends cmsFormsClass
         isset($item['path']) ? null : $item['path'] = '';
         if ($item['path'] == '/') $item['path'] = '';
         if (isset($item['blocks'])) $item['template'] = '';
-        $item['url'] == '' ? $item['url'] = $item['path'] . '/' . $item['name'] : null;
         $item['url'] == '/home' ? $item['url'] = '/' : null;
+        $item['url'] = $item['path'] . '/' . $item['name'];
     }
 
-    function beforeitemSave(&$item)
+    function beforeItemSave(&$item)
     {
         @$item['url'] = $item['path'] . '/' . $item['name'];
     }
 
-    function afterItemSave($item)
+    function afterItemSave(&$item)
     {
+        $this->beforeItemShow($item);
         $this->app->shadow($item['url']);
     }
 
@@ -77,6 +78,77 @@ class pagesClass extends cmsFormsClass
         $out->find('#pagesList')->replaceWith($res);
         echo $out;
     }
+
+    public function yonmap() {
+        $app = &$this->app;
+        $this->tables = $app->tableList();
+        $this->count = 0;
+        $this->map = [];
+        $this->list = $this->app->itemList('pages', ['return' => 'id,name,_form,header,active,attach,attach_filter,url,path,_sort']);
+        $this->list = $this->list['list'];
+        $this->yonmapnest();
+        $app->putContents($app->vars('_env.dba') . '/_yonmap.json', json_encode($this->map));
+        header("Content-type:application/json");
+        echo json_encode(['count'=>count($this->map)]);
+    }
+
+    private function yonmapnest($path = '') {
+
+        $this->count++;
+        if ($this->count > 1000) {
+            return;
+        }
+        $level = $this->app->json($this->list)->where('path', '=', $path)->sortBy('_sort')->get();
+        $count = count($level);
+        if (!$count) {
+            return '';
+        }
+        foreach ($level as $item) {
+            in_array($item['url'], ['/', '']) ? $url = '/'.$item['name'] : $url = $item['url'].'/'.$item['name'];
+            $md5 = md5($url);
+            unset($this->list[$item['id']]);
+            $attach = (isset($item['attach']) and $item['attach'] > ' ') ? true : false;
+            $res1 = $res2 = null;
+            $res1 = $this->yonmapnest($url);
+            $res2 = $attach ? $this->yonmaptable($item, $url) : null;
+            substr($item['id'], 0, 1) == '_' or isset($this->map[$md5]) ? null : $this->map[$md5] = ['f' => $item['_form'], 'i' => $item['id'], 'u' => $url, 'n' => $item['name']];
+        }
+    }
+
+
+    private function yonmaptable($item, $path = '')
+    {
+        $table = $item['attach'];
+        $filter = (isset($item['attach_filter']) && $item['attach_filter'] > '') ? $item['attach_filter'] : [];
+        if (is_string($filter)) {
+            $filter = str_replace("'", '"', $filter);
+            $filter = json_decode($filter, true);
+        }
+        $options = [
+            'return' => 'id,name,_form,header,active,tags',
+            'filter' => $filter
+        ];
+        $level = $this->app->itemList($table, $options);
+        $level = $level['list'];
+        foreach ($level as $key => $item) {
+            isset($item['name']) ? null : $item['name'] = null;
+            isset($item['header']) ? null : $item['header'] = $item['name'];
+            $item['_form'] = $table;
+            if ($item['header']) {
+                $item['path'] = $path;
+                $item['name'] = wbFurlGenerate($item['header']);
+                $item['url'] = $item['path'] . '/' . $item['name'];
+                $level[$key] = $item;
+                $md5 = md5($item['url']);
+                if (!isset($this->map[$md5])) {
+                    $this->map[$md5] = ['f' => $item['_form'], 'i' => $item['id'], 'u' => $item['url']];
+                }
+            } else {
+                unset($level[$key]);
+            }
+        }
+    }
+
 
     private function listNested($path = '')
     {

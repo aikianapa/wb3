@@ -450,7 +450,7 @@ class tagForeach
         $this->options = $options;
         $this->sort($list);
         if (!in_array($dom->params('count'),["0",""])) {
-            isset($list) ? $$item = $list : $item = [];
+            isset($list) ? $item = $list : $item = [];
             $list = [];
             $start = 1;
             $count = $dom->params->count;
