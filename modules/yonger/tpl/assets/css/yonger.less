@@ -282,7 +282,7 @@ body {
                 height: 50px;
 
                 &:hover {
-                    color: @color-hover !important;
+                    color: @color-hover  !important;
 
                     svg [stroke] {
                         stroke: @color-hover;
@@ -469,7 +469,30 @@ body {
     }
 
     >ol {
-        padding: 10px 30px 20px 30px;
+        padding: 10px 0px 20px 20px;
+
+        &#pagesList {
+            >.dd-item:first-child {
+                >.dd-handle {
+                    display: none!important;
+                }
+
+                >button {
+                    display: none !important;
+                }
+
+                &:before {
+                    position: absolute;
+                    content: ' ';
+                    background: url(/module/myicons/home-circle.svg?stroke=323232&size=24) 50% 50% no-repeat;
+                    width: 30px;
+                    height: 24px;
+                    top: 3px;
+                    left: -15px;
+                }
+            }
+        }
+
     }
 
     &.dd {
@@ -489,11 +512,13 @@ body {
         font-size: 14px;
         font-style: normal;
         align-items: center;
-        margin-bottom:5px;
+        margin-bottom: 5px;
         border-radius: @radius;
+
         &.active {
             background-color: @color-gray;
         }
+
         &.hover {
             >.dd-text {
                 background-color: #f2f4fc;
@@ -510,6 +535,10 @@ body {
             cursor: pointer;
         }
 
+        &.dd-collapsed>ol {
+            display: none;
+        }
+
         .dd-text {
             font-weight: 600;
             height: @dd-height;
@@ -518,8 +547,7 @@ body {
         }
 
         .dd-info {
-            height: @dd-height;
-            align-items: center;
+            text-align: right;
             margin: 0;
 
             .row {
@@ -541,11 +569,11 @@ body {
         }
 
         button[data-action] {
-            right: -20px;
+            left: -40px;
             position: absolute;
             z-index: 100;
             height: 24px;
-            top: 9px;
+            top: 0;
 
             &[data-action=collapse]:before {
                 content: ' ';
@@ -569,7 +597,7 @@ body {
             padding: 5px 10px;
             box-sizing: border-box;
             position: absolute;
-            cursor:no-drop;
+            cursor: no-drop;
             display: inline;
             border: 0;
             background: none;
@@ -578,6 +606,7 @@ body {
             z-index: 110;
             height: 30px;
             width: 35px;
+
             &:before {
                 position: absolute;
                 content: ' ';
@@ -594,6 +623,7 @@ body {
             font-weight: normal;
             color: #323232;
             font-size: 12px;
+
             &:before {
                 position: absolute;
                 left: 20px;
@@ -602,6 +632,7 @@ body {
                 width: 15px;
                 height: 15px;
             }
+
             &:hover {
                 text-decoration: underline;
             }
@@ -612,10 +643,11 @@ body {
             display: inline;
             border: 0;
             background: none;
-            top: 5px;
-            margin-left: -30px;
+            top: 0px;
+            left:-20px;
             z-index: 110;
-            width: 35px;
+            width: 24px;
+
             &:before {
                 position: absolute;
                 content: ' ';

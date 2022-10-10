@@ -32,7 +32,7 @@ class modYonger
         in_array($mode,explode(',','render,workspace,logo,signin,signup,signrc,createSite,blockpreview'))? null : $app->apikey('module');
         if (in_array($mode,explode(',','createSite')) AND $app->getDomain( $app->route->refferer) !== $app->route->domain ) {
             echo json_encode(['error'=>true,'msg'=>'Access denied']);
-            die;
+            exit;
         }
         $this->app = &$app;
         if (method_exists($this, $mode)) {
@@ -290,10 +290,11 @@ class modYonger
             if ($flag == false) {return '{"error":true}';}
             $item['active'] = '';
             $item = $app->itemSave('pages', $item);
-            return json_encode($item);
+            echo json_encode($item);
         } else {
-            return '{"error":true}';
+            echo '{"error":true}';
         }
+        exit;
     }
 
 

@@ -2101,91 +2101,41 @@ wbapp.trigger = async function(trigger, event = null, data = null) {
     }
 }
 
+String.prototype.replaceArray = function(find, replace) {
+    var replaceString = this;
+    var regex;
+    for (var i = 0; i < find.length; i++) {
+        regex = new RegExp(find[i], "g");
+        replaceString = replaceString.replace(regex, replace[i]);
+    }
+    return replaceString;
+};
 
 wbapp.furl = function(str) {
-    str = str.replace(/[^\/а-яА-Яa-zA-Z0-9_-]{1,}/gm, "_");
-    str = str.replace(/[__]{1,}/gm, "_");
-    str = str_replace('-', '_', str);
     str = wbapp.transilt(str);
-    return str;
+    str = str.replace("'", '');
+    str = str.replace(/[^\/а-яА-Яa-zA-Z0-9_-]{1,}/gm, "-");
+    str = str.replace(/[__]{1,}/gm, "_");
+    str = str.replace(/[--]{1,}/gm, "-");
+    if (str.substr(-1) == '-' || str.substr(-1) == '_') {
+        str = str.substr(0, str.length - 1)
+    }
+    //str = str.replace('-', '_');
+    return str.toLowerCase();
 }
 
+
+
 wbapp.transilt = function(word) {
-    let answer = "";
-    let a = {};
-    let i;
-    a["Ё"] = "YO";
-    a["Й"] = "I";
-    a["Ц"] = "TS";
-    a["У"] = "U";
-    a["К"] = "K";
-    a["Е"] = "E";
-    a["Н"] = "N";
-    a["Г"] = "G";
-    a["Ш"] = "SH";
-    a["Щ"] = "SCH";
-    a["З"] = "Z";
-    a["Х"] = "H";
-    a["Ъ"] = "'";
-    a["ё"] = "yo";
-    a["й"] = "i";
-    a["ц"] = "ts";
-    a["у"] = "u";
-    a["к"] = "k";
-    a["е"] = "e";
-    a["н"] = "n";
-    a["г"] = "g";
-    a["ш"] = "sh";
-    a["щ"] = "sch";
-    a["з"] = "z";
-    a["х"] = "h";
-    a["ъ"] = "'";
-    a["Ф"] = "F";
-    a["Ы"] = "Y";
-    a["В"] = "V";
-    a["А"] = "a";
-    a["П"] = "P";
-    a["Р"] = "R";
-    a["О"] = "O";
-    a["Л"] = "L";
-    a["Д"] = "D";
-    a["Ж"] = "ZH";
-    a["Э"] = "E";
-    a["ф"] = "f";
-    a["ы"] = "y";
-    a["в"] = "v";
-    a["а"] = "a";
-    a["п"] = "p";
-    a["р"] = "r";
-    a["о"] = "o";
-    a["л"] = "l";
-    a["д"] = "d";
-    a["ж"] = "zh";
-    a["э"] = "e";
-    a["Я"] = "Ya";
-    a["Ч"] = "CH";
-    a["С"] = "S";
-    a["М"] = "M";
-    a["И"] = "I";
-    a["Т"] = "T";
-    a["Ь"] = "'";
-    a["Б"] = "B";
-    a["Ю"] = "YU";
-    a["я"] = "ya";
-    a["ч"] = "ch";
-    a["с"] = "s";
-    a["м"] = "m";
-    a["и"] = "i";
-    a["т"] = "t";
-    a["ь"] = "'";
-    a["б"] = "b";
-    a["ю"] = "yu";
-
-    for (i = 0; i < word.length; ++i) {
-
-        answer += a[word[i]] === undefined ? word[i] : a[word[i]];
-    }
-    return answer;
+    let cyr = [
+        'ё', 'ж', 'ч', 'щ', 'ш', 'ю', 'а', 'б', 'в', 'г', 'д', 'е', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ъ', 'ы', 'ь', 'э', 'я',
+        'Ё', 'Ж', 'Ч', 'Щ', 'Ш', 'Ю', 'А', 'Б', 'В', 'Г', 'Д', 'Е', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ъ', 'Ы', 'Ь', 'Э', 'Я'
+    ]
+    let lat = [
+        'yo', 'j', 'ch', 'sch', 'sh', 'u', 'a', 'b', 'v', 'g', 'd', 'e', 'z', 'i', 'i', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'h', 'c', '`', 'y', '', 'e', 'ya',
+        'yo', 'J', 'Ch', 'Sch', 'Sh', 'U', 'A', 'B', 'V', 'G', 'D', 'E', 'Z', 'I', 'I', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'F', 'H', 'c', '`', 'Y', '', 'E', 'ya'
+    ]
+    return word.replaceArray(cyr, lat)
 }
 
 wbapp.check_email = function(email) {
