@@ -640,7 +640,7 @@ wbapp.alive = async function() {
 
 wbapp.store = function(storage = null, key, value = undefined, binds = true) {
     if (storage == null) storage = localStorage
-    key = key.replace('-', '__', key)
+    key = str_replace('-', '__', key)
 
     function getKey(list) {
         key = "";
