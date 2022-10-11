@@ -50,14 +50,14 @@ var yonline = Ractive.extend({
         collapse(ev) {
             let data = $(ev.node).parent('[data-item]').data();
             $(ev.node).parent('[data-item]').addClass('dd-collapsed')
-            wbapp.data('yon_pagelist_exp_' + data.form + data.item, false)
+            wbapp.data('yonger.pagelist.exp_' + data.form + '_' + data.item, false)
             data.inner == "pages" ? null : ev.set('ch', []);
             
         },
         expand(ev) {
             let data = $(ev.node).parent('[data-item]').data();
             $(ev.node).parent('[data-item]').removeClass('dd-collapsed')
-            wbapp.data('yon_pagelist_exp_' + data.form + data.item, true)
+            wbapp.data('yonger.pagelist.exp_' + data.form + '_' + data.item, true)
             if (data.inner !== "pages") {
                 options = "?&@size=200&@return=id,_id,_form,header,name,url"
                 wbapp.post('/api/v2/list/' + data.inner + options, {},function(res){
@@ -101,7 +101,7 @@ var yongerPages = new Ractive({
                 let ch = []
                 $.each(list, function(i, item) {
                     if (item !== undefined && item.path == path) {
-                        if (wbapp.data('yon_pagelist_exp_' + item._form + item.id) !== true) {
+                        if (wbapp.data('yonger.pagelist.exp_' + item._form + '_' + item.id) !== true) {
                             item.dd_collapsed = "dd-collapsed"
                         } else {
                             item.dd_collapsed = ""
