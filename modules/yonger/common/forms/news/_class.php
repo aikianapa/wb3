@@ -7,5 +7,9 @@ class newsClass extends cmsFormsClass {
         isset($item['header'])  AND isset($item['header'][$_SESSION['lang']]) ? $item['header'] = $item['header'][$_SESSION['lang']] : null;
         isset($item['date']) ? $item['date'] = date('d.m.Y H:i',strtotime($item['date'])) : null;
     }
+
+    function afterItemSave(&$item) {
+        $this->app->shadow($this->app->houte->host.'/module/yonger/yonmap');
+    }
 }
 ?>
