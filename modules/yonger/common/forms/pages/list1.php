@@ -218,7 +218,13 @@ var yongerPages = new Ractive({
         </span>
         <span class="dd-info col-sm-3">
             {{#if ~/role == "admin"}}
-            <!--img src="/module/myicons/24/0168fa/item-select-plus-add.svg" class="dd-add cursor-pointer"-->
+            {{#if inner}}
+            {{#if inner !== "pages"}}
+            {{#if inner !== _form}}
+            <img src="/module/myicons/24/0168fa/item-select-plus-add.svg" class="dd-add cursor-pointer">
+            {{/if}}
+            {{/if}}
+            {{/if}}
             <img src="/module/myicons/24/7987a1/copy-paste-select-add-plus.svg" width="24" height="24"
                 class="cursor-pointer" on-click="copy"> {{/if}}
             <img src="/module/myicons/24/7987a1/content-edit-pen.svg" width="24" height="24" class="cursor-pointer"
