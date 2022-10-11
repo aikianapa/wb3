@@ -87,6 +87,7 @@ class pagesClass extends cmsFormsClass
         $this->list = $this->app->itemList('pages', ['return' => 'id,name,_form,header,active,attach,attach_filter,url,path,_sort']);
         $this->list = $this->list['list'];
         $this->yonmapnest();
+        print_r($this->map);
         $app->putContents($app->vars('_env.dba') . '/_yonmap.json', json_encode($this->map));
         header("Content-type:application/json");
         echo json_encode(['count'=>count($this->map)]);
@@ -104,14 +105,14 @@ class pagesClass extends cmsFormsClass
             return '';
         }
         foreach ($level as $item) {
-            in_array($item['url'], ['/', '']) ? $url = '/'.$item['name'] : $url = $item['url'].'/'.$item['name'];
+            in_array($item['url'], ['/', '']) ? $url = '/'.$item['name'] : $url = $item['path'].'/'.$item['name'];
             $md5 = md5($url);
             unset($this->list[$item['id']]);
             $attach = (isset($item['attach']) and $item['attach'] > ' ') ? true : false;
             $res1 = $res2 = null;
             $res1 = $this->yonmapnest($url);
-            $res2 = $attach ? $this->yonmaptable($item, $url) : null;
             substr($item['id'], 0, 1) == '_' or isset($this->map[$md5]) ? null : $this->map[$md5] = ['f' => $item['_form'], 'i' => $item['id'], 'u' => $url, 'n' => $item['name']];
+            $res2 = $attach ? $this->yonmaptable($item, $url) : null;
         }
     }
 
@@ -128,9 +129,13 @@ class pagesClass extends cmsFormsClass
             'return' => 'id,name,_form,header,active,tags',
             'filter' => $filter
         ];
+        $class = $this->app->formClass($table);
         $level = $this->app->itemList($table, $options);
         $level = $level['list'];
         foreach ($level as $key => $item) {
+            if (method_exists($class,'beforeItemShow')) {
+                $class->beforeItemShow($item);
+            }
             isset($item['name']) ? null : $item['name'] = null;
             isset($item['header']) ? null : $item['header'] = $item['name'];
             $item['_form'] = $table;
