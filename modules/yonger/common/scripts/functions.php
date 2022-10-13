@@ -6,6 +6,7 @@
         $map = $app->vars('_env.dba').'/_yonmap.json';
         $app->route->uri == '/' ? $uri = '/home' : $uri = $app->route->uri;
         $app->yonmap = [];
+
         if (is_file($map)) {
             $map = (array)json_decode(file_get_contents($map), true);
             $app->yonmap = &$map;
@@ -19,9 +20,16 @@
                 $app->route->name = $map[$idx]['n'];
                 isset($app->route->tpl) ? null : $app->route->tpl = $map[$idx]['f'].".php";
                 $app->vars('_route', $app->objToArray($app->route));
-                $route = $app->route;
-                return $route;
+                return $app->route;
+            } else if ($app->vars('_route.name') > '' && $app->vars('_route.form') > '') {
+                foreach ($map as $m) {
+                    if ($m['f'] == $app->vars('_route.form') && $m['n'] == $app->vars('_route.name') && $m['f'] == $app->vars('_route.form') ) {
+                        $app->route->item = $m['i'];
+                        $app->route->table = $m['f'];
+                    }
+                }
             }
+            return $app->route;
         }
 
         if ($app->vars('_route.controller') == 'form' && $app->vars('_route.mode') == 'show') {
