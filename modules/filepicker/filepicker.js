@@ -338,6 +338,7 @@ $(document).on("filepicker-js", async function() {
                         let $form = $card.find('form');
                         $form.find('[data-title]').val($img.attr('title'));
                         $form.find('[data-alt]').val($img.attr('alt'));
+                        $form.find('[data-path]').val(urldecode($img.attr('data-src')));
                         $form.find('[data-title],[data-alt]').off('change');
                         $form.find(':input').on('change', function() {
                             $img.attr('title', $form.find('[data-title]').val());

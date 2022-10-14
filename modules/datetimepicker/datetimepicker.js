@@ -46,6 +46,14 @@ $(document).on("datatimepicker-js", function() {
                 options.minView = 0;
                 options.viewSelect = 'hour';
                 options.todayBtn = false;
+            } else if ($(picker).attr("type") == "monthpicker") {
+                options.startView = 3;
+                options.minView = 3;
+                options.format = "mm.yyyy";
+            } else if ($(picker).attr("type") == "yearpicker") {
+                options.startView = 4;
+                options.minView = 4;
+                options.format = "yyyy";
             }
 
             if ($(picker).data('date-start') !== undefined) options.startDate = $(picker).data('date-start');
@@ -63,6 +71,10 @@ $(document).on("datatimepicker-js", function() {
                         } else if ($(picker).attr("type") == "datepicker") {
                             $(input).attr("value", date("Y-m-d", strtotime($(picker).val())));
                         } else if ($(picker).attr("type") == "timepicker") {
+                            $(input).attr("value", $(picker).val());
+                        } else if ($(picker).attr("type") == "monthpicker") {
+                            $(input).attr("value", $(picker).val());
+                        } else if ($(picker).attr("type") == "yearpicker") {
                             $(input).attr("value", $(picker).val());
                         }
                     }
