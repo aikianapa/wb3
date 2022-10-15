@@ -8,12 +8,13 @@ class modLanginp
     }
     public function init($dom)
     {
-        if ($dom->tagName !== 'input' OR isset($dom->done)) return;
+        if (!in_array($dom->tagName,['input','textarea']) OR isset($dom->done)) return;
         $dom->done = true;
-        $out = $dom->app->fromFile(__DIR__ ."/langinp_ui.php");
+        $ui = $dom->tagName == 'input' ? "/langinp_ui.php" : "/langtxt_ui.php";
+        $out = $dom->app->fromFile(__DIR__ .$ui);
         $attrs = $dom->attributes;
-        $inp = $out->find('input.mod-langinp');
-        $txt = $out->find('textarea.mod-langinp');
+        $inp = $dom->tagName == 'input' ? $out->find('input.mod-langinp') : $out->find('textarea.mod-langinp');
+        $txt = $out->find('textarea.mod-langinp-data');
         foreach($attrs as $at) {
             $at->name == 'class' ? $inp->addClass($at->value) : $inp->attr($at->name, $at->value);
         }
@@ -22,6 +23,7 @@ class modLanginp
         $out->copy($dom);
         $inp->removeAttr('name');
         $inp->removeAttr('wb');
+        $inp->removeAttr('data-params');
         $l = wbListLocales($dom->app);
         if (count($l)) {
             $locales = [];
@@ -44,12 +46,19 @@ class modLanginp
         $out->fetch();
         if (isset($dom->item[$name])) {
             foreach ((array)$dom->item[$name] as $k => $v) {
-                $out->find('input[data-name="'.$k.'"]')->attr('value', $v);
-                $k == $dom->app->vars('_env.lang') ? $inp->attr('value', $v) : null;
+                $tag = $out->find('[data-name="'.$k.'"]');
+                if ($inp->tagName == 'textarea') {
+                    $tag->inner($v);
+                    $k == $dom->app->vars('_env.lang') ? $inp->inner($v) : null;
+                } else {
+                    $tag->attr('value', $v);
+                    $k == $dom->app->vars('_env.lang') ? $inp->attr('value', $v) : null;
+                }
             }
         }
-        $out->find('textarea.mod-langinp')->text(json_encode($dom->item[$name]));
+        $out->find('textarea.mod-langinp-data')->text(json_encode($dom->item[$name]));
         $out->find('.dropdown-item input')->removeAttr('name');
+        $out->find('.dropdown-item textarea')->removeAttr('name');
         $dom->after($out->outer());
         $dom->remove();
 

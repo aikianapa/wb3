@@ -336,6 +336,9 @@ class wbDom extends DomQuery
     public function fetchStrict()
     {
         if ($this->is('[wb-off]') OR in_array($this->tagName, ['template', 'code','textarea','pre'])) {
+            if ($this->tagName == 'textarea' && $this->is('[wb-module]')) {
+                return;
+            }
             $this->strict = true;
             // set locale for template
             if (strpos($this->outer(), '_lang.') !== 0) {

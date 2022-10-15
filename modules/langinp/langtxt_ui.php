@@ -15,7 +15,7 @@
                                         {{_key}}
                                     </span>
                                 </div>
-                                <input class="form-control" type="text" data-name="{{_key}}" name="{{_key}}" placeholder="{{label}}">
+                                <textarea class="form-control" rows="auto" data-name="{{_key}}" name="{{_key}}" placeholder="{{label}}"></textarea>
                             </div>
                         </div>
 
@@ -23,7 +23,7 @@
             </div>
 
         <textarea type="json" class="mod-langinp-data d-none"></textarea>
-        <input class="form-control mod-langinp" type="text" name="label">
+        <textarea class="form-control mod-langinp" type="text" name="label"></textarea>
         <script wb-app remove>
             wbapp.loadScripts(["/engine/modules/langinp/langinp_mod.js"],"langinp-mod-js");
         </script>
