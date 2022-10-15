@@ -19,6 +19,7 @@ function wb_multiinput_init() {
             }
             $multi.store();
             wbapp.init();
+            $multi.trigger("multiinput_after_remove");
             wbapp.trigger("multiinput_after_remove", $multi);
             return false;
         });
@@ -28,8 +29,9 @@ function wb_multiinput_init() {
             var line = $(this).parent(".wb-multiinput-row");
             $(line).after(wbapp.template["#" + $multi.attr("id")].html);
             $multi.store();
+            $multi.trigger("multiinput_after_add", line.next());
+            wbapp.trigger("multiinput_after_add", line.next());
             wbapp.init();
-            wbapp.trigger("multiinput_after_add", line);
             return false;
         });
 
