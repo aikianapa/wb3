@@ -1,9 +1,9 @@
 <?php
 class cmsFormsClass {
-
     function __construct($app) {
         $this->app = $app;
         $this->form = $app->vars("_route.form");
+        method_exists($this, '_init') ? $this->_init() : null;
     }
 
     function __call($method,$params) {
