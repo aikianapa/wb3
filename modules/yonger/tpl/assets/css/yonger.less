@@ -29,6 +29,12 @@ body {
     font-family: 'Roboto';
     font-weight: 400;
 
+    textarea[rows=auto] {
+        max-height: 50vh;
+        overflow-y: auto!important;
+    }
+
+
     .table {
         thead {
             tr {
@@ -99,6 +105,10 @@ body {
         vertical-align: middle;
     }
 
+    .form-control:focus {
+        box-shadow: none;
+        border-color: initial;
+    }
 
     /*
     .form-control {

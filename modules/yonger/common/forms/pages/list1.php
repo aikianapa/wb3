@@ -19,7 +19,7 @@ var yonline = Ractive.extend({
                 'url': '/cms/ajax/form/' + data.form + '/edit/' + data.item,
                 'append': '#yongerPages modals'
             });
-            $('#yongerPages').data('ev',ev)
+            $('#yongerPages').data('ev', ev)
         },
         copy(ev) {
             let data = $(ev.node).parents('[data-item]').data();
@@ -33,7 +33,7 @@ var yonline = Ractive.extend({
                     res.data.ch = []
                     res.data.inner = data.inner
                     res.data.url = data.path + '/' + wbapp.furl(res.data.header)
-                    ev.component.parent.splice('ch',data.idx + 1,0,res.data)
+                    ev.component.parent.splice('ch', data.idx + 1, 0, res.data)
                 }
             });
         },
@@ -52,7 +52,7 @@ var yonline = Ractive.extend({
             $(ev.node).parent('[data-item]').addClass('dd-collapsed')
             wbapp.data('yonger.pagelist.exp_' + data.form + '_' + data.item, false)
             data.inner == "pages" ? null : ev.set('ch', []);
-            
+
         },
         expand(ev) {
             let data = $(ev.node).parent('[data-item]').data();
@@ -60,8 +60,8 @@ var yonline = Ractive.extend({
             wbapp.data('yonger.pagelist.exp_' + data.form + '_' + data.item, true)
             if (data.inner !== "pages") {
                 options = "?&@size=200&@return=id,_id,_form,header,name,url"
-                wbapp.post('/api/v2/list/' + data.inner + options, {},function(res){
-                    $.each(res.result,function(i,item){
+                wbapp.post('/api/v2/list/' + data.inner + options, {}, function(res) {
+                    $.each(res.result, function(i, item) {
                         item.ch = []
                         item.url = data.path + '/' + wbapp.furl(item.header)
                         ev.push('ch', item);
@@ -77,7 +77,7 @@ var yonline = Ractive.extend({
                 .on('confirm', function() {
                     wbapp.post(`/api/v2/delete/${data.form}/${data.item}`, {}, function(res) {
                         if (res.error !== undefined && res.error == false) {
-                            ev.component.parent.splice('ch',data.idx,1)
+                            ev.component.parent.splice('ch', data.idx, 1)
                         }
                     });
                 });
@@ -101,7 +101,8 @@ var yongerPages = new Ractive({
                 let ch = []
                 $.each(list, function(i, item) {
                     if (item !== undefined && item.path == path) {
-                        if (wbapp.data('yonger.pagelist.exp_' + item._form + '_' + item.id) !== true) {
+                        if (wbapp.data('yonger.pagelist.exp_' + item._form + '_' + item.id) !==
+                            true) {
                             item.dd_collapsed = "dd-collapsed"
                         } else {
                             item.dd_collapsed = ""
@@ -133,21 +134,21 @@ var yongerPages = new Ractive({
             })
         },
         render(ev) {
-                $(document).off('wb-form-save')
-                $(document).on('wb-form-save', function(ev, el){
-                    let item = el.data.id
-                    let form = el.data._form
-                    let node = $('#yongerPages').data('ev').node
-                    let line = $('#yongerPages').data('ev').component;
-                    
-                    if (form !== "pages") {
-                        el.data.url = $(node).parents(".dd-item").parents(".dd-item").data("path")+"/"+wbapp.furl(el.data.header)
-                    } else {
+            $(document).off('wb-form-save')
+            $(document).on('wb-form-save', function(ev, el) {
+                let item = el.data.id
+                let form = el.data._form
+                let node = $('#yongerPages').data('ev').node
+                let line = $('#yongerPages').data('ev').component;
 
-                    }
-                    console.log(el.data);
-                    line.set(el.data)
-                })
+                if (form !== "pages") {
+                    el.data.url = $(node).parents(".dd-item").parents(".dd-item").data("path") + "/" +
+                        wbapp.furl(el.data.header)
+                } else {
+
+                }
+                line.set(el.data)
+            })
 
             wbapp.loadScripts(['/engine/lib/js/nestable/nestable.min.js'], '', function() {
                 let changePath = async function(e, datapath = null) {
@@ -196,8 +197,8 @@ var yongerPages = new Ractive({
 })
 </script>
 <div id="yonline" class="d-none" wb-off>
-    <li class="dd-item {{dd_collapsed}} row" data-idx="{{@index}}" data-item="{{id}}" data-name="{{name}}" data-path="{{url}}"
-        data-form="{{_form}}" data-inner="{{inner}}">
+    <li class="dd-item {{dd_collapsed}} row" data-idx="{{@index}}" data-item="{{id}}" data-name="{{name}}"
+        data-path="{{url}}" data-form="{{_form}}" data-inner="{{inner}}">
         {{#if ch}}
         <button class="dd-collapse" data-action="collapse" type="button" on-click="collapse">Collapse</button>
         <button class="dd-expand" data-action="expand" type="button" on-click="expand">Expand</button>
@@ -274,7 +275,6 @@ var yongerPages = new Ractive({
                     </div>
                 </span>
             </div>
-
         </span>
         <ol id="pagesList" class="dd-list">
             {{#.root}}
