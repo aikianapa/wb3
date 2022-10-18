@@ -2,6 +2,7 @@
 
 require_once __DIR__ .'/vendor/autoload.php';
 use Notihnio\RequestParser\RequestParser;
+use WebPConvert\Options\Options;
 
 class modApi
 {
@@ -10,22 +11,24 @@ class modApi
     private $mode;
     private $method;
 
-    function __construct($app)
+    public function __construct($app)
     {
         $mode = $this->mode = $app->vars('_route.mode');
         if (!wbCheckBacktrace("wbModuleClass")) {
             $this->init($app);
             exit;
-        } else if (in_array(strtolower($mode),['getsett'])) {
+        } elseif (in_array(strtolower($mode), ['getsett'])) {
             $this->ajaxSettings($app);
         }
     }
 
-    function ajaxSettings($sett = null) {
+    public function ajaxSettings($sett = null)
+    {
         $sett = [];
         return $sett;
     }
-    function init($app) {
+    public function init($app)
+    {
         set_time_limit(60);
         header('Content-Type: charset=utf-8');
         header('Content-Type: application/json');
@@ -43,10 +46,13 @@ class modApi
                 $func = 'api'.$mode;
                 method_exists($form, $func) ? $result = $form->$func() : null;
             }
-            echo $app->jsonEncode($result);
+            $result = $app->jsonEncode($result);
+            $re = '/,"__token":"(.*)"|"__token":"(.*)"/mU';
+            $result = preg_replace($re, '', $result);
+            echo $result;
         }
     }
-    function apikey($mode = null)
+    public function apikey($mode = null)
     {
         $app = &$this->app;
         if (in_array($this->mode, ['login','logout','token'])) {
@@ -57,7 +63,7 @@ class modApi
             return true;
         }
 
-        if ($app->vars('_route.token') && in_array($app->vars('_route.token'),$app->vars('_sett.modules.api.tokens'))) {
+        if ($app->vars('_route.token') && in_array($app->vars('_route.token'), $app->vars('_sett.modules.api.tokens'))) {
             return true;
         }
 
@@ -90,7 +96,7 @@ class modApi
         return ['token' => $token];
     }
 
-    function checkMethod($methods)
+    public function checkMethod($methods)
     {
         $methods = (array)$methods;
         if (!in_array(strtolower($this->app->route->method), $methods)) {
@@ -100,7 +106,7 @@ class modApi
         $this->method = strtolower($this->app->route->method);
     }
 
-    function create()
+    public function create()
     {
         /*
         /api/v2/create/{{table}}/{{id}}
@@ -112,7 +118,7 @@ class modApi
         $request = RequestParser::parse(); // PUT, DELETE, etc.. support
         //$_POST = $request->params;
         $_FILES = $request->files;
-        
+
         if ($this->method == 'get') {
             $post = &$_GET;
         } else {
@@ -121,7 +127,7 @@ class modApi
         $item = $this->app->vars('_route.item');
 
         ($item == '' && isset($post['id'])) ? $item = $post['id'] : null;
-        
+
         $check = $this->app->itemRead($table, $item);
         if ($check) {
             header('HTTP/1.1 409 Conflict', true, 409);
@@ -134,7 +140,7 @@ class modApi
         die;
     }
 
-        function read()
+        public function read()
         {
             /*
             /api/v2/read/{{table}}/{{id}}
@@ -155,7 +161,7 @@ class modApi
                 return $item;
             }
         }
-    function update()
+    public function update()
     {
         /*
         /api/v2/update/{{table}}/{{id}}
@@ -185,7 +191,7 @@ class modApi
         die;
     }
 
-    function delete()
+    public function delete()
     {
         /*
         /api/v2/delete/{{table}}/{{id}}
@@ -208,7 +214,7 @@ class modApi
         }
     }
 
-    function login()
+    public function login()
     {
         $this->checkMethod(['post','put','get','auth']);
         $type = $this->table ? $this->table : $this->app->vars('_sett.modules.login.loginby');
@@ -235,7 +241,7 @@ class modApi
         }
     }
 
-    function logout()
+    public function logout()
     {
         $group = (object)$this->app->user->group;
         @$redirect = $group->url_logout > '' ? $group->url_logout : '/';
@@ -248,7 +254,7 @@ class modApi
 
 
 
-    function upload()
+    public function upload()
     {
         /*
         Загрузка файлов
@@ -273,7 +279,7 @@ class modApi
         $request = RequestParser::parse();
         $_FILES = $request->files;
         $filename = basename($_FILES['file']['name']);
-        $file = str_replace('//','/',$path .'/'. $filename);
+        $file = str_replace('//', '/', $path .'/'. $filename);
         $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
         if (move_uploaded_file($_FILES['file']['tmp_name'], $file)) {
             $msg = 'File uploaded';
@@ -290,11 +296,10 @@ class modApi
         }
         header('HTTP/1.1 415 '.$msg, true, 415);
         return ['error'=>true,'msg'=>$msg,'errno'=>415];
-
     }
 
 
-    function func()
+    public function func()
     {
         /*
         Вызов функции из класса формы
@@ -306,7 +311,7 @@ class modApi
         $form = $app->route->form;
         $func = $app->route->func;
         $class = $app->formClass($form);
-        if (!method_exists($class,$func)) {
+        if (!method_exists($class, $func)) {
             header('HTTP/1.1 404 Not found', true, 404);
             return ['error'=>true,'msg'=>"Function {$func} not found",'errno'=>404];
         }
@@ -314,13 +319,15 @@ class modApi
     }
 
 
-    function list()
+    public function list()
     {
         /*
         /api/v2/list/{{table}}
         /api/v2/list/{{table}}/{{id}}
         /api/v2/list/{{table}}/{{id}}/{{field}}
+        /api/v2/list/{{table}}/{{id}}/{{field}}.*?@return=fld1,fld2
         /api/v2/list/{{table}}?field=value&@option=value
+
 
         query:
             &field=[val1,val2]   - in_array(field,[..,..]);
@@ -349,16 +356,48 @@ class modApi
         $options = $this->prepQuery($app->route->query);
         $form = $app->formClass($table);
         $app->vars('_post.filter') > '' ? $options['filter'] = $app->vars('_post.filter') : null;
-
+        $options = (object)$options;
         if (isset($app->route->item)) {
-            $json = $app->itemRead($table, $app->route->item);        
+            $json = $app->itemRead($table, $app->route->item);
             if ($form && @method_exists($form, 'beforeItemShow')) {
                 $json = $form->beforeItemShow($json);
             }
             if (isset($app->route->field)) {
                 $fields = $app->Dot();
                 $fields->setReference($json);
-                $json = $fields->get($app->route->field);
+                if (substr($app->route->field, -2) == '.*') {
+                    $json = $fields->get(substr($app->route->field, 0, -2));
+                    $retm = 'arr';
+                } else {
+                    $json = $fields->get($app->route->field);
+                    $retm = 'val';
+                }
+                $return = isset($options->return) ? explode(',', $options->return) : false;
+                $tmp = [];
+                if ($retm == 'val') {
+                        if (!$return) {
+                            $tmp[] = $fields->get();
+                        } else {
+                            foreach ($return as $ret) {
+                                $ret = trim($ret);
+                                $tmp[$ret] = $fields->get($ret);
+                            }
+                        }
+                } elseif ($retm == 'arr') {
+                    foreach ((array)$json as $jtm) {
+                        $jtmp = [];
+                        if (!$return) {
+                            $tmp[] = $jtm;
+                        } else {
+                            foreach ($return as $ret) {
+                                $ret = trim($ret);
+                                $jtmp[$ret] = isset($jtm[$ret]) ? $jtm[$ret] : null;
+                            }
+                            $tmp[] = $jtmp;
+                        }
+                    }
+                }
+                $json = $tmp;
             }
             return $json;
         } else {
@@ -366,10 +405,10 @@ class modApi
             $json['list'] = (array)$json['list'];
 
             if ($form && @method_exists($form, 'beforeItemShow')) {
-                foreach($json['list'] as &$item) $form->beforeItemShow($item);
+                foreach ($json['list'] as &$item) {
+                    $form->beforeItemShow($item);
+                }
             }
-
-            $options = (object)$options;
             if (isset($options->chunk)) {
                 return (array)$json;
             } elseif (!isset($options->size)) {
@@ -383,7 +422,7 @@ class modApi
         }
     }
 
-    function apiOptions($arr)
+    public function apiOptions($arr)
     {
         // convert options array to string for __options
         $options = http_build_query($arr);
@@ -391,7 +430,7 @@ class modApi
         return $options;
     }
 
-    function prepQuery($query)
+    public function prepQuery($query)
     {
         $query = (array)$query;
         $options = [];
@@ -415,7 +454,6 @@ class modApi
                             break;
                     }
                 } else {
-
                     switch (substr($key, -2)) {
                         case '<<': // меньше (<)
                             $query[substr($key, 0, strlen($key) -2)] = ['$lt'=>$val];

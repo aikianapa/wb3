@@ -54,8 +54,8 @@ class attrChange
                 mkdir($dir, 0766, true);
             }
             file_put_contents($dir.'/'.$fname, $cache);
-            $sl[] = "'".$selector."'";
-            $fn[] = "'".$fname."'";
+            $sl[] = "'{$selector}'";
+            $fn[] = "'{$fname}'";
         }
 
         $sl = implode(',', $sl);
