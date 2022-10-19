@@ -388,9 +388,8 @@ class modApi
             }
             return $json;
         } else {
-            $json = $app->itemList($table, $options);
+            $json = $app->itemList($table, (array)$options);
             $json['list'] = (array)$json['list'];
-
             if ($form && @method_exists($form, 'beforeItemShow')) {
                 foreach($json['list'] as &$item) $form->beforeItemShow($item);
             }
