@@ -24,6 +24,6 @@
         <textarea type="json" class="mod-langinp-data d-none"></textarea>
         <input class="form-control mod-langinp" type="text" data-lang="{{_sess.lang}}" on-change="edit" name="label">
         <script wb-app remove>
-            wbapp.loadScripts(["/engine/modules/langinp/langinp_mod.js?{{wbNewId()}}"], "langinp-mod-js");
+            wbapp.loadScripts(["/engine/modules/langinp/langinp_mod.js"], "langinp-mod-js");
         </script>
     </div>
