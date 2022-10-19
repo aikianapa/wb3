@@ -15,13 +15,17 @@ $(document).on('langinp-mod-js', function() {
                 data: {},
                 on: {
                     init() {
+                        let data = $(mod).find('textarea.mod-langinp-data').html();
                         try {
-                            this.set(json_decode($(mod).find('textarea.mod-langinp-data').html()))
+                            this.set(json_decode(data))
                         } catch (error) {
-                            null
+                            let lang = $(mod).find('textarea.mod-langinp-data').next('[data-lang]').data('lang')
+                            tmp = {}
+                            tmp[lang] = data
+                            this.set(tmp)
                         }
                     },
-                    render() {
+                    complete() {
                         $.each(this.get(), function(lng, val) {
                             $(mod).find(`[data-lang="${lng}"]:input`).val(val)
                         })
@@ -34,7 +38,7 @@ $(document).on('langinp-mod-js', function() {
                     edit(ev) {
                         let lng = $(ev.node).data('lang')
                         ractive.set(lng, $(ev.node).val())
-                        ractive.fire('render')
+                        ractive.fire('complete')
                         $(mod).find('textarea.mod-langinp-data').html(json_encode(ractive.get())).trigger('change')
                     }
                 }
