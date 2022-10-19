@@ -351,51 +351,40 @@ class modApi
         $table = $app->route->table;
         $query = (array)$app->route->query;
         $options = $this->prepQuery($app->route->query);
+        $options = (object)$options;
         $form = $app->formClass($table);
         $app->vars('_post.filter') > '' ? $options['filter'] = $app->vars('_post.filter') : null;
-
         if (isset($app->route->item)) {
             $json = $app->itemRead($table, $app->route->item);        
             if ($form && @method_exists($form, 'beforeItemShow')) {
                 $json = $form->beforeItemShow($json);
             }
             if (isset($app->route->field)) {
-
                 $fields = $app->Dot();
+                $jflds = $app->Dot();
+
                 $fields->setReference($json);
                 if (substr($app->route->field, -2) == '.*') {
-                    $json = $fields->get(substr($app->route->field, 0, -2));
-                    $retm = 'arr';
+                    $json = array_values($fields->get(substr($app->route->field, 0, -2)));
                 } else {
                     $json = $fields->get($app->route->field);
-                    $retm = 'val';
+                }
+                if ((array)$json === $json && isset($options->filter)) {
+                    $json = $this->app->arrayFilter((array)$json, (array)$options);
                 }
                 $return = isset($options->return) ? explode(',', $options->return) : false;
-                $tmp = [];
-                if ($retm == 'val') {
-                    if (!$return) {
-                        $tmp[] = $fields->get();
-                    } else {
+                if ($return) {
+                    foreach($json as &$jtm) {
+                        $jflds->setReference($jtm);
+                        $tmp = [];
                         foreach ($return as $ret) {
                             $ret = trim($ret);
-                            $tmp[$ret] = $fields->get($ret);
+                            $tmp[$ret] = $jflds->get($ret);
                         }
+                        $jtm = $tmp;
                     }
-                } elseif ($retm == 'arr') {
-                    foreach ((array)$json as $jtm) {
-                        $jtmp = [];
-                        if (!$return) {
-                            $tmp[] = $jtm;
-                        } else {
-                            foreach ($return as $ret) {
-                                $ret = trim($ret);
-                                $jtmp[$ret] = isset($jtm[$ret]) ? $jtm[$ret] : null;
-                            }
-                            $tmp[] = $jtmp;
-                        }
-                    }
+                    $json = array_values($json);
                 }
-                $json = $tmp;
             }
             return $json;
         } else {
@@ -405,8 +394,6 @@ class modApi
             if ($form && @method_exists($form, 'beforeItemShow')) {
                 foreach($json['list'] as &$item) $form->beforeItemShow($item);
             }
-
-            $options = (object)$options;
             if (isset($options->chunk)) {
                 return (array)$json;
             } elseif (!isset($options->size)) {
