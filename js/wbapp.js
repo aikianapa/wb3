@@ -426,8 +426,14 @@ wbapp.confirm = function(title = null, text = null, options = null) {
         alert(0)
     });
     */
-    let modal = wbapp.getForm('common', 'confirm', { data: { 'confirm': true } });
-    let $modal = $(modal.result);
+    let modal
+    if (wbapp.confirmModal == undefined) {
+        modal = wbapp.getForm('common', 'confirm', { data: { 'confirm': true } });
+        wbapp.confirmModal = modal.result
+    } else {
+        modal = wbapp.confirmModal
+    }
+    let $modal = $(wbapp.confirmModal);
     let confirm = false;
     title !== null ? title = $modal.find('.modal-title').text(title) : null;
     text !== null ? text = $modal.find('.modal-body').text(text) : null;
