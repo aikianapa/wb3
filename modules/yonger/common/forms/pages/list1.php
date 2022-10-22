@@ -133,6 +133,15 @@ var yongerPages = new Ractive({
                 yongerPages.set('root', root)
             })
         },
+        pageadd() {
+            wbapp.ajax({'url':'/cms/ajax/form/pages/edit/_new','html':'#yongerPages modals'})
+        },
+        header() {
+            wbapp.ajax({'url':'/cms/ajax/form/pages/edit/_header','html':'#yongerPages modals'})
+        },
+        footer() {
+            wbapp.ajax({'url':'/cms/ajax/form/pages/edit/_footer','html':'#yongerPages modals'})
+        },
         render(ev) {
             $(document).off('wb-form-save')
             $(document).on('wb-form-save', function(ev, el) {
@@ -182,13 +191,11 @@ var yongerPages = new Ractive({
                 $('#yongerPagesTree').nestable({
                     maxDepth: 15,
                     callback: function(l, e) {
-                        /*
                         changePath(e).then(function(res) {
                             if (res) wbapp.post('/cms/ajax/form/pages/path', {
                                 'data': res
                             });
                         });
-                        */
                     }
                 });
             })
@@ -250,18 +257,16 @@ var yongerPages = new Ractive({
     <nav class="nav navbar navbar-expand-md col">
         <h3 class="tx-bold tx-spacing--2 order-1">Страницы1</h3>
         <div class="ml-auto order-2 float-right">
-            <a href="#" data-ajax="{'url':'/cms/ajax/form/pages/edit/_header','html':'modals'}"
-                class="btn btn-secondary">
+            <button type="button" class="btn btn-secondary" on-click="header">
                 <img src="/module/myicons/24/FFFFFF/menubar-arrow-up.svg" width="24" height="24" /> Шапка
-            </a>
-            <a href="#" data-ajax="{'url':'/cms/ajax/form/pages/edit/_footer','html':'modals'}"
-                class="btn btn-secondary">
+            </button>
+            <button type="button" class="btn btn-secondary" on-click="footer">
                 <img src="/module/myicons/24/FFFFFF/menubar-arrow-down.svg" width="24" height="24" /> Подвал
-            </a>
-            <a href="#" data-ajax="{'url':'/cms/ajax/form/pages/edit/_new','html':'modals'}" class="btn btn-primary">
+            </button>
+            <button type="button" class="btn btn-primary" on-click="pageadd">
                 <img src="/module/myicons/24/FFFFFF/item-select-plus-add.svg" width="24" height="24" /> Добавить
                 страницу
-            </a>
+            </button>
         </div>
     </nav>
 
