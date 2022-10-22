@@ -204,7 +204,54 @@
         }
     })
 
+yonger.pagePresetSelect = function() {
+    let yonpresetselect = wbapp.postSync('/module/yonger/presets/list/');
+    let $modal = $(wbapp.tpl('wb.modal').html);
+    let tpl = wbapp.tpl('#yonPresetSelect').html;
+    $modal
+        .attr('data-backdrop', 'true')
+        .removeClass('fade')
+        .addClass('effect-slide-in-right left w-50 removable')
+        .modal('show');
+    $modal.find('.modal-header').prepend('<input type="search" class="form-control">');
+    $modal.find('.modal-body').addClass('p-0 pb-5 scroll-y').html(tpl);
+    $modal.find('.modal-header input').focus();
 
+    let list = $modal.list = yonpresetselect;
+
+    $modal.ractive = Ractive({
+        target: $modal.find('.modal-body'),
+        data: {
+            presets: list
+        },
+        template: tpl
+    })
+
+    $modal.delegate('.modal-header input', 'keyup', function() {
+        let regex = $(this).val();
+        let list = $modal.list;
+        if (regex > ' ') {
+            regex = new RegExp(regex, "gi");
+            list = [];
+            $.each($modal.list, function(i, item) {
+                let str = item.name + ' ' + item.id;
+                str.match(regex) ? list.push(item) : null;
+            });
+        }
+        $modal.ractive.reset({
+            presets: list
+        })
+    })
+
+    $modal.delegate('.list-group-item', 'click', function() {
+        let name = $(this).data('name');
+        let prid = $(this).data('id');
+        let ypb = $("#{{_form}}EditForm").find('[id^=ypb_].yonger-nested').attr('id');
+        $("#{{_form}}EditForm [name=preset]").val(name).data('id', prid);
+        ypbrBlocks.set('blocks',$modal.list[prid].blocks);
+        $modal.modal('hide');
+    })
+}
 
     yonger.pageBlocks = function() {
         let target = '{{target}}';
