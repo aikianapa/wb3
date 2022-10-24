@@ -18,37 +18,34 @@
                     <div class="col-5">
                         <form id="{{_form}}EditForm">
                             <div>
-                                <div class="form-group row align-items-center">
-                                    <div class="col-8">
-                                        <label class="form-control-label">Дата</label>
-                                        <input type="datepicker" name="date" class="form-control"
-                                            wb="module=datetimepicker" required>
-                                    </div>
-                                    <div class="col-4 text-center">
-                                        <label class="form-control-label"
-                                            for="{{_form}}SwitchItemActive">Отображать</label>
-                                        <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" name="active"
-                                                id="{{_form}}SwitchItemActive">
-                                            <label class="custom-control-label"
-                                                for="{{_form}}SwitchItemActive">&nbsp;</label>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div class="form-group row">
-
-                                    <div class="col-12 mt-1">
-                                        <div class="divider-text">Обложка</div>
+                                    <div class="col-12">
+                                        <div class="divider-text my-0">Обложка</div>
                                         <wb-module wb="module=filepicker&mode=single&width=800&&height=300"
                                             wb-path="/uploads/news/" name="cover">
                                         </wb-module>
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <div class="col-12">
-                                        <input type="text" name="header" class="form-control" placeholder="Заголовок"
+                                <div class="form-group row mb-1">
+                                    <div class="col">
+                                        <input name="header" class="form-control" placeholder="Заголовок"
                                             wb="module=langinp" required>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input name="active" wb-module="swico" data-size="36">
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-1">
+                                    <div class="col-sm-6">
+                                        <label class="form-control-label">Дата</label>
+                                        <input type="datepicker" name="date" class="form-control"
+                                            wb="module=datetimepicker" required>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label>Категория</label>
+                                        <select name="type" wb-select2 wb-tree="dict=project_category&tpl=false">
+                                            <option value="{{id}}">{{name}}</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>

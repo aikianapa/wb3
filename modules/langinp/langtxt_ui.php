@@ -1,5 +1,5 @@
-
-    <div class="input-group dropdown mod-langinp">
+<html>
+    <div class="input-group dropdown mod-langinp mod-langinp-init">
 
             <div class="input-group-prepend" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" on-click="dropdown">
                 <span class="input-group-text text-blue p-1">
@@ -24,8 +24,10 @@
 
         <textarea type="json" class="mod-langinp-data d-none"></textarea>
         <textarea class="form-control mod-langinp" type="text" data-lang="{{_sess.lang}}" on-change="edit" name="label"></textarea>
-        <script wb-app remove>
-            wbapp.loadScripts(["/engine/modules/langinp/langinp_mod.js"],"langinp-mod-js");
-        </script>
     </div>
-
+    <script wb-app remove>
+        wbapp.loadScripts(["/engine/modules/langinp/langinp_mod.js"], '', function(){
+            modLangInp()
+        });
+    </script>
+</html>

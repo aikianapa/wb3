@@ -14,7 +14,7 @@ class modLess {
         $this->file = substr($this->file, 0, -9).'.less';
         $this->minify = true;
     }
-    $this->compiler = new lessc;
+    @$this->compiler = new lessc;
   }
 
   function path() {
@@ -48,7 +48,7 @@ class modLess {
         }
 
         if ($cache == false) {
-            $css = $this->compiler->compileFile($this->file);
+            @$css = $this->compiler->compileFile($this->file);
             if ($this->minify) {
                 $css = $this->app->minifyCss($css);
                 $this->app->putContents($cssminfile, $css, LOCK_EX);

@@ -59,7 +59,7 @@ class modLanginp
         $out->find('textarea.mod-langinp-data')->text(json_encode($dom->item[$name]));
         $out->find('.dropdown-item input')->removeAttr('name');
         $out->find('.dropdown-item textarea')->removeAttr('name');
-        $out->attr('data-mid', wbNewId());
+        $out->find('.mod-langinp.input-group')->attr('data-mid', wbNewId());
         $dom->after($out->outer());
         $dom->remove();
 

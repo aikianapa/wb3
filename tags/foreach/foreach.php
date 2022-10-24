@@ -175,9 +175,6 @@ class tagForeach
             $dom->inner($empty->inner());
         }
 
-
-
-
         if (isset($this->placeholder)) {
             if ($this->opt) {
                 $this->opt->attr('value', '');
@@ -370,7 +367,6 @@ class tagForeach
 
         $dom->filterStrict();
         $options = $this->options();
-
         $count = 0;
         $page = $pages = 1;
         $srvpag = false;
@@ -650,6 +646,7 @@ class tagForeach
         $dom->params("where") > "" ? $options["where"] = $dom->params->where : null;
         $dom->params("return") > "" ? $options["return"] = $this->app->attrToArray($dom->params("return")) : null;
         $dom->params("sort") > "" ? $options["sort"] = $this->app->attrToArray($dom->params("sort")) : null;
+        $options['filter'] = $this->app->filterPrepare($options['filter'])["filter"];
         return $options;
     }
 

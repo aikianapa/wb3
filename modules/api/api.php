@@ -350,10 +350,10 @@ class modApi
         $app = &$this->app;
         $table = $app->route->table;
         $query = (array)$app->route->query;
-        $options = $this->prepQuery($app->route->query);
+        $options = $this->app->filterPrepare($app->route->query);
         $options = (object)$options;
         $form = $app->formClass($table);
-        $app->vars('_post.filter') > '' ? $options['filter'] = $app->vars('_post.filter') : null;
+        $app->vars('_post.filter') > '' ? $options->filter = $app->vars('_post.filter') : null;
         if (isset($app->route->item)) {
             $json = $app->itemRead($table, $app->route->item);        
             if ($form && @method_exists($form, 'beforeItemShow')) {
@@ -401,7 +401,7 @@ class modApi
             } else {
                 $pages = ceil($json['count'] / $options->size);
                 $pagination = wbPagination($json['page'], $pages);
-                return ['result'=>$json['list'], 'pages'=>$pages, 'page'=>$json['page'], 'pagination'=>$pagination];
+                return ['result'=>array_values((array)$json['list']), 'pages'=>$pages, 'page'=>$json['page'], 'pagination'=>$pagination];
             }
         }
     }
@@ -411,74 +411,6 @@ class modApi
         // convert options array to string for __options
         $options = http_build_query($arr);
         $options = str_replace(['&','%2C'], ';', $options);
-        return $options;
-    }
-
-    function prepQuery($query)
-    {
-        $query = (array)$query;
-        $options = [];
-
-        foreach ($query as $key => $val) {
-            if (substr($key, 0, 1) == '@') {
-                $options[substr($key, 1)] = $val;
-                unset($query[$key]);
-            } else {
-                (array)$val === $val ? $val = json_encode($val) : null;
-                if (substr($val, -1) == "]" && substr($val, 0, 1) == "[") {
-                    // считаем что в val массив и разбираем его
-                    $val = explode(",", substr($val, 1, strlen($val) -2));
-                    switch (substr($key, -1)) {
-                        default:
-                            $query[$key] = ['$in' => $val];
-                            break;
-                        case '!':
-                            unset($query[$key]);
-                            $query[substr($key, 0, strlen($key) -1)] =  ['$nin'=> $val];
-                            break;
-                    }
-                } else {
-
-                    switch (substr($key, -2)) {
-                        case '<<': // меньше (<)
-                            $query[substr($key, 0, strlen($key) -2)] = ['$lt'=>$val];
-                            unset($query[$key]);
-                            break;
-                        case '>>': // больше (>)
-                            $query[substr($key, 0, strlen($key) -2)] = ['$gt'=>$val];
-                            unset($query[$key]);
-                            break;
-                    }
-
-                    if (isset($query[$key])) {
-                        switch (substr($key, -1)) {
-                            case '<': // меньше или равно (<=)
-                                $query[substr($key, 0, strlen($key) -1)] = ['$lte'=>$val];
-                                unset($query[$key]);
-                                break;
-                            case '>': // больше или равно (>=)
-                                $query[substr($key, 0, strlen($key) -1)] = ['$gte'=>$val];
-                                unset($query[$key]);
-                                break;
-                            case '"': // двойная кавычка (") без учёта регистра
-                                $query[substr($key, 0, strlen($key) -1)] = ['$regex' => '(?mi)^'.$val."$"];
-                                unset($query[$key]);
-                                break;
-                            case '~':
-                                //var regex = new RegExp(val, "i");
-                                $query[substr($key, 0, strlen($key) -1)] = ['$like'=>$val];
-                                unset($query[$key]);
-                                break;
-                            case '!':
-                                $query[substr($key, 0, strlen($key) -1)] = ['$ne'=>$val];
-                                unset($query[$key]);
-                                break;
-                        }
-                    }
-                }
-            }
-        }
-        $options["filter"] = $query;
         return $options;
     }
 }
