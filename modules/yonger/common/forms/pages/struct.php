@@ -30,7 +30,7 @@
         <div class="dd yonger-nested pl-3" wb-off>
             <ul class="dd-list" id="{{_var.ypb}}_yonblocks">
                 {{#each blocks}}
-                <li class="dd-item row" data-form="{{form}}" data-name="{{name}}" data-id="{{id}}">
+                <li class="dd-item row" data-form="{{form}}" data-name="{{name}}" data-id="{{@index}}">
                     <span class="dd-handle">&nbsp;</span>
                     <span class="dd-text lh-10 col ellipsis">
                         <div class="lh-5">{{header}}</div>
@@ -38,7 +38,7 @@
                     </span>
                     <span class="dd-info col-auto">
                         <span class="row">
-                            <div method="post" class="col-12 text-right m-0 nobr">
+                            <div class="col-12 text-right m-0 nobr">
                                 {{#if active=='on'}}
                                 <img src="/module/myicons/24/82C43C/power-turn-on-square.1.svg"
                                     class="dd-active on cursor-pointer"> {{else}}
@@ -126,31 +126,22 @@ var ypbrBlocks = new Ractive({
             }
             let data = []
             $.each(blocks, function(j, blk) {
-                blk.id = wbapp.newId()
                 data.push(blk)
             })
             this.set('blocks', data)
-            $(ypbrBlocks.target).nestable({
-                maxDepth: 0,
-                beforeDragStop: function(l, e, p) {
-                    setTimeout(function() {
-                        ypbrBlocks.fire('sort')
-                    }, 250)
+            $('#{{_var.ypb}} .dd-list').sortable({
+                update: function(ev, line) {
+                    let html = $('#{{_var.ypb}} .dd-list').outer()
+                    let blocks = ypbrBlocks.get('blocks')
+                    ypbrBlocks.set('blocks',[])
+                    $(html).find('.dd-item').each(function() {
+                        let j = $(this).attr('data-id')
+                        ypbrBlocks.push('blocks',blocks[j])
+                    });
+                    ypbrBlocks.fire('store')
                 }
             })
             $('#{{_var.ypb}}').find('li.dd-item:first img.edit').trigger('click');
-        },
-        sort(ev, l) {
-            let data = [];
-            let blocks = ypbrBlocks.get('blocks')
-            $('#{{_var.ypb}} .dd-list ').find('.dd-item').each(function(j) {
-                let id = $(this).attr('data-id')
-                let item = blocks[j]
-                item.id = wbapp.newId()
-                data.push(item);
-            });
-            ypbrBlocks.set('blocks', data)
-            ypbrBlocks.fire('store')
         },
         store() {
             this.storage.html(json_encode(ypbrBlocks.get('blocks')))
