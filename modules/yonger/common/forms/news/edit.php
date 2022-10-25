@@ -36,16 +36,10 @@
                                     </div>
                                 </div>
                                 <div class="form-group row mb-1">
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-12">
                                         <label class="form-control-label">Дата</label>
                                         <input type="datepicker" name="date" class="form-control"
                                             wb="module=datetimepicker" required>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <label>Категория</label>
-                                        <select name="type" wb-select2 wb-tree="dict=project_category&tpl=false">
-                                            <option value="{{id}}">{{name}}</option>
-                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -90,33 +84,6 @@
         </div>
     </div>
 </div>
-
-<script wb-app>
-var timeout = 50;
-yonger.pageEditor = function() {
-    let $form = $('#{{_form}}EditForm');
-    $form.delegate('[name=path]', 'change', function() {
-        let path = $(this).val() + '/';
-        $form.find('.path').html(path);
-        $form.find('[name=name]').trigger('change');
-    });
-    $form.delegate('[name=name]', 'change keyup', function() {
-        let path = $form.find('[name=path]').val() + '/';
-        let name = $(this).val();
-        if (path == '/' && name == 'home') name = '';
-        $form.find('.path').html(path + name);
-    });
-    $form.find('[name=path]').trigger('change');
-
-    $form.find('.pagelink').on(wbapp.evClick, function() {
-        let url = $(this).text();
-        let target = md5(url);
-        window.open(url, target).focus();
-    })
-}
-
-yonger.pageEditor();
-</script>
 <wb-lang>
     [ru]
     main = Основное
