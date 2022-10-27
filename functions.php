@@ -1782,7 +1782,7 @@ function wbItemFilter($item, $options, $field = null)
 {
     // если поле вычисляемое, напримера в afterItemRead, его имя в запросе начинается с *
     // например /list?*status=ready (не актуально для json)
-
+    $item = (array)$item;
     substr($field,0,1) == '*' ? $field = substr($field,1) : null;
     (isset($item['id']) && !isset($item['_id'])) ? $item['_id'] = $item['id'] : null ;
     isset($options->filter) ? $filter = $options->filter : $filter = $options;
