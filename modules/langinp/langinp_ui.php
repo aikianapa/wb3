@@ -1,7 +1,6 @@
 <html>
-<div class="input-group dropdown mod-langinp">
-    <div class="input-group-prepend" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-        on-click="dropdown">
+<div class="input-group dropdown mod-langinp mod-langinp-init">
+    <div class="input-group-prepend" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span class="input-group-text text-blue p-1">
             <img src="/module/myicons/language-translate.5.svg?size=24&stroke=323232" width="24" height="24">
         </span>
@@ -27,7 +26,7 @@
     <input class="form-control mod-langinp" type="text" data-lang="{{_sess.lang}}" on-change="edit" name="label">
 </div>
 <script wb-app remove>
-wbapp.loadScripts(["/engine/modules/langinp/langinp_mod.js"], '', function(){
+wbapp.loadScripts(["/engine/modules/langinp/langinp_mod.js"], 'mod-langinp', function(){
     modLangInp()
 });
 </script>

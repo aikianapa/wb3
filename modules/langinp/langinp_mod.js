@@ -1,12 +1,11 @@
 var modLangInp = function() {
-    $('.mod-langinp[data-mid]').each(function() {
+    $('.mod-langinp-init').each(function() {
         let mod = this
         let id = $(mod).attr('id');
         if (id == undefined) {
-            id = $(mod).attr('data-mid')
+            id = wbapp.newId()
             $(mod).attr('id', id)
         }
-        $(mod).removeAttr('data-mid')
         let ractive = new Ractive({
             el: '#' + id,
             template: $('#' + id).html(),
@@ -27,11 +26,16 @@ var modLangInp = function() {
                     $.each(this.get(), function(lng, val) {
                         $(mod).find(`[data-lang="${lng}"]:input`).val(val)
                     })
-                },
-                dropdown(ev) {
-                    let form = $(mod).find('.dropdown-menu');
-                    let width = $(ev.node).closest('.input-group').width();
-                    $(form).width(width);
+                    $(mod).removeClass('mod-langinp-init')
+                    let mi = $(this.target).parents('wb-multiinput')
+                    if (mi) {
+                        $(mi).off('multiinput_after_add')
+                        $(mi).on('multiinput_after_add', function() {
+                            modLangInp()
+                        })
+                    }
+                    let width = $(this.target).width();
+                    $(mod).find('.dropdown-menu').width(width);
                 },
                 edit(ev) {
                     let lng = $(ev.node).data('lang')
@@ -42,4 +46,5 @@ var modLangInp = function() {
             }
         })
     })
+
 }
