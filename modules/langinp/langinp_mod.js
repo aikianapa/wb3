@@ -21,12 +21,12 @@ var modLangInp = function() {
                         tmp[lang] = data
                         this.set(tmp)
                     }
+                    $(mod).removeClass('mod-langinp-init')
                 },
                 complete() {
                     $.each(this.get(), function(lng, val) {
                         $(mod).find(`[data-lang="${lng}"]:input`).val(val)
                     })
-                    $(mod).removeClass('mod-langinp-init')
                     let mi = $(this.target).parents('wb-multiinput')
                     if (mi) {
                         $(mi).off('multiinput_after_add')
@@ -34,7 +34,13 @@ var modLangInp = function() {
                             modLangInp()
                         })
                     }
-                    let width = $(this.target).width();
+                    setTimeout(function() {
+                        let width = $(this.target).width();
+                        $(mod).find('.dropdown-menu').width(width);
+                    }, 100)
+                },
+                dropdown(ev) {
+                    let width = $(ev.node).parent('.dropdown').width();
                     $(mod).find('.dropdown-menu').width(width);
                 },
                 edit(ev) {
