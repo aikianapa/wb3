@@ -50,6 +50,7 @@ class pagesClass extends cmsFormsClass
 
     function beforeItemSave(&$item)
     {
+        $item['path'] == '/home' ? $item['path'] = '' : null;
         @$item['url'] = $item['path'] . '/' . $item['name'];
     }
 

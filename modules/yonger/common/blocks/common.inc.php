@@ -1,5 +1,5 @@
 <edit>
-<div class="pr-4 yonger-block-common">
+<div class="yonger-block-common">
     <div class="row">
         <div class="form-group col-md-3 col-sm-6">
             <label class="form-control-label">{{_lang.name}}</label>
