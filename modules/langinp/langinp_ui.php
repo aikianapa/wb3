@@ -7,7 +7,7 @@
     </div>
     <div class="dropdown-menu">
         <wb-foreach wb-from="_locales">
-            <div class="dropdown-item">
+            <div class="dropdown-item px-0">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text text-blue">

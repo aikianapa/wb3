@@ -723,7 +723,8 @@ class modYonger
     }
 
     function presets_list($json) {
-            $res = $this->app->arrayToObj($json);
+            //$res = $this->app->arrayToObj($json);
+            $res = array_values($json);
             return $res;
     }
 
