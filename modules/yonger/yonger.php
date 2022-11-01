@@ -51,7 +51,6 @@ class modYonger
         $this->list = $this->app->itemList('pages', ['return' => 'id,name,_form,header,active,attach,attach_filter,url,path,_sort']);
         $this->list = $this->list['list'];
         $this->yonmapnest();
-        print_r($this->map);
         $app->putContents($app->vars('_env.dba') . '/_yonmap.json', json_encode($this->map));
         header("Content-type:application/json");
         echo json_encode(['count'=>count($this->map)]);
