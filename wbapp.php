@@ -599,7 +599,7 @@ class wbDom extends DomQuery
         $this->find("meta[name=description][seo]")->length && $this->find("meta[name=description][seo]")->attr('content') > '' ? null : $this->find('head')->prepend("<meta name='description' content='{$descr}' />");
         $this->find("meta[name=keywords][seo]")->length && $this->find("meta[name=keywords][seo]")->attr('content') > '' ? null : $this->find('head')->prepend("<meta name='keywords' content='{$keywords}' />");
         $this->find("title[seo]")->length && $this->find("title[seo]")->text() > '' ? null : $this->find('head')->prepend("<title>{$header}</title>");
-        $this->find('title[seo],meta[seo]')->removeAttr('seo');
+        $this->find('title[seo],meta[seo],link[seo]')->removeAttr('seo');
     }
 
     public function setValues()
