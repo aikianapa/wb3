@@ -705,6 +705,7 @@ wbapp.store = function(storage = null, key, value = undefined, binds = true) {
                     key += k
                 }
             }
+            typeof data == 'object' ? null : data = {}
             try {
                 eval(`branch = data.${key}`);
                 if (typeof branch == 'object') branch = Object.assign({}, branch);
