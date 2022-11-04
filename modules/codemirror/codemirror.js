@@ -23,65 +23,55 @@ $(document).on("codemirror-js", function() {
 
 $(document).off("codemirror-js-addons");
 $(document).on("codemirror-js-addons", function() {
-    $('textarea.codemirror').each(function() {
-        var that = this;
-        var name = $(that).attr("name");
-        var form = $(that).parents("form")[0];
-        var params = $(this).data('params');
-
-        if (that.done == undefined) {
-            let value = $(that).text();
-            params.theme = 'cobalt';
-            params.mode = 'htmlmixed';
-            $(that).attr("data-theme") == undefined ? null : params.theme = $(that).attr("data-theme");
-            $(that).attr("data-mode") == undefined ? null : params.mode = $(that).attr("data-mode");
-            that.wait = false;
-            //params.oconv == 'base64_encode' ? value = base64_decode(value) : null;
-            if ($(that).data('iconv')) eval(`value = ${$(that).data('iconv')}(value)`);
-            wbapp.loadStyles(['/engine/modules/codemirror/dist/theme/' + params.theme + '.css']);
-            wbapp.loadScripts(['/engine/modules/codemirror/dist/mode/' + params.mode + '/' + params.mode + '.js']);
-            let options = {
-                mode: params.mode,
-                theme: params.theme,
-                lineNumbers: true,
-                lineWrapping: true,
-                fullScreen: false,
-                styleActiveLine: true,
-                autoCloseTags: true,
-                autoCloseBrackets: true,
-                autoRefresh: true,
-                autofocus: true,
-                fixedGutter: true,
-                foldGutter: true,
-                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-            }
-            let editor = CodeMirror.fromTextArea(that, options);
-            if (params.height == 'auto') {
-                $(that).next('.Codemirror').css('height', 'auto');
-            }
-            editor.setValue(value);
-            //editor.foldCode(CodeMirror.Pos(0, 0));
-            $(that).trigger('change');
-            editor.on("change", function() {
-                let value = editor.getValue();
-                if ($(that).data('oconv')) eval(`value = ${$(that).data('oconv')}(value)`);
-                //params.oconv == 'base64_encode' ? value = base64_encode(value) : null;
-                if (that.wait == false) {
-                    that.wait = true;
-                    $(that).html(value);
-                    editor.refresh();
-                    $(that).trigger('change');
-                    setTimeout(function() {
-                        that.wait = false;
-                    }, 300);
-                }
-            });
-            this.done = true;
-            this.editor = editor;
-            $(this).data("editor", editor);
-            wbapp.trigger('codemirror-init', this);
-            setTimeout(() => { editor.refresh(); }, 50);
-
+    $('.mod-codemirror').each(function() {
+        $(this).removeClass("mod-codemirror")
+        let that = this
+        let name = $(that).attr("name");
+        let form = $(that).parents("form")[0];
+        let params = $(that).data('params');
+        let value = $(that).text();
+        params.theme = 'cobalt';
+        params.mode = 'htmlmixed';
+        $(that).attr("data-theme") == undefined ? null : params.theme = $(that).attr("data-theme");
+        $(that).attr("data-mode") == undefined ? null : params.mode = $(that).attr("data-mode");
+        that.wait = false;
+        //params.oconv == 'base64_encode' ? value = base64_decode(value) : null;
+        if ($(that).data('iconv')) eval(`value = ${$(that).data('iconv')}(value)`);
+        wbapp.loadStyles(['/engine/modules/codemirror/dist/theme/' + params.theme + '.css']);
+        wbapp.loadScripts(['/engine/modules/codemirror/dist/mode/' + params.mode + '/' + params.mode + '.js']);
+        let options = {
+            mode: params.mode,
+            theme: params.theme,
+            lineNumbers: true,
+            lineWrapping: true,
+            fullScreen: false,
+            styleActiveLine: true,
+            autoCloseTags: true,
+            autoCloseBrackets: true,
+            autoRefresh: true,
+            autofocus: true,
+            fixedGutter: true,
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
         }
+        let editor = CodeMirror.fromTextArea(that, options);
+        if (params.height == 'auto') {
+            $(that).next('.Codemirror').css('height', 'auto');
+        }
+        editor.setValue(value);
+        //editor.foldCode(CodeMirror.Pos(0, 0));
+        $(that).trigger('change');
+        editor.on("change", function() {
+            let value = editor.getValue();
+            if ($(that).data('oconv')) eval(`value = ${$(that).data('oconv')}(value)`);
+            //params.oconv == 'base64_encode' ? value = base64_encode(value) : null;
+            $(that).html(value);
+            $(that).trigger('change');
+
+        });
+        that.editor = editor;
+        $(that).data("editor", editor);
+        wbapp.trigger('codemirror-init', that);
+        setTimeout(() => { editor.refresh(); }, 50);
     });
 });

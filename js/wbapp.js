@@ -230,14 +230,12 @@ wbapp.start = async function() {
             if ($textarea.length && $textarea.is("[type=json]")) {
                 let _val = $textarea.val();
                 let _text = $textarea.text();
-
                 _val == 'null' ? data[name] = _text : data[name] = _val;
-
                 if (in_array(data[name], ['null', '', '{}', '[]'])) {
                     data[name] = '';
                 } else {
                     try {
-                        data[name] = json_decode(data[name]);
+                        data[name] = json_decode(data[name], true);
                     } catch (error) {
                         wbapp.console('Unknown error!');
                     }
@@ -248,6 +246,9 @@ wbapp.start = async function() {
                     data[name] = htmlentities(data[name]);
                     data[name] = str_replace('&quot;', '/"', data[name]);
                     data[name] = str_replace('&amp;quot;', '"', data[name]);
+                } else if ($textarea.data('iconv')) {
+                    value = data[name];
+                    eval(`data[name] = ${$textarea.data('iconv')}(value)`);
                 } else {
                     let value = $textarea.val();
                     let text = $textarea.text();
@@ -255,11 +256,6 @@ wbapp.start = async function() {
                         data[name] = text;
                     } else { data[name] = value; }
                 }
-            }
-            if ($textarea.length && $textarea.data('iconv')) {
-                value = data[name];
-                eval(`value = ${$textarea.data('iconv')}(value)`);
-                data[name] = value;
             }
         });
 

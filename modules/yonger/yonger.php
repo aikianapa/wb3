@@ -183,7 +183,8 @@ class modYonger
                 ]);
                 $list = array_values($list['list']);
                 array_walk($list, function(&$item,$key){
-                    $item['header'] = $item['header'][$this->app->vars('_sess.lang')];
+                    wbIsJson($item['header']) ? $item['header'] = json_decode($item['header'], true) : null;
+                    (array)$item['header'] === $item['header'] ? $item['header'] = $item['header'][$this->app->vars('_sess.lang')] : null;
                 });
                 $this->app->vars('_env.cache.yonpageselect', $list);
             }

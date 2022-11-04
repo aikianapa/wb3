@@ -145,7 +145,7 @@ var ypbrBlocks = new Ractive({
             $('#{{_var.ypb}}').find('li.dd-item:first img.edit').trigger('click');
         },
         store() {
-            this.storage.html(json_encode(ypbrBlocks.get('blocks')))
+            this.storage.text(json_encode(ypbrBlocks.get('blocks')))
             this.storage.trigger('change')
         },
         edit(ev) {

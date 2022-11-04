@@ -9,7 +9,9 @@ var modLangInp = function() {
         let ractive = new Ractive({
             el: '#' + id,
             template: $('#' + id).html(),
-            data: {},
+            data: {
+                width: null
+            },
             on: {
                 init() {
                     let data = $(mod).find('textarea.mod-langinp-data').html();
@@ -34,10 +36,13 @@ var modLangInp = function() {
                             modLangInp()
                         })
                     }
-                    setTimeout(function() {
-                        let width = $(this.target).width();
-                        $(mod).find('.dropdown-menu').width(width);
-                    }, 100)
+                    if (ractive.get('width') == null) {
+                        setTimeout(function() {
+                            let width = $(this.target).width();
+                            $(mod).find('.dropdown-menu').width(width);
+                            ractive.set('width', width)
+                        }, 100)
+                    }
                 },
                 dropdown(ev) {
                     let width = $(ev.node).parent('.dropdown').width();
