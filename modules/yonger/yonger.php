@@ -393,10 +393,17 @@ class modYonger
         if ($item === null && $dom->params('view') > '') {
             $ypg = new yongerPage($this->dom);
             $form = $ypg->blockfind($dom->params('view'));
-            $id = wbNewId();
             $item = $dom->item;
-            $item['blocks'] = [];
-            $item['blocks'][$id] = ['id'=>$id,'form'=>$form,'active'=>'on'];
+            if (!isset($item['blocks'])) {
+                $item['blocks'] = [];
+                $item['blocks'][0] = ['id'=>wbNewId(),'form'=>$form,'active'=>'on', 'name'=>$dom->params('view')];
+            } else {
+                foreach($item['blocks'] as $key => $block) {
+                    if ($block['name'] !== $dom->params('view')) {
+                        unset($item['blocks'][$key]);
+                    }
+                }
+            }
         } else if ($item === null) {
             $item = $dom->item;
         }

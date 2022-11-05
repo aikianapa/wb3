@@ -2,7 +2,6 @@
 <link rel="stylesheet" href="/engine/lib/js/nestable/nestable.css">
 <link rel="stylesheet" href="/engine/modules/yonger/tpl/assets/css/yonger.less">
 <script wb-app>
-wbapp.loadScripts(['/engine/lib/js/nestable/nestable.min.js'])
 var yonline = Ractive.extend({
     isolated: false,
     template: $("#yonline").html(),
@@ -51,7 +50,14 @@ var yonline = Ractive.extend({
             let data = $(ev.node).parent('[data-item]').data();
             $(ev.node).parent('[data-item]').addClass('dd-collapsed')
             wbapp.data('yonger.pagelist.exp_' + data.form + '_' + data.item, false)
-            data.inner == "pages" ? null : ev.set('ch', []);
+            if (data.inner !== "pages") {
+                let childs =  ev.get('ch');
+                let list = []
+                $(childs).each(function(i,item){
+                    item._form == 'pages' ? list.push(item) : null;
+                })
+                ev.set('ch', list);
+            } 
 
         },
         expand(ev) {
@@ -107,20 +113,19 @@ var yongerPages = new Ractive({
                         } else {
                             item.dd_collapsed = ""
                         }
+                            item.inner = "pages"
+                            item.ch = nested(list, item.url)
                         if (item.attach > "") {
                             item.inner = item.attach
                             item.dd_collapsed = "dd-collapsed"
-                            item.ch = []
-                        } else {
-                            item.inner = "pages"
-                            item.ch = nested(list, item.url)
+                        //    item.ch = []
                         }
                         ch.push(item)
                     }
                 })
                 return ch
             }
-            wbapp.post('/api/v2/list/pages?&id!=[_header,_footer]', {}, function(res) {
+            wbapp.post('/api/v2/list/pages?&id!=[_header,_footer,_sort]&@sort=_sort', {}, function(res) {
                 let root = []
                 $.each(res, function(i, item) {
                     if (item !== undefined && item.path == "" && item.name == "home") {
@@ -142,7 +147,7 @@ var yongerPages = new Ractive({
         footer() {
             wbapp.ajax({'url':'/cms/ajax/form/pages/edit/_footer','html':'#yongerPages modals'})
         },
-        render(ev) {
+        complete(ev) {
             $(document).off('wb-form-save')
             $(document).on('wb-form-save', function(ev, el) {
                 let item = el.data.id
@@ -158,7 +163,6 @@ var yongerPages = new Ractive({
                 }
                 line.set(el.data)
             })
-
             wbapp.loadScripts(['/engine/lib/js/nestable/nestable.min.js'], '', function() {
                 let changePath = async function(e, datapath = null) {
                     // передавать не только id, но и позицию в списке, записывая её в поле _sort
@@ -169,7 +173,7 @@ var yongerPages = new Ractive({
                         items: {}
                     } : null;
                     parent == undefined ? parent = '' : null;
-                    parent == '/' ? parent = '/home' : null;
+                    parent == '/home' ? parent = '' : null;
                     $(ol).find(`> .dd-item`).each(function(i) {
                         let data = $(this).data();
                         let path = parent + '/' + data.name;
@@ -187,15 +191,24 @@ var yongerPages = new Ractive({
                     });
                     return datapath;
                 }
-                $('#yongerPagesTree').nestable('destroy')
                 $('#yongerPagesTree').nestable({
                     maxDepth: 15,
                     callback: function(l, e) {
+                        setTimeout(function(){
                         changePath(e).then(function(res) {
-                            if (res) wbapp.post('/cms/ajax/form/pages/path', {
+                            console.log(res);
+                            if (res) wbapp.post('/api/v2/func/pages/path', {
                                 'data': res
                             });
+/*
+                            let data = {}
+                            $(ev.target).children().each(function(i, li){
+                                data[i] = $(li).data('id')
+                            })
+                            wbapp.post(`/api/v2/func/${form}/sort`, data)
+*/
                         });
+                        },100)
                     }
                 });
             })
@@ -214,7 +227,11 @@ var yongerPages = new Ractive({
         <button class="dd-collapse" data-action="collapse" type="button" on-click="collapse">Collapse</button>
         <button class="dd-expand" data-action="expand" type="button" on-click="expand">Expand</button>
         {{/if}}{{/if}}
+        {{#if _form == 'pages'}}
         <span class="dd-handle"></span>
+        {{else}}
+        <span class="pos-absolute t-5 l--10"><img src="/module/myicons/24/7987a1/dots.svg"></span>
+        {{/if}}
         <span class="dd-text d-flex col-sm-9 ellipsis">
             <span>
                 <span class="cursor-pointer" on-click="edit">{{header}}</span>

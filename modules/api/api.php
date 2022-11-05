@@ -401,7 +401,7 @@ class modApi
             } else {
                 $pages = ceil($json['count'] / $options->size);
                 $pagination = wbPagination($json['page'], $pages);
-                return ['result'=>array_values((array)$json['list']), 'pages'=>$pages, 'page'=>$json['page'], 'pagination'=>$pagination];
+                return ['result'=>(array)$json['list'], 'pages'=>$pages, 'page'=>$json['page'], 'pagination'=>$pagination];
             }
         }
     }

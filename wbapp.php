@@ -255,8 +255,12 @@ class wbDom extends DomQuery
 
         $this->fetchLang();
         $this->fetchParams();
+
         if ($this->role and ($this->func or $this->funca)) {
+            $params = (array)$this->params;
+            $this->app->vars('_env.tagparams', $params);
             $this->fetchFunc();
+            $this->app->vars('_env.tagparams', $params);
         }
         if (!isset($_ENV['wb_steps'])) {
             $_ENV['wb_steps'] = 1;

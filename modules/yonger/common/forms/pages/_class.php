@@ -7,9 +7,10 @@ class pagesClass extends cmsFormsClass
 
     function beforeItemShow(&$item)
     {
-        isset($item['lang']) ? $lang = $item['lang'][$this->app->vars('_sess.lang')] : $lang = [];
-        $item = (array)$lang + (array)$item;
-        isset($item['header']) ? null : $item['header'] = '';
+        if ($this->app->vars('_route.mode')=='show') {
+            isset($item['lang']) ? $lang = $item['lang'][$this->app->vars('_sess.lang')] : $lang = [];
+            $item = (array)$lang + (array)$item;
+        }
         isset($item['header']) and isset($item['header'][$_SESSION['lang']]) ? $item['header'] = $item['header'][$_SESSION['lang']] : null;
         $item['menu_title'] = isset($item['menu_title']) && isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] : $item['header'];
         $item['menu_title'] == '' ? $item['menu_title'] = $item['header'] : null;
@@ -70,9 +71,6 @@ class pagesClass extends cmsFormsClass
         $this->tpl = $out->find('#pagesList');
         $this->list = $this->app->itemList('pages', ['return' => 'id,name,_form,header,active,attach,attach_filter,url,path,_sort']);
         $this->list = $this->list['list'];
-        foreach ($this->list as &$item) {
-            isset($item['header']) and isset($item['header'][$_SESSION['lang']]) ? $item['header'] = $item['header'][$_SESSION['lang']] : null;
-        }
         $res = $this->listNested();
         $this->app->shadow($this->app->houte->host.'/module/yonger/yonmap');
         $out->find('#pagesList')->replaceWith($res);
@@ -166,11 +164,12 @@ class pagesClass extends cmsFormsClass
         foreach ($list['list'] as $item) {
             $id = $item['id'];
             $vals = &$items[$id];
-            $item['_sort'] = $vals['i'];
+            $item['_sort'] = wbSortIndex($vals['i']);
             $form == 'pages' ? $item['path'] = $vals['p'] : null;
             $app->itemSave($form, $item, false);
         }
         $app->tableFlush($form);
         echo json_encode('true');
+        exit;
     }
 }
