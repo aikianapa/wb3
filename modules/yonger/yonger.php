@@ -402,7 +402,6 @@ class modYonger
         }
         isset($item['blocks']) ? $blocks = (array)$item['blocks'] : $item['blocks'] = []; 
         $blocks = (array)$item['blocks'];
-        $blocks = wbItemToArray($blocks);
         $html = $dom->parents(':root');
         $html->find('head')->length ? null : $html->prepend('<head></head>');
         $html->find('body')->length ? null : $html->prepend('<body></body>');
