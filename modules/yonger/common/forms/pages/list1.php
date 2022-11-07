@@ -1,7 +1,7 @@
 <html>
 <link rel="stylesheet" href="/engine/lib/js/nestable/nestable.css">
 <link rel="stylesheet" href="/engine/modules/yonger/tpl/assets/css/yonger.less">
-<script wb-app>
+<script>
 var yonline = Ractive.extend({
     isolated: false,
     template: $("#yonline").html(),
@@ -11,6 +11,17 @@ var yonline = Ractive.extend({
     on: {
         openurl(ev) {
             window.open($(ev.node).text(), '_blank');
+        },
+        newitem(ev) {
+            let data = $(ev.node).parents('[data-item]').data();
+            wbapp.ajax({
+                'url': '/cms/ajax/form/' + data.inner + '/edit/_new',
+                'append': '#yongerPages modals'
+            });
+            $('#yongerPages').data('ev', ev)
+        },
+        newpage(ev) {
+            wbapp.ajax({'url':'/cms/ajax/form/pages/edit/_new','html':'#yongerPages modals'})
         },
         edit(ev) {
             let data = $(ev.node).parents('[data-item]').data();
@@ -102,6 +113,45 @@ var yongerPages = new Ractive({
     },
     on: {
         init() {
+            wbapp.loadScripts(['/engine/lib/js/nestable/nestable.min.js'], '', function() {
+                let changePath = async function(e, datapath = null) {
+                    // передавать не только id, но и позицию в списке, записывая её в поле _sort
+                    let ol = $(e).closest('ol');
+                    let parent = $(ol).closest('.dd-item').attr('data-path');
+                    datapath == null ? datapath = {
+                        form: $(e).data('form'),
+                        items: {}
+                    } : null;
+                    parent == undefined ? parent = '' : null;
+                    parent == '/home' ? parent = '' : null;
+                    $(ol).find(`> .dd-item`).each(function(i) {
+                        let data = $(this).data();
+                        let path = parent + '/' + data.name;
+                        let that = this;
+                        $(this).find('.dd-path').text(path).attr('data-path', path);
+                        $(this).attr('data-path', path);
+                        datapath.items[data.item] = {
+                            'i': i,
+                            'p': parent
+                        };
+                        $(this).find('.dd-item[data-form="' + data.form + '"]').each(
+                            function(i) {
+                                changePath(this, datapath);
+                            });
+                    });
+                    return datapath;
+                }
+                $('#yongerPagesTree').nestable({
+                    maxDepth: 15,
+                    callback: function(l, e) {
+                        changePath(e).then(function(res) {
+                            if (res) wbapp.post('/api/v2/func/pages/path', {
+                                'data': res
+                            });
+                        });
+                    }
+                });
+            })
             let that = this
             let nested = function(list, path) {
                 let ch = []
@@ -149,7 +199,10 @@ var yongerPages = new Ractive({
         },
         complete(ev) {
             $(document).off('wb-form-save')
-            $(document).on('wb-form-save', function(ev, el) {
+            $(document).on('wb-form-save', function(e, el) {
+
+                console.log(ev,el);
+
                 let item = el.data.id
                 let form = el.data._form
                 let node = $('#yongerPages').data('ev').node
@@ -161,56 +214,13 @@ var yongerPages = new Ractive({
                 } else {
 
                 }
-                line.set(el.data)
-            })
-            wbapp.loadScripts(['/engine/lib/js/nestable/nestable.min.js'], '', function() {
-                let changePath = async function(e, datapath = null) {
-                    // передавать не только id, но и позицию в списке, записывая её в поле _sort
-                    let ol = $(e).closest('ol');
-                    let parent = $(ol).closest('.dd-item').attr('data-path');
-                    datapath == null ? datapath = {
-                        form: $(e).data('form'),
-                        items: {}
-                    } : null;
-                    parent == undefined ? parent = '' : null;
-                    parent == '/home' ? parent = '' : null;
-                    $(ol).find(`> .dd-item`).each(function(i) {
-                        let data = $(this).data();
-                        let path = parent + '/' + data.name;
-                        let that = this;
-                        $(this).find('.dd-path').text(path).attr('data-path', path);
-                        $(this).attr('data-path', path);
-                        datapath.items[data.item] = {
-                            'i': i,
-                            'p': parent
-                        };
-                        $(this).find('.dd-item[data-form="' + data.form + '"]').each(
-                            function(i) {
-                                changePath(this, datapath);
-                            });
-                    });
-                    return datapath;
+                // тут проблема, как правильно разместить запись в дереве
+                if (el.params.item == null) {
+                    yongerPages.push('root',el.data)
+                } else {
+                    line.set(el.data)
                 }
-                $('#yongerPagesTree').nestable({
-                    maxDepth: 15,
-                    callback: function(l, e) {
-                        setTimeout(function(){
-                        changePath(e).then(function(res) {
-                            console.log(res);
-                            if (res) wbapp.post('/api/v2/func/pages/path', {
-                                'data': res
-                            });
-/*
-                            let data = {}
-                            $(ev.target).children().each(function(i, li){
-                                data[i] = $(li).data('id')
-                            })
-                            wbapp.post(`/api/v2/func/${form}/sort`, data)
-*/
-                        });
-                        },100)
-                    }
-                });
+
             })
         }
     }
@@ -219,10 +229,10 @@ var yongerPages = new Ractive({
 <div id="yonline" class="d-none" wb-off>
     <li class="dd-item {{dd_collapsed}} row" data-idx="{{@index}}" data-item="{{id}}" data-name="{{name}}"
         data-path="{{url}}" data-form="{{_form}}" data-inner="{{inner}}">
-        {{#if ch}}
+        {{#if ch}}{{#if inner == 'pages'}}
         <button class="dd-collapse" data-action="collapse" type="button" on-click="collapse">Collapse</button>
         <button class="dd-expand" data-action="expand" type="button" on-click="expand">Expand</button>
-        {{/if}}
+        {{/if}}{{/if}}
         {{#if _form == "pages"}}{{#if inner != 'pages'}}
         <button class="dd-collapse" data-action="collapse" type="button" on-click="collapse">Collapse</button>
         <button class="dd-expand" data-action="expand" type="button" on-click="expand">Expand</button>
@@ -236,7 +246,7 @@ var yongerPages = new Ractive({
             <span>
                 <span class="cursor-pointer" on-click="edit">{{header}}</span>
                 <br>
-                <span class="dd-path ellipsis cursor-pointer" on-click="openurl">
+                <span class="dd-path {{menu}} ellipsis cursor-pointer" on-click="openurl">
                     {{url}}
                 </span>
             </span>
@@ -246,7 +256,14 @@ var yongerPages = new Ractive({
             {{#if inner}}
             {{#if inner !== "pages"}}
             {{#if inner !== _form}}
-            <img src="/module/myicons/24/0168fa/item-select-plus-add.svg" class="dd-add cursor-pointer">
+            <div class="dropdown d-inline">
+  <img src="/module/myicons/24/0168fa/item-select-plus-add.svg" class="dropdown-toggle cursor-pointer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <a class="dropdown-item" href="#" on-click="newpage">Новая страница</a>
+    <a class="dropdown-item" href="#" on-click="newitem">Новая запись</a>
+  </div>
+</div>
+            
             {{/if}}
             {{/if}}
             {{/if}}
@@ -272,7 +289,7 @@ var yongerPages = new Ractive({
 
 <div class="m-3" id="yongerPages" wb-off>
     <nav class="nav navbar navbar-expand-md col">
-        <h3 class="tx-bold tx-spacing--2 order-1">Страницы1</h3>
+        <h3 class="tx-bold tx-spacing--2 order-1">Страницы</h3>
         <div class="ml-auto order-2 float-right">
             <button type="button" class="btn btn-secondary" on-click="header">
                 <img src="/module/myicons/24/FFFFFF/menubar-arrow-up.svg" width="24" height="24" /> Шапка
