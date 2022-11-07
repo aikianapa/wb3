@@ -357,7 +357,7 @@ class modApi
         if (isset($app->route->item)) {
             $json = $app->itemRead($table, $app->route->item);        
             if ($form && @method_exists($form, 'beforeItemShow')) {
-                $json = $form->beforeItemShow($json);
+                $form->beforeItemShow($json);
             }
             if (isset($app->route->field)) {
                 $fields = $app->Dot();

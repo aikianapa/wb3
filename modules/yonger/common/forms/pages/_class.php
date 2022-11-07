@@ -7,9 +7,10 @@ class pagesClass extends cmsFormsClass
 
     function beforeItemShow(&$item)
     {
+        $item = (array)$item;
         if ($this->app->vars('_route.mode')=='show') {
             isset($item['lang']) ? $lang = $item['lang'][$this->app->vars('_sess.lang')] : $lang = [];
-            $item = (array)$lang + (array)$item;
+            $item = (array)$lang + $item;
         }
         isset($item['header']) and isset($item['header'][$_SESSION['lang']]) ? $item['header'] = $item['header'][$_SESSION['lang']] : null;
         $item['menu_title'] = isset($item['menu_title']) && isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] : $item['header'];
@@ -47,6 +48,9 @@ class pagesClass extends cmsFormsClass
         if (isset($item['blocks'])) $item['template'] = '';
         $item['url'] == '/home' ? $item['url'] = '/' : null;
         $item['url'] = $item['path'] . '/' . $item['name'];
+        
+        $this->app->route->action == 'list' ? $this->beforeItemShow($item) : null;
+
     }
 
     function beforeItemSave(&$item)
