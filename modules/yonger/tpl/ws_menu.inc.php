@@ -16,10 +16,7 @@
 
 
 <nav class="nav d-flex align-items-center">
-    <a href="#" class="nav-link">
-        <svg class="mi mi-search-loap" wb-module="myicons"></svg>
-    </a>
-    <a href="#" class="nav-link">
+    <a href="#" class="nav-link nav-bell">
         <svg class="mi mi-bell-notification" wb-module="myicons"></svg>
     </a>
     <a href="#" data-toggle="dropdown" class="dropdown-link ml-4">

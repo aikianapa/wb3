@@ -24,6 +24,11 @@ $(document).on("wb-save-start", function(e, params) {
     }
 })
 
+$(document).on('mousedown', function(e) {
+    $(e.target).is('#toasts') || $(e.target).parents('#toasts').length ? null : $("#toasts").removeClass('show')
+    $(e.target).is('#toasts > .btn-close') ? $("#toasts").removeClass('show') : null;
+})
+
 $(document).on('wb-verify-false', function(e, el, err) {
     if (err !== undefined) {
         wbapp.toast(wbapp._settings.sysmsg.error, err, { target: '.content-toasts', 'bgcolor': 'warning', 'txcolor': 'white' });

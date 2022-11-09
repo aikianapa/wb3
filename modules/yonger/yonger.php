@@ -164,7 +164,12 @@ class modYonger
             $file = $app->vars('_env.path_app').'/tpl/page.php';
             is_file($file) ? null : symlink(__DIR__ .'/common/tpl/page.php' , $file);
         }
-        $ws = $app->fromFile(__DIR__."/tpl/workspace.php", true);
+        if (is_file($app->route->path_app.'/tpl/workspace.php')) {
+            $ws = $app->fromFile($app->route->path_app.'/tpl/workspace.php', true);
+            $ws->path = $app->route->path_app . '/tpl/';
+        } else {
+            $ws = $app->fromFile(__DIR__."/tpl/workspace.php", true);
+        }
         $ws->path = __DIR__ . '/tpl/';
         $ws->fetch();
         return '<!DOCTYPE html>'.$ws->outer();

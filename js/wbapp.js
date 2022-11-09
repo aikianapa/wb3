@@ -1377,7 +1377,6 @@ wbapp.fetch = function(selector = 'body', data = {}, ret) {
 
 
 wbapp.toast = async function(title, text, params = {}) {
-    console.log(text);
     var target = '.content-toasts';
     if (!$(document).find(target).length) {
         $('body').prepend('<div class="content-toasts position-fixed t-0" style="z-index:999999;right:0;"></div>');
@@ -1417,6 +1416,14 @@ wbapp.toast = async function(title, text, params = {}) {
             title: title,
             text: text,
             age: ''
+        },
+        on: {
+            complete() {
+                if (params.audio) {
+                    let audio = new Audio(params.audio)
+                    audio.autoplay = true
+                }
+            }
         }
     });
 
