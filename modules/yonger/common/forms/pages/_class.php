@@ -8,14 +8,16 @@ class pagesClass extends cmsFormsClass
     function beforeItemShow(&$item)
     {
         $item = (array)$item;
+        $data = $this->app->dot($item);
         if ($this->app->vars('_route.mode')=='show') {
             isset($item['lang']) ? $lang = $item['lang'][$this->app->vars('_sess.lang')] : $lang = [];
             $item = (array)$lang + $item;
         }
-        isset($item['header']) and isset($item['header'][$_SESSION['lang']]) ? $item['header'] = $item['header'][$_SESSION['lang']] : null;
-        $item['menu_title'] = isset($item['menu_title']) && isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] : $item['header'];
+        if ((array)$item['header'] === $item['header']) {
+            @$item['header'] = isset($item['header'][$_SESSION['lang']]) ? $item['header'][$_SESSION['lang']] : $item['header']['ru'];
+        }
+        $item['menu_title'] = isset($item['menu_title']) && isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] :  $item['menu_title']['ru'];
         $item['menu_title'] == '' ? $item['menu_title'] = $item['header'] : null;
-        $data = $this->app->dot($item);
         if ($data->get('blocks.seo.active') == 'on') {
             $item['seo'] = 'on';
             $item['meta_title'] = $data->get("blocks.seo.lang.{$_SESSION['lang']}.title");

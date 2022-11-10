@@ -61,8 +61,7 @@ class tagData {
         $dom->find("wb-empty")->remove();
         if (!count($dom->item)) $dom->inner($empty->inner());
     }
-
-    $dom->item['_parent'] = $save;
+    if ($dom->params("parent") !== "false") $dom->item['_parent'] = $save;
     $dom->fetch();
     $dom->unwrap();
 //    $dom->before($dom->inner());
