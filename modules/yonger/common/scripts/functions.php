@@ -77,7 +77,7 @@
     function yongerSiteMenu($path = '')
     {
         $app = &$_ENV['app'];
-        $list = $app->itemList('pages', ['filter'=>[
+        $list = $app->itemList('pages', ['sort' => '_sort','filter'=>[
             'active'=>'on'
             ,'menu'=>'on'
             ,'path' => $path
@@ -87,6 +87,18 @@
         ]]);
         $list = $list['list'];
         foreach ($list as &$item) {
+            @$item = [
+                'id' => $item['id'],
+                'menu' => $item['menu'],
+                'menu_title' => $item['menu_title'],
+                'name' => $item['name'],
+                'path' => $item['path'],
+                'children' => $item['children'],
+                'active' => $item['active']
+            ];
+            if ((array)$item['menu_title'] === $item['menu_title']) {
+                @$item['menu_title'] = isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] : $item['menu_title']['ru'];
+            }
             $path = $item['path'];
             $name = $item['name'];
             $path.'/'.$name == '/' ? $path = '/home' : $path .= '/'.$name;
@@ -100,7 +112,7 @@
                 array_unshift($item['children'], $self);
             }
         }
-        return $list;
+        return array_values($list);
     }
 
 
