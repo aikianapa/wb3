@@ -559,7 +559,7 @@ function wbMail(
                     $mail->AddAttachment($files['tmp_name'], $files['name']);
                 }
             }
-        } if (is_array($attach)) {
+        } else if (is_array($attach)) {
             foreach ($attach as $a) {
                 if (is_string($a) and substr($a, 0, 5) == "data:") {
                     preg_match('/^data:(.*);base64,/', substr($a, 0, 50), $matches, PREG_OFFSET_CAPTURE);

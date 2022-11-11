@@ -261,7 +261,11 @@
         {{/if}}
         <span class="dd-text d-flex col-sm-9 ellipsis">
             <span>
+                {{#if header !== ""}}
                 <span class="cursor-pointer" on-click="edit">{{header}}</span>
+                {{else}}
+                <span class="cursor-pointer tx-gray-400" on-click="edit">Без заголовка</span>
+                {{/if}}
                 <br>
                 <span class="dd-path {{menu}} ellipsis cursor-pointer" on-click="openurl">
                     {{url}}

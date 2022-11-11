@@ -67,7 +67,7 @@
                                     <label class="col-lg-4 form-control-label">Заголовок</label>
                                     <div class="col-lg-8">
                                         <input type="text" name="header" class="form-control" placeholder="Заголовок"
-                                            wb="module=langinp" required>
+                                            wb="module=langinp">
                                     </div>
                                 </div>
 

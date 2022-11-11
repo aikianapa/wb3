@@ -9,9 +9,11 @@ class pagesClass extends cmsFormsClass
     {
         $item = (array)$item;
         $data = $this->app->dot($item);
+        @$header = $item['header'];
         if ($this->app->vars('_route.mode')=='show') {
             isset($item['lang']) ? $lang = $item['lang'][$this->app->vars('_sess.lang')] : $lang = [];
             $item = (array)$lang + $item;
+            $item['header'] == '' ? $item['header'] = $header : null;
         }
         if ((array)$item['header'] === $item['header']) {
             @$item['header'] = isset($item['header'][$_SESSION['lang']]) ? $item['header'][$_SESSION['lang']] : $item['header']['ru'];
