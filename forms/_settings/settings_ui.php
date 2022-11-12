@@ -1,6 +1,6 @@
 <html>
 <div class="chat-wrapper chat-wrapper-two">
-  <div class="chat-sidebar">
+  <div class="chat-sidebar scroll-y">
     <div class="chat-sidebar-body bg-light hv-100p" style="top:0;bottom:0;">
       <div class="flex-fill pd-y-20 pd-x-10">
         <div class="d-flex align-items-center justify-content-between pd-x-10 mg-b-10">
@@ -10,55 +10,55 @@
           <span class="nav-item">
             <a class="nav-link" href="#" data-ajax="{'url':'/cms/settings/ui_common/','html':'#editSettingsForm'}"
               auto>
-              <img data-src="/module/myicons/filter-settings-sort.svg?size=24&stroke=979797" class="mg-r-10">
+              <svg class="mi mi-filter-settings-sort mg-r-10" size="24" stroke="979797" wb-module="myicons"></svg>
               {{_lang.common}}
             </a>
           </span>
           <span class="nav-item">
             <a class="nav-link" href="#" data-ajax="{'url':'/cms/settings/ui_vars/','html':'#editSettingsForm'}">
-              <img data-src="/module/myicons/interface-essential-138.svg?size=24&stroke=979797" class="mg-r-10">
+              <svg class="mi mi-interface-essential-138 mg-r-10" size="24" stroke="979797" wb-module="myicons"></svg>
               {{_lang.variables}}
             </a>
           </span>
 
           <span class="nav-item">
             <a class="nav-link" href="#" data-ajax="{'url':'/cms/settings/ui_menu/','html':'#editSettingsForm'}">
-              <img data-src="/module/myicons/edit-pen-menu-square.svg?size=24&stroke=979797" class="mg-r-10">
+              <svg class="mi mi-edit-pen-menu-square mg-r-10" size="24" stroke="979797" wb-module="myicons"></svg>
               {{_lang.menu}}
             </a>
           </span>
 
           <span class="nav-item">
             <a class="nav-link" href="#" data-ajax="{'url':'/cms/settings/ui_mods/','html':'#editSettingsForm'}">
-              <img data-src="/module/myicons/toys-cubes.svg?size=24&stroke=979797" class="mg-r-10">
+              <svg class="mi mi-toys-cubes mg-r-10" size="24" stroke="979797" wb-module="myicons"></svg>
               {{_lang.modules}}
             </a>
           </span>
 
           <span class="nav-item">
             <a class="nav-link" href="#" data-ajax="{'url':'/cms/settings/ui_api/','html':'#editSettingsForm'}">
-              <img data-src="/module/myicons/-onversion-exchange.svg?size=24&stroke=979797" class="mg-r-10">
+              <svg class="mi mi--onversion-exchange mg-r-10" size="24" stroke="979797" wb-module="myicons"></svg>
               {{_lang.api}}
             </a>
           </span>
 
 					<span class="nav-item">
             <a class="nav-link" href="#" data-ajax="{'url':'/cms/settings/ui_seo/','html':'#editSettingsForm'}">
-              <img data-src="/module/myicons/browser-search-loap.svg?size=24&stroke=979797" class="mg-r-10">
+              <svg class="mi mi-browser-search-loap mg-r-10" size="24" stroke="979797" wb-module="myicons"></svg>
               {{_lang.seo}}
             </a>
           </span>
 
 					<span class="nav-item">
             <a class="nav-link" href="#" data-ajax="{'url':'/cms/ajax/form/users/list_users/','html':'#editSettingsForm'}">
-              <img data-src="/module/myicons/users.svg?size=24&stroke=979797" class="mg-r-10">
+              <svg class="mi mi-users mg-r-10" size="24" stroke="979797" wb-module="myicons"></svg>
               {{_lang.users}}
             </a>
           </span>
 
 					<span class="nav-item">
             <a class="nav-link" href="#" data-ajax="{'url':'/module/filemanager','html':'.content-body'}">
-              <img data-src="/module/myicons/programing-code-data-terminal.svg?size=24&stroke=979797" class="mg-r-10">
+              <svg class="mi mi-programing-code-data-terminal mg-r-10" size="24" stroke="979797" wb-module="myicons"></svg>
               {{_lang.fileman}}
             </a>
           </span>
@@ -68,7 +68,7 @@
     </div>
   </div>
 
-  <div class="chat-content">
+  <div class="chat-content scroll-y">
     <div id="editSettingsForm" class="m-2">
 
     </div>

@@ -2227,6 +2227,14 @@ function wbCheckUser($login, $type = 'email', $pass = null) {
     return false;
 }
 
+function wbRoleList() {
+    $users = wbItemList("users", ['filter' => [
+        'isgroup' => 'on',
+        'active' => 'on'
+    ]]);
+    return array_column($users['list'],'_id');
+}
+
 function wbPhoneFormat($phoneNumber) {
     $phoneNumber = preg_replace('/[^0-9]/','',$phoneNumber);
 
@@ -2334,7 +2342,6 @@ function wbRole($role, $userId = null)
         $user = wbReadItem('users', $userId);
         $res = in_array($user['role'], $role, true);
     }
-
     return $res;
 }
 

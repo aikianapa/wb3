@@ -52,15 +52,12 @@ class modApi
     function apikey($mode = null)
     {
         $app = &$this->app;
+
         if (in_array($this->mode, ['login','logout','token'])) {
             return true;
         }
 
         if ($app->vars('_sett.modules.api.active') !== 'on' or ($app->route->localreq == true && !$app->vars('_route.token'))) {
-            return true;
-        }
-
-        if ($app->vars('_route.token') && in_array($app->vars('_route.token'),$app->vars('_sett.modules.api.tokens'))) {
             return true;
         }
 
@@ -73,10 +70,17 @@ class modApi
                 return true;
             }
         }
-
         $mode == null ? $mode = $app->vars('_route.mode') : null;
-        $access = $app->checkToken($app->vars('_route.token'));
 
+        $access = $this->checkAllow();
+
+        if ($access) {
+            if ($app->vars('_route.token') && in_array($app->vars('_route.token'), $app->vars('_sett.modules.api.tokens'))) {
+                $access = true;
+            } else {
+                $access = $app->checkToken($app->vars('_route.token'));
+            }
+        }
         if (!$access) {
             header("HTTP/1.1 401 Unauthorized", true, 401);
             echo json_encode(['error'=>true,'msg'=>'Access denied']);
@@ -85,6 +89,50 @@ class modApi
         return true;
     }
 
+    public function checkAllow() {
+        $table = $this->app->vars('_route.table');
+        $mode = $this->app->vars('_route.mode');
+        $role = $this->app->vars('_sess.user.role');
+        $modes = ['create','read','update','delete','func','list'];
+        if (!in_array($mode, $modes)) {
+            return true;
+        }
+        $mode = substr($mode, 0, 1);
+
+        if ($role == 'admin' && in_array($table,['_settings','users'])) {
+            return true;
+        }
+        
+        if ($role == 'admin' && $mode == 'f') {
+            return true;
+        }
+
+        $result = false;
+        $allow = true;
+        foreach ($this->app->vars('_sett.modules.api.allow') as $am) {
+            if (in_array($table, $am['table']) OR in_array("*", $am['table'])) {
+                $allow = false;
+                if (in_array($role, $am['role']) OR in_array("*", $am['role'])) {
+                    if (in_array($mode, $am['mode']) or in_array("*", $am['mode'])) {
+                        $allow = true;
+                    }
+                }
+            }
+        }
+        $disallow = false;
+        foreach ($this->app->vars('_sett.modules.api.disallow') as $am) {
+            if (in_array($table, $am['table']) or in_array("*", $am['table'])) {
+                $disallow = false;
+                if (in_array($role, $am['role']) or in_array("*", $am['role'])) {
+                    if (in_array($mode, $am['mode']) or in_array("*", $am['mode'])) {
+                        $disallow = true;
+                    }
+                }
+            }
+        }
+        $result = ($allow == true && $disallow == false) ? true : false;
+        return $result;
+    }
 
     public function token()
     {

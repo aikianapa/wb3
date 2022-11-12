@@ -256,7 +256,7 @@
         <span class="dd-handle"></span>
         {{else}}
         <span class="pos-absolute t-5 l--10">
-            <img src="/module/myicons/24/7987a1/dots.svg">
+            <svg class="mi mi-dots" size="24" stroke="7987a1" wb-on wb-module="myicons"></svg>
         </span>
         {{/if}}
         <span class="dd-text d-flex col-sm-9 ellipsis">
@@ -275,8 +275,8 @@
         <span class="dd-info col-sm-3">
             {{#if ~/role == "admin"}} {{#if inner}} {{#if inner !== "pages"}} {{#if inner !== _form}}
             <div class="dropdown d-inline">
-                <img src="/module/myicons/24/0168fa/item-select-plus-add.svg" class="dropdown-toggle cursor-pointer" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
+                <svg class="dropdown-toggle cursor-pointer mi mi-item-select-plus-add" size="24" stroke="0168fa" wb-on wb-module="myicons" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false"></svg>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="#" on-click="newpage">Новая страница</a>
                     <a class="dropdown-item" href="#" on-click="newitem">Новая запись</a>
@@ -284,11 +284,11 @@
             </div>
 
             {{/if}} {{/if}} {{/if}}
-            <img src="/module/myicons/24/7987a1/copy-paste-select-add-plus.svg" width="24" height="24" class="cursor-pointer" on-click="copy"> {{/if}}
-            <img src="/module/myicons/24/7987a1/content-edit-pen.svg" width="24" height="24" class="cursor-pointer" on-click="edit"> {{#if ~/role == "admin"}} {{#if active == "on"}}
-            <img src="/module/myicons/24/82C43C/power-turn-on-square.1.svg" width="24" height="24" class="cursor-pointer" on-click="switch"> {{else}}
-            <img src="/module/myicons/24/FC5A5A/power-turn-on-square.svg" width="24" height="24" class="cursor-pointer" on-click="switch"> {{/if}}
-            <img src="/module/myicons/24/FC5A5A/trash-delete-bin.2.svg" width="24" height="24" class="cursor-pointer" on-click="remove"> {{/if}}
+            <svg class="cursor-pointer mi mi-copy-paste-select-add-plus" size="24" stroke="7987a1" wb-on wb-module="myicons" on-click="copy"></svg>{{/if}}
+            <svg class="cursor-pointer mi mi-content-edit-pen.svg" size="24" stroke="7987a1" wb-on wb-module="myicons" on-click="edit"></svg>{{#if ~/role == "admin"}} {{#if active == "on"}}
+            <svg class="cursor-pointer mi mi-power-turn-on-square.1" size="24" stroke="82C43C" wb-on wb-module="myicons" on-click="switch"></svg>{{else}}
+            <svg class="cursor-pointer mi mi-power-turn-on-square" size="24" stroke="FC5A5A" wb-on wb-module="myicons" on-click="switch"></svg>{{/if}}
+            <svg class="cursor-pointer mi mi-trash-delete-bin.2" size="24" stroke="FC5A5A" wb-on wb-module="myicons" on-click="remove"></svg>{{/if}}
         </span>
         <ol>
             {{#.ch}}
@@ -304,13 +304,16 @@
         <h3 class="tx-bold tx-spacing--2 order-1">Страницы</h3>
         <div class="ml-auto order-2 float-right">
             <button type="button" class="btn btn-secondary" on-click="header">
-                <img src="/module/myicons/24/FFFFFF/menubar-arrow-up.svg" width="24" height="24" /> Шапка
+                <svg class="mi mi-menubar-arrow-up" size="24" stroke="FFFFFF" wb-on wb-module="myicons"></svg>
+                Шапка
             </button>
             <button type="button" class="btn btn-secondary" on-click="footer">
-                <img src="/module/myicons/24/FFFFFF/menubar-arrow-down.svg" width="24" height="24" /> Подвал
+                <svg class="mi mi-menubar-arrow-down" size="24" stroke="FFFFFF" wb-on wb-module="myicons"></svg>
+                Подвал
             </button>
             <button type="button" class="btn btn-primary" on-click="pageadd">
-                <img src="/module/myicons/24/FFFFFF/item-select-plus-add.svg" width="24" height="24" /> Добавить страницу
+                <svg class="mi mi-item-select-plus-add" size="24" stroke="FFFFFF" wb-on wb-module="myicons"></svg>
+                Добавить страницу
             </button>
         </div>
     </nav>

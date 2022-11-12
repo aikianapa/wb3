@@ -239,7 +239,6 @@ class wbDom extends DomQuery
         if ($this->find('.nav-pagination')->length) {
             $this->fixPagination();
         }
-
         return $this;
     }
     public function fetchNode()
@@ -695,6 +694,13 @@ class wbDom extends DomQuery
         $unset = $this->find("template,textarea,code,pre,[wb-off]");
         foreach ($unset as $t) {
             $t->inner(str_replace("_{_{_", "{{", $t->inner()));
+        }
+        $wbon = $this->find('[wb-on]');
+        foreach ($wbon as $wb) {
+            $wb->removeAttr('wb-on');
+            $wb->copy($this);
+            $wb->root = $this->root;
+            $wb->fetchNode();
         }
         return $this;
     }
