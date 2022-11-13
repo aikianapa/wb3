@@ -20,7 +20,7 @@
             {{#each list}}
             <div class='col-2 text-center'>
                 {{{svg}}}
-                <textarea id="id_{{@key}}" class="d-none"><svg class="mi mi-{{@key}}" size="24" stroke="333333" wb-module="myicons"></svg></textarea>
+                <textarea data-id="{{@key}}" class="d-none"><svg class="mi mi-{{@key}}" size="24" stroke="333333" wb-module="myicons"></svg></textarea>
                 <br>
                 <span>{{@key}}</span>
             </div>

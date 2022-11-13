@@ -74,7 +74,7 @@ class modMyicons
         foreach($list as $file) {
             $name = substr($file, 0, -4);
             if (substr($file,-4) == '.svg' && strpos(' '.$name,$this->app->vars('_req.find'))) {
-                $svg = $this->app->fromString('<html><svg class="mi mi-'.$name.' " size="50" stroke="333333" wb-module="myicons" data-clipboard-action="copy" data-clipboard-target="#id_'.$name.'"></svg></html>');
+                $svg = $this->app->fromString('<html><svg class="mi mi-'.$name.' " size="50" stroke="333333" wb-module="myicons" data-clipboard-action="copy" data-clipboard-target="[data-id='.$name.']"></svg></html>');
                 $svg->fetch();
                 $res[$name] = ['svg'=>$svg->html()];
             }
