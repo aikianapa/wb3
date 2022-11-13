@@ -1047,7 +1047,7 @@ class wbApp
         $this->tpl->item = $this->item;
 
         $this->tpl->setAttributes($dict);
-        $this->tpl->find("input")->attr("name", $this->dict->name);
+        $this->tpl->find("input:first,textarea:first")->attr("name", $this->dict->name);
         if (isset($this->dict->prop) and $this->dict->prop->style > "") {
             $this->tpl->find("[style]")->attr("style", $this->dict->prop->style);
         } else {
