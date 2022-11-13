@@ -46,6 +46,7 @@
                 <!--option value="gallery">gallery</option-->
                 <option value="multiinput">multiinput</option>
                 <option value="langinp">langinp</option>
+                <option value="langtext">langtext</option>
                 <option value="switch">switch</option>
                 <option value="enum">enum</option>
                 <option value="tree">tree</option>
