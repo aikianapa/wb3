@@ -183,7 +183,7 @@
                     })
                     return ch
                 }
-                wbapp.post('/api/v2/list/pages?&id!=[_header,_footer]&@sort=_sort', {}, function(res) {
+                wbapp.post('/api/v2/list/pages?&id!=[_header,_footer]&@sort=_sort&@return=_id,_form,id,name,header,url,path,active,menu', {}, function(res) {
                     let root = []
                     $.each(res, function(i, item) {
                         if (item !== undefined && item.path == "" && item.name == "home") {

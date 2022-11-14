@@ -8,7 +8,6 @@
 </head>
 
 <body>
-        <input wb-module="myicons" wb-on>
     <div class="container scroll-y" id="myIcons" wb-off>
         <form class="mt-3 row" onsubmit="return false;">
             <div class="col-sm-4">

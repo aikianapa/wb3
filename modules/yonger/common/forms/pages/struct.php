@@ -8,14 +8,13 @@
         <div class="input-group order-1">
             <div class="input-group-prepend">
                 <span class="input-group-text p-1" on-click="presetSelect">
-                    <img data-src="/module/myicons/interface-essential-138.svg?size=24&stroke=323232" width="24"
-                        height="24">
+                    <svg class="d-inline mi mi-interface-essential-138" size="24" stroke="323232" wb-on wb-module="myicons"></svg>
                 </span>
             </div>
             <input class="form-control" type="text" name="preset" placeholder="{{_lang.preset}}" autocomplete="off">
             <div class="input-group-append" on-click="presetSave">
                 <span class="input-group-text p-1">
-                    <img data-src="/module/myicons/floppy-save.svg?size=24&stroke=323232" width="24" height="24">
+                    <svg class="d-inline mi mi-floppy-save" size="24" stroke="323232" wb-on wb-module="myicons"></svg>
                 </span>
             </div>
         </div>
@@ -23,7 +22,7 @@
 
     <div class="col-md-auto" wb-if="'{{_sett.devmode}}'=='on'">
         <button type="button" on-click="blockadd" class="btn btn-block btn-outline-secondary nobr">
-            <img src="/module/myicons/20/323232/text-item-list-add-plus.svg" />
+            <svg class="d-inline mi mi-text-item-list-add-plus" size="24" stroke="323232" wb-module="myicons"></svg>
             <span class="d-md-none d-lg-inline"> {{_lang.addblk}}</span>
         </button>
     </div>
@@ -40,16 +39,13 @@
                     <span class="row">
                         <div class="col-12 text-right m-0 nobr">
                             {{#if active=='on'}}
-                            <img src="/module/myicons/24/82C43C/power-turn-on-square.1.svg"
-                                class="dd-active on cursor-pointer"> {{else}}
-                            <img src="/module/myicons/24/FC5A5A/power-turn-on-square.1.svg"
-                                class="dd-active cursor-pointer" /> {{/if}}
-                            <img src="/module/myicons/24/323232/copy-paste-select-add-plus.svg" on-click="copy"
-                                class="cursor-pointer">
-                            <img src="/module/myicons/24/323232/content-edit-pen.svg" on-click="edit"
-                                class="cursor-pointer edit">
-                            <img src="/module/myicons/24/323232/trash-delete-bin.2.svg" on-click="remove"
-                                class="cursor-pointer">
+                            <svg class="dd-active on cursor-pointer d-inline mi mi-power-turn-on-square.1" size="24" stroke="82C43C" wb-on wb-module="myicons"></svg>
+                            {{else}}
+                            <svg class="dd-active cursor-pointer d-inline mi mi-power-turn-on-square.1" size="24" stroke="FC5A5A" wb-on wb-module="myicons"></svg>
+                            {{/if}}
+                            <svg class="cursor-pointer d-inline mi mi-copy-paste-select-add-plus" size="24" stroke="323232" wb-on wb-module="myicons" on-click="copy"></svg>
+                            <svg class="cursor-pointer d-inline mi mi-content-edit-pen edit" size="24" stroke="323232" wb-on wb-module="myicons" on-click="edit"></svg>
+                            <svg class="cursor-pointer d-inline mi mi-trash-delete-bin.2" size="24" stroke="FC5A5A" wb-on wb-module="myicons" on-click="remove"></svg>
                         </div>
                     </span>
                 </span>
@@ -176,7 +172,7 @@ var ypbrBlocks = new Ractive({
             let line = $(ev.node).parents('.dd-item');
             let id = line.index();
             let blocks = ypbrBlocks.get('blocks')
-            let item = blocks[id];
+            let item = structuredClone(blocks[id]);
             let newid = count(blocks);
             item.header += ' (копия)';
             blocks[newid] = item

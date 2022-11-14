@@ -24,7 +24,7 @@
                                 <div class="form-group row mb-2">
                                     <div class="col-12">
                                         <div class="btn btn-info btn-block p-2 mb-0 cursor-pointer pagelink">
-                                            <img data-src="/module/myicons/link-big.svg?size=20&stroke=FFFFFF">
+                                            <svg class="d-inline mi mi-link-big" size="24" stroke="FFFFFF" wb-module="myicons"></svg>
                                             {{_route.scheme}}://{{_route.hostname}}<span class="path"></span>
                                         </div>
                                     </div>

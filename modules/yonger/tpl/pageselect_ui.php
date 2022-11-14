@@ -1,7 +1,7 @@
 <div class="input-group">
     <div class="input-group-prepend yonpageselect">
         <span class="input-group-text form-control p-1">
-            <img data-src="/module/myicons/programing-data.2.svg?size=24&amp;stroke=323232" width="24" height="24">
+            <svg class="d-inline mi mi-programing-data.2" size="24" stroke="323232" wb-on wb-module="myicons"></svg>
         </span>
     </div>
     <input>

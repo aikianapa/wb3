@@ -2,7 +2,7 @@
 <div class="input-group dropdown mod-langinp mod-langinp-init">
     <div class="input-group-prepend" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" on-click="dropdown">
         <span class="input-group-text text-blue p-1">
-            <img src="/module/myicons/language-translate.5.svg?size=24&stroke=323232" width="24" height="24">
+            <svg class="d-inline mi mi-language-translate.5" size="24" stroke="323232" wb-on wb-module="myicons"></svg>
         </span>
     </div>
     <div class="dropdown-menu">

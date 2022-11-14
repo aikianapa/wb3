@@ -11,10 +11,10 @@
             <div class="modal-body">{{_lang.confirm_text}}</div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">
-                    <img src="/module/myicons/interface-essential-109.svg?size=24&stroke=000000">
+                    <svg class="d-inline mi mi-interface-essential-109" size="24" stroke="000000" wb-module="myicons"></svg>
                     {{_lang.cancel_btn}}</button>
                 <button type="button" class="btn btn-warning confirm">
-                    <img src="/module/myicons/interface-essential-112.svg?size=24&stroke=000000">
+                    <svg class="d-inline mi mi-interface-essential-112" size="24" stroke="000000" wb-module="myicons"></svg>
                     {{_lang.confirm_btn}}
                 </button>
             </div>

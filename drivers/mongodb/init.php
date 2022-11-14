@@ -115,7 +115,7 @@ class mongodbDrv
             isset($options['page']) ? null : $options['page'] = 1;
             $page = intval($options["page"]);
             $size = intval($options["size"]);
-            $params["limit"] = intval($size);
+            //$params["limit"] = intval($size);
             $params["skip"] = ($page - 1) * $size;
         } else {
             $page = 1;
@@ -183,7 +183,12 @@ class mongodbDrv
             }
             if ($limit && $count >= $limit) break;
         }
-        isset($size) ? null : $size = $count;
+        if (isset($size)) {
+            $list = array_chunk($list, $size)[0];
+            $count = ($page * $size) + $count - $size;
+        } else {
+            $size = $count;
+        }
         return ["list"=>$list,"count"=>$count,"page"=>$page,"size"=>$size];
     }
 
