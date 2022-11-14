@@ -28,15 +28,19 @@ class modMyicons
         } else {
             $this->app = &$obj->app;
             $this->dom = &$obj;
-            $this->dom->attr('size') > '' ? $this->size = $this->dom->attr('size') : null;
-            $this->dom->attr('stroke') > '' ? $this->stroke = $this->dom->attr('stroke') : null;
-            $this->dom->attr('fill') > '' ? $this->fill = $this->dom->attr('fill') : null;
-            $icon = $this->icon();
-            $this->icon = 'ico-icon-sqaure.svg';
-            !$icon ? $icon = $this->icon() : null;
-            !$icon ? $icon = '<err>[mi]</err>' : null;
-            $obj->after($icon);
-            $obj->remove();
+            if ($this->dom->is('input')) {
+                $this->finder();
+            } else {
+                $this->dom->attr('size') > '' ? $this->size = $this->dom->attr('size') : null;
+                $this->dom->attr('stroke') > '' ? $this->stroke = $this->dom->attr('stroke') : null;
+                $this->dom->attr('fill') > '' ? $this->fill = $this->dom->attr('fill') : null;
+                $icon = $this->icon();
+                $this->icon = 'ico-icon-sqaure.svg';
+                !$icon ? $icon = $this->icon() : null;
+                !$icon ? $icon = '<err>[mi]</err>' : null;
+                $obj->after($icon);
+                $obj->remove();
+            }
         }
     }
 
@@ -61,8 +65,9 @@ class modMyicons
 
     public function init()
     {
-        $html = file_get_contents(__DIR__.'/myicons_ui.php');
-        echo $html;
+        $html = $this->app->fromFile(__DIR__.'/myicons_ui.php');
+        $html->fetch();
+        echo $html->outer();
         exit;
     }
 
@@ -74,7 +79,7 @@ class modMyicons
         foreach($list as $file) {
             $name = substr($file, 0, -4);
             if (substr($file,-4) == '.svg' && strpos(' '.$name,$this->app->vars('_req.find'))) {
-                $svg = $this->app->fromString('<html><svg class="mi mi-'.$name.' " size="50" stroke="333333" wb-module="myicons" data-clipboard-action="copy" data-clipboard-target="[data-id='.$name.']"></svg></html>');
+                $svg = $this->app->fromString('<html><svg class="mi mi-'.$name.' " size="50" stroke="333333" wb-module="myicons" data-clipboard-action="copy" data-clipboard-target=[data-id="'.$name.'"] ></svg></html>');
                 $svg->fetch();
                 $res[$name] = ['svg'=>$svg->html()];
             }
@@ -158,5 +163,18 @@ class modMyicons
             $name .= '.svg';
         }
         return $name;
+    }
+
+    public function finder() {
+        $html = $this->app->fromFile(__DIR__.'/myicons_finder_ui.php');
+        $attrs = $this->dom->attributes;
+        $inp = $html->find('input');
+        foreach ($attrs as $at) {
+            $at->name == 'class' ? $inp->addClass($at->value) : $inp->attr($at->name, $at->value);
+        }
+        $html->copy($this->dom);
+        $html->fetch();
+        $this->dom->after($html->outer());
+        $this->dom->remove();
     }
 }

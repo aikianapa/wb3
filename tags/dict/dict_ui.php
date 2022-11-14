@@ -43,6 +43,7 @@
                 <option value="source">source</option>
                 <option value="image">single image</option>
                 <option value="images">multi images</option>
+                <option value="myicons">myicons</option>
                 <!--option value="gallery">gallery</option-->
                 <option value="multiinput">multiinput</option>
                 <option value="langinp">langinp</option>
