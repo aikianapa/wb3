@@ -182,7 +182,7 @@ var ypbrBlocks = new Ractive({
         remove(ev) {
             let that = ev.node;
             let line = $(ev.node).parents('.dd-item');
-            let id = line.index();
+            let id = line.index()+'';
             if (id > '') {
                 $(that).prop('disabled', true);
                 wbapp.confirm(null, '{{_lang.rmblk}}').on('confirm', function() {
