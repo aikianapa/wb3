@@ -97,7 +97,7 @@
     <script>
     var api = "/api/v2"
     var form = "{{_form}}"
-    var base = api + `/list/${form}?&@size=9&@sort=_sort`
+    var base = api + `/list/${form}?&@size=999999&@sort=_sort`
     var list = new Ractive({
         el: "#{{_form}}List",
         template: $("#{{_form}}List").html(),
