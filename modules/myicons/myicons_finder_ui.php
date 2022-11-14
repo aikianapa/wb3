@@ -25,7 +25,7 @@
         </div>
     </div>
 </div>
-<script wb-app remove>
+<script type="wbapp" remove>
     var myicofind = new Ractive({
         el: '#{{_var.id}}',
         template: $('#{{_var.id}}').html(),
@@ -33,9 +33,7 @@
         on: {
             complete(ev) {
                 $(document).on('mousedown', function(e) {
-                    $(e.target).is('#{{_var.id}} .off-canvas') || $(e.target).parents(
-                        '#{{_var.id}} .off-canvas').length ? null : $("#{{_var.id}} .off-canvas").removeClass(
-                        'show')
+                    $(e.target).is('#{{_var.id}} .off-canvas') || $(e.target).parents('#{{_var.id}} .off-canvas').length ? null : $("#{{_var.id}} .off-canvas").removeClass('show')
                 })
                 let val = $(myicofind.el).find('input[name]').val()
                 if (val > '') {
@@ -58,15 +56,15 @@
                 if (ev.event.key !== "Enter" && ev.event.type !== 'click') return
                 $('#{{_var.id}} .list').addClass('d-none')
                 if (!$(myicofind.el).find('.off-canvas').hasClass('show')) {
-                     $(myicofind.el).find('.off-canvas').addClass('show')
-                     $('#{{_var.id}} input[type=search]').val(str)
+                    $(myicofind.el).find('.off-canvas').addClass('show')
+                    $('#{{_var.id}} input[type=search]').val(str)
                 }
                 wbapp.post('/module/myicons/getlist', {
                     find: str
                 }, function(data) {
                     myicofind.set('list', data)
                     myicofind.updateModel()
-                    $('#{{_var.id}} .list svg').attr('style','height:30px;width:30px;')
+                    $('#{{_var.id}} .list svg').attr('style', 'height:30px;width:30px;')
                     $('#{{_var.id}} .list').removeClass('d-none')
                     $('#{{_var.id}} input[type=search]').focus()
                 })
@@ -76,7 +74,7 @@
                 let name = $(ev.node).data('id');
                 let svg = $(ev.node).find('svg')[0];
                 $(myicofind.el).find('.input-group-prepend > span').html($(svg).outer())
-                $(myicofind.el).find('input[name]').val(name).attr('value',name).trigger('change')
+                $(myicofind.el).find('input[name]').val(name).attr('value', name).trigger('change')
                 $(myicofind.el).find('.off-canvas').removeClass('show')
             }
         }
