@@ -18,64 +18,64 @@
         </div>
         <div class="list d-none scroll-y pb-3 text-center" style="height: calc(100vh - 50px);">
             {{#each list}}
-            <div class='d-inline p-2 text-center' data-id="{{@key}}" on-click="select">
+            <div class="d-inline p-2 text-center" data-id="{{@key}}" on-click="select">
                 {{{svg}}}
             </div>
             {{/each}}
         </div>
     </div>
 </div>
-<script type="wbapp" remove>
+<script wb-app remove>
     var myicofind = new Ractive({
-        el: '#{{_var.id}}',
-        template: $('#{{_var.id}}').html(),
+        el: "#{{_var.id}}",
+        template: $("#{{_var.id}}").html(),
         data: [],
         on: {
             complete(ev) {
-                $(document).on('mousedown', function(e) {
-                    $(e.target).is('#{{_var.id}} .off-canvas') || $(e.target).parents('#{{_var.id}} .off-canvas').length ? null : $("#{{_var.id}} .off-canvas").removeClass('show')
+                $(document).on("mousedown", function(e) {
+                    $(e.target).is("#{{_var.id}} .off-canvas") || $(e.target).parents("#{{_var.id}} .off-canvas").length ? null : $("#{{_var.id}} .off-canvas").removeClass("show")
                 })
-                let val = $(myicofind.el).find('input[name]').val()
-                if (val > '') {
-                    $(myicofind.el).find('.input-group-prepend > span').html('<img src="/module/myicons/24/333333/'+val+'.svg" width="24" height="24">')
+                let val = $(myicofind.el).find("input[name]").val()
+                if (val > "") {
+                    $(myicofind.el).find(".input-group-prepend > span").html('<img src="/module/myicons/24/333333/'+val+'.svg" width="24" height="24">')
                 }
             },
             open(ev) {
-                $(myicofind.el).find('.off-canvas').addClass('show')
-                $('#{{_var.id}} input[type=search]').val('')
+                $(myicofind.el).find(".off-canvas").addClass("show")
+                $("#{{_var.id}} input[type=search]").val("")
             },
             close(ev) {
-                $(myicofind.el).find('.off-canvas').removeClass('show')
+                $(myicofind.el).find(".off-canvas").removeClass("show")
             },
             find(ev) {
-                let str = $(ev.node).val() + '';
+                let str = $(ev.node).val() + "";
                 if (str.length < 3) {
-                    myicofind.set('list', [])
+                    myicofind.set("list", [])
                     return
                 }
-                if (ev.event.key !== "Enter" && ev.event.type !== 'click') return
-                $('#{{_var.id}} .list').addClass('d-none')
-                if (!$(myicofind.el).find('.off-canvas').hasClass('show')) {
-                    $(myicofind.el).find('.off-canvas').addClass('show')
-                    $('#{{_var.id}} input[type=search]').val(str)
+                if (ev.event.key !== "Enter" && ev.event.type !== "click") return
+                $("#{{_var.id}} .list").addClass("d-none")
+                if (!$(myicofind.el).find(".off-canvas").hasClass("show")) {
+                    $(myicofind.el).find(".off-canvas").addClass("show")
+                    $("#{{_var.id}} input[type=search]").val(str)
                 }
-                wbapp.post('/module/myicons/getlist', {
+                wbapp.post("/module/myicons/getlist", {
                     find: str
                 }, function(data) {
-                    myicofind.set('list', data)
+                    myicofind.set("list", data)
                     myicofind.updateModel()
-                    $('#{{_var.id}} .list svg').attr('style', 'height:30px;width:30px;')
-                    $('#{{_var.id}} .list').removeClass('d-none')
-                    $('#{{_var.id}} input[type=search]').focus()
+                    $("#{{_var.id}} .list svg").attr("style", "height:30px;width:30px;")
+                    $("#{{_var.id}} .list").removeClass("d-none")
+                    $("#{{_var.id}} input[type=search]").focus()
                 })
                 return false
             },
             select(ev) {
-                let name = $(ev.node).data('id');
-                let svg = $(ev.node).find('svg')[0];
-                $(myicofind.el).find('.input-group-prepend > span').html($(svg).outer())
-                $(myicofind.el).find('input[name]').val(name).attr('value', name).trigger('change')
-                $(myicofind.el).find('.off-canvas').removeClass('show')
+                let name = $(ev.node).data("id");
+                let svg = $(ev.node).find("svg")[0];
+                $(myicofind.el).find(".input-group-prepend > span").html($(svg).outer())
+                $(myicofind.el).find("input[name]").val(name).attr("value", name).trigger("change")
+                $(myicofind.el).find(".off-canvas").removeClass("show")
             }
         }
     })

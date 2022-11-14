@@ -39,7 +39,7 @@
 </body>
 <script>
 </script>
-<script type="wbapp">
+<script wb-app removed>
 
 var myicons = new Ractive({
     el: '#myIcons',
@@ -55,7 +55,7 @@ var myicons = new Ractive({
                 //console.info('Action:', e.action);
                 console.info(e.text);
                 let mi = $(e.trigger).parent().children('span').text()
-                console.log(`<img src="/module/myicons/24/333333/${mi}.svg" width="24" height="24">`)
+                console.info('<img src="/module/myicons/24/333333/'+mi+'.svg" width="24" height="24">');
                 //console.info('Trigger:', e.trigger);
                 e.clearSelection();
             });
