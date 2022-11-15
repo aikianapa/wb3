@@ -32,7 +32,7 @@
                             for="switchContainer-{{_sess.order_id}}">{{_lang.container}}</label>
                     </div>
                     <button type="button" class="btn pos-absolute tx-14 r-40 py-1 btn-secondary" id="yongerEditorBtnEdit">
-                        <img src="/module/myicons/20/FFFFFF/pen-edit-create.2.svg">
+                        <svg class="mi mi-pen-edit-create.2" wb-module="myicons" size="20" stroke="FFFFFF"></svg>
                         {{_lang.editor}}
                     </button>
                 </div>

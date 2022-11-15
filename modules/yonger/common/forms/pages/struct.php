@@ -392,8 +392,11 @@ yonger.pageBlocks = function() {
     })
 
 
+    $modal.undelegate('#yongerEditorBtnEdit', wbapp.evClick)
     $modal.delegate('#yongerEditorBtnEdit', wbapp.evClick, function() {
-        if ($('#{{_var.ypb}}').data('current') !== undefined) {
+        // Редактор блоков
+        let $current = $('#{{_var.ypb}}').find('#_yonblocks > li.active');
+        if ($current !== undefined) {
             let form = $current.attr('data-form');
             wbapp.post('/module/yonger/editblock/', {
                 'form': form
