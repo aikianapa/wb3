@@ -873,6 +873,10 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
         if (stripos($html, 'dqn_tmp_id=') !== false) {
             $html = preg_replace('/ dqn_tmp_id="([a-z0-9]+)"/', '', $html);
         }
+        $html = preg_replace('/\shref(.*)%7B%7B(.*)%7D%7D/', ' href$1{{$2}}', $html);
+        $html = preg_replace('/\ssrc(.*)%7B%7B(.*)%7D%7D/', 'src$1{{$2}}', $html);
+        $html = preg_replace('/wb-if(.*)&gt;/', 'wb-if$1>', $html);
+        $html = preg_replace('/wb-if(.*)&lt;/', 'wb-if$1<', $html);
         return $html;
     }
 
