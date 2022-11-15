@@ -49,7 +49,10 @@
             },
             find(ev) {
                 let str = $(ev.node).val() + "";
-                if (str.length < 3) {
+                let len = str.length;
+                if (len > 2) {
+                    void(0)
+                } else {
                     myicofind.set("list", [])
                     return
                 }
