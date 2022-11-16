@@ -920,3 +920,14 @@ button {
         stroke: #ffffff !important;
     }
 }
+
+.ui-accordion-header {
+    .ui-accordion-header-icon::before {
+        content: '\f107';
+        font-family: 'Fontawesome';
+    }
+    &.ui-state-active .ui-accordion-header-icon::before {
+        content: '\f105';
+        font-family: 'Fontawesome';
+    }
+}
