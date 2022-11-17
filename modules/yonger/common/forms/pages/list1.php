@@ -248,7 +248,12 @@
                     let string = $(this).text()
                     let flag = false
                     eval(`flag = string.match(/${find}/gi)`)
-                    if (flag) $(this).removeClass('d-none')
+                    if (flag) {
+                        $(this).removeClass('d-none')
+                        if ($(this).parents('li.dd-collapsed')) {
+                            $(this).parents('li.dd-collapsed').removeClass('dd-collapsed')
+                        }
+                    }
                 })
             }
         }
