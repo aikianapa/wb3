@@ -590,15 +590,17 @@ class wbDom extends DomQuery
         $seo = $this->app->ItemRead('_settings', 'seo');
         $data = $this->app->dot($this->item);
         isset($this->item['header']) ? $header = $this->item['header'] : $header = $this->app->vars('_sett.header');
-        if ($seo and isset($seo['seo']) and $seo['seo'] == 'on') {
-            $header = $seo['title'];
-            $keywords = $seo['meta_keywords'];
-            $descr = $seo['meta_description'];
-        } else if ($data->get('seo') == 'on') {
+        if ($data->get('seo') == 'on') {
             $data->get('meta_title') ? $header = $data->get('meta_title') : null;
             $data->get('meta_keywords') ? $keywords = $data->get('meta_keywords') : null;
             $data->get('meta_description') ? $descr = $data->get('meta_description') : null;
-        } 
+        } else if ($seo and isset($seo['seo']) and $seo['seo'] == 'on') {
+            $header = $seo['title'];
+            $keywords = $seo['meta_keywords'];
+            $descr = $seo['meta_description'];
+        } else if ($this->app->vars('_var.title_prepend')) {
+            $header = trim($this->app->vars('_var.title_prepend') . ' ' . $header);
+        }
 
         $this->prepend("<meta name='description' content='{$descr}' />");
         $this->prepend("<meta name='keywords' content='{$keywords}' />");

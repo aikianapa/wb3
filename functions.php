@@ -108,10 +108,12 @@ function wbInitSettings(&$app)
     }
     $variables = [];
     $settings = $app->ItemRead('_settings', 'settings');
+    $seo = $app->ItemRead('_settings', 'seo');
     $app->vars('_sett', $settings);
     if (!$settings) {
         $settings = [];
     } else {
+        @$variables['title_prepend'] = $seo['title_prepend'];
         if (!isset($settings['variables'])) $settings['variables'] = [];
         foreach ((array)$settings['variables'] as $v) {
             if (isset($v['var']) AND $v['var'] > '') $variables[$v['var']] = $v['value'];
