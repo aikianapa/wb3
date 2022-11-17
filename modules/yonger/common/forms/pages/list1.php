@@ -112,7 +112,7 @@
             yonline: yonline
         },
         data: {
-            root: {},
+            root: [],
             role: wbapp._session.user.role
         },
         on: {
@@ -239,6 +239,17 @@
                     }
                     $('#yongerPages').data('ev', undefined)
                 })
+            },
+            find(ev) {
+                let find = $(ev.node).val()
+                let list = $(yongerPages.el).find('#pagesList')
+                find == '' ? $(list).find('li').removeClass('d-none') : $(list).find('li').addClass('d-none');
+                $(list).find('li').each(function(){
+                    let string = $(this).text()
+                    let flag = false
+                    eval(`flag = string.match(/${find}/gi)`)
+                    if (flag) $(this).removeClass('d-none')
+                })
             }
         }
     })
@@ -300,34 +311,31 @@
 
 
 <div class="m-3" id="yongerPages" wb-off>
-    <nav class="nav navbar navbar-expand-md col">
+    <nav class="nav navbar navbar-expand-md col px-0 t-0 position-sticky bg-light rounded-10 z-index-150 ">
         <h3 class="tx-bold tx-spacing--2 order-1">Страницы</h3>
-        <div class="ml-auto order-2 float-right">
-            <button type="button" class="btn btn-secondary" on-click="header">
+        <button class="navbar-toggler order-2" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="true" aria-label="Toggle navigation">
+            <i class="wd-20 ht-20 fa fa-ellipsis-v"></i>
+        </button>
+        <div class="ml-auto order-3 collapse d-md-block" id="navbarSupportedContent">
+            <input type="search" class="form-control d-inline-block rounded-10 wd-200 mb-1" placeholder="Поиск" on-keyup="find">
+            <div class="d-xs-block d-sm-inline-block">
+            <button type="button" class="btn btn-secondary mb-1" on-click="header">
                 <svg class="mi mi-menubar-arrow-up" size="24" stroke="FFFFFF" wb-on wb-module="myicons"></svg>
-                Шапка
+                <span class="d-none d-sm-inline">Шапка</span>
             </button>
-            <button type="button" class="btn btn-secondary" on-click="footer">
+            <button type="button" class="btn btn-secondary mb-1" on-click="footer">
                 <svg class="mi mi-menubar-arrow-down" size="24" stroke="FFFFFF" wb-on wb-module="myicons"></svg>
-                Подвал
+                <span class="d-none d-sm-inline">Подвал</span>
             </button>
-            <button type="button" class="btn btn-primary" on-click="pageadd">
+            <button type="button" class="btn btn-primary mb-1" on-click="pageadd">
                 <svg class="mi mi-item-select-plus-add" size="24" stroke="FFFFFF" wb-on wb-module="myicons"></svg>
-                Добавить страницу
+                <span class="d-none d-sm-inline">Создать</span>
             </button>
+            </div>
         </div>
     </nav>
 
     <div id="yongerPagesTree" class="dd yonger-nested">
-        <span class="bg-light">
-            <div class="header p-2">
-                <span clsss="row">
-                    <div class="col-3">
-                        <input type="search" class="form-control" placeholder="Поиск страницы" data-ajax="{'target':'#{{_form}}List','filter_add':{'$or':[{ 'header': {'$like' : '$value'} }, { 'url': {'$like' : '$value'} }  ]} }">
-                    </div>
-                </span>
-            </div>
-        </span>
         <ol id="pagesList" class="dd-list">
             {{#.root}}
             <yonline></yonline>

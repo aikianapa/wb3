@@ -39,9 +39,9 @@
                     <span class="row">
                         <div class="col-12 text-right m-0 nobr">
                             {{#if active=='on'}}
-                            <svg class="dd-active on cursor-pointer d-inline mi mi-power-turn-on-square.1" size="24" stroke="82C43C" wb-on wb-module="myicons"></svg>
+                            <svg class="dd-active on cursor-pointer d-inline mi mi-power-turn-on-square.1" size="24" stroke="82C43C" wb-on wb-module="myicons" on-click="switch"></svg>
                             {{else}}
-                            <svg class="dd-active cursor-pointer d-inline mi mi-power-turn-on-square.1" size="24" stroke="FC5A5A" wb-on wb-module="myicons"></svg>
+                            <svg class="dd-active cursor-pointer d-inline mi mi-power-turn-on-square.1" size="24" stroke="FC5A5A" wb-on wb-module="myicons" on-click="switch"></svg>
                             {{/if}}
                             <svg class="cursor-pointer d-inline mi mi-copy-paste-select-add-plus" size="24" stroke="323232" wb-on wb-module="myicons" on-click="copy"></svg>
                             <svg class="cursor-pointer d-inline mi mi-content-edit-pen edit" size="24" stroke="323232" wb-on wb-module="myicons" on-click="edit"></svg>
@@ -143,6 +143,18 @@ var ypbrBlocks = new Ractive({
         store() {
             this.storage.text(json_encode(ypbrBlocks.get('blocks')))
             this.storage.trigger('change')
+        },
+        switch(ev) {
+            let blocks = ypbrBlocks.get('blocks')
+            let line = $(ev.node).parents('li')
+            let idx = line.index()
+            blocks[idx].active == 'on' ? blocks[idx].active = '' : blocks[idx].active = 'on';
+            ypbrBlocks.set('blocks', blocks);
+            ypbrBlocks.fire('store')
+            if (line.hasClass('active')) {
+                let inp = $blockform.find('.yonger-block-common [name=active]')
+                blocks[idx].active == 'on' ? inp.prop('checked', true) : inp.prop('checked', false);
+            } 
         },
         edit(ev) {
             setTimeout(function(){
