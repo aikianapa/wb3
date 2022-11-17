@@ -595,13 +595,12 @@ class wbDom extends DomQuery
             $data->get('meta_keywords') ? $keywords = $data->get('meta_keywords') : null;
             $data->get('meta_description') ? $descr = $data->get('meta_description') : null;
         } else if ($seo and isset($seo['seo']) and $seo['seo'] == 'on') {
-            $header = $seo['title'];
-            $keywords = $seo['meta_keywords'];
-            $descr = $seo['meta_description'];
+            $seo['title'] > '' ? $header = $seo['title'] : null;
+            $seo['meta_keywords'] > '' ? $keywords = $seo['meta_keywords'] : null;
+            $seo['meta_description'] > '' ? $descr = $seo['meta_description'] : null;
         } else if ($this->app->vars('_var.title_prepend')) {
             $header = trim($this->app->vars('_var.title_prepend') . ' ' . $header);
         }
-
         $this->prepend("<meta name='description' content='{$descr}' />");
         $this->prepend("<meta name='keywords' content='{$keywords}' />");
         $this->prepend("<title>{$header}</title>");

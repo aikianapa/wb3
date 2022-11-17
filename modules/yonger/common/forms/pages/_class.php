@@ -20,11 +20,16 @@ class pagesClass extends cmsFormsClass
         }
         $item['menu_title'] = isset($item['menu_title']) && isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] :  $item['menu_title']['ru'];
         $item['menu_title'] == '' ? $item['menu_title'] = $item['header'] : null;
-        if ($data->get('blocks.seo.active') == 'on') {
-            $item['seo'] = 'on';
-            $item['meta_title'] = $data->get("blocks.seo.lang.{$_SESSION['lang']}.title");
-            $item['meta_keywords'] = $data->get("blocks.seo.lang.{$_SESSION['lang']}.keywords");
-            $item['meta_description'] = $data->get("blocks.seo.lang.{$_SESSION['lang']}.descr");
+        $blocks = $data->get('blocks');
+        $tmp = array_column($data->get('blocks'), "name");
+        if (in_array("seo", $tmp)) {
+            $seo = $this->app->dot($blocks[array_search("seo", $tmp)]);
+            if ($seo->get('active') == 'on') {
+                $item['seo'] = 'on';
+                $item['meta_title'] = $seo->get("lang.{$_SESSION['lang']}.title");
+                $item['meta_keywords'] = $seo->get("lang.{$_SESSION['lang']}.keywords");
+                $item['meta_description'] = $seo->get("lang.{$_SESSION['lang']}.descr");
+            }
         }
     }
 
