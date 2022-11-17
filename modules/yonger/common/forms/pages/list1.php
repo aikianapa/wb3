@@ -311,7 +311,7 @@
 
 
 <div class="m-3" id="yongerPages" wb-off>
-    <nav class="nav navbar navbar-expand-md col px-0 t-0 position-sticky bg-light rounded-10 z-index-150 ">
+    <nav class="nav navbar navbar-expand-md col px-3 py-2 t-0 position-sticky bg-light rounded-10 z-index-150 ">
         <h3 class="tx-bold tx-spacing--2 order-1">Страницы</h3>
         <button class="navbar-toggler order-2" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="true" aria-label="Toggle navigation">
             <i class="wd-20 ht-20 fa fa-ellipsis-v"></i>
