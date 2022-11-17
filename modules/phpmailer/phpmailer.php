@@ -8,7 +8,6 @@ class modPhpmailer
 
   public function __construct($dom)
   {
-        print_r($this->app->route);
       $this->init($dom);
   }
 
