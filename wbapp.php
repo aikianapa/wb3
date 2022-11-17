@@ -584,24 +584,26 @@ class wbDom extends DomQuery
         $descr = $this->find("meta[name=description]")->inner();
         $keywords = $this->find("meta[name=keywords]")->inner();
         $header = $this->find("title")->text();
-        $this->find("meta[name=description][seo]")->length ? $this->find("meta[name=description]:not([seo])")->remove() : null;
-        $this->find("meta[name=keywords][seo]")->length ? $this->find("meta[name=keywords]:not([seo])")->remove() : null;
+        $this->find("title")->remove();
+        $this->find("meta[name=description]")->remove();
+        $this->find("meta[name=keywords]")->remove();
         $seo = $this->app->ItemRead('_settings', 'seo');
         $data = $this->app->dot($this->item);
         isset($this->item['header']) ? $header = $this->item['header'] : $header = $this->app->vars('_sett.header');
-        if ($data->get('seo') == 'on') {
-            $data->get('meta_title') ? $header = $data->get('meta_title') : null;
-            $data->get('meta_keywords') ? $keywords = $data->get('meta_keywords') : null;
-            $data->get('meta_description') ? $descr = $data->get('meta_description') : null;
-        } elseif ($seo and isset($seo['seo']) and $seo['seo'] == 'on') {
+        if ($seo and isset($seo['seo']) and $seo['seo'] == 'on') {
             $header = $seo['title'];
             $keywords = $seo['meta_keywords'];
             $descr = $seo['meta_description'];
-        }
-        $this->find("meta[name=description][seo]")->length && $this->find("meta[name=description][seo]")->attr('content') > '' ? null : $this->find('head')->prepend("<meta name='description' content='{$descr}' />");
-        $this->find("meta[name=keywords][seo]")->length && $this->find("meta[name=keywords][seo]")->attr('content') > '' ? null : $this->find('head')->prepend("<meta name='keywords' content='{$keywords}' />");
-        $this->find("title")->length ? $this->find('head title')->text($header) : $this->find('head')->prepend("<title>{$header}</title>");
-        $this->find('title[seo],meta[seo],link[seo]')->removeAttr('seo');
+        } else if ($data->get('seo') == 'on') {
+            $data->get('meta_title') ? $header = $data->get('meta_title') : null;
+            $data->get('meta_keywords') ? $keywords = $data->get('meta_keywords') : null;
+            $data->get('meta_description') ? $descr = $data->get('meta_description') : null;
+        } 
+
+        $this->prepend("<meta name='description' content='{$descr}' />");
+        $this->prepend("<meta name='keywords' content='{$keywords}' />");
+        $this->prepend("<title>{$header}</title>");
+
     }
 
     public function setValues()

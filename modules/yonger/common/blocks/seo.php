@@ -5,7 +5,7 @@
     <meta seo name="keywords" content="{{keywords}}">
     <link seo href="{{_route.host}}{{_route.uri}}" rel="canonical">
 </view>
-<edit header="{{_lang.header}}">
+<edit header="{{_lang.header}}" head>
     <div>
         <wb-module wb="module=yonger&mode=edit&block=common.inc" />
     </div>
