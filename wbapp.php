@@ -1264,6 +1264,7 @@ class wbApp
 
     public function dot(&$array=[])
     {
+        $array = (array)$array;
         $dot = new Dot();
         $dot->setReference($array);
         return $dot;

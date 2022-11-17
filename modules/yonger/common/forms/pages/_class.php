@@ -18,7 +18,7 @@ class pagesClass extends cmsFormsClass
         if ((array)$item['header'] === $item['header']) {
             @$item['header'] = isset($item['header'][$_SESSION['lang']]) ? $item['header'][$_SESSION['lang']] : $item['header']['ru'];
         }
-        $item['menu_title'] = isset($item['menu_title']) && isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] :  $item['menu_title']['ru'];
+        @$item['menu_title'] = isset($item['menu_title']) && isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] :  $item['menu_title']['ru'];
         $item['menu_title'] == '' ? $item['menu_title'] = $item['header'] : null;
         $blocks = $data->get('blocks');
         $tmp = array_column($data->get('blocks'), "name");
@@ -58,7 +58,7 @@ class pagesClass extends cmsFormsClass
         $item['url'] == '/home' ? $item['url'] = '/' : null;
         $item['url'] = $item['path'] . '/' . $item['name'];
         
-        $this->app->route->action == 'list' ? $this->beforeItemShow($item) : null;
+        $this->app->vars('_route.action') == 'list' ? $this->beforeItemShow($item) : null;
 
     }
 
