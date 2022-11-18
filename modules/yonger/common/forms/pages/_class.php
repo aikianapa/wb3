@@ -71,7 +71,7 @@ class pagesClass extends cmsFormsClass
     function afterItemSave(&$item)
     {
         $this->beforeItemShow($item);
-        $this->app->shadow($this->app->houte->host.'/module/yonger/yonmap');
+        $this->app->vars('_route.mode') == 'save' ? $this->app->shadow('/module/yonger/yonmap') : null;
     }
 
     function list()
@@ -85,7 +85,6 @@ class pagesClass extends cmsFormsClass
         $this->list = $this->app->itemList('pages', ['return' => 'id,name,_form,header,active,attach,attach_filter,url,path,_sort']);
         $this->list = $this->list['list'];
         $res = $this->listNested();
-        $this->app->shadow($this->app->houte->host.'/module/yonger/yonmap');
         $out->find('#pagesList')->replaceWith($res);
         echo $out;
     }
