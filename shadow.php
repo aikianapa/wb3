@@ -4,8 +4,8 @@ host = hostname
 port = port
 headers = headers (cookie + post data)
 */
-if (!isset($argv)) die;
-foreach($argv as $arg) {
+
+foreach(@$argv as $arg) {
     $pos = strpos($arg,'=');
     if ($pos) {
         $fld = substr($arg,0,$pos);

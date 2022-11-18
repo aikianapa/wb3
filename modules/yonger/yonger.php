@@ -54,6 +54,7 @@ class modYonger
         $app->putContents($app->vars('_env.dba') . '/_yonmap.json', json_encode($this->map));
         header("Content-type:application/json");
         echo json_encode(['count'=>count($this->map)]);
+        exit;
     }
 
     private function yonmapnest($path = '') {
