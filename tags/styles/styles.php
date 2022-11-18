@@ -11,8 +11,8 @@ class tagStyles
         $this->inner = $dom->text();
         $this->home = $dom->app->vars('_env.path_app');
         $this->path = '/assets/compress/css';
-        $this->filename = $dom->attr('src') ? $dom->attr('src') : md5($this->inner).'.cssgz';
-        strtolower(substr($this->filename, 0, 6)) !== '.cssgz' ? $this->filename.='.cssgz' : null;
+        $this->filename = $dom->attr('src') ? $dom->attr('src') : md5($this->inner).'.css';
+        strtolower(substr($this->filename, 0, 4)) !== '.css' ? $this->filename.='.css' : null;
 
         $this->src = substr($this->filename, 0, 1) == '/' ? $this->filename : $this->path.'/'.$this->filename;
         $this->dir = substr($this->filename, 0, 1) == '/' ? $this->home : $this->home.$this->path;
@@ -20,7 +20,6 @@ class tagStyles
         $info = (object)pathinfo($this->file);
         $this->dir = $info->dirname;
         $this->filename = $info->basename;
-        $this->access();
         $this->load($dom);
         $dom->remove();
     }
@@ -44,20 +43,7 @@ class tagStyles
                 $styles->add($src);
             }
         }
-        $this->file = str_replace('.css.cssgz', '.css', $this->file);
-        $this->src = str_replace('.css.cssgz', '.css', $this->src);
         $styles->minify($this->file);
         $this->dom->after('<script type="wbapp" remove >wbapp.loadStyles(["'.$this->src.'"])</script>'.PHP_EOL);
-    }
-
-    public function access()
-    {
-        $this->hta = $this->dir.'/.htaccess';
-        if (!is_file($this->hta)) {
-            $htaccess='Options All -Indexes'.PHP_EOL;
-            $htaccess.='AddType text/css cssgz'.PHP_EOL;
-            $htaccess.='AddEncoding x-gzip .cssgz'.PHP_EOL;
-            $this->app->putContents($this->hta, $htaccess);
-        }
     }
 }
