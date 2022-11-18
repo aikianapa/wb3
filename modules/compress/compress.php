@@ -10,7 +10,7 @@ class modCompress
     {
         if (strtolower(get_class($obj)) == 'wbapp') {
             $this->app = &$obj;
-            $this->dom = $this->app->fromSrting('');
+            $this->dom = $this->app->fromString('');
         } elseif (strtolower(get_class($obj)) == 'wbdom') {
             $this->app = &$obj->app;
             $this->dom = &$obj;

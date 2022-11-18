@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="d-flex">
-                    <form class="d-block">
+                    <form class="d-block" method="POST" onsubmit="wbapp.sign.login();return false;">
                         <h2 class="mb-4">Вход</h2>
                         <div class="row" wb-if="'{{_sett.modules.login.loginby}}' == 'phone'">
                             <div class="col-12 col-md-7">
@@ -61,7 +61,7 @@
                                 <input type="password" class="form-control" name="password" required>
                             </div>
                             <div class="col">
-                                <a href="javascript:void(0)" onclick="wbapp.sign.login();" class="btn btn-primary mt-5 w-100 rounded-20">Войти</a>
+                                <button type="submit" class="btn btn-primary mt-5 w-100 rounded-20">Войти</button>
                             </div>
                         </div>
                         <p class="mt-5 tx-12">

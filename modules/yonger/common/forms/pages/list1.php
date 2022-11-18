@@ -243,7 +243,12 @@
             find(ev) {
                 let find = $(ev.node).val()
                 let list = $(yongerPages.el).find('#pagesList')
-                find == '' ? $(list).find('li').removeClass('d-none') : $(list).find('li').addClass('d-none');
+                if (find == '') {
+                    $(list).find('li').removeClass('d-none')
+                    return
+                } else {
+                    $(list).find('li').addClass('d-none');
+                }
                 $(list).find('li').each(function(){
                     let string = $(this).text()
                     let flag = false
