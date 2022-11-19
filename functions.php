@@ -198,7 +198,7 @@ function wbInitSettings(&$app)
                 $options[substr($key, 1)] = $val;
                 unset($query[$key]);
             } else {
-               // (array)$val === $val ? $val = json_encode($val) : null; // перестаёт работать поиск
+                (array)$val === $val ? $val = json_encode($val) : null; // перестаёт работать поиск ??? ГДЕ ???
                 if (substr($val, -1) == "]" && substr($val, 0, 1) == "[") {
                     // считаем что в val массив и разбираем его
                     $val = explode(",", substr($val, 1, strlen($val) -2));
