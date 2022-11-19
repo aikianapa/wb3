@@ -20,8 +20,8 @@ class pagesClass extends cmsFormsClass
         }
         @$item['menu_title'] = isset($item['menu_title']) && isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] :  $item['menu_title']['ru'];
         $item['menu_title'] == '' ? $item['menu_title'] = $item['header'] : null;
-        $blocks = $data->get('blocks');
-        $tmp = array_column($data->get('blocks'), "name");
+        $blocks = (array)$data->get('blocks');
+        $tmp = array_column($blocks, "name");
         if (in_array("seo", $tmp)) {
             $seo = $this->app->dot($blocks[array_search("seo", $tmp)]);
             if ($seo->get('active') == 'on') {
@@ -74,7 +74,7 @@ class pagesClass extends cmsFormsClass
         $this->app->vars('_route.mode') == 'save' ? $this->app->shadow('/module/yonger/yonmap') : null;
     }
 
-    function list()
+    function list1()
     {
         $app = &$this->app;
         $this->tables = $app->tableList();
