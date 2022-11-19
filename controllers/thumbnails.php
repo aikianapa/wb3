@@ -10,7 +10,6 @@ class ctrlThumbnails
     public function __construct($app)
     {
         $this->app = &$app;
-        $this->cache();
         $this->thumbnails($app);
     }
 
@@ -28,7 +27,7 @@ class ctrlThumbnails
             $mime = wbMime($destination);
             header('Content-Type: '.$mime);
             echo $image;
-            die;
+            exit;
         } 
     }
 
@@ -104,6 +103,9 @@ class ctrlThumbnails
                 $cache=false;
             }
         }
+
+        if ($cache) $this->cache();
+
         if ($app->vars('_route.params') and isset($app->vars('_route.params')[0])) {
             $tmp=base64_decode($app->vars('_route.params')[0]);
             if (strpos($tmp, 'ttp://') or strpos($tmp, 'ttps://')) {
@@ -239,6 +241,13 @@ class ctrlThumbnails
                         $offsetX = ($image->getSize()->getWidth() - $app->vars('_route.w')) / 2;
                         $image->crop(new Point($offsetX, 0), $size);
                     }
+
+
+                    if ($image->getSize()->getHeight() > $app->vars('_route.h')) {
+                        $offsetY = ($image->getSize()->getHeight() - $app->vars('_route.h')) / 2;
+                        $image->crop(new Point(0, $offsetY), $size);
+                    }
+
 
                     $offsetX = $canvasCenter->getX() - $imageCenter->getX();
                     $offsetY = $canvasCenter->getY() - $imageCenter->getY();
