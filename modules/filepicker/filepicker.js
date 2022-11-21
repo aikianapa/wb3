@@ -281,7 +281,8 @@ $(document).on("filepicker-js", async function() {
                         fixoldimg();
                         $filepicker.ractive.set({ images: $filepicker.list });
                         setdata();
-
+                        console.log('Trigger: mod-filepicker-add');
+                        $filepicker.trigger('mod-filepicker-add', $filepicker.list);
                     }).on('fail.filepicker', function(e, data) {
                         let $fibtn = $filepicker.find('button.fileinput:visible');
                         if ($fibtn.length) {
@@ -293,6 +294,8 @@ $(document).on("filepicker-js", async function() {
                             .attr("src", "/engine/modules/filepicker/assets/img/error.png")
                             .attr("title", "Error")
                             .on(wbapp.evClick, function() { $(this).parent(".card").remove(); });
+                        console.log('Trigger: mod-filepicker-fail');
+                        $filepicker.trigger('mod-filepicker-fail', $filepicker.list);
                     }).on('uploadfallback.filepicker', function(e, data) {
                         console.log(data);
                     });
