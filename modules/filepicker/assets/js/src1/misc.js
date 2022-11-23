@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-export default function (Filepicker) {
+export default function(Filepicker) {
     /**
      * Add data methods.
      *
@@ -12,11 +12,11 @@ export default function (Filepicker) {
      *         .send()
      *         .abort()
      */
-    Filepicker.prototype._addMethods = function (data) {
+    Filepicker.prototype._addMethods = function(data) {
         const dfd = $.Deferred();
 
         data.state = 'pending';
-        data.progress = {total: 0, loaded: 0};
+        data.progress = { total: 0, loaded: 0 };
         data.promise = () => dfd.promise();
 
         /**
@@ -55,7 +55,7 @@ export default function (Filepicker) {
                     const max = this._getPostMaxSize(xhr.responseText);
 
                     if (max > -1) {
-                        dfd.reject(this.trans('postMaxSize', {max: max}), xhr);
+                        dfd.reject(this.trans('postMaxSize', { max: max }), xhr);
                     } else {
                         dfd.reject(this.trans('error'), xhr);
                     }
@@ -65,7 +65,7 @@ export default function (Filepicker) {
                     if (xhr.status === 200 || xhr.status === 201) {
                         dfd.resolve(xhr.responseJSON, xhr);
                     } else {
-                        dfd.reject(this.trans('error', {response: xhr.responseJSON}), xhr);
+                        dfd.reject(this.trans('error', { response: xhr.responseJSON }), xhr);
                     }
                 }
             }
@@ -104,7 +104,7 @@ export default function (Filepicker) {
     /**
      * Process data queue files.
      */
-    Filepicker.prototype._processQueue = function () {
+    Filepicker.prototype._processQueue = function() {
         this._sending--;
 
         const parallel = this.options.parallelUploads;
@@ -128,7 +128,7 @@ export default function (Filepicker) {
      * @param  {Object} data
      * @return {Object} jQuery Promise Object
      */
-    Filepicker.prototype._ajax = function (route, data) {
+    Filepicker.prototype._ajax = function(route, data) {
         if (route.method != 'GET' && route.method != 'POST') {
             data._method = route.method;
             route.method = 'POST';
@@ -149,7 +149,7 @@ export default function (Filepicker) {
      * @param  {String} method
      * @return {Object} {uri:, method:}
      */
-    Filepicker.prototype._route = function (name, method) {
+    Filepicker.prototype._route = function(name, method) {
         const route = this.options.routes[name];
 
         return {
@@ -164,8 +164,8 @@ export default function (Filepicker) {
      * @param  {Strng} filename
      * @return {String}
      */
-    Filepicker.prototype._getExtension = function (filename) {
-        return filename.substr(filename.lastIndexOf('.') + 1, filename.length);
+    Filepicker.prototype._getExtension = function(filename) {
+        return filename.substring(filename.lastIndexOf('.') + 1, filename.length);
     }
 
     /**
@@ -175,7 +175,7 @@ export default function (Filepicker) {
      * @param  {Number} timestamp
      * @return {String}
      */
-    Filepicker.prototype._formatTime = function (timestamp) {
+    Filepicker.prototype._formatTime = function(timestamp) {
         let d = new Date(timestamp * 1000),
             yyyy = d.getFullYear(),
             mm = ('0' + (d.getMonth() + 1)).slice(-2),
@@ -204,7 +204,7 @@ export default function (Filepicker) {
      * @param  {Number} bytes
      * @return {String}
      */
-    Filepicker.prototype._formatSize = function (bytes) {
+    Filepicker.prototype._formatSize = function(bytes) {
         if (!$.isNumeric(bytes)) {
             return '';
         }
@@ -230,7 +230,7 @@ export default function (Filepicker) {
      * @param  {Object} input
      * @return {Array}
      */
-    Filepicker.prototype._getInputFiles = function (input) {
+    Filepicker.prototype._getInputFiles = function(input) {
         const files = $.makeArray(input.prop('files'));
 
         this._replaceInput(input);
@@ -243,7 +243,7 @@ export default function (Filepicker) {
      *
      * @param {Object} input
      */
-    Filepicker.prototype._replaceInput = function (input) {
+    Filepicker.prototype._replaceInput = function(input) {
         const inputClone = input.clone(true);
 
         $('<form/>').append(inputClone)[0].reset();
@@ -275,7 +275,7 @@ export default function (Filepicker) {
      * @param  {String} response
      * @return {Number}
      */
-    Filepicker.prototype._getPostMaxSize = function (text) {
+    Filepicker.prototype._getPostMaxSize = function(text) {
         if (text.indexOf('POST Content-Length') === -1) {
             return -1;
         }

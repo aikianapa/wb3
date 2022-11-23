@@ -247,7 +247,7 @@ $(document).on("filepicker-js", async function() {
                             ractive.set({ images: $filepicker.list });
                             setdata();
                         }
-                        let $fibtn = $filepicker.find('button.fileinput:visible');
+                        let $fibtn = $filepicker.find('button.fileinput');
                         if ($fibtn.length) {
                             $fibtn.find('> span .spinner-border').remove();
                             $fibtn.find('> span > svg').show();

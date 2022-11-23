@@ -24,7 +24,7 @@ $handler = new Handler($uploader);
 
 // Configuration
 
-$config['debug'] = true;
+$config['debug'] = false;
 
 
 //$app->vars('_sess.user_role') == 'admin' ? $config['accept_file_types_regex'] = '/.*/' : null;

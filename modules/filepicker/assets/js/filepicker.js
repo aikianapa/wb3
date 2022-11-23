@@ -6,22 +6,23 @@
  * For the full copyright and license information, please visit:
  * http://codecanyon.net/licenses/standard
  */
-(function (global, factory) {
+(function(global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('jquery')) :
-    typeof define === 'function' && define.amd ? define(['jquery'], factory) :
-    (global.Filepicker = factory(global.jQuery));
-}(this, function ($) { 'use strict';
+        typeof define === 'function' && define.amd ? define(['jquery'], factory) :
+        (global.Filepicker = factory(global.jQuery));
+}(this, function($) {
+    'use strict';
 
     $ = 'default' in $ ? $['default'] : $;
 
-    function apiMixin (Filepicker) {
+    function apiMixin(Filepicker) {
         /**
          * Fetch files from the server.
          *
          * @param  {Object} options
          * @return {Object} jQuery Promise Object
          */
-        Filepicker.prototype.fetch = function (options) {
+        Filepicker.prototype.fetch = function(options) {
             return this._ajax(this._route('fetch'), options);
         };
 
@@ -32,7 +33,7 @@
          * @param  {Object} options
          * @return {Object} jQuery Promise Object
          */
-        Filepicker.prototype.update = function (file, options) {
+        Filepicker.prototype.update = function(file, options) {
             var route = this._route('patch', 'PATCH');
 
             return this._ajax(route, $.extend({}, { file: file }, options || {}));
@@ -44,7 +45,7 @@
          * @param  {String|Array} files
          * @return {Object} jQuery Promise Object
          */
-        Filepicker.prototype['delete'] = function (files) {
+        Filepicker.prototype['delete'] = function(files) {
             files = $.isArray(files) ? files : [files];
 
             return this._ajax(this._route('delete', 'DELETE'), { files: files });
@@ -57,7 +58,7 @@
          * @param  {Object} params
          * @return {String}
          */
-        Filepicker.prototype.trans = function (id) {
+        Filepicker.prototype.trans = function(id) {
             var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
             var message = this.options.messages[id] || id.toString();
@@ -78,7 +79,7 @@
          *
          * @param {Object} file
          */
-        Filepicker.prototype.addProps = function (file) {
+        Filepicker.prototype.addProps = function(file) {
             if (!file.extension) {
                 file.extension = this._getExtension(file.name);
             }
@@ -87,7 +88,7 @@
             file.imageFile = this.options.imageFileTypes.test(file.name);
             file.timeFormatted = file.time ? this._formatTime(file.time) : '';
 
-            file.timeISOString = function () {
+            file.timeISOString = function() {
                 return Date.prototype.toISOString ? new Date(file.time * 1000).toISOString() : '';
             };
         };
@@ -98,7 +99,7 @@
          * @param  {Object} merge
          * @return {Object}
          */
-        Filepicker.prototype.data = function () {
+        Filepicker.prototype.data = function() {
             var merge = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
             var data = this.options.data;
@@ -113,7 +114,7 @@
         /**
          * Destroy events.
          */
-        Filepicker.prototype.destroy = function () {
+        Filepicker.prototype.destroy = function() {
             this.events = [];
 
             if (this.element) {
@@ -135,7 +136,7 @@
          * @param {Object} plugin
          * @param {Object} options
          */
-        Filepicker.prototype.extend = function (plugin, options) {
+        Filepicker.prototype.extend = function(plugin, options) {
             plugin.$f = this;
 
             $.extend(true, this.options, options);
@@ -251,13 +252,13 @@
         }
     };
 
-    function initMixin (Filepicker) {
+    function initMixin(Filepicker) {
         /**
          * Initialize.
          *
          * @param  {Object} options
          */
-        Filepicker.prototype._init = function (options) {
+        Filepicker.prototype._init = function(options) {
             this.events = {};
             this.plugins = {};
             this.element = options.el || null;
@@ -284,10 +285,10 @@
         /**
          * Register plugins.
          */
-        Filepicker.prototype._registerPlugins = function () {
+        Filepicker.prototype._registerPlugins = function() {
             var _this2 = this;
 
-            $.each(this.options.plugins, function (_, name) {
+            $.each(this.options.plugins, function(_, name) {
                 if (Filepicker.plugins[name]) {
                     _this2.plugins[name] = new Filepicker.plugins[name](_this2);
                 }
@@ -297,10 +298,10 @@
         /**
          * Initialize plugins.
          */
-        Filepicker.prototype._initPlugins = function () {
+        Filepicker.prototype._initPlugins = function() {
             var _this3 = this;
 
-            $.each(this.options.plugins, function (_, name) {
+            $.each(this.options.plugins, function(_, name) {
                 if (_this3.plugins[name]) {
                     _this3._initPlugin(_this3.plugins[name]);
                 }
@@ -312,7 +313,7 @@
          *
          * @param {Object} plugin
          */
-        Filepicker.prototype._initPlugin = function (plugin) {
+        Filepicker.prototype._initPlugin = function(plugin) {
             var _this = this;
 
             /**
@@ -320,7 +321,7 @@
              *
              * See Filepicker.prototype.trigger (events.js).
              */
-            plugin.trigger = function (type, event) {
+            plugin.trigger = function(type, event) {
                 var data = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
                 var context = arguments[3];
 
@@ -332,7 +333,7 @@
              *
              * See Filepicker.prototype.on (events.js).
              */
-            plugin.on = function () {
+            plugin.on = function() {
                 var args = arguments;
 
                 if ($.isFunction(args[2])) {
@@ -350,7 +351,7 @@
         };
     }
 
-    function miscMixin (Filepicker) {
+    function miscMixin(Filepicker) {
         /**
          * Add data methods.
          *
@@ -362,14 +363,14 @@
          *         .send()
          *         .abort()
          */
-        Filepicker.prototype._addMethods = function (data) {
+        Filepicker.prototype._addMethods = function(data) {
             var _this = this;
 
             var dfd = $.Deferred();
 
             data.state = 'pending';
             data.progress = { total: 0, loaded: 0 };
-            data.promise = function () {
+            data.promise = function() {
                 return dfd.promise();
             };
 
@@ -379,7 +380,7 @@
              * @param  {Object} options
              * @return {Object|Boolean} jQuery Promise Object
              */
-            data.send = function (options) {
+            data.send = function(options) {
                 if (data.state === 'sending') {
                     return dfd;
                 }
@@ -391,7 +392,7 @@
 
                 xhr.open(route.method, route.uri, true);
 
-                xhr.upload.onprogress = function (e) {
+                xhr.upload.onprogress = function(e) {
                     if (e.lengthComputable) {
                         data.progress.total = e.total;
                         data.progress.loaded = e.loaded;
@@ -400,7 +401,7 @@
                     }
                 };
 
-                xhr.onload = function () {
+                xhr.onload = function() {
                     xhr.responseJSON = null;
 
                     try {
@@ -426,11 +427,11 @@
 
                 var formData = new FormData();
 
-                $.each(_this.data(options), function (key, value) {
+                $.each(_this.data(options), function(key, value) {
                     formData.append(key, value);
                 });
 
-                $.each(data.files, function (_, file) {
+                $.each(data.files, function(_, file) {
                     if (!file.error) {
                         formData.append(_this.options.paramName, file, file.name);
                     }
@@ -444,7 +445,7 @@
             /**
              * Abort upload.
              */
-            data.abort = function () {
+            data.abort = function() {
                 if (data.xhr) {
                     data.xhr.abort();
                 }
@@ -458,7 +459,7 @@
         /**
          * Process data queue files.
          */
-        Filepicker.prototype._processQueue = function () {
+        Filepicker.prototype._processQueue = function() {
             this._sending--;
 
             var parallel = this.options.parallelUploads;
@@ -482,7 +483,7 @@
          * @param  {Object} data
          * @return {Object} jQuery Promise Object
          */
-        Filepicker.prototype._ajax = function (route, data) {
+        Filepicker.prototype._ajax = function(route, data) {
             if (route.method != 'GET' && route.method != 'POST') {
                 data._method = route.method;
                 route.method = 'POST';
@@ -503,7 +504,7 @@
          * @param  {String} method
          * @return {Object} {uri:, method:}
          */
-        Filepicker.prototype._route = function (name, method) {
+        Filepicker.prototype._route = function(name, method) {
             var route = this.options.routes[name];
 
             return {
@@ -518,9 +519,9 @@
          * @param  {Strng} filename
          * @return {String}
          */
-        Filepicker.prototype._getExtension = function (filename) {
+        Filepicker.prototype._getExtension = function(filename) {
             if (filename == undefined) return;
-            return filename.substr(filename.lastIndexOf('.') + 1, filename.length);
+            return filename.substring(filename.lastIndexOf('.') + 1, filename.length);
         };
 
         /**
@@ -530,7 +531,7 @@
          * @param  {Number} timestamp
          * @return {String}
          */
-        Filepicker.prototype._formatTime = function (timestamp) {
+        Filepicker.prototype._formatTime = function(timestamp) {
             var d = new Date(timestamp * 1000),
                 yyyy = d.getFullYear(),
                 mm = ('0' + (d.getMonth() + 1)).slice(-2),
@@ -559,7 +560,7 @@
          * @param  {Number} bytes
          * @return {String}
          */
-        Filepicker.prototype._formatSize = function (bytes) {
+        Filepicker.prototype._formatSize = function(bytes) {
             if (!$.isNumeric(bytes)) {
                 return '';
             }
@@ -585,7 +586,7 @@
          * @param  {Object} input
          * @return {Array}
          */
-        Filepicker.prototype._getInputFiles = function (input) {
+        Filepicker.prototype._getInputFiles = function(input) {
             var files = $.makeArray(input.prop('files'));
 
             this._replaceInput(input);
@@ -598,7 +599,7 @@
          *
          * @param {Object} input
          */
-        Filepicker.prototype._replaceInput = function (input) {
+        Filepicker.prototype._replaceInput = function(input) {
             var inputClone = input.clone(true);
 
             $('<form/>').append(inputClone)[0].reset();
@@ -615,7 +616,7 @@
                 inputs = this.element.find(this.options.fileInput);
             }
 
-            inputs.map(function (i, el) {
+            inputs.map(function(i, el) {
                 if (el === input[0]) {
                     return inputClone[0];
                 }
@@ -630,7 +631,7 @@
          * @param  {String} response
          * @return {Number}
          */
-        Filepicker.prototype._getPostMaxSize = function (text) {
+        Filepicker.prototype._getPostMaxSize = function(text) {
             if (text.indexOf('POST Content-Length') === -1) {
                 return -1;
             }
@@ -641,14 +642,14 @@
         };
     }
 
-    function pluginMixin (Filepicker) {
+    function pluginMixin(Filepicker) {
         /**
          * jQuery plugin definition.
          *
          * @param  {Object} options
          * @return {Object}
          */
-        $.fn[Filepicker.pluginName] = function () {
+        $.fn[Filepicker.pluginName] = function() {
             var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
             var el = $(this);
@@ -658,14 +659,14 @@
                 return instance;
             }
 
-            return this.each(function () {
+            return this.each(function() {
                 options.el = $(this);
                 options.el.data(Filepicker.pluginName, new Filepicker(options));
             });
         };
     }
 
-    function eventsMixin (Filepicker) {
+    function eventsMixin(Filepicker) {
         /**
          * Add event listener on element or instance.
          *
@@ -682,7 +683,7 @@
          * @param {String}   jQuery element or event type.
          * @param {Function} Event handler.
          */
-        Filepicker.prototype.on = function () {
+        Filepicker.prototype.on = function() {
             if (!arguments[0]) {
                 return false;
             }
@@ -720,7 +721,7 @@
          * @param {String}   type
          * @param {Function} handler
          */
-        Filepicker.prototype.off = function (type, handler) {
+        Filepicker.prototype.off = function(type, handler) {
             if (this.element) {
                 this.element.off(type, handler);
             }
@@ -744,7 +745,7 @@
          * @param  {Object} context
          * @return {Boolean}
          */
-        Filepicker.prototype.trigger = function (type, event) {
+        Filepicker.prototype.trigger = function(type, event) {
             var data = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
             var context = arguments[3];
 
@@ -779,7 +780,7 @@
          * @param {String} type
          * @param {Object} context
          */
-        Filepicker.prototype._emit = function (type, context) {
+        Filepicker.prototype._emit = function(type, context) {
             var list = this.events[type] || [],
                 i = 0,
                 handler = void 0;
@@ -807,13 +808,13 @@
         }
     }
 
-    function handlersMixin (Filepicker) {
+    function handlersMixin(Filepicker) {
         /**
          * On file input change event handler.
          *
          * @param {Object} e
          */
-        Filepicker.prototype.onChange = function (e) {
+        Filepicker.prototype.onChange = function(e) {
             if (!(window.File && window.FileList && window.FormData)) {
                 return this.trigger('uploadfallback', e, this.trans('uploadFallback'));
             }
@@ -827,7 +828,7 @@
          * @param {Object} e
          * @param {Object} data
          */
-        Filepicker.prototype.onAdd = function (e, data) {
+        Filepicker.prototype.onAdd = function(e, data) {
             var _this = this;
 
             var i = 0;
@@ -840,14 +841,14 @@
                 return _this.trigger('validate', e, file);
             };
 
-            $.each(data.files, function (_, file) {
+            $.each(data.files, function(_, file) {
                 return _this.addProps(file);
             });
 
             data.originalFiles = data.files;
 
             if (!this.options.uploadMultiple) {
-                $.each(data.files, function (_, file) {
+                $.each(data.files, function(_, file) {
                     validate(file);
                     fileSet.push([file]);
                 });
@@ -855,14 +856,14 @@
                 for (i = 0; i < data.files.length; i += limit) {
                     var files = data.files.slice(i, i + limit);
 
-                    $.each(files, function (_, file) {
+                    $.each(files, function(_, file) {
                         validate(file);
                     });
 
                     fileSet.push(files);
                 }
             } else {
-                $.each(data.files, function (_, file) {
+                $.each(data.files, function(_, file) {
                     if (!validate(file)) {
                         batchSize += file.size + overhead;
 
@@ -880,7 +881,7 @@
                 });
             }
 
-            $.each(fileSet, function (_, files) {
+            $.each(fileSet, function(_, files) {
                 var newData = $.extend({}, data, { files: files });
 
                 _this._addMethods(newData);
@@ -895,10 +896,10 @@
          * @param {Object} e
          * @param {Object} data
          */
-        Filepicker.prototype.onSend = function (e, data) {
+        Filepicker.prototype.onSend = function(e, data) {
             var _this2 = this;
 
-            var filtered = data.files.filter(function (file) {
+            var filtered = data.files.filter(function(file) {
                 return !file.error;
             });
 
@@ -910,13 +911,13 @@
                 return this.onFail(this.trans(data.errorThrown || 'abort'), data);
             }
 
-            data.promise().progress(function (loaded, total) {
+            data.promise().progress(function(loaded, total) {
                 return _this2.onProgress(loaded, total, data);
-            }).done(function (result, xhr) {
+            }).done(function(result, xhr) {
                 return _this2.onDone(xhr.responseJSON, data);
-            }).fail(function (error) {
+            }).fail(function(error) {
                 return _this2.onFail(error, data);
-            }).always(function (resultOrError) {
+            }).always(function(resultOrError) {
                 return _this2.onAlways(resultOrError, data);
             });
 
@@ -937,7 +938,7 @@
          * @param {Number} total
          * @param {Object} data
          */
-        Filepicker.prototype.onProgress = function (loaded, total, data) {
+        Filepicker.prototype.onProgress = function(loaded, total, data) {
             data.progress.percentage = Math.floor(loaded / total * 100);
 
             this.trigger('progress', null, data);
@@ -949,7 +950,7 @@
          * @param {Array}  result
          * @param {Object} data
          */
-        Filepicker.prototype.onDone = function (result, data) {
+        Filepicker.prototype.onDone = function(result, data) {
             data.result = result;
             data.state = 'sent';
 
@@ -967,7 +968,7 @@
          * @param {String} errorThrown
          * @param {Object} data
          */
-        Filepicker.prototype.onFail = function (errorThrown, data) {
+        Filepicker.prototype.onFail = function(errorThrown, data) {
             data.errorThrown = errorThrown;
             data.state = 'failed';
 
@@ -980,7 +981,7 @@
          * @param {Array|String} resultOrError
          * @param {Object} data
          */
-        Filepicker.prototype.onAlways = function (resultOrError, data) {
+        Filepicker.prototype.onAlways = function(resultOrError, data) {
             this._processQueue();
 
             data.resultOrError = resultOrError;
@@ -1002,7 +1003,7 @@
      * @param {String} name
      * @param {Function} callback
      */
-    Filepicker.plugin = function (name, callback) {
+    Filepicker.plugin = function(name, callback) {
         Filepicker.plugins[name] = callback;
     };
 

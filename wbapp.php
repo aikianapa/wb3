@@ -590,11 +590,20 @@ class wbDom extends DomQuery
         $seo = $this->app->ItemRead('_settings', 'seo');
         $data = $this->app->dot($this->item);
         isset($this->item['header']) ? $header = $this->item['header'] : $header = $this->app->vars('_sett.header');
+        // для блока Yonger - seo
+        foreach((array)$data->get('blocks') as $block) {
+            if ($block['name'] == 'seo' && $block['active'] == 'on') {
+                $lang = $block['lang'][$_SESSION['lang']];
+                $header = $lang['title'];
+                $keywords = $lang['keywords'];
+                $descr = $lang['descr'];
+            }
+        }
         if ($data->get('seo') == 'on') {
             $data->get('meta_title') ? $header = $data->get('meta_title') : null;
             $data->get('meta_keywords') ? $keywords = $data->get('meta_keywords') : null;
             $data->get('meta_description') ? $descr = $data->get('meta_description') : null;
-        } else if ($seo and isset($seo['seo']) and $seo['seo'] == 'on') {
+        } else if (isset($seo['seo']) and $seo['seo'] == 'on') {
             $seo['title'] > '' ? $header = $seo['title'] : null;
             $seo['meta_keywords'] > '' ? $keywords = $seo['meta_keywords'] : null;
             $seo['meta_description'] > '' ? $descr = $seo['meta_description'] : null;

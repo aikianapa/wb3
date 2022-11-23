@@ -14,7 +14,7 @@ function Crop(filepicker) {
 /**
  * Initialize plugin.
  */
-Crop.prototype.init = function () {
+Crop.prototype.init = function() {
     this.options = this.$f.options.crop;
 
     this._initOptions();
@@ -24,7 +24,7 @@ Crop.prototype.init = function () {
 /**
  * Initialize options.
  */
-Crop.prototype._initOptions = function () {
+Crop.prototype._initOptions = function() {
     const o = this.options;
     const s = this.options.selectors;
 
@@ -73,7 +73,7 @@ Crop.prototype._initOptions = function () {
 /**
  * Initialize event handlers.
  */
-Crop.prototype._initHandlers = function () {
+Crop.prototype._initHandlers = function() {
     const o = this.options;
 
     this.on(o.showBtn, 'click', this.show);
@@ -114,7 +114,7 @@ Crop.prototype._initHandlers = function () {
         this.$f.on('renderdone', (e, data) => {
             $.each(data.files, (_, file) => {
                 file.context.find(o.selectors.crop)
-                            .data('fileurl', file.url);
+                    .data('fileurl', file.url);
             });
         });
     }
@@ -125,7 +125,7 @@ Crop.prototype._initHandlers = function () {
  *
  * @param {Object|String} e
  */
-Crop.prototype.show = function (e) {
+Crop.prototype.show = function(e) {
     if ($.type(e) === 'object') {
         e.preventDefault();
     } else {
@@ -151,7 +151,7 @@ Crop.prototype.show = function (e) {
  *
  * @param {Object|String} target
  */
-Crop.prototype.loadPreview = function (target) {
+Crop.prototype.loadPreview = function(target) {
     if (target instanceof $) {
         this.fileContext = $(target).closest('.download-template');
         this.loadImage($(target).data('fileurl'));
@@ -165,8 +165,8 @@ Crop.prototype.loadPreview = function (target) {
  *
  * @param {String} target
  */
-Crop.prototype.loadImage = function (src) {
-    const image = $('<img>', {src: addTimestamp(src), class: 'img-responsive'});
+Crop.prototype.loadImage = function(src) {
+    const image = $('<img>', { src: addTimestamp(src), class: 'img-responsive' });
 
     image.on('load', (e) => this.trigger('cropload', e, image))
         .on('error', (e) => this.trigger('croploadfail', e, image));
@@ -175,7 +175,7 @@ Crop.prototype.loadImage = function (src) {
 /**
  * Hide crop container / modal.
  */
-Crop.prototype.hide = function () {
+Crop.prototype.hide = function() {
     if (this.isModal()) {
         this.options.container.modal('hide');
     } else {
@@ -190,7 +190,7 @@ Crop.prototype.hide = function () {
  *
  * @param {Object} e
  */
-Crop.prototype.save = function (e) {
+Crop.prototype.save = function(e) {
     this.toggleSaveBtn();
 
     this.image.cropper('disable');
@@ -198,19 +198,19 @@ Crop.prototype.save = function (e) {
     const data = this.image.cropper('getData');
 
     this.$f.update(this.getFilename(), data)
-    .done((file, _, jqXHR) => {
-        if (file.versions && file.versions.thumb) {
-            file.versions.thumb.url = addTimestamp(file.versions.thumb.url);
-        }
+        .done((file, _, jqXHR) => {
+            if (file.versions && file.versions.thumb) {
+                file.versions.thumb.url = addTimestamp(file.versions.thumb.url);
+            }
 
-        if (this.fileContext) {
-            file.original = {context: this.fileContext};
-        }
+            if (this.fileContext) {
+                file.original = { context: this.fileContext };
+            }
 
-        this.trigger('cropsave', e, [file, jqXHR]);
-    })
-    .fail((jqXHR) => this.trigger('cropsavefail', e, jqXHR))
-    .always((datajqXHR) => this.trigger('cropsavealways', e, datajqXHR));
+            this.trigger('cropsave', e, [file, jqXHR]);
+        })
+        .fail((jqXHR) => this.trigger('cropsavefail', e, jqXHR))
+        .always((datajqXHR) => this.trigger('cropsavealways', e, datajqXHR));
 }
 
 /**
@@ -220,7 +220,7 @@ Crop.prototype.save = function (e) {
  *
  * @param {Number} degree
  */
-Crop.prototype.rotate = function (degree) {
+Crop.prototype.rotate = function(degree) {
     if (!this.image) {
         return false;
     }
@@ -228,10 +228,11 @@ Crop.prototype.rotate = function (degree) {
     const image = this.image;
     const contData = image.cropper('getContainerData');
 
-    image.cropper('setCropBoxData',{
+    image.cropper('setCropBoxData', {
         width: 2,
         height: 2,
-        top: (contData.height/ 2) - 1, left: (contData.width / 2) - 1
+        top: (contData.height / 2) - 1,
+        left: (contData.width / 2) - 1
     });
 
     image.cropper('rotate', degree);
@@ -273,15 +274,15 @@ Crop.prototype.rotate = function (degree) {
  *
  * @return {String}
  */
-Crop.prototype.getFilename = function () {
+Crop.prototype.getFilename = function() {
     let file = this.image.attr('src');
 
     if (file.indexOf('?file=') > -1) {
-        file = file.substr(file.indexOf('?file=') + 6);
+        file = file.substring(file.indexOf('?file=') + 6);
     }
 
     if (file.indexOf('?') > -1 || file.indexOf('&') > -1) {
-        file = file.substr(0, file.length - 14);
+        file = file.substring(0, file.length - 14);
     }
 
     return decodeURI(file);
@@ -290,7 +291,7 @@ Crop.prototype.getFilename = function () {
 /**
  * Toggle save button.
  */
-Crop.prototype.toggleSaveBtn = function () {
+Crop.prototype.toggleSaveBtn = function() {
     const btn = this.options.saveBtn;
 
     if ($.fn.button) {
@@ -309,7 +310,7 @@ Crop.prototype.toggleSaveBtn = function () {
  *
  * @return {Boolean}
  */
-Crop.prototype.isModal = function () {
+Crop.prototype.isModal = function() {
     return this.options.container &&
         this.options.container.hasClass('modal');
 }
@@ -319,7 +320,7 @@ Crop.prototype.isModal = function () {
  *
  * @param {String} src
  */
-function addTimestamp (src) {
+function addTimestamp(src) {
     return (src += (src.indexOf('?') > -1 ? '&' : '?') + new Date().getTime());
 }
 
