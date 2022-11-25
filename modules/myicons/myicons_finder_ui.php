@@ -25,23 +25,26 @@
         </div>
     </div>
 </div>
-<script wb-app remove>
-    var myicofind = new Ractive({
+<script>
+(()=>{
+    if (document.getElementById('{{_var.id}}').done == true) {
+        return
+    } else {
+        document.getElementById('{{_var.id}}').done = true
+    }
+    let myicofind = new Ractive({
         el: "#{{_var.id}}",
         template: $("#{{_var.id}}").html(),
         data: [],
         on: {
             complete(ev) {
-                $(document).on("mousedown", function(e) {
-                    $(e.target).is("#{{_var.id}} .off-canvas") || $(e.target).parents("#{{_var.id}} .off-canvas").length ? null : $("#{{_var.id}} .off-canvas").removeClass("show")
-                })
                 let val = $(myicofind.el).find("input[name]").val()
                 if (val > "") {
                     $(myicofind.el).find(".input-group-prepend > span").html('<img src="/module/myicons/24/333333/'+val+'.svg" width="24" height="24">')
                 }
             },
             open(ev) {
-                $(myicofind.el).find(".off-canvas").addClass("show")
+                $("#{{_var.id}} .off-canvas").addClass("show")
                 $("#{{_var.id}} input[type=search]").val("")
             },
             close(ev) {
@@ -82,6 +85,7 @@
             }
         }
     })
+})()
 </script>
 
 </html>

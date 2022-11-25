@@ -11,7 +11,6 @@
     <div class="container scroll-y" id="myIcons" wb-off>
         <form class="mt-3 row" onsubmit="return false;">
             <div class="col-sm-4">
-
                 <div class="input-group">
                     <input class="form-control" type="search" placeholder="Поиск (минимум 3 символа)" on-keyup="find">
                     <div class="input-group-append cursor-pointer" on-click="find">
