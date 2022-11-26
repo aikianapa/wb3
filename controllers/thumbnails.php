@@ -37,8 +37,6 @@ class ctrlThumbnails
         $_POST = $app->vars('_post');
 
         $params=$app->vars('_route.params');
-        
-        
         $this->browser = (object)$this->getInfoBrowser();
 
         if ($app->vars('_get')) {
@@ -87,16 +85,14 @@ class ctrlThumbnails
     {
         $app->vars('_route.src') == 'module' ? $remote = true : $remote = false;
         $query = $app->vars('_route.query');
-        if ($app->vars('_route.http')) {
+        if ($app->vars('_route.http') OR substr($app->vars('_get.src'),0,7) == 'http://') {
             $remote=true;
             $p='http';
-        } elseif ($app->vars('_route.https')) {
+        } elseif ($app->vars('_route.https') OR substr($app->vars('_get.src'),0,8) == 'https://') {
             $remote=true;
             $p='https';
         }
-
         $app->vars('_sett.devmode') == 'on' ? $cache=false : $cache = true;
-
         if (isset($_SERVER['HTTP_CACHE_CONTROL'])) {
             parse_str($_SERVER['HTTP_CACHE_CONTROL'], $cc);
             if (isset($cc['no-cache']) or isset($query['nocache'])) {
