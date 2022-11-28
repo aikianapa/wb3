@@ -250,7 +250,6 @@ class jsonDrv
                 unset($list[$key]);
             } else {
                 isset($item['_id']) ? null : $item['_id'] = &$item['id'];
-
                 if (isset($options->trigger)) {
                     $item = wbTrigger('form', __FUNCTION__, $options->trigger, func_get_args(), $item);
                 }
@@ -264,6 +263,8 @@ class jsonDrv
                 } else {
                     if (isset($item['id']) and !isset($item['_id'])) {
                         $item['_id'] = $item['id'];
+                    } else {
+                        $item['_id'] = $item['id'] = $key;
                     }
 
                     $item['_table'] = $item['_form'] = $form;

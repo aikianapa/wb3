@@ -383,9 +383,9 @@ class modApi
             &field*=val          - field like 'val'
             &field>=val          - field >= 'val'
             &field<=val          - field <= 'val'
-            &field>>=val          - field > 'val'
-            &field<<=val          - field < 'val'
-
+            &field>>=val         - field > 'val'
+            &field<<=val         - field < 'val'
+            &field~=val          - field like 'val' (RegExp(val, "i"))
         options:
             &@return=id,name     - return selected fields only
             &@size=10            - break list and return current page
