@@ -662,7 +662,12 @@ wbapp.store = function(storage = null, key, value = undefined, binds = true) {
         let list = key.split(".");
         var res;
         var data = storage.getItem(list[0]);
-        if (data !== null) data = JSON.parse(data);
+        if (data !== null) {
+            data = JSON.parse(data);
+        } else {
+            data = {}
+        }
+
         if (list.length) {
             key = getKey(list);
             try {
@@ -707,6 +712,7 @@ wbapp.store = function(storage = null, key, value = undefined, binds = true) {
                 if (typeof branch == 'object') branch = Object.assign({}, branch);
                 if (i + 1 < last && typeof branch !== "object") eval(`data.${key} = {}`);
             } catch (err) {
+                data ? null : data = {};
                 eval(`data.${key} = {}`);
             }
         })
