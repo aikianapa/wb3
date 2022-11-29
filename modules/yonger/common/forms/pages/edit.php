@@ -110,7 +110,6 @@
         </div>
     </div>
 </div>
-
 <script wb-app remove>
 yonger.pageEditor = function() {
     let $form = $('#{{_form}}EditForm');
@@ -119,6 +118,14 @@ yonger.pageEditor = function() {
         let path = $(this).val() + '/';
         $form.find('.path').html(path);
         $form.find('[name=name]').trigger('change');
+        setTimeout(function(){
+            let blocks = ypbrBlocks.get('blocks')
+            $.each(blocks,function(i,block){
+                if (block.active == 'on' && block.name == 'seo' && block.alturl !== undefined && block.alturl > ' ') {
+                    $form.find('.path').html(block.alturl)
+                }
+            })
+        },100)
     });
     $form.undelegate('[name=name]', 'change keyup');
     $form.delegate('[name=name]', 'change keyup', function() {
@@ -135,6 +142,9 @@ yonger.pageEditor = function() {
         let target = md5(url);
         window.open(url, target).focus();
     })
+    yonger.pageEditor.changePath = function() {
+        $form.find('[name=path]').trigger('change');
+    }
 }
 
 yonger.pageEditor();

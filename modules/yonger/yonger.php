@@ -48,7 +48,7 @@ class modYonger
         $this->tables = $app->tableList();
         $this->count = 0;
         $this->map = [];
-        $this->list = $this->app->itemList('pages', ['return' => 'id,name,_form,header,active,attach,attach_filter,url,path,_sort']);
+        $this->list = $this->app->itemList('pages', ['return' => 'id,name,_form,header,active,attach,attach_filter,url,path,_sort,blocks']);
         $this->list = $this->list['list'];
         $this->yonmapnest();
         $app->putContents($app->vars('_env.dba') . '/_yonmap.json', json_encode($this->map));
@@ -58,7 +58,6 @@ class modYonger
     }
 
     private function yonmapnest($path = '') {
-
         $this->count++;
         if ($this->count > 1000) {
             return;
@@ -70,6 +69,13 @@ class modYonger
         }
         foreach ($level as $item) {
             in_array($item['url'], ['/', '']) ? $url = '/'.$item['name'] : $url = $item['path'].'/'.$item['name'];
+            if (isset($item['blocks']) && (array)$item['blocks'] === $item['blocks']) {
+                foreach($item['blocks'] as $block) {
+                    if (isset($block['name']) && isset($block['active']) && $block['active'] == 'on' && $block['name'] == 'seo') {
+                        isset($block['alturl']) && $block['alturl'] > ' ' ? $url = $block['alturl'] : null;
+                    }
+                }
+            }
             $md5 = md5($url);
             unset($this->list[$item['id']]);
             $attach = (isset($item['attach']) and $item['attach'] > ' ') ? true : false;

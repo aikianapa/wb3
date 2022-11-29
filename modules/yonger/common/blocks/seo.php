@@ -6,9 +6,31 @@
     <link seo href="{{_route.host}}{{_route.uri}}" rel="canonical">
 </view>
 <edit header="{{_lang.header}}" head>
-    <div>
-        <wb-module wb="module=yonger&mode=edit&block=common.inc" />
+    <div id="yongerBlockSeoAltUrl">
+        <div>
+            <wb-module wb="module=yonger&mode=edit&block=common.inc" />
+        </div>
+
+        <div class="form-group row">
+            <label class="form-control-label col-md-3">{{_lang.alturl}}</label>
+            <div class="col-md-9">
+                <input type="text" class="form-control" name="alturl" placeholder="{{_lang.alturl}}" on-change="alturl">
+            </div>
+        </div>
     </div>
+            <script>
+            $('#yongerBlockSeoAltUrl .yonger-block-common input[name=active]').attr('on-change','alturl')
+            new Ractive({
+                el: '#yongerBlockSeoAltUrl',
+                template: $('#yongerBlockSeoAltUrl').html(),
+                on: {
+                    alturl() {
+                        yonger.pageEditor.changePath()
+                    }
+                }
+            })
+            </script>
+
     <wb-multilang wb-lang="{{_sett.locales}}" name="lang">
         <div class="form-group row">
             <label class="form-control-label col-md-3">{{_lang.title}}</label>
@@ -37,11 +59,13 @@
         descr = Описание
         keywords = Ключевые слова
         title = Заголовок
+        alturl = Альтернативный URL
         [en]
         header = "Search Engine Optimization"
         descr = Description
         keywords = Keywords
         title = Title
+        alturl = Alternative URL
     </wb-lang>
 </edit>
 

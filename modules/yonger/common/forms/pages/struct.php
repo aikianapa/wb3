@@ -154,7 +154,8 @@ var ypbrBlocks = new Ractive({
             if (line.hasClass('active')) {
                 let inp = $blockform.find('.yonger-block-common [name=active]')
                 blocks[idx].active == 'on' ? inp.prop('checked', true) : inp.prop('checked', false);
-            } 
+            }
+            yonger.pageEditor.changePath() // для отработки альтернативного URL в SEO
         },
         edit(ev) {
             setTimeout(function(){

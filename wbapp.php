@@ -594,9 +594,9 @@ class wbDom extends DomQuery
         foreach((array)$data->get('blocks') as $block) {
             if ($block['name'] == 'seo' && $block['active'] == 'on') {
                 $lang = $block['lang'][$_SESSION['lang']];
-                $header = $lang['title'];
-                $keywords = $lang['keywords'];
-                $descr = $lang['descr'];
+                $header = $lang['title'] > '' ? $lang['title'] : $header;
+                $keywords = $lang['keywords'] > '' ? $lang['keywords'] : $keywords;
+                $descr = $lang['descr'] > '' ? $lang['descr'] : $descr;
             }
         }
         if ($data->get('seo') == 'on') {

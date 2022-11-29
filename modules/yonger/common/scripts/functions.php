@@ -18,6 +18,7 @@
                 $app->route->form = $map[$idx]['f'];
                 $app->route->item = $map[$idx]['i'];
                 $app->route->name = $map[$idx]['n'];
+                $app->route->url = $map[$idx]['u'];
                 isset($app->route->tpl) ? null : $app->route->tpl = $map[$idx]['f'].".php";
                 $app->vars('_route', $app->objToArray($app->route));
                 return $app->route;
