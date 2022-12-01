@@ -137,7 +137,7 @@ class modMyicons
             $svg->attr('viewBox', "0 0 24 24");
             $svg->attr('style', "width:{$this->size}px;height:{$this->size}px;");
         }
-        $attrs = @$this->dom->attributes;
+        $attrs = (array)@$this->dom->attributes;
         foreach ($attrs as $attr) {
             if (!in_array($attr->nodeName, ['stroke','fill','size'])) {
                 $svg->attr($attr->nodeName, $attr->nodeValue);
