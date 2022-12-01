@@ -137,10 +137,12 @@ class modMyicons
             $svg->attr('viewBox', "0 0 24 24");
             $svg->attr('style', "width:{$this->size}px;height:{$this->size}px;");
         }
-        $attrs = (array)@$this->dom->attributes;
-        foreach ($attrs as $attr) {
-            if (!in_array($attr->nodeName, ['stroke','fill','size'])) {
-                $svg->attr($attr->nodeName, $attr->nodeValue);
+        $attrs = $this->dom->attributes;
+        if (gettype($attrs) == 'object' && $attrs->length) {
+            foreach ($attrs as $attr) {
+                if (!in_array($attr->nodeName, ['stroke','fill','size'])) {
+                    $svg->attr($attr->nodeName, $attr->nodeValue);
+                }
             }
         }
         return $svg->outer();
