@@ -81,7 +81,16 @@
                 wbapp.data('yonger.pagelist.exp_' + data.form + '_' + data.item, true)
                 if (data.inner !== "pages") {
                     options = "?&@size=200&@return=id,_id,_form,header,name,url"
-                    wbapp.post('/api/v2/list/' + data.inner + options, {}, function(res) {
+                    let post = {}
+                    if (data.filter > '') {
+                        console.log(typeof data.filter);
+                        if (typeof data.filter == 'object') {
+                            post = {filter: data.filter}
+                        } else {
+                            eval('post = {filter: '+data.filter+'}');
+                        }
+                    }
+                    wbapp.post('/api/v2/list/' + data.inner + options, post, function(res) {
                         $.each(res.result, function(i, item) {
                             item.ch = []
                             item.url = data.path + '/' + wbapp.furl(item.header)
@@ -184,7 +193,7 @@
                     })
                     return ch
                 }
-                wbapp.post('/api/v2/list/pages?&id!=[_header,_footer]&@sort=_sort&@return=_id,_form,id,name,header,url,path,active,menu,attach', {}, function(res) {
+                wbapp.post('/api/v2/list/pages?&id!=[_header,_footer]&@sort=_sort&@return=_id,_form,id,name,header,url,path,active,menu,attach,attach_filter', {}, function(res) {
                     let root = []
                     $.each(res, function(i, item) {
                         if (item !== undefined && item.path == "" && item.name == "home") {
@@ -267,7 +276,7 @@
 </script>
 <div id="yonline" class="d-none" wb-off>
     <li class="dd-item {{dd_collapsed}} row" data-idx="{{@index}}" data-item="{{id}}" data-name="{{name}}" data-path="{{url}}"
-        data-form="{{_form}}" data-inner="{{inner}}">
+        data-form="{{_form}}" data-inner="{{inner}}" data-filter="{{attach_filter}}">
         {{#if ch}}{{#if inner == 'pages'}}
         <button class="dd-collapse" data-action="collapse" type="button" on-click="collapse">Collapse</button>
         <button class="dd-expand" data-action="expand" type="button" on-click="expand">Expand</button>

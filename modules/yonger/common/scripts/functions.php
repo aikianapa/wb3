@@ -87,6 +87,7 @@
         ]]);
         $list = $list['list'];
         foreach ($list as &$item) {
+            $header = $item['header'];
             @$item = [
                 'id' => $item['id'],
                 'menu' => $item['menu'],
@@ -94,11 +95,19 @@
                 'name' => $item['name'],
                 'path' => $item['path'],
                 'children' => $item['children'],
-                'active' => $item['active']
+                'active' => $item['active'],
+                'attach' => $item['attach'],
+                'attach_filter' => $item['attach_filter']
             ];
             if ((array)$item['menu_title'] === $item['menu_title']) {
                 @$item['menu_title'] = isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] : $item['menu_title']['ru'];
             }
+            $item['menu_title'] == '' ? $item['menu_title'] = $header : null;
+
+            if ((array)$item['menu_title'] === $item['menu_title']) {
+                @$item['menu_title'] = isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] : $item['menu_title']['ru'];
+            }
+
             $path = $item['path'];
             $name = $item['name'];
             $path.'/'.$name == '/' ? $path = '/home' : $path .= '/'.$name;
