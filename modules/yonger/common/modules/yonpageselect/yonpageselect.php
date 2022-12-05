@@ -20,7 +20,7 @@ class modYonPageSelect
     }
     
     private function getui() {
-        $ui = $this->app->fromFile($this->app->route->path_engine.'/modules/yonger/tpl/pageselect_ui.php');
+        $ui = $this->app->fromFile(__DIR__.'/yonpageselect_ui.php');
         $class = $this->app->attrToArray($this->dom->attr('class'));
         foreach($class as $i => $c) {
             if ($c == 'col' || substr($c,0,4) == 'col-') {

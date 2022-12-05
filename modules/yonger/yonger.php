@@ -1,4 +1,5 @@
 <?php
+
 // Author: oleg_frolov@mail.ru
 require_once __DIR__ . '/yonger_page.php';
 
@@ -27,23 +28,24 @@ class modYonger
             $sett = $app->itemRead('_settings', 'settings');
             $sett['modules'] = $app->vars('_sett.modules');
             $app->itemSave('_settings', $sett);
-        } 
+        }
 
-        in_array($mode,explode(',','render,workspace,logo,signin,signup,signrc,createSite,blockpreview'))? null : $app->apikey('module');
-        if (in_array($mode,explode(',','createSite')) AND $app->getDomain( $app->route->refferer) !== $app->route->domain ) {
+        in_array($mode, explode(',', 'render,workspace,logo,signin,signup,signrc,createSite,blockpreview')) ? null : $app->apikey('module');
+        if (in_array($mode, explode(',', 'createSite')) and $app->getDomain($app->route->refferer) !== $app->route->domain) {
             echo json_encode(['error'=>true,'msg'=>'Access denied']);
             exit;
         }
         $this->app = &$app;
         if (method_exists($this, $mode)) {
             echo $this->$mode();
-        } else if (!wbCheckBacktrace("wbModuleClass")) {
+        } elseif (!wbCheckBacktrace("wbModuleClass")) {
             $form = $app->controller('form');
             echo $form->get404();
         }
     }
 
-    public function yonmap() {
+    public function yonmap()
+    {
         $app = &$this->app;
         $this->tables = $app->tableList();
         $this->count = 0;
@@ -57,7 +59,8 @@ class modYonger
         exit;
     }
 
-    private function yonmapnest($path = '') {
+    private function yonmapnest($path = '')
+    {
         $this->count++;
         if ($this->count > 1000) {
             return;
@@ -70,7 +73,7 @@ class modYonger
         foreach ($level as $item) {
             in_array($item['url'], ['/', '']) ? $url = '/'.$item['name'] : $url = $item['path'].'/'.$item['name'];
             if (isset($item['blocks']) && (array)$item['blocks'] === $item['blocks']) {
-                foreach($item['blocks'] as $block) {
+                foreach ($item['blocks'] as $block) {
                     if (isset($block['name']) && isset($block['active']) && $block['active'] == 'on' && $block['name'] == 'seo') {
                         isset($block['alturl']) && $block['alturl'] > ' ' ? $url = $block['alturl'] : null;
                     }
@@ -101,7 +104,7 @@ class modYonger
         $level = $this->app->itemList($table, $options);
         $level = $level['list'];
         foreach ($level as $key => $item) {
-            if (method_exists($class,'beforeItemShow')) {
+            if (method_exists($class, 'beforeItemShow')) {
                 $class->beforeItemShow($item);
             }
             isset($item['name']) ? null : $item['name'] = null;
@@ -127,17 +130,17 @@ class modYonger
 
         $subdom = $app->route->subdomain;
         if ($subdom > '' && $app->vars('_post.token') > '' && $app->vars('_post.login') > '') {
-            $tok = file_get_contents( $app->vars('_env.path_app').'/database/_token.json');
+            $tok = file_get_contents($app->vars('_env.path_app').'/database/_token.json');
             $tok = json_decode($tok);
             if ($tok->token == $app->vars('_post.token') && $tok->login == $app->vars('_post.login')) {
-                $user = $app->itemList('users',['filter'=>[
+                $user = $app->itemList('users', ['filter'=>[
                     'active' => 'on',
                     'login' => $tok->login,
                     'role' => 'admin',
                     'default' => true
                 ]]);
                 $user = array_pop($user['list']);
-                $app->login($user);          
+                $app->login($user);
             }
         }
 
@@ -146,10 +149,10 @@ class modYonger
         $role = $app->vars('_sess.user.role');
 
         if ($app->vars('_sett.modules.yonger.standalone') !== 'on') {
-            if ($subdom == '' AND ($login == '' OR $role !== 'user')) {
+            if ($subdom == '' and ($login == '' or $role !== 'user')) {
                 $form = $app->controller('form');
                 return $form->get404();
-            } else if ($login == '_new') {
+            } elseif ($login == '_new') {
                 $master = $ws = $app->fromFile(__DIR__."/tpl/master.php", true);
                 $master->path = $ws->path = __DIR__ . '/tpl/';
                 $master->fetch();
@@ -157,9 +160,9 @@ class modYonger
             }
         } else {
             $dir = $app->vars('_env.path_app').'/forms/pages';
-            is_file($dir) OR is_dir($dir) ? null : symlink(__DIR__ .'/common/forms/pages' , $dir );
+            is_file($dir) or is_dir($dir) ? null : symlink(__DIR__ .'/common/forms/pages', $dir);
             $dir = $app->vars('_env.path_app').'/forms/news';
-            is_file($dir) OR is_dir($dir) ? null : symlink(__DIR__ .'/common/forms/news' , $dir );
+            is_file($dir) or is_dir($dir) ? null : symlink(__DIR__ .'/common/forms/news', $dir);
             $dir = $app->vars('_env.path_app').'/forms/users';
             is_file($dir) or is_dir($dir) ? null : symlink(__DIR__ .'/common/forms/users', $dir);
             $dir = $app->vars('_env.path_app').'/forms/quotes';
@@ -167,9 +170,9 @@ class modYonger
             $dir = $app->vars('_env.path_app').'/forms/comments';
             is_file($dir) or is_dir($dir) ? null : symlink(__DIR__ .'/common/forms/comments', $dir);
             $file = $app->vars('_env.path_app').'/functions.php';
-            is_file($file) ? null : symlink(__DIR__ .'/common/scripts/functions.php' , $file);
+            is_file($file) ? null : symlink(__DIR__ .'/common/scripts/functions.php', $file);
             $file = $app->vars('_env.path_app').'/tpl/page.php';
-            is_file($file) ? null : symlink(__DIR__ .'/common/tpl/page.php' , $file);
+            is_file($file) ? null : symlink(__DIR__ .'/common/tpl/page.php', $file);
         }
         if (is_file($app->route->path_app.'/tpl/workspace.php')) {
             $ws = $app->fromFile($app->route->path_app.'/tpl/workspace.php', true);
@@ -182,7 +185,8 @@ class modYonger
         return '<!DOCTYPE html>'.$ws->outer();
     }
 
-    function pageselect() {
+    public function pageselect()
+    {
         if ($this->type == 'app') {
             // return list to json;
             if ($this->app->vars('_env.cache.yonpageselect')) {
@@ -194,7 +198,7 @@ class modYonger
                     'filter'=> ['active'=>'on','_site' => ['$in'=> [null,$this->app->vars('_sett.site')]], 'id'=> ['$nin'=>['_header','_footer']]]
                 ]);
                 $list = array_values($list['list']);
-                array_walk($list, function(&$item,$key){
+                array_walk($list, function (&$item, $key) {
                     wbIsJson($item['header']) ? $item['header'] = json_decode($item['header'], true) : null;
                     (array)$item['header'] === $item['header'] ? $item['header'] = $item['header'][$this->app->vars('_sess.lang')] : null;
                 });
@@ -207,7 +211,9 @@ class modYonger
             if (!$this->dom->is('input')) {
                 $this->dom->after("<div class='alert alert-warning'>Требуется тэг input</div>");
             } else {
-                $ui = $this->app->fromFile($this->app->route->path_engine.'/modules/yonger/tpl/pageselect_ui.php');
+                $ui = $this->app->fromFile(__DIR__.'/common/modules/yonpageselect/yonpageselect_ui.php');
+                $this->dom->removeAttr('wb');
+                $this->dom->removeAttr('wb-module');
                 $class = $this->app->attrToArray($this->dom->attr('class'));
                 foreach ($class as $i => $c) {
                     if ($c == 'col' || substr($c, 0, 4) == 'col-') {
@@ -225,7 +231,8 @@ class modYonger
         $this->dom->remove();
     }
 
-    function structure() {
+    public function structure()
+    {
         $yp = new yongerPage($this->dom);
         $out = $this->app->fromString($yp->list());
         $preset = $this->dom->params('preset');
@@ -238,15 +245,19 @@ class modYonger
         $this->dom->remove();
     }
 
-    function getblock(&$file = null) {
-        if ($file == null) return '';
+    public function getblock(&$file = null)
+    {
+        if ($file == null) {
+            return '';
+        }
         strpos(' '.$file, '_yonger_') ? $file = str_replace('/_yonger_', __DIR__, $file) : null;
         strpos(' '.$file, '_app_') ? $file = str_replace('/_app_', $this->app->route->path_app, $file) : null;
         is_file($file) ? null : $file = __DIR__ .'/common/blocks/'.$file;
         return file_get_contents($file);
     }
-    
-    function editblock() {
+
+    public function editblock()
+    {
         $file = $this->app->vars('_post.form');
         $form = $this->getblock($file);
         $form = $this->app->fromString($form);
@@ -259,14 +270,15 @@ class modYonger
         return $out;
     }
 
-    function editblocksave() {
+    public function editblocksave()
+    {
         $file = $this->app->vars('_post.form');
         $form = $this->getblock($file);
         $form = $this->app->fromString($form);
         $form->find('edit')->html(base64_decode($this->app->vars('_post.edit')));
         $form->find('view')->html(base64_decode($this->app->vars('_post.view')));
         $data = $form->outer();
-        $res = file_put_contents($file,$data);
+        $res = file_put_contents($file, $data);
         if ($res) {
             return '{"error":false}';
         } else {
@@ -275,24 +287,26 @@ class modYonger
     }
 
 
-    function blocklist() {
+    public function blocklist()
+    {
         header("Content-type: application/json; charset=utf-8");
         $yp = new yongerPage();
         $res = $yp->list();
         return json_encode($res);
     }
 
-    function blockform() {
+    public function blockform()
+    {
         if (!isset($this->dom)) {
-            $ypg = new yongerPage("");    
+            $ypg = new yongerPage("");
         } else {
             $ypg = new yongerPage($this->dom);
         }
         return $ypg->blockform($this->app->vars('_post.item'));
-        
     }
 
-    function blockview($item) {
+    public function blockview($item)
+    {
         $form = $item['form'];
         $ypg = new yongerPage($this->dom);
         $res = $ypg->blockview($form);
@@ -302,18 +316,18 @@ class modYonger
             return $result;
         }
         (isset($item['container']) && $item['container'] == 'on') ? $res->children()->addClass('container') : null;
-        isset($item['lang']) ? $data = array_merge($item,$item['lang'][$this->app->vars('_sess.lang')]) : $data = &$item;
+        isset($item['lang']) ? $data = array_merge($item, $item['lang'][$this->app->vars('_sess.lang')]) : $data = &$item;
         $result = (object)$res->attributes();
         $res->fetch($data); // не удалять, иначе слюстрока не работает как нужно... шайтанама! :(
         if ($this->dom->app->vars('_sett.devmode') == 'on' && !$res->is('script')) {
             $res->prepend('<!-- Is block: '.$form.' -->');
         }
         $section = $this->dom->app->fromString('<html>'.$res->fetch($data)->inner().'</html>');
-        isset($item['block_id']) && $item['block_id'] ? $section->children()->children(':first-child')->attr('id',$item['block_id']) : null;
+        isset($item['block_id']) && $item['block_id'] ? $section->children()->children(':first-child')->attr('id', $item['block_id']) : null;
         isset($item['block_class']) && $item['block_class'] ? $section->children()->children(':first-child')->addClass($item['block_class']) : null;
         if (isset($result->head)) {
             $result->head = $section->inner();
-        } else if ($section->find('head')) {
+        } elseif ($section->find('head')) {
             $result->head = $section->find('head')->inner();
             $section->find('head')->remove();
         }
@@ -325,7 +339,8 @@ class modYonger
         return $result;
     }
 
-    function blockpreview() {
+    public function blockpreview()
+    {
         $tpl = $this->app->getTpl('page.php');
         $block = $this->app->vars('_get.block');
         $ypg = new yongerPage($this->dom);
@@ -335,33 +350,35 @@ class modYonger
             $preview->fetch();
             $tpl->find('wb-module[wb="module=yonger&mode=render"]')->after($preview);
         } else {
-            $tpl->find('wb-module[wb="module=yonger&mode=render"]')->attr("wb","module=yonger&mode=render&view={$block}");            
+            $tpl->find('wb-module[wb="module=yonger&mode=render"]')->attr("wb", "module=yonger&mode=render&view={$block}");
         }
         $tpl->fetch();
         echo $tpl;
         die;
     }
 
-    function block() {
+    public function block()
+    {
         $app = &$_ENV['app'];
         $this->app = $app;
         $this->dom = $app->fromString('<html></html>');
-        $this->dom->params = (object)['view'=>$app->vars('_route.params.0')]; 
+        $this->dom->params = (object)['view'=>$app->vars('_route.params.0')];
         $this->dom->item = $app->vars('_post.item');
         $this->render();
-        echo ($this->dom->outer());
+        echo($this->dom->outer());
         die;
     }
 
-    function copypage() {
+    public function copypage()
+    {
         header("Content-type: application/json; charset=utf-8");
         $app = $this->app;
-        $item = $app->itemRead('pages',$app->vars('_post.item'));
+        $item = $app->itemRead('pages', $app->vars('_post.item'));
         if ($item) {
             $item['_id'] = $app->newId();
             $max = 30;
             $flag = false;
-            while($flag == false AND $max > 0) {
+            while ($flag == false and $max > 0) {
                 $item['name'] == '' ? $item['name'] = 'home_copy' : $item['name'] = $item['name'].'_copy';
                 $check = $app->itemList('pages', ['filter'=>[
                 '_site'=>$app->vars('_sett.site'),
@@ -369,9 +386,11 @@ class modYonger
                 'name'=>$item['name'],
                 'path' => $item['path']
                 ]]);
-                intval($check['count']) == 0 ?  $flag = true : $max--;
+                intval($check['count']) == 0 ? $flag = true : $max--;
             }
-            if ($flag == false) {return '{"error":true}';}
+            if ($flag == false) {
+                return '{"error":true}';
+            }
             $item['active'] = '';
             $item = $app->itemSave('pages', $item);
             echo json_encode($item);
@@ -382,7 +401,8 @@ class modYonger
     }
 
 
-    function edit() {
+    public function edit()
+    {
         $dom = &$this->dom;
         $app = &$dom->app;
         $ypg = new yongerPage($this->dom);
@@ -392,16 +412,16 @@ class modYonger
             $out->fetch($dom->item);
             $dom->append($out);
         }
-
     }
 
 
-    function render() {
+    public function render()
+    {
         $dom = &$this->dom;
         $app = &$dom->app;
         $item = null;
-        $dom->params('view') == 'header' ? $item = $app->itemRead('pages','_header') : null;
-        $dom->params('view') == 'footer' ? $item = $app->itemRead('pages','_footer') : null;
+        $dom->params('view') == 'header' ? $item = $app->itemRead('pages', '_header') : null;
+        $dom->params('view') == 'footer' ? $item = $app->itemRead('pages', '_footer') : null;
         if ($item === null && $dom->params('view') > '') {
             $ypg = new yongerPage($this->dom);
             $form = $ypg->blockfind($dom->params('view'));
@@ -410,16 +430,16 @@ class modYonger
                 $item['blocks'] = [];
                 $item['blocks'][0] = ['id'=>wbNewId(),'form'=>$form,'active'=>'on', 'name'=>$dom->params('view')];
             } else {
-                foreach($item['blocks'] as $key => $block) {
+                foreach ($item['blocks'] as $key => $block) {
                     if ($block['name'] !== $dom->params('view')) {
                         unset($item['blocks'][$key]);
                     }
                 }
             }
-        } else if ($item === null) {
+        } elseif ($item === null) {
             $item = $dom->item;
         }
-        isset($item['blocks']) ? $blocks = (array)$item['blocks'] : $item['blocks'] = []; 
+        isset($item['blocks']) ? $blocks = (array)$item['blocks'] : $item['blocks'] = [];
         $blocks = (array)$item['blocks'];
         $html = $dom->parents(':root');
         $html->find('head')->length ? null : $html->prepend('<head></head>');
@@ -427,7 +447,7 @@ class modYonger
 
         $head = $html->find('head');
         $body = $html->find('body');
-        foreach($blocks as $id => $block) {
+        foreach ($blocks as $id => $block) {
             if ($block === (array)$block) {
                 isset($block['active']) ? null : $block['active'] = '';
                 //$dom->params('view') == 'header' ? $method = 'prepend' : $method = 'append';
@@ -442,20 +462,20 @@ class modYonger
                         $body->length && isset($res->body) ? $body->$method($res->body) : null;
                         $dom->$method($res->result);
                     }
-
                 }
             }
         }
     }
 
-    function logo() {
+    public function logo()
+    {
         $aLogo = $this->app->route->path_app . '/tpl/assets/img/logo.svg';
         $sLogo = $this->app->route->path_app . $this->app->vars('_sett.logo.0.img');
         $eLogo = __DIR__. '/tpl/assets/img/logo.svg';
         if (is_file($sLogo)) {
             header('Content-type: '.wbMime($sLogo));
             return file_get_contents($sLogo);
-        } else         if (is_file($aLogo)) {
+        } elseif (is_file($aLogo)) {
             header('Content-type: image/svg+xml');
             return file_get_contents($aLogo);
         } else {
@@ -465,7 +485,8 @@ class modYonger
         die;
     }
 
-    function signin() {
+    public function signin()
+    {
         $form = $this->app->route->path_app . '/tpl/signin.php';
         if (is_file($form)) {
             $form = $this->app->fromFile($form);
@@ -476,7 +497,8 @@ class modYonger
         return $form->fetch();
     }
 
-    function signup() {
+    public function signup()
+    {
         $form = $this->app->route->path_app . '/tpl/signup.php';
         if (is_file($form)) {
             $form = $this->app->fromFile($form);
@@ -487,7 +509,8 @@ class modYonger
         return $form->fetch();
     }
 
-    function signrc() {
+    public function signrc()
+    {
         $form = $this->app->route->path_app . '/tpl/signrc.php';
         if (is_file($form)) {
             $form = $this->app->fromFile($form);
@@ -498,7 +521,8 @@ class modYonger
         return $form->fetch();
     }
 
-    function support() {
+    public function support()
+    {
         $form = $this->app->route->path_app . '/tpl/support.php';
         if (is_file($form)) {
             $form = $this->app->fromFile($form);
@@ -510,14 +534,15 @@ class modYonger
     }
 
 
-    function goto() {
+    public function goto()
+    {
         $app = &$this->app;
         $sid = $app->route->params[0];
         $login = $app->vars('_sess.user.login');
         $path = $app->vars('_env.path_app').'/sites/'.$sid;
         $app->route->subdomain == '' ? null : $path = realpath($app->vars('_env.path_app').'/../'.$sid);
         $token = md5($_SESSION['token'].time());
-        file_put_contents( $path.'/database/_token.json', json_encode(['token'=>$token,'login'=>$login]));
+        file_put_contents($path.'/database/_token.json', json_encode(['token'=>$token,'login'=>$login]));
         header("Content-type: application/json; charset=utf-8");
         return json_encode([
             'goto' => $app->route->scheme . '://' . $sid . '.' . $app->route->domain . '/workspace',
@@ -525,9 +550,10 @@ class modYonger
         ]);
     }
 
-    function removeSite() {
+    public function removeSite()
+    {
         $app = &$this->app;
-        $this->setMainDba();        
+        $this->setMainDba();
         $sid = $app->route->params[0];
 
         $allow = false;
@@ -537,7 +563,7 @@ class modYonger
         $self = false;
         if ($app->route->subdomain > '') {
             $sid == $app->route->subdomain ? $self = true : null;
-            $site = $app->itemRead('sites',$sid);
+            $site = $app->itemRead('sites', $sid);
             $site && $site['login'] == $user['login'] ? $allow = true : null;
             $path = realpath($app->vars('_env.path_app').'/../'.$sid);
         } else {
@@ -547,7 +573,7 @@ class modYonger
 
         if ($allow) {
             $app->recurseDelete($path);
-            $app->itemRemove('sites',$sid);
+            $app->itemRemove('sites', $sid);
             $res = ['error'=>false,'msg'=>'Сайт удалён', 'self'=>$self];
         } else {
             $res = ['error'=>true,'msg'=>'Ошибка удаления сайта'];
@@ -556,7 +582,8 @@ class modYonger
         return json_encode($res);
     }
 
-    function createSite() {
+    public function createSite()
+    {
         $app = &$this->app;
         $site = $app->vars('_post');
         $dirmod = dirname(__DIR__ .'..');
@@ -567,7 +594,7 @@ class modYonger
             $res = false;
             $this->setMainDba();
             isset($site['login']) ? null : $site['login'] = $app->vars('_sess.user.login');
-            $user = $app->itemList('users',['filter'=>[
+            $user = $app->itemList('users', ['filter'=>[
                 'active' => 'on',
                 'login' => $site['login'],
                 'role' => 'user',
@@ -583,21 +610,21 @@ class modYonger
                 $hosts = $app->vars('_env.path_app').'/sites/hosts';
                 is_dir($path) ? null : mkdir($path, 0777, true);
                 is_dir($hosts) ? null : mkdir($hosts, 0777, true);
-                foreach(['database','uploads','modules'] as $dir) {
+                foreach (['database','uploads','modules'] as $dir) {
                     is_dir($path.'/'.$dir) ? null : mkdir($path.'/'.$dir, 0777, true);
                 }
-                symlink($app->vars('_env.path_engine'), $path.'/engine' );
-                symlink(__DIR__ , $path.'/modules/yonger' );
+                symlink($app->vars('_env.path_engine'), $path.'/engine');
+                symlink(__DIR__, $path.'/modules/yonger');
                 symlink($dirmod.'/phonecheck', $path.'/modules/phonecheck');
-                symlink(__DIR__ .'/common/tpl' , $path.'/tpl' );
-                symlink(__DIR__ .'/common/forms' , $path.'/forms' );
-                symlink(__DIR__ .'/common/scripts/functions.php' , $path.'/functions.php' );
-                
-                copy ($app->vars('_env.path_engine').'/index.php' , $path. '/index.php' );
+                symlink(__DIR__ .'/common/tpl', $path.'/tpl');
+                symlink(__DIR__ .'/common/forms', $path.'/forms');
+                symlink(__DIR__ .'/common/scripts/functions.php', $path.'/functions.php');
+
+                copy($app->vars('_env.path_engine').'/index.php', $path. '/index.php');
                 $domain = $app->route->domain;
                 $this->createSiteUser($path);
-                file_put_contents($hosts.'/.domainname',$domain);
-                $tmp = $app->itemSave('users',['id'=>$uid,'sitenum'=>$sitenum]);
+                file_put_contents($hosts.'/.domainname', $domain);
+                $tmp = $app->itemSave('users', ['id'=>$uid,'sitenum'=>$sitenum]);
                 $settings = json_encode([
                     'settings' => [
                         'id'       => 'settings'
@@ -609,10 +636,10 @@ class modYonger
                         ,'devmode'  => 'on'
                     ]
                 ]);
-                file_put_contents($path.'/database/_settings.json',$settings);
+                file_put_contents($path.'/database/_settings.json', $settings);
 
-                $res = $app->itemSave('sites',$site);
-                file_put_contents($hosts.'/'.$sid,null);
+                $res = $app->itemSave('sites', $site);
+                file_put_contents($hosts.'/'.$sid, null);
                 header("Content-type: application/json; charset=utf-8");
             }
             if ($res) {
@@ -624,16 +651,17 @@ class modYonger
         }
     }
 
-    function createSiteUser($path) {
+    public function createSiteUser($path)
+    {
         $app = &$this->app;
         $user = $this->getMainUser();
         $uid = $user['id'];
         //$uid = $app->vars('_sess.user.id');
         // тут нужно не текущего пользователя брать, а того, который в yonger регился
-        $users = $app->itemList('users',['filter'=>[
+        $users = $app->itemList('users', ['filter'=>[
             'active'=>'on',
             '$or'=> [
-                ['isgroup' => 'on'], 
+                ['isgroup' => 'on'],
                 ['id' => $uid]
             ]
         ]]);
@@ -641,13 +669,16 @@ class modYonger
         $users[$uid]['role'] = 'admin';
         $users[$uid]['default'] = true;
         $users = json_encode($app->arrayToObj($users));
-        file_put_contents($path.'/database/users.json',$users);
+        file_put_contents($path.'/database/users.json', $users);
     }
 
-    function getMainUser($login = null) {
+    public function getMainUser($login = null)
+    {
         $app = &$this->app;
-        if (!$login) $login = $app->vars('_sess.user.login');
-        $user = $app->itemList('users',['filter'=>[
+        if (!$login) {
+            $login = $app->vars('_sess.user.login');
+        }
+        $user = $app->itemList('users', ['filter'=>[
             'active' => 'on',
             'login' => $login,
             'role' => 'user'
@@ -656,19 +687,21 @@ class modYonger
         return $user;
     }
 
-    function listSites() {
+    public function listSites()
+    {
         $this->setMainDba();
         $list = $this->app->fromFile(__DIR__ . '/tpl/list_sites.php');
         return $list->fetch();
     }
 
 
-    function finishRegistration() {
+    public function finishRegistration()
+    {
         header("Content-type: application/json; charset=utf-8");
         $user = $this->app->vars('_post');
         $user['id'] = $this->app->user->id;
         //unset($user['_login']);
-        $res = $this->app->itemSave('users',$user);
+        $res = $this->app->itemSave('users', $user);
         if ($res) {
             $this->app->login($res);
             return json_encode(['error'=>false]);
@@ -677,7 +710,7 @@ class modYonger
         }
     }
 
-    function settings()
+    public function settings()
     {
         $app = $this->app;
         $out = $app->getForm('_settings', $app->vars("_route.form"));
@@ -690,12 +723,13 @@ class modYonger
         die;
     }
 
-    function setMainDba() {
+    public function setMainDba()
+    {
         $app = &$this->app;
         $dba = $this->app->vars('_env.dba');
         if ($this->app->route->subdomain > '') {
-            $dba = str_replace('/sites/'.$this->app->route->subdomain,'',$dba);
-            $this->app->vars('_env.dba',$dba);
+            $dba = str_replace('/sites/'.$this->app->route->subdomain, '', $dba);
+            $this->app->vars('_env.dba', $dba);
         }
     }
 
@@ -718,47 +752,51 @@ class modYonger
         }
     }
     */
-    function main_login() {
+    public function main_login()
+    {
         $user = $this->app->vars('_user');
         $login = false;
         if (isset($user['login']) && $user['login'] > '' && $user['active'] == 'on') {
             $login = $user['login'];
         } else {
-
         }
         return $login;
     }
 
-    function presets() {
+    public function presets()
+    {
         $res = null;
         if (isset($this->app->route->params[0])) {
             $this->file = $this->app->vars('_env.path_app').'/blocks/presets.json';
             $json = is_file($this->file) ? json_decode(file_get_contents($this->file), true) : [];
             $func = 'presets_'.$this->app->route->params[0];
-            $res = method_exists($this,$func) ? $this->$func($json) : null;
+            $res = method_exists($this, $func) ? $this->$func($json) : null;
         }
         header("Content-type: application/json; charset=utf-8");
         return json_encode($res);
     }
 
-    function presets_list($json) {
-            //$res = $this->app->arrayToObj($json);
-            $res = array_values($json);
-            return $res;
+    public function presets_list($json)
+    {
+        //$res = $this->app->arrayToObj($json);
+        $res = array_values($json);
+        return $res;
     }
 
-    function presets_save($json) {
-            $name = $this->app->vars('_post.name');
-            $id = $this->app->furlGenerate($name);
-            $item = ['blocks'=>$this->app->vars('_post.blocks'),'name'=>$name,'id'=>$id];
-            $json[$id] = $item;
-            $json = $this->app->itemToArray($json);
-            $json = $this->app->jsonEncode($json);
-            $this->app->putContents($this->file, $json);
-            return $item;
+    public function presets_save($json)
+    {
+        $name = $this->app->vars('_post.name');
+        $id = $this->app->furlGenerate($name);
+        $item = ['blocks'=>$this->app->vars('_post.blocks'),'name'=>$name,'id'=>$id];
+        $json[$id] = $item;
+        $json = $this->app->itemToArray($json);
+        $json = $this->app->jsonEncode($json);
+        $this->app->putContents($this->file, $json);
+        return $item;
     }
 
-    function preset_get($name) {
+    public function preset_get($name)
+    {
         $this->file = $this->app->vars('_env.path_app').'/blocks/presets.json';
         $json = is_file($this->file) ? json_decode(file_get_contents($this->file), true) : [];
 
@@ -768,5 +806,4 @@ class modYonger
             return [];
         }
     }
-
 }

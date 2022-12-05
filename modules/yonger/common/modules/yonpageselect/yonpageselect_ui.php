@@ -6,7 +6,7 @@
     </div>
     <input>
 </div>
-<script type="wbapp" remove>
+<script remove>
     if (yonpageselect == undefined) {
         var yonpageselect;
         wbapp.get('/module/yonger/pageselect', function(data) {
