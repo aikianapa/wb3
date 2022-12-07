@@ -7,22 +7,34 @@ class modFilemanager
     }
     public function init($obj)
     {
-        strtolower(get_class($obj)) == 'wbapp' ? $app = &$obj : $app = &$obj->app;
+        $path = '/';
+        if (strtolower(get_class($obj)) == 'wbapp') {
+            $app = &$obj;
+            $mode = $app->route->mode;
+        } else {
+            $app = &$obj->app;
+            $mode = 'init';
+            isset($obj->params->path) ? $path = $obj->params->path : null;
+        }
         $app->apikey('module');
         $this->app = &$app;
-        if (isset($app->route->mode) and $app->route->mode !== 'init') {
+        if ($mode !== 'init') {
             $mode = $app->route->mode;
             try {
                 echo $this->$mode();
             } catch (\Throwable $err) {
                 echo $err;
             }
-            die;
+            exit;
         } else {
             $out = $app->fromFile(__DIR__ ."/filemanager_ui.php");
             $out->fetch();
+            $out->find('#filemanager')->attr('wb-path', $path);
+            $out->find('#filemanager #pickfiles')->attr('wb-path', $path);
+            $dir = str_replace('//', '/', $app->vars('_route.path_app').'/'.$path);
+            is_dir($dir) ? null : mkdir($dir, 0777, true);
             echo $out;
-            die;
+            exit;
         }
     }
 
@@ -35,7 +47,7 @@ class modFilemanager
             if ($_ENV["route"]["params"]["dir"]>"") {
                 $dir.=$_ENV["route"]["params"]["dir"];
                 $dir=str_replace("..", "", $dir);
-                @$list[] = array("type"=>"back","path"=>$back,"link"=>false,"ext"=>$ext,"name"=>"..");
+                @$list[] = array("type"=>"back","path"=>'',"link"=>false,"ext"=>'',"name"=>"..");
             }
             if ($dircont = scandir($dir)) {
                 $i=0;
@@ -126,7 +138,7 @@ class modFilemanager
                 if (!$res) {
                     $res=array("result"=>false,"error"=>"invalid");
                     echo json_encode($res);
-                    die;
+                    exit;
                 }
             }
             $path=explode("/", $file);
@@ -173,7 +185,7 @@ class modFilemanager
                 echo $out;
             }
 
-            die;
+            exit;
             // ======================================================
 
             $title = $out->find("meta[name={$action}]")->attr("title");
@@ -195,7 +207,7 @@ class modFilemanager
                 $content->append($inp);
             }
             echo $content;
-            die;
+            exit;
             $out->find("meta,input")->remove();
 
             $out->find("#filemanagerModalDialog .modal-title")->inner($title);
@@ -233,7 +245,7 @@ class modFilemanager
             exec("cd {$path} && zip -o -D -r {$zipname} ".$src);
             echo json_encode(array("res"=>$_POST["list"],"action"=>"reload_list"));
         }
-        die;
+        exit;
     }
 
 
@@ -249,7 +261,7 @@ class modFilemanager
             }
             echo json_encode(array("res"=>$_POST["list"],"action"=>"reload_list"));
         }
-        die;
+        exit;
     }
 
     public function action_paste($out=null)
@@ -273,7 +285,7 @@ class modFilemanager
             }
             if (!$flag) {
                 echo json_encode(array("res"=>"dialog","action"=>$out->outer(),"post"=>$_POST));
-                die;
+                exit;
             }
         }
         if ($flag==true) {
@@ -293,7 +305,7 @@ class modFilemanager
             }
             echo json_encode(array("res"=>$_POST["method"],"action"=>"reload_list"));
         }
-        die;
+        exit;
     }
 
     public function copyname($name)
@@ -322,7 +334,7 @@ class modFilemanager
             }
         }
         echo json_encode(array("res"=>$_POST["list"],"action"=>"reload_list"));
-        die;
+        exit;
     }
 
     public function check_engine($path)
@@ -350,7 +362,7 @@ class modFilemanager
                 echo json_encode(false);
             }
         }
-        die;
+        exit;
     }
 
     public function action_multi()

@@ -1,6 +1,7 @@
     var editor;
-//    var locale = wbapp.getlocale("url","/module/filemanager/locale");
-    filemanagerGetDir('');
+    var filemanager_path = ''
+        //    var locale = wbapp.getlocale("url","/module/filemanager/locale");
+    filemanagerGetDir();
     filemanagerSideMenu();
     filemanagerListEvents();
     filemanagerBreadcrumbs();
@@ -14,28 +15,28 @@
 
     function filemanagerListEvents() {
 
-    $('#filemanager').undelegate('#filemanagerModalDialog','shown.bs.modal');
-    $('#filemanager').delegate('#filemanagerModalDialog','shown.bs.modal', function () {
-      $('#filemanagerModalDialog input:visible:first').focus();
-    });
+        $('#filemanager').undelegate('#filemanagerModalDialog', 'shown.bs.modal');
+        $('#filemanager').delegate('#filemanagerModalDialog', 'shown.bs.modal', function() {
+            $('#filemanagerModalDialog input:visible:first').focus();
+        });
 
         $('#filemanager').undelegate('#filemanagerModalSrc', 'shown.bs.modal');
-        $('#filemanager').delegate('#filemanagerModalSrc', 'shown.bs.modal', function () {
+        $('#filemanager').delegate('#filemanagerModalSrc', 'shown.bs.modal', function() {
             filemanagerEditorSize();
         });
 
 
-    $("#filemanager").undelegate("#filemanagerModalDialog","keydown");
-    $("#filemanager").delegate("#filemanagerModalDialog","keydown",function(e){
-        if (e.keyCode == 13) {
-            $("#filemanagerModalDialog .btn-primary").trigger("click");
-            return false;
-        }
-    });
+        $("#filemanager").undelegate("#filemanagerModalDialog", "keydown");
+        $("#filemanager").delegate("#filemanagerModalDialog", "keydown", function(e) {
+            if (e.keyCode == 13) {
+                $("#filemanagerModalDialog .btn-primary").trigger("click");
+                return false;
+            }
+        });
 
 
-    $("#filemanager").off("checkbox");
-    $("#filemanager").on("checkbox", function() {
+        $("#filemanager").off("checkbox");
+        $("#filemanager").on("checkbox", function() {
             var menu = $("#filemanager .filemgr-sidebar .nav");
             var count = $("#filemanager #list").find("tr:not(.back) [type=checkbox]:checked").length;
 
@@ -47,22 +48,22 @@
                 $("#filemanager").data("bufferpath", undefined);
                 $("#filemanager").find(".allow-buffer, .allow-single, .allow-all").hide();
             }
-    });
+        });
 
 
-    $("#filemanager").undelegate(".chat-wrapper", "click tap swipe");
-    $("#filemanager").delegate(".chat-wrapper", "click tap swipe", function () {
-        $('body').addClass('chat-content-show');    
-    })
+        $("#filemanager").undelegate(".chat-wrapper", "click tap swipe");
+        $("#filemanager").delegate(".chat-wrapper", "click tap swipe", function() {
+            $('body').addClass('chat-content-show');
+        })
 
-    $("#filemanager").undelegate(".filepicker", "mod-filepicker-done");
-    $("#filemanager").delegate(".filepicker", "mod-filepicker-done", function () {
-        filemanager_reload_list();
-    })
+        $("#filemanager").undelegate(".filepicker", "mod-filepicker-done");
+        $("#filemanager").delegate(".filepicker", "mod-filepicker-done", function() {
+            filemanager_reload_list();
+        })
 
-    $("#filemanager").undelegate("#list tr", "dblclick");
-    $("#filemanager").delegate("#list tr", "dblclick", function(e) {
-        if ($(e.target).is('[type=checkbox]')) return;
+        $("#filemanager").undelegate("#list tr", "dblclick");
+        $("#filemanager").delegate("#list tr", "dblclick", function(e) {
+            if ($(e.target).is('[type=checkbox]')) return;
             var path = $("#filemanager #list").data("path");
             if ($(this).is(".dir,.dir1")) {
                 filemanagerGetDir(path + "/" + $(this).attr("data-name"));
@@ -180,32 +181,32 @@
     }
 
     function filemanagerDialogMulti(href) {
-            $("#filemanager #filemanagerModalDialog").remove();
-            var check = $("#filemanager #list").find("tr:not(.back) [type=checkbox]:checked");
-            var post = {
-                "path": $("#filemanager #list").data("path"),
-                "multi": true
-            };
-            wbapp.post("/module/filemanager/dialog/" + substr(href, 1), post, function(data) {
-                $("#filemanager").append(data);
-                $("#filemanager #filemanagerModalDialog").modal("show");
-            });
+        $("#filemanager #filemanagerModalDialog").remove();
+        var check = $("#filemanager #list").find("tr:not(.back) [type=checkbox]:checked");
+        var post = {
+            "path": $("#filemanager #list").data("path"),
+            "multi": true
+        };
+        wbapp.post("/module/filemanager/dialog/" + substr(href, 1), post, function(data) {
+            $("#filemanager").append(data);
+            $("#filemanager #filemanagerModalDialog").modal("show");
+        });
     }
 
 
     function filemanagerSetPostChecked() {
-         var list = {};
-         $("#filemanager #list").find("tr:not(.back) [type=checkbox]:checked").parents("tr").each(function (i) {
-             var item = {
-                 name: $(this).attr("data-name")
-             };
-             list[i] = item;
-         });
-         var post = {
-             path: $("#filemanager #list").data("path")
-             , list: json_encode(list)
-         };
-         $("#filemanager").data("post", post);
+        var list = {};
+        $("#filemanager #list").find("tr:not(.back) [type=checkbox]:checked").parents("tr").each(function(i) {
+            var item = {
+                name: $(this).attr("data-name")
+            };
+            list[i] = item;
+        });
+        var post = {
+            path: $("#filemanager #list").data("path"),
+            list: json_encode(list)
+        };
+        $("#filemanager").data("post", post);
     }
 
 
@@ -262,7 +263,7 @@
                 case '#dnload':
                     // не работает!!!!
                     if (count == 1) {
-                        var dnl=$(check).parents("tr").find("a[download]");
+                        var dnl = $(check).parents("tr").find("a[download]");
                         if (dnl.length) {
                             console.log($(check).parents("tr").find("a[download]").attr("download"));
                             $(dnl).trigger("click");
@@ -303,11 +304,11 @@
             var post, data;
             if (action == "paste" || action == "remove") {
                 post = $("#filemanager").data("post");
-            } else if (action=="zip" || action=="unzip") {
+            } else if (action == "zip" || action == "unzip") {
                 post = $("#filemanager #filemanagerModalDialog .modal-body form").serialize();
                 post += "&path=" + $("#filemanager #list").data("path");
-                $("#filemanager #list").find("tr:not(.back) [type=checkbox]:checked").parents("tr").each(function(){
-                    post+="&list[]="+$(this).attr("data-name");
+                $("#filemanager #list").find("tr:not(.back) [type=checkbox]:checked").parents("tr").each(function() {
+                    post += "&list[]=" + $(this).attr("data-name");
                 });
             } else {
                 post = $("#filemanager #filemanagerModalDialog .modal-body form").serialize();
@@ -347,23 +348,36 @@
         });
     }
 
-    function filemanagerGetDir(dir) {
+    function filemanagerGetDir(dir = null) {
         wbapp.loading();
+        dir == null ? filemanager_path = dir = $("#filemanager").attr("wb-path") : null;
         var data = wbapp.postSync("/module/filemanager/getdir/?dir=" + urlencode(dir));
-            $("#filemanager #panel").replaceWith(data);
-            $("#filemanager #list").data("path", dir);
-            $("#filemanager [name=upload_url]").val(dir);
-//            $("#filemanager").noSelect();
-            $("#filemanager").trigger("checkbox");
-            if ($("#filemanager").data("buffer")!==undefined) {
-                $("#filemanager .filemgr-sidebar .allow-buffer").show();
-            };
-//            wb_pagination();
-            wbapp.unloading();
-            $(document).trigger('wb-ajax-done');
+        $("#filemanager #panel").replaceWith(data);
+        $("#filemanager #list").data("path", dir);
+        $("#filemanager [name=upload_url]").val(dir);
+        //            $("#filemanager").noSelect();
+        if (filemanager_path > '') {
+            $("#filemanager .breadcrumb .breadcrumb-item:first > a").attr('data-path', filemanager_path)
+            let branch = filemanager_path.split('/');
+            if ($("#filemanager .breadcrumb .breadcrumb-item").length == branch.length) {
+                $("#filemanager #modFilemanagerList tr.back").remove()
+            }
+            $("#filemanager .breadcrumb .breadcrumb-item").each(function(i, li) {
+                if (i > 0 && branch.length >= i) {
+                    $(li).text().trim() == branch[i].trim() ? $(li).remove() : null;
+                }
+            })
+        }
+        $("#filemanager").trigger("checkbox");
+        if ($("#filemanager").data("buffer") !== undefined) {
+            $("#filemanager .filemgr-sidebar .allow-buffer").show();
+        };
+        //            wb_pagination();
+        wbapp.unloading();
+        $(document).trigger('wb-ajax-done');
 
     }
-//--------------------------------------------//////////////////////////
+    //--------------------------------------------//////////////////////////
     function filemanagerCallEditor(file) {
         wbapp.loading();
         var res = false;
@@ -377,7 +391,7 @@
         filemanagerStateSave();
         var tabact = $("#filemanagerTabs").find(".nav-link.active");
         if ($(tabact).length) {
-            if ($(tabact).attr('data-path') !== urlencode(file)) {filemanagerStateSave(tabact);}
+            if ($(tabact).attr('data-path') !== urlencode(file)) { filemanagerStateSave(tabact); }
             $(tabact).removeClass("active");
         }
         $("#filemanagerTabs .nav-link").each(function() {
@@ -390,30 +404,30 @@
         });
 
         if (res == false) {
-                var fname = explode("/", file);
-                fname = fname[fname.length - 1];
-                var tab = $($("#filemanagerTabs").data("tab"));
-                let text = wbapp.postSync("/module/filemanager/getfile/", { file: file })
-                editor.setValue( text );
-                editor.clearHistory();
-                editor.setOption('mode','php');
-                $("#filemanagerTabs").data('path',file);
-                $('#filemanagerModalSrc .modal-title span').text(file);
-                filemanagerStateSave();
-                $(tab).find(".nav-link")
+            var fname = explode("/", file);
+            fname = fname[fname.length - 1];
+            var tab = $($("#filemanagerTabs").data("tab"));
+            let text = wbapp.postSync("/module/filemanager/getfile/", { file: file })
+            editor.setValue(text);
+            editor.clearHistory();
+            editor.setOption('mode', 'php');
+            $("#filemanagerTabs").data('path', file);
+            $('#filemanagerModalSrc .modal-title span').text(file);
+            filemanagerStateSave();
+            $(tab).find(".nav-link")
                 .prepend(fname)
                 .addClass("active")
                 .attr("href", "#")
                 .attr("data-path", urlencode(file));
-                $("#filemanagerTabs").append($(tab));
+            $("#filemanagerTabs").append($(tab));
         }
-        
+
 
         filemanagerEditorSize();
         if (!$("#filemanagerModalSrc:visible").length) {
             $("#filemanagerModalSrc").modal("show");
         }
-        
+
         $("#filemanagerTabs").undelegate(".fa-close", "click");
         $("#filemanagerTabs").delegate(".fa-close", "click", function() {
 
@@ -428,7 +442,7 @@
         });
 
         $("#filemanagerModalSrc").undelegate(".btn-edit-save", "click");
-        $("#filemanagerModalSrc").delegate(".btn-edit-save", "click", function () {
+        $("#filemanagerModalSrc").delegate(".btn-edit-save", "click", function() {
             filemanagerSave();
         });
 
@@ -503,7 +517,7 @@
         });
         data = json_decode(data);
         if (data.result == true) {
-            wbapp.toast('Ready','Saved',{'bgcolor':'success'});
+            wbapp.toast('Ready', 'Saved', { 'bgcolor': 'success' });
         } else {
             wbapp.toast('Error', 'Error in saving', { 'bgcolor': 'danger' });
         }
@@ -515,7 +529,7 @@
         var height = $(window).height();
         height = height - $('#filemanagerModalSrc .modal-header').height();
         height = height - $('#filemanagerModalSrc #filemanagerTabs').height();
-        editor.setSize('100vw', height+'px');
+        editor.setSize('100vw', height + 'px');
     }
 
 
@@ -536,7 +550,7 @@
         var tabs = $('#filemanagerTabs');
         if (path !== undefined) {
             let cur = $('#filemanagerTabs').data('editorCursor:' + path);
-            if (cur == undefined) cur = {line:0,ch:0}
+            if (cur == undefined) cur = { line: 0, ch: 0 }
 
             let his = $('#filemanagerTabs').data('editorHistory:' + path);
             if (his == undefined) his = {}
@@ -548,10 +562,10 @@
                 editor.setCursor(cur)
                 editor.setHistory(his)
                 filemanagerEditorSize()
-            },10);
+            }, 10);
             tabs.data('path', path);
             //editor.getSession().setUndoManager($(tab).data("editorUndo"));
-  //          var pos = $(tab).data("editorPos");
-    //        editor.gotoLine(pos["row"] + 1, pos["column"]);
+            //          var pos = $(tab).data("editorPos");
+            //        editor.gotoLine(pos["row"] + 1, pos["column"]);
         }
     }
