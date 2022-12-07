@@ -6,7 +6,7 @@ uri
 scheme
 headers = headers (cookie + post data)
 */
-
+include __DIR__.'/functions.php';
 foreach(@$argv as $arg) {
     $pos = strpos($arg,'=');
     if ($pos) {
