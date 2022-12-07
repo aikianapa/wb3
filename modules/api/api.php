@@ -109,7 +109,7 @@ class modApi
 
         $result = false;
         $allow = true;
-        foreach ($this->app->vars('_sett.modules.api.allow') as $am) {
+        foreach ((array)$this->app->vars('_sett.modules.api.allow') as $am) {
             if (in_array($table, $am['table']) OR in_array("*", $am['table'])) {
                 $allow = false;
                 if (in_array($role, $am['role']) OR in_array("*", $am['role'])) {
@@ -120,7 +120,7 @@ class modApi
             }
         }
         $disallow = false;
-        foreach ($this->app->vars('_sett.modules.api.disallow') as $am) {
+        foreach ((array)$this->app->vars('_sett.modules.api.disallow') as $am) {
             if (in_array($table, $am['table']) or in_array("*", $am['table'])) {
                 $disallow = false;
                 if (in_array($role, $am['role']) or in_array("*", $am['role'])) {

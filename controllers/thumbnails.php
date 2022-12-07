@@ -187,17 +187,17 @@ class ctrlThumbnails
                         $imagine = new Imagine\Gd\Imagine();
                     }
 
+                    $image = $imagine->open(realpath($file));
                     $size    = new Imagine\Image\Box($app->vars('_route.w'), $app->vars('_route.h'));
                     $palette = new Imagine\Image\Palette\RGB();
-                    $color = $palette->color('#000', 0);
+                    $color = $image->getColorAt(new Imagine\Image\Point(0, 0)).'';
+                    $color = $palette->color($color, 0);
                     $canvas = $imagine->create($size, $color);
                     if ($app->vars('_get.zc') == 0) {
                         $mode    = Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
                     } else {
                         $mode    = Imagine\Image\ImageInterface::THUMBNAIL_FLAG_UPSCALE;
                     }
-
-                    $image = $imagine->open(realpath($file));
 
                     $ih = $image->getSize()->getHeight();
                     $iw = $image->getSize()->getWidth();
