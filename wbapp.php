@@ -890,8 +890,15 @@ class wbApp
         fwrite($fp, $out);
         fclose($fp);
         */
-        $b64 = base64_encode($out);
-        exec("cd {$this->route->path_engine} && php shadow.php host={$this->route->hostname} port={$this->route->port} headers={$b64} &");
+        
+        $headers = [
+            'cook' => $_COOKIE,
+            'post' => $_POST,
+            'get' => $_GET
+        ];
+
+        $b64 = base64_encode(json_encode($out));
+        exec("cd {$this->route->path_engine} && php shadow.php uri='{$uri}' scheme={$parts['scheme']} host={$this->route->hostname} port={$this->route->port} headers={$b64} &");
         //echo("php shadow.php host={$this->route->hostname} port={$this->route->port} headers={$b64}");
     }
 

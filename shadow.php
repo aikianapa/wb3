@@ -2,6 +2,8 @@
 /*
 host = hostname 
 port = port
+uri
+scheme
 headers = headers (cookie + post data)
 */
 
@@ -13,8 +15,9 @@ foreach(@$argv as $arg) {
         $$fld = $val;
     }
 }
-$fp = fsockopen($host, $port, $errno, $errstr, 30);
-$headers = base64_decode($headers);
-fwrite($fp, $headers);
-fclose($fp);
+$headers = json_decode(base64_decode($headers),true);
+$_POST = $headers['post'];
+$_GET = $headers['get'];
+$_COOKIE = $headers['cook'];
+wbAuthPostContents("{$scheme}://{$host}{$uri}", $_POST);
 ?>
