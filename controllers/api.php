@@ -124,6 +124,7 @@ class ctrlApi
         } else {
             $item = $app->itemSave($app->route->table, $item);
         }
+        $this->app->shadow('/module/yonger/yonmap');
         return $app->jsonEncode($item);
     }
 
