@@ -34,7 +34,8 @@ class attrSelect2 {
                             } else {
                                 $(e.params.data.element).attr('selected',false);
                             }
-                            $(this).trigger('change');
+                            $(that).val(e.params.data.element.value);
+                            that.dispatchEvent(new Event('change'));
                         });
                         $(that).on('select2:open', function (e) {
                             if ($(that).parents('.modal[data-zidx]').length) {
