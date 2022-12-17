@@ -19,7 +19,7 @@
                     'url': '/cms/ajax/form/' + data.inner + '/edit/_new',
                     'append': '#yongerPages modals'
                 });
-                $('#yongerPages').data('ev',ev)
+                $('#yongerPages').data('ev', ev)
             },
             newpage(ev) {
                 wbapp.ajax({
@@ -85,9 +85,11 @@
                     if (data.filter > '') {
                         console.log(typeof data.filter);
                         if (typeof data.filter == 'object') {
-                            post = {filter: data.filter}
+                            post = {
+                                filter: data.filter
+                            }
                         } else {
-                            eval('post = {filter: '+data.filter+'}');
+                            eval('post = {filter: ' + data.filter + '}');
                         }
                     }
                     wbapp.post('/api/v2/list/' + data.inner + options, post, function(res) {
@@ -127,47 +129,49 @@
         },
         on: {
             init() {
-                wbapp.loadScripts(['/engine/lib/js/nestable/nestable.min.js'], '', function() {
-                    let changePath = async function(e, datapath = null) {
-                        // передавать не только id, но и позицию в списке, записывая её в поле _sort
-                        let ol = $(e).closest('ol');
-                        let parent = $(ol).closest('.dd-item').attr('data-path');
-                        datapath == null ? datapath = {
-                            form: $(e).data('form'),
-                            items: {}
-                        } : null;
-                        parent == undefined ? parent = '' : null;
-                        parent == '/home' ? parent = '' : null;
-                        $(ol).find(`> .dd-item`).each(function(i) {
-                            let data = $(this).data();
-                            let path = parent + '/' + data.name;
-                            let that = this;
-                            $(this).find('.dd-path').text(path).attr('data-path', path);
-                            $(this).attr('data-path', path);
-                            datapath.items[data.item] = {
-                                'i': i,
-                                'p': parent
-                            };
-                            $(this).find('.dd-item[data-form="' + data.form + '"]').each(
-                                function(i) {
-                                    changePath(this, datapath);
-                                });
-                        });
-                        return datapath;
-                    }
-                    $('#yongerPagesTree').nestable({
-                        maxDepth: 15,
-                        callback: function(l, e) {
-                            changePath(e).then(function(res) {
-                                if (res) wbapp.post('/api/v2/func/pages/path', {
-                                    'data': res
-                                });
-                            });
-                        }
-                    });
-                })
                 let that = this
-                this.update()
+                wbapp.loadScripts(['/engine/lib/js/nestable/nestable.min.js'], '', function() {
+                    that.update()
+                })
+            },
+            treeInit() {
+                let changePath = async function(e, datapath = null) {
+                    // передавать не только id, но и позицию в списке, записывая её в поле _sort
+                    let ol = $(e).closest('ol');
+                    let parent = $(ol).closest('.dd-item').attr('data-path');
+                    datapath == null ? datapath = {
+                        form: $(e).data('form'),
+                        items: {}
+                    } : null;
+                    parent == undefined ? parent = '' : null;
+                    parent == '/home' ? parent = '' : null;
+                    $(ol).find(`> .dd-item`).each(function(i) {
+                        let data = $(this).data();
+                        let path = parent + '/' + data.name;
+                        let that = this;
+                        $(this).find('.dd-path').text(path).attr('data-path', path);
+                        $(this).attr('data-path', path);
+                        datapath.items[data.item] = {
+                            'i': i,
+                            'p': parent
+                        };
+                        $(this).find('.dd-item[data-form="' + data.form + '"]').each(
+                            function(i) {
+                                changePath(this, datapath);
+                            });
+                    });
+                    return datapath;
+                }
+                $('#yongerPagesTree').nestable({
+                    maxDepth: 15,
+                    callback: function(l, e) {
+                        changePath(e).then(function(res) {
+                            if (res) wbapp.post('/api/v2/func/pages/path', {
+                                'data': res
+                            });
+                        });
+                    }
+                });
             },
             update() {
                 let nested = function(list, path) {
@@ -180,7 +184,7 @@
                             } else {
                                 item.dd_collapsed = ""
                             }
-                            !item.menu ? item.menu = '' : null;
+                            item.menu ? null : item.menu = ''
                             item.inner = "pages"
                             item.ch = nested(list, item.url)
                             if (item.attach > "") {
@@ -193,18 +197,21 @@
                     })
                     return ch
                 }
-                wbapp.post('/api/v2/list/pages?&id!=[_header,_footer]&@sort=_sort&@return=_id,_form,id,name,header,url,path,active,menu,attach,attach_filter', {}, function(res) {
-                    let root = []
-                    $.each(res, function(i, item) {
-                        if (item !== undefined && item.path == "" && item.name == "home") {
-                            res.splice(i, 1)
-                            item.ch = nested(res, "")
-                            item.dd_collapsed = ""
-                            root.push(item);
-                        }
-                    });
-                    yongerPages.set('root', root)
-                })
+                wbapp.post(
+                    '/api/v2/list/pages?&id!=[_header,_footer]&@sort=_sort&@return=_id,_form,id,name,header,url,path,active,menu,attach,attach_filter', {},
+                    function(res) {
+                        let root = []
+                        $.each(res, function(i, item) {
+                            if (item !== undefined && item.path == "" && item.name == "home") {
+                                res.splice(i, 1)
+                                item.ch = nested(res, "")
+                                item.dd_collapsed = ""
+                                root.push(item);
+                            }
+                        });
+                        yongerPages.set('root', root)
+                        yongerPages.fire('treeInit')
+                    })
             },
             pageadd() {
                 wbapp.ajax({
@@ -240,10 +247,13 @@
                             let line = $('#yongerPages').data('ev').component;
                             let data = $(node).parents(".dd-item").parents(".dd-item").data()
                             if (form !== "pages" && data.form == 'pages') {
-                                console.log(line);
                                 line.parent.fire('expand')
                             } else {
-                                line.set(el.data)
+                                if (el.data.path == data.path) {
+                                    line.set(el.data)
+                                } else {
+                                    yongerPages.fire('update')
+                                }
                             }
                         }
                     }
@@ -259,7 +269,7 @@
                 } else {
                     $(list).find('li').addClass('d-none');
                 }
-                $(list).find('li').each(function(){
+                $(list).find('li').each(function() {
                     let string = $(this).text()
                     let flag = false
                     eval(`flag = string.match(/${find}/gi)`)
@@ -306,8 +316,8 @@
         <span class="dd-info col-sm-3">
             {{#if ~/role == "admin"}} {{#if inner}} {{#if inner !== "pages"}} {{#if inner !== _form}}
             <div class="dropdown d-inline">
-                <svg class="dropdown-toggle cursor-pointer mi mi-item-select-plus-add" size="24" stroke="0168fa" wb-on wb-module="myicons" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false"></svg>
+                <svg class="dropdown-toggle cursor-pointer mi mi-item-select-plus-add" size="24" stroke="0168fa" wb-on wb-module="myicons"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></svg>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="#" on-click="newpage">Новая страница</a>
                     <a class="dropdown-item" href="#" on-click="newitem">Новая запись</a>
@@ -321,11 +331,13 @@
             <svg class="cursor-pointer mi mi-power-turn-on-square" size="24" stroke="FC5A5A" wb-on wb-module="myicons" on-click="switch"></svg>{{/if}}
             <svg class="cursor-pointer mi mi-trash-delete-bin.2" size="24" stroke="FC5A5A" wb-on wb-module="myicons" on-click="remove"></svg>{{/if}}
         </span>
+        {{#if ch}}
         <ol>
             {{#.ch}}
             <yonline></yonline>
             {{/.ch}}
         </ol>
+        {{/if}}
     </li>
 </div>
 
@@ -333,24 +345,25 @@
 <div class="m-3" id="yongerPages" wb-off>
     <nav class="nav navbar navbar-expand-md col px-3 py-2 t-0 position-sticky bg-light rounded-10 z-index-150 ">
         <h3 class="tx-bold tx-spacing--2 order-1">Страницы</h3>
-        <button class="navbar-toggler order-2" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="true" aria-label="Toggle navigation">
+        <button class="navbar-toggler order-2" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="true" aria-label="Toggle navigation">
             <i class="wd-20 ht-20 fa fa-ellipsis-v"></i>
         </button>
         <div class="ml-auto order-3 collapse d-md-block" id="navbarSupportedContent">
             <input type="search" class="form-control d-inline-block rounded-10 wd-200 mb-1" placeholder="Поиск" on-keyup="find">
             <div class="d-xs-block d-sm-inline-block">
-            <button type="button" class="btn btn-secondary mb-1" on-click="header">
-                <svg class="mi mi-menubar-arrow-up" size="24" stroke="FFFFFF" wb-on wb-module="myicons"></svg>
-                <span class="d-none d-sm-inline">Шапка</span>
-            </button>
-            <button type="button" class="btn btn-secondary mb-1" on-click="footer">
-                <svg class="mi mi-menubar-arrow-down" size="24" stroke="FFFFFF" wb-on wb-module="myicons"></svg>
-                <span class="d-none d-sm-inline">Подвал</span>
-            </button>
-            <button type="button" class="btn btn-primary mb-1" on-click="pageadd">
-                <svg class="mi mi-item-select-plus-add" size="24" stroke="FFFFFF" wb-on wb-module="myicons"></svg>
-                <span class="d-none d-sm-inline">Создать</span>
-            </button>
+                <button type="button" class="btn btn-secondary mb-1" on-click="header">
+                    <svg class="mi mi-menubar-arrow-up" size="24" stroke="FFFFFF" wb-on wb-module="myicons"></svg>
+                    <span class="d-none d-sm-inline">Шапка</span>
+                </button>
+                <button type="button" class="btn btn-secondary mb-1" on-click="footer">
+                    <svg class="mi mi-menubar-arrow-down" size="24" stroke="FFFFFF" wb-on wb-module="myicons"></svg>
+                    <span class="d-none d-sm-inline">Подвал</span>
+                </button>
+                <button type="button" class="btn btn-primary mb-1" on-click="pageadd">
+                    <svg class="mi mi-item-select-plus-add" size="24" stroke="FFFFFF" wb-on wb-module="myicons"></svg>
+                    <span class="d-none d-sm-inline">Создать</span>
+                </button>
             </div>
         </div>
     </nav>

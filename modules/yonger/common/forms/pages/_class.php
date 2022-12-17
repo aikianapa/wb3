@@ -190,6 +190,7 @@ class pagesClass extends cmsFormsClass
             $app->itemSave($form, $item, false);
         }
         $app->tableFlush($form);
+        $this->app->shadow('/module/yonger/yonmap');
         echo json_encode('true');
         exit;
     }
