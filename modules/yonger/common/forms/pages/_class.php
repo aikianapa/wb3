@@ -80,7 +80,6 @@ class pagesClass extends cmsFormsClass
     function afterItemSave(&$item)
     {
         $this->beforeItemShow($item);
-        $this->app->vars('_route.mode') == 'save' ? $this->app->shadow('/module/yonger/yonmap') : null;
     }
 
     function list1()
