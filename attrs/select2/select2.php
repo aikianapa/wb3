@@ -34,7 +34,11 @@ class attrSelect2 {
                             } else {
                                 $(e.params.data.element).attr('selected',false);
                             }
-                            $(that).val(e.params.data.element.value);
+                            if ($(that).is('[multiple]')) {
+                                //
+                            } else {
+                                $(that).val(e.params.data.element.value);
+                            }
                             that.dispatchEvent(new Event('change'));
                         });
                         $(that).on('select2:open', function (e) {
