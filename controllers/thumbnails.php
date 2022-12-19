@@ -134,6 +134,8 @@ class ctrlThumbnails
             $ext = pathinfo($file, PATHINFO_EXTENSION);
         }
 
+        $ext = strtolower($ext);
+
         if (!is_file($file) or !in_array($ext, $imgext)) {
             if (is_file($app->vars('_env.path_engine').'/lib/fileicons/'.$ext.'.svg')) {
                 $file = $app->vars('_env.path_engine').'/lib/fileicons/'.$ext.'.svg';
