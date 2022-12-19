@@ -49,6 +49,9 @@ class ctrlForm
             $this->target = $app->vars('_post.target');
             $cache = false;
         }
+        
+        $app->vars('_sett.devmode') == 'on' ? $cache = false : null;
+
         if (!$cache) {
             $_ENV["cache_used"] = false;
             isset($app->route->form) ? $dom = $app->getForm($app->route->form, $app->route->mode) : null;
@@ -81,6 +84,14 @@ class ctrlForm
             }
             $dom->fetch();
             $dom->setSeo();
+
+            if ($app->vars('_sett.devmode') == 'on') {
+                $scripts = $dom->find('script[src]:not([src*="?"])');
+                foreach($scripts as $script) {
+                    $src = $script->attr('src').'?'.wbNewId();
+                    $script->attr('src', $src);
+                }
+            }
 
             $ttls = $dom->find('title');
             $title_prepend = $app->vars('_var.title_prepend');
