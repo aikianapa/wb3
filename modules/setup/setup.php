@@ -11,7 +11,7 @@ class modSetup {
         $form = new ctrlForm($app);
         echo $form->get404();
       }
-      die;
+      exit;
   }
 
   function init()

@@ -7,7 +7,7 @@ function yapay__init()
         if (is_callable($call)) {
             echo @$call();
         }
-        die;
+        exit;
     } else {
         return yapay__checkout();
     }
@@ -52,10 +52,10 @@ function yapay__success() {
 		wbItemSave("orders",$order);
 		$_SESSION["order_id"]=wbNewId();
 		header('Location: '.$success);
-		die;
+		exit;
 	} else {
 		header('Location: '.$fail);
-		die;
+		exit;
 	}
 }
 

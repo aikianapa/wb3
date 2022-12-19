@@ -41,7 +41,7 @@ class ctrlApi
                 echo json_encode(null);
             }
         }
-        die;
+        exit;
     }
 
 
@@ -285,11 +285,11 @@ class ctrlApi
                 if (!$user) {
                     $form = $app->controller('form');
                     echo $form->get404();
-                    die;
+                    exit;
                 } else {
                     header("Location: {$app->route->host}/signin/");
                 }
-            die;
+            exit;
         } else if ($app->vars('_route.refferer') == '') {
             return json_encode(['recover'=>false,'error'=>'Unknown']);
         }

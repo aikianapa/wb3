@@ -9,7 +9,7 @@ class cmsFormsClass {
     function __call($method,$params) {
         $this->methodForm($method);
         echo "cmsFormsClass: Method {$method} not foind.";
-        die;
+        exit;
     }
 
     function list() {
@@ -41,7 +41,7 @@ class cmsFormsClass {
         } else {
             echo "cmsFormsClass: Form {$this->form} not found.";
         }
-        die;
+        exit;
     }
 }
 ?>

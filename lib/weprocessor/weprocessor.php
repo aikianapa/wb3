@@ -150,11 +150,11 @@ class WEProcessor {
 		$exclude=explode(",","exec,system,passthru,readfile,shell_exec,escapeshellarg,escapeshellcmd,proc_close,proc_open,ini_alter,dl,popen,parse_ini_file,show_source,curl_exec,file_get_contents,file_put_contents,file,eval,chmod,chown");
 		if (in_array($name,$exclude)) {
 			echo "Error!!! PHP function <b>{$name}</b> is disabled !";
-			die;
+			exit;
 		}
         if (!function_exists($name)) {
 			echo "Error!!! PHP function <b>{$name}</b> is not exists !";
-			die;
+			exit;
         }
 		switch ($name) {
 			// если нужно реализовать некую новую функцию то пишем соответствующую ветку в этом свитче

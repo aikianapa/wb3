@@ -282,7 +282,7 @@ function wbCheckAllow($allow = [],$disallow = [], $role = null) {
 
         if (!$access) {
             echo json_encode(['error'=>true,'msg'=>'Access denied']);
-            die;
+            exit;
         }
         return true;
     }
@@ -2735,7 +2735,7 @@ function is_tag( $tag = '' ) {
             $l = strlen($f);
             if (substr($func, 0, $l) == $f) {
                 echo "Error!!! PHP function <b>{$func}</b> is disabled !";
-                die;
+                exit;
             }
         }
         if (strpos($func, "(")) {

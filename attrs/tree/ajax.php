@@ -12,7 +12,7 @@ class wbAjaxTree
         $app = &$this->app;
         $mode = $app->vars("_route.params.0");
         if (method_exists($this,$mode)) $this->$mode();
-        die;
+        exit;
     }
 
     function update() {
@@ -33,20 +33,20 @@ class wbAjaxTree
             $dict = $app->fromFile(__DIR__ . "/tree_dict.php");
             $dict->fetch($_POST);
             echo wb_json_encode(["content"=>$dict->outer(),"post"=>$_POST]);
-            die;
+            exit;
         }
         $data = $this->tagTreeForm($app->vars("_post.dict"),$app->vars("_post.data"));
         $data = $app->fromString($data);
         $data->fetch($app->vars("_post.data.data"));
         if ($app->vars->get("_route.params.1") == "data") {
           echo wb_json_encode(["content"=>$data->outer(),"post"=>$_POST]);
-          die;
+          exit;
         }
         $out = $app->fromFile(__DIR__ . "/tree_edit.php");
         $out->fetch($app->vars("_post.data"));
         $out->find(".treeData > form")->html($data);
         echo wb_json_encode(["content"=>$out->outer(),"post"=>$_POST]);
-        die;
+        exit;
     }
 
 		function tagTreeProp( $type = null ) {
@@ -73,7 +73,7 @@ class wbAjaxTree
 		    }
 		    $out->fetch( $dict );
 		    echo wb_json_encode( ['content'=>$out->outer()] );
-				die;
+				exit;
 		}
 
 

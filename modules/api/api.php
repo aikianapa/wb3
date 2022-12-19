@@ -84,7 +84,7 @@ class modApi
         if (!$access) {
             header("HTTP/1.1 401 Unauthorized", true, 401);
             echo json_encode(['error'=>true,'msg'=>'Access denied']);
-            die;
+            exit;
         }
         return true;
     }
@@ -146,7 +146,7 @@ class modApi
         $methods = (array)$methods;
         if (!in_array(strtolower($this->app->route->method), $methods)) {
             header('HTTP/1.1 405 Method Not Allowed', true, 405);
-            die;
+            exit;
         }
         $this->method = strtolower($this->app->route->method);
     }
@@ -182,7 +182,7 @@ class modApi
             header('HTTP/1.1 201 Created', true, 201);
             return $data;
         }
-        die;
+        exit;
     }
 
         function read()
@@ -233,7 +233,7 @@ class modApi
             header('HTTP/1.1 200 OK', true, 200);
             return $data;
         }
-        die;
+        exit;
     }
 
     function delete()

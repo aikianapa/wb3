@@ -65,7 +65,7 @@ class ctrlThumbnails
 
         $app->vars('_get.zc', $app->vars('_route.zc'));
         $this->thumbnail_view($app);
-        die;
+        exit;
     }
     
     private function getInfoBrowser()
@@ -263,7 +263,7 @@ class ctrlThumbnails
             $mime = wbMime($destination);
             header('Content-Type: '.$mime);
             echo $image;
-            die;
+            exit;
         }
     }
 }

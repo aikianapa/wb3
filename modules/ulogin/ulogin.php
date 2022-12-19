@@ -4,7 +4,7 @@ function ulogin__init() {
 		$mode=$_ENV["route"]["params"][0];
 		$call="ulogin__{$mode}";
 		if (is_callable($call)) {$out=@$call();}
-		die;
+		exit;
 	} else {
 		$out=file_get_contents(__DIR__ ."/ulogin_form.php");
 		if (isset($_POST["token"])) {
@@ -33,7 +33,7 @@ function ulogin__login() {
 	} else {
 		header('Location: /login/');
 	}
-	die;
+	exit;
 }
 
 function ulogin__check($user) {

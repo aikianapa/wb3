@@ -33,7 +33,7 @@ class modLogin
         if (method_exists($this, $call)) $out = @$this->$call($dom);
         if (!is_string($out) && $this->embed == false) {
           echo $out->fetch();
-          die;
+          exit;
         } else {
           $dom->before($out);
           $dom->remove();
@@ -136,7 +136,7 @@ class modLogin
         } else {
             header('Location: /');
         }
-        die;
+        exit;
     }
 
     public function recover(&$dom)
@@ -255,6 +255,6 @@ class modLogin
                 header('Location: /login');
             }
         }
-        die;
+        exit;
     }
 }

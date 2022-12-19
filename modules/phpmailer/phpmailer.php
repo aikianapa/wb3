@@ -19,7 +19,7 @@ function init()
         if (is_callable($call)) {
             echo @$call();
         }
-        die;
+        exit;
     } else {
 	if (is_callable("phpmailer__checkout")) {
         return phpmailer__checkout();

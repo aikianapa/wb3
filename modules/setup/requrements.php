@@ -16,7 +16,7 @@ foreach($required as $req) {
 
 if ($err > '') {
     echo "<ol>{$err}</ol>";
-    die;
+    exit;
 } else if (!is_file($path.'/database/_settings.json')) {
     @mkdir($path.'/database', 0777);
     @mkdir($path.'/forms', 0777);

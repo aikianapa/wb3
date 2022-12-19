@@ -53,7 +53,7 @@ class mysqlDrv
         } catch (Exception $err) {
             echo "Mysql DB connection error!";
             echo $err->getMessage();
-            die;
+            exit;
         }
         return $connection;
     }

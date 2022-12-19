@@ -7,7 +7,7 @@ class ctrlModule
         $this->app = $app;
         if (!isset($app->route->module)) {
             echo 'Error! Please, add module clause to router.<br \>Example: /cms/ajax/form/(:any)/(:any) => /module/<u>module:cms</u>/mode:ajax/form:$1/action:$2 ';
-            die;
+            exit;
         }
 
         $module = $app->vars('_route.module');
@@ -37,7 +37,7 @@ class ctrlModule
                 echo $form->get404();
             }
         }
-        die;
+        exit;
     }
 
     public function __call($mode, $params)
@@ -45,7 +45,7 @@ class ctrlModule
         if (!is_callable(@$this->$mode)) {
             $form = $app->controller('form');
             echo $form->get404();
-            die;
+            exit;
         }
     }
 
@@ -77,7 +77,7 @@ class ctrlModule
         isset($out->params->allow) && $out->params->allow == true ? $allow = $out->params->allow : $allow = null;
         if ($app->vars('_sess.user_role') !== 'admin' and $allow !== true) {
             echo $app->vars('_env.sysmsg.disallow');
-            die;
+            exit;
         }
 
         echo $tpl->outer();

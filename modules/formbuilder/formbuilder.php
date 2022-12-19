@@ -21,7 +21,7 @@ class modFormbuilder
 		} else {
 			echo $this->init($obj);
 		}
-		die;
+		exit;
     }
 
 

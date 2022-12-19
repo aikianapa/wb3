@@ -10,7 +10,7 @@ class modJsontodb
             $res = $this->init($app);
         }
         echo $res;
-        die;
+        exit;
     }
     public function init()
     {
@@ -53,7 +53,7 @@ class modJsontodb
     private function error($msg = null) {
         $msg == null ? $msg = "Error!" : null;
         echo $msg;
-        die;
+        exit;
     }
 
 }

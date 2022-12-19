@@ -32,7 +32,7 @@ function geoplugin__init(&$dom) {
       $result = json_encode(["{$app->vars("_route.fld")}" => $result->$fldname]);
   }
   echo $result;
-  die;
+  exit;
 }
 
 function geoplugin__info($ip) {

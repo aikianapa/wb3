@@ -354,7 +354,7 @@ class modYonger
         }
         $tpl->fetch();
         echo $tpl;
-        die;
+        exit;
     }
 
     public function block()
@@ -366,7 +366,7 @@ class modYonger
         $this->dom->item = $app->vars('_post.item');
         $this->render();
         echo($this->dom->outer());
-        die;
+        exit;
     }
 
     public function copypage()
@@ -482,7 +482,7 @@ class modYonger
             header('Content-type: image/svg+xml');
             return file_get_contents($eLogo);
         }
-        die;
+        exit;
     }
 
     public function signin()
@@ -720,7 +720,7 @@ class modYonger
             $out = "Error: /forms/_settings/{$app->vars("_route.form")}.php not found!";
         }
         echo $out;
-        die;
+        exit;
     }
 
     public function setMainDba()

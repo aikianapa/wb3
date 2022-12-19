@@ -9,7 +9,7 @@ class modCms {
       } else {
         header( "HTTP/1.1 404 Not Found" );
       }
-      die;
+      exit;
   }
 
   function init() {
@@ -38,7 +38,7 @@ class modCms {
       $out = $app->fromFile(__DIR__ . "/tpl/cms_login.php");
       $out->fetch();
       echo $out;
-      die;
+      exit;
   }
 
   function logout() {
@@ -53,7 +53,7 @@ class modCms {
             return json_encode(["error"=>false,"callback"=>"document.location.href = '{$role["url_logout"]}';"]);
           }
       }
-      die;
+      exit;
   }
 
   function settings() {
@@ -65,7 +65,7 @@ class modCms {
           $out = "Error: /forms/_settings/{$app->vars("_route.form")}.php not found!";
       }
       echo $out;
-      die;
+      exit;
   }
 }
 ?>

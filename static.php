@@ -21,7 +21,7 @@ if (is_file($path)) {
             header('Cache-Control: max-age=31536000');
         }
         echo file_get_contents($path);
-        die;
+        exit;
     }
 
 }

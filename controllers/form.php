@@ -17,7 +17,7 @@ class ctrlForm
         $class = $this->app->formClass($form);
         if (method_exists($class,$mode)) {
             echo $class->$mode();
-            die;
+            exit;
         } else {
             if ($tpl > '')  {
                 $out = $this->app->getTpl($tpl);
@@ -28,13 +28,13 @@ class ctrlForm
                 if ($item > '') $out->item = $this->app->itemRead($form,$item);
                 $out->fetch();
                 echo $out->outer();
-                die;
+                exit;
             }
         }
         if (!is_callable(@$this->$mode)) {
             header('HTTP/1.1 404 Not Found');
             echo  $this->get404();
-            die;
+            exit;
         }
     }
 
@@ -107,7 +107,7 @@ class ctrlForm
         if ($app->vars('_sett.showstats') == 'on')  echo wbUsageStat();
         ob_get_contents();
         @ob_end_flush();
-        die;
+        exit;
     }
 
     public function get404()
@@ -144,7 +144,7 @@ class ctrlForm
             $pages = ceil($list['count'] / $options->size);
             $pagination = wbPagination($options->page, $pages);
             echo json_encode(['result'=>$list['list'], 'pages'=>$pages, 'page'=>$options->page, 'pagination'=>$pagination]);
-            die;
+            exit;
         }
     }
 }

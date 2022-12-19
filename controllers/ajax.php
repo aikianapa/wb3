@@ -22,7 +22,7 @@ class ctrlAjax
             $this->ajax = new wbAjax($app);
         }
         echo $this->$mode();
-        die;
+        exit;
     }
 
     public function __call($mode, $params)
@@ -40,7 +40,7 @@ class ctrlAjax
         } else {
             echo json_encode([null]);
         }
-        die;
+        exit;
     }
 
     public function list()
@@ -60,7 +60,7 @@ class ctrlAjax
         $pages = ceil($count / $options->size);
         $pagination = wbPagination($options->page, $pages);
         echo json_encode(['result'=>$list, 'pages'=>$pages, 'page'=>$options->page, 'pagination'=>$pagination]);
-        die;
+        exit;
     }
 
 
@@ -204,7 +204,7 @@ class ctrlAjax
             $dom->fetch();
             header('Content-Type: text/html; charset=utf-8');
             echo $dom;
-            die;
+            exit;
         } else {
             $result = $app->itemRemove($form, $item);
             if (isset($result['_removed'])) {
@@ -212,7 +212,7 @@ class ctrlAjax
                 $result['_form'] = $form;
             }
             echo json_encode($result);
-            die;
+            exit;
         }
     }
 
@@ -223,7 +223,7 @@ class ctrlAjax
         $item = $app->vars('_route.item');
         $result = $app->itemCopy($form, $item);
         echo json_encode($result);
-        die;
+        exit;
     }
 
     public function getsess()

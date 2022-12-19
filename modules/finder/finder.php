@@ -18,7 +18,7 @@ class modFinder
             } catch (\Throwable $err) {
                 echo $err;
             }
-            die;
+            exit;
         } else {
             $dom = &$obj;
             $out = $dom->app->fromFile(__DIR__ ."/finder_ui.php");

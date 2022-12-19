@@ -8,7 +8,7 @@ function robokassa__init()
         if (is_callable($call)) {
             echo @$call();
         }
-        die;
+        exit;
     } else {
         return robokassa__checkout();
     }
@@ -84,10 +84,10 @@ function robokassa__success() {
 		$_SESSION["order_id"]=wbNewId();
         setcookie("order_id","",time()-3600,"/"); unset($_COOKIE["order_id"]);
 		header('Location: '.$success);
-		die;
+		exit;
 	} else {
 		header('Location: '.$fail);
-		die;
+		exit;
 	}
 }
 
@@ -96,7 +96,7 @@ function robokassa__fail() {
         $fail=$_ENV["settings"]["robokassa"]["fail"];
     } else {$fail="/fail";}
     header('Location: '.$fail);
-	die;
+	exit;
 }
 
 function robokassa__result() {

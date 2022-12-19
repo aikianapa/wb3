@@ -169,7 +169,7 @@ class tagForeach
                 header('Content-Type: charset=utf-8');
                 header('Content-Type: application/json');
                 echo json_encode($res);
-                die;
+                exit;
             }
         } elseif (!$dom->children()->length) {
             $dom->inner($empty->inner());
@@ -338,7 +338,7 @@ class tagForeach
                 header('Content-Type: charset=utf-8');
                 header('Content-Type: application/json');
                 echo json_encode($res);
-                die;
+                exit;
             }
         } elseif (!$dom->children()->length) {
             $dom->inner($empty->inner());

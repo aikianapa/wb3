@@ -8,7 +8,7 @@ function sitemap__init() {
             $out=@$call();
         }
         echo $out;
-        die;
+        exit;
     } else {
         unset($_SESSION["moduleSitemap"]);
         $out=wbFromFile(__DIR__ ."/sitemap_ui.php");

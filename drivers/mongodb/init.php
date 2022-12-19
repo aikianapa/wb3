@@ -31,7 +31,7 @@ class mongodbDrv
         } catch (Exception $err) {
             echo "Mongo DB connection error!";
             echo $err->getMessage();
-            die;
+            exit;
         }
         $mongo->dbname = $dbname;
         $mongo->bulk = null;

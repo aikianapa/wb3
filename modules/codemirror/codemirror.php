@@ -12,7 +12,7 @@ class modCodemirror
             $mode=$_ENV["route"]["params"][0];
             $call="codemirror__{$mode}";
             is_callable($call) ? $out=@$call() : null;
-            die;
+            exit;
         } else {
             $out = $dom->app->fromFile(__DIR__ ."/codemirror-ui.php");
             $textarea = $out->find(".codemirror");

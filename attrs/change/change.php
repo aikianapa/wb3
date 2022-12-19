@@ -35,7 +35,7 @@ class attrChange
                 }
             } catch (\Throwable $th) {
                 echo "<p class='alert alert-danger'>Wrong wb-change selector: {$selector}<br>in: {$app->vars('_route.uri')}</p>";
-                die;
+                exit;
             }
 
             $cache = [
