@@ -4,11 +4,10 @@
     <script src="/engine/js/wbapp.js"></script>
     <link rel="stylesheet" href="/engine/modules/yonger/tpl/assets/css/dashforge.css">
     <link rel="stylesheet" href="/engine/modules/yonger/tpl/assets/css/yonger.less">
-    <script src="/engine/modules/myicons/clipboard.min.js"></script>
 </head>
 
 <body>
-    <div class="container scroll-y" id="myIcons" wb-off>
+    <div class="container" id="myIcons" wb-off>
         <form class="mt-3 row" onsubmit="return false;">
             <div class="col-sm-4">
                 <div class="input-group">
@@ -24,9 +23,9 @@
                 <button type="button" class="btn btn-secondary" on-click="clear">Сброс</button>
             </div>
         </form>
-        <div class="row list d-none">
+        <div class="row list d-none scroll-y pb-5" style="height:calc(100vh - 70px);">
             {{#each list}}
-            <div class='col-2 text-center'>
+            <div class='col-2 text-center' on-click="show">
                 {{{svg}}}
                 <textarea data-id="{{@key}}" class="d-none"><svg class="mi mi-{{@key}}" size="24" stroke="333333" wb-module="myicons"></svg></textarea>
                 <br>
@@ -48,19 +47,14 @@ var myicons = new Ractive({
         data: {}
     },
     on: {
-        init() {
-            let clipboard = new ClipboardJS('.mi');
-            clipboard.on('success', function(e) {
-                //console.info('Action:', e.action);
-                console.info(e.text);
-                let mi = $(e.trigger).parent().children('span').text()
-                console.info('<img src="/module/myicons/24/333333/'+mi+'.svg" width="24" height="24">');
-                //console.info('Trigger:', e.trigger);
-                e.clearSelection();
-            });
-        },
         complete() {
             $('#myIcons input[type=search]').focus()
+        },
+        show(ev) {
+            let mi = $(ev.node).children('span').text()
+            console.info(mi);
+            console.info(`<svg class="mi mi-${mi}" size="24" stroke="333333" wb-module="myicons"></svg>`)
+            console.info(`<img src="/module/myicons/24/333333/${mi}.svg" width="24" height="24">`);
         },
         find(ev) {
             let str = $('#myIcons input[type=search]').val() + '';

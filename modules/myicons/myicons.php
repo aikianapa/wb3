@@ -124,7 +124,7 @@ class modMyicons
             $tag->attr('style', $style);
         }
 
-
+        $sprite->find('.st0')->remove(); // удаляем рамку вокруг иконки
         $svg = $app->fromString('<svg version="1.1" xmlns="http://www.w3.org/2000/svg"><use href=""></use></svg>');
         $svg->find('[viewBox]')->removeAttr('viewBox');
         $svg->find('use')->attr('href', $file.'#'.$id);
