@@ -8,7 +8,7 @@ class cmsFormsClass {
 
     function __call($method,$params) {
         $this->methodForm($method);
-        echo "cmsFormsClass: Method {$method} not foind.";
+        echo "cmsFormsClass: Method {$method} not found.";
         exit;
     }
 

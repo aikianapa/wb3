@@ -33,6 +33,25 @@ final class wbRouter {
         $this->fix($_GET,$_SERVER['QUERY_STRING']);
         // _POST и _COOKIE не фиксить - будут проблемы с фильтрами и тд
         
+
+
+    $dir=explode("/", __DIR__);
+    array_pop($dir);
+    $dir=implode("/", $dir);
+    $_ENV['base'] = "/tpl/";
+    $_ENV['path_app'] = ($_SERVER['DOCUMENT_ROOT']>"") ? $_SERVER['DOCUMENT_ROOT'] : $dir ;
+    $_ENV['path_engine'] = $_ENV['path_app'].'/engine';
+    $_ENV['dir_engine'] = __DIR__;
+    $_ENV['dir_app'] = $_ENV['path_app'];
+    $_ENV['path_tpl'] = $_ENV['path_app'].$_ENV['base'];
+    $_ENV['dbe'] = $_ENV['path_engine'].'/database'; 			// Engine data
+    $_ENV['dba'] = $_ENV['path_app'].'/database';	// App data
+    $_ENV['dbec'] = $_ENV['path_engine'].'/database/_cache'; 			// Engine data
+    $_ENV['dbac'] = $_ENV['path_app'].'/database/_cache';	// App data
+    $_ENV['drve'] = $_ENV['path_engine'].'/drivers'; 			// Engine data
+    $_ENV['drva'] = $_ENV['path_app'].'/drivers';	// App data
+
+
         $route_a = $_ENV['path_app'].'/router.ini';
         $route_e = $_ENV['path_engine'].'/router.ini';
         $rese = glob($_ENV['path_engine'].'/modules/*/router.ini');
@@ -43,6 +62,8 @@ final class wbRouter {
         }
         is_file($route_a) ? $this->addRouteFile($route_a) : null;
         is_file($route_e) ? $this->addRouteFile($route_e) : null;
+        $_ENV["route"] = $this->getRoute();
+
     }
     
     
@@ -135,7 +156,7 @@ final class wbRouter {
                 }
                 $route = str_replace('(:any)', '(.+)', str_replace('(:num)', '([0-9]+)', str_replace('(:str)', '(.[a-zA-Z]+)', $route)));
             }
-            $requestedUrl = wbNormalizePath($requestedUrl);
+           // $requestedUrl = wbNormalizePath($requestedUrl);
             if (preg_match('#^'.$route.'$#', $requestedUrl)) {
                 if (strpos($uri, '$') !== false && strpos($route, '(') !== false) {
                     $uri = preg_replace('#^'.$route.'$#', $uri, $requestedUrl);

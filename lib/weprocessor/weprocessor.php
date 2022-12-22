@@ -186,7 +186,11 @@ class WEProcessor {
 									}
 							}
 							try {
-	                            $res = @call_user_func_array($name, array_values($args));
+								if (in_array($name,['count']) && !is_array($args[0])) {
+                                    $res = '';
+								} else {
+									$res = @call_user_func_array($name, array_values($args));
+								}
 							} catch (\Throwable $th) {
                                 $res = '';
 							}

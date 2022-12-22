@@ -18,7 +18,7 @@ class pagesClass extends cmsFormsClass
         if ((array)$item['header'] === $item['header']) {
             @$item['header'] = isset($item['header'][$_SESSION['lang']]) ? $item['header'][$_SESSION['lang']] : $item['header']['ru'];
         }
-        @$item['menu_title'] = isset($item['menu_title']) && isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] :  $item['menu_title']['ru'];
+        @$item['menu_title'] = $data->get('menu_title'.$_SESSION['lang']) ? $data->get('menu_title'.$_SESSION['lang']) :  $data->get('menu_title.ru');
         $item['menu_title'] == '' ? $item['menu_title'] = $item['header'] : null;
         $blocks = (array)$data->get('blocks');
         $tmp = array_column($blocks, "name");

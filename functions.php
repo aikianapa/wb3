@@ -2,8 +2,7 @@
 ini_set('display_errors', 0);
 require_once __DIR__."/static.php";
 require_once __DIR__.'/lib/vendor/autoload.php';
-require_once __DIR__."/lib/weprocessor/weprocessor.php";
-require_once __DIR__."/lib/weprocessor/weparser.class";
+require_once __DIR__.'/wbdom.php';
 require_once __DIR__.'/wbrouter.php';
 require_once __DIR__.'/wbapp.php';
 
@@ -33,26 +32,7 @@ function wbInitEnviroment()
     } else {
         $new = false;
     }
-
-    $dir=explode("/", __DIR__);
-    array_pop($dir);
-    $dir=implode("/", $dir);
-
-    !isset($_ENV["driver"]) ? $_ENV["driver"] = "json" : null;
-    !isset($_ENV["base"]) ? $_ENV['base'] = "/tpl/" : null;
-
-    $_ENV['path_app'] = ($_SERVER['DOCUMENT_ROOT']>"") ? $_SERVER['DOCUMENT_ROOT'] : $dir ;
-    $_ENV['path_engine'] = $_ENV['path_app'].'/engine';
-    $_ENV['dir_engine'] = __DIR__;
-    $_ENV['dir_app'] = dirname(__FILE__);
-    $_ENV['path_tpl'] = $_ENV['path_app'].$_ENV['base'];
-    $_ENV['dbe'] = $_ENV['path_engine'].'/database'; 			// Engine data
-    $_ENV['dba'] = $_ENV['path_app'].'/database';	// App data
-    $_ENV['dbec'] = $_ENV['path_engine'].'/database/_cache'; 			// Engine data
-    $_ENV['dbac'] = $_ENV['path_app'].'/database/_cache';	// App data
-    $_ENV['drve'] = $_ENV['path_engine'].'/drivers'; 			// Engine data
-    $_ENV['drva'] = $_ENV['path_app'].'/drivers';	// App data
-
+    isset($_ENV["driver"]) ? null : $_ENV["driver"] = "json";
     $_ENV['error'] = array();
     $_ENV['last_error'] = null;
     $_ENV['env_id'] = $_ENV['new_id'] = wbNewId();
@@ -70,11 +50,7 @@ function wbInitEnviroment()
 
     $_ENV['forms'] = wbListForms(false);
     $_ENV['editors'] = [];
-
-    //$_ENV['drivers'] = wbListDrivers();
     $_ENV['settings']['driver'] = 'json';
-    // Load tags
-    //$_ENV['tags'] = wbListTags();
     $_ENV['stop_func'] = explode(",", "exec,system,passthru,readfile,shell_exec,escapeshellarg,escapeshellcmd,proc_close,proc_open,ini_alter,dl,popen,parse_ini_file,show_source,curl_exec,file_get_contents,file_put_contents,file,eval,chmod,chown");
 }
 
@@ -447,13 +423,15 @@ function wbMime($path) {
         $ext = explode(".",$ext[0]);
         $ext = array_pop($ext);
     }
-    $types = json_decode(file_get_contents(__DIR__.'/database/_mimetypes.json'),true);
+    $types = isset($_ENV['mimetypes']) ? $_ENV['mimetypes'] : json_decode(file_get_contents(__DIR__.'/database/_mimetypes.json'),true);
+    $_ENV['mimetypes'] = $types;
     if (isset($types[$ext])) $mime = $types[$ext];
     return $mime;
 }
 
 function wbMimeExt($mime = "text/plain") {
-    $types = json_decode(file_get_contents(__DIR__.'/database/_mimetypes.json'),true);
+    $types = isset($_ENV['mimetypes']) ? $_ENV['mimetypes'] : json_decode(file_get_contents(__DIR__.'/database/_mimetypes.json'), true);
+    $_ENV['mimetypes'] = $types;
     $types = array_flip($types);
     isset($types[$mime]) ? $ext = $types[$mime] : $ext = 'txt';
     return $ext;
@@ -1008,18 +986,10 @@ function wbMerchantList($type = 'both')
 function wbInitDatabase()
 {
     wbTrigger('func', __FUNCTION__, 'before');
-    if (!is_dir($_ENV['dbe'])) {
-        @mkdir($_ENV['dbe'], 0766);
-    }
-    if (!is_dir($_ENV['dba'])) {
-        @mkdir($_ENV['dba'], 0766);
-    }
-    if (!is_dir($_ENV['dbec'])) {
-        @mkdir($_ENV['dbec'], 0766);
-    }
-    if (!is_dir($_ENV['dbac'])) {
-        @mkdir($_ENV['dbac'], 0766);
-    }
+    is_dir($_ENV['dbe']) ? null : @mkdir($_ENV['dbe'], 0766);
+    is_dir($_ENV['dba']) ? null : @mkdir($_ENV['dba'], 0766);
+    is_dir($_ENV['dbec']) ? null : @mkdir($_ENV['dbec'], 0766);
+    is_dir($_ENV['dbac']) ? null : @mkdir($_ENV['dbac'], 0766);
     $_ENV['tables'] = wbTableList();
     wbTrigger('func', __FUNCTION__, 'after');
 }
@@ -1190,7 +1160,6 @@ function wbJsonFromFile($file) {
     } catch(Exception $e) {
         return [];
     }
-
 }
 
 function wbJsonDecode($json = '') {
