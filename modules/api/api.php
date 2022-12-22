@@ -377,6 +377,7 @@ class modApi
         query:
             &field=[val1,val2]   - in_array(field,[..,..]);
             &field!=[val1,val2]  - !in_array(field,[..,..]);
+            &field~=[val1,val2]  - массив в поле содержит одно из значений используется $like
             &field=val           - field == 'val'
             &field!=val          - field !== 'val'
             &field"=val          - field == 'val' && field == 'VAL' && field == 'vAl' (регистр не учитывается)
