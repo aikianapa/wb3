@@ -218,12 +218,10 @@ class wbApp
 
     public function initApp()
     {
-        
         $this->router = new wbRouter();
         $this->router->init();
         $this->route = $this->arrayToObj($_ENV['route']);
         $this->InitEnviroment();
-        $this->ErrorList();
         $this->driver();
         $this->InitSettings($this);
         $this->InitFunctions($this);
@@ -263,7 +261,6 @@ class wbApp
         if (is_callable('customRoute')) {
             customRoute($this->route);
         }
-
         if ($this->route->controller !== 'module' && substr($this->mime($this->route->uri), 0, 6) == 'image/') {
             $this->route->controller = 'thumbnails';
         }

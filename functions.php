@@ -2,9 +2,10 @@
 ini_set('display_errors', 0);
 require_once __DIR__."/static.php";
 require_once __DIR__.'/lib/vendor/autoload.php';
-require_once __DIR__.'/wbdom.php';
 require_once __DIR__.'/wbrouter.php';
 require_once __DIR__.'/wbapp.php';
+require_once __DIR__.'/wbdom.php';
+
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -52,6 +53,28 @@ function wbInitEnviroment()
     $_ENV['editors'] = [];
     $_ENV['settings']['driver'] = 'json';
     $_ENV['stop_func'] = explode(",", "exec,system,passthru,readfile,shell_exec,escapeshellarg,escapeshellcmd,proc_close,proc_open,ini_alter,dl,popen,parse_ini_file,show_source,curl_exec,file_get_contents,file_put_contents,file,eval,chmod,chown");
+
+    $_ENV['errors'] = array(
+                          100 => 'Login succeessful {{l}}',
+                          101 => 'Login incorrect {{l}}',
+                          404 => 'Page not found',
+                          1001 => 'Table {{0}} not exists',
+                          1002 => 'Table {{0}} already exixts',
+                          1003 => 'Do not remove {{0}}',
+                          1004 => 'Failed to remove file {{0}}',
+                          1005 => 'Failed to remove table {{0}}',
+                          1006 => 'Item {{1}} is not exists in table {{0}}',
+                          1007 => 'Failed to save record to table {{0}}',
+                          1008 => 'Delete item {{1}} in table {{0}}',
+                          1009 => 'Flush data from cache table {{0}}',
+                          1010 => 'Failed to create table {{0}}',
+                          1010 => 'Create a table {{0}}',
+                          1011 => 'Template {{0}} not found',
+                          1012 => 'Form {{0}} not found',
+                          1013 => 'PHP code not valid',
+                          1016 => 'Item {{1}} already exists in table {{0}}',
+                      );
+
 }
 
 function wbIsApp(&$obj) {
@@ -159,8 +182,7 @@ function wbInitSettings(&$app)
               setcookie('events', base64_encode(json_encode([])), time()+3600, '/');
           } // срок действия час
     }
-		$app->vars("_sess.token",$app->getToken());
-        
+	$app->vars("_sess.token") ? null : $app->vars("_sess.token",$app->getToken());    
 }
 
 
@@ -266,18 +288,19 @@ function wbCheckAllow($allow = [],$disallow = [], $role = null) {
 
 function wbGetToken()
 {
+    $mktime = microtime();
     $app = &$_ENV['app'];
     $apikey = $app->vars('_sett.api_key');
     $role = $app->vars('_sess.user.role');
     $user = $app->vars('_sess.user.id');
-    !$app->route->localreq && !$user ? $user = microtime() : null;
-    !$app->route->localreq && !$role ? $role = microtime() : null;
+    !$app->route->localreq && !$user ? $user = $mktime : null;
+    !$app->route->localreq && !$role ? $role = $mktime : null;
     $app->vars('_sett.api_allow') ? $allow = explode(',', $app->vars('_sett.api_allow')) : $allow = [];
     $app->vars('_sett.api_disallow') ? $disallow = explode(',', $app->vars('_sett.api_disallow')) : $disallow = [];
     $flag = true;
     (count($allow) && !in_array($role, $allow)) ? $flag = false : null;
     (count($disallow) && in_array($role, $disallow)) ? $flag = false : null;
-    (!$flag) ? $role = microtime() : null;
+    (!$flag) ? $role = $mktime : null;
     return password_hash($app->route->host.session_id().$apikey.$role.$user,$app->vars('_env.hash_algorithm'));
 }
 
@@ -1500,30 +1523,6 @@ function wbPage404(&$app=null)
     return $dom;
 }
 
-
-function wbErrorList()
-{
-    $_ENV['errors'] = array(
-                          100 => 'Login succeessful {{l}}',
-                          101 => 'Login incorrect {{l}}',
-                          404 => 'Page not found',
-                          1001 => 'Table {{0}} not exists',
-                          1002 => 'Table {{0}} already exixts',
-                          1003 => 'Do not remove {{0}}',
-                          1004 => 'Failed to remove file {{0}}',
-                          1005 => 'Failed to remove table {{0}}',
-                          1006 => 'Item {{1}} is not exists in table {{0}}',
-                          1007 => 'Failed to save record to table {{0}}',
-                          1008 => 'Delete item {{1}} in table {{0}}',
-                          1009 => 'Flush data from cache table {{0}}',
-                          1010 => 'Failed to create table {{0}}',
-                          1010 => 'Create a table {{0}}',
-                          1011 => 'Template {{0}} not found',
-                          1012 => 'Form {{0}} not found',
-                          1013 => 'PHP code not valid',
-                          1016 => 'Item {{1}} already exists in table {{0}}',
-                      );
-}
 
 function wbLog($type, $name, $error, $args)
 {
