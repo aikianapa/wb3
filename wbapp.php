@@ -213,6 +213,7 @@ class wbApp
         setcookie("user", $user->id, time()+3600);
         $this->user = $user;
         $this->token = $this->getToken();
+        $this->vars("_sess.token",$this->token);
         return $user;
     }
 
