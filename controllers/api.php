@@ -261,7 +261,7 @@ class ctrlApi
             $_SESSION['user'] = (array)$user;
             $_SESSION['userole'] = (array)$role;
             $user->token = $app->getToken();
-
+            $app->vars("_sess.token", $user->token);
             return json_encode(['login'=>true,'error'=>false,'redirect'=>$url,'user'=>$user,'role'=>$role]);
         } else {
             return json_encode(['login'=>false,'error'=>'Wrong password']);
