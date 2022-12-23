@@ -17,7 +17,7 @@ class modSetup {
   function init()
   {
     if (!is_file($this->app->vars('_env.path_app').'/database/__setup.json')) {
-      header("Location: /cms/login/");
+      header("Location: /signin");
     } else {
         $app = $this->app;
         $setup = $app->fromFile(__DIR__."/setup_ui.php", true);
@@ -28,6 +28,17 @@ class modSetup {
 
   function setup() {
     $app = $this->app;
+    $yoncom = $this->app->vars('_env.path_engine').'/modules/yonger/common';
+    @copy($this->app->vars('_env.path_engine').'/database/_settings.json', $this->app->vars('_env.path_app').'/database/_settings.json');
+    @copy($this->app->vars('_env.path_engine').'/database/pages.json', $this->app->vars('_env.path_app').'/database/pages.json');
+    @copy($yoncom.'/tpl/pages.php', $this->app->vars('_env.path_app').'/tpl/pages.php');
+    @copy($yoncom.'/scripts/_functions.php', $this->app->vars('_env.path_app').'/functions.php');
+
+    unlink($this->app->vars('_env.path_app').'/database/__setup.json');
+    $sett = wbItemRead('_settings', 'settings');
+
+    //shell_exec("cp -r $src $dest");
+
     $sett = [
       'id' => 'settings'
       ,'header' => $app->vars('_post.header')
@@ -43,12 +54,10 @@ class modSetup {
       ,'password' => $app->passwordMake($app->vars('_post.password'))
     ];
 
-    @copy($this->app->vars('_env.path_app').'/database/__setup.json', $this->app->vars('_env.path_app').'/database/_settings.json');
-    unlink($this->app->vars('_env.path_app').'/database/__setup.json');
     $s = $app->itemSave('_settings', $sett);
     $u = $app->itemSave('users', $user);
-
-    if ($s && $u) header("Location: /cms/login/");
+    $app->shadow('/module/yonger/yonmap');
+    if ($s && $u) header("Location: /workspace");
 
   }
 

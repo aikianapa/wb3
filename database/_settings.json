@@ -1,7 +1,7 @@
 {
     "settings": {
         "id": "settings",
-        "header": "WebBasic Pandemic Edition",
+        "header": "",
         "_id": "settings",
         "_form": "_settings",
         "_table": "_settings",
@@ -32,23 +32,14 @@
                             },
                             "open": "true",
                             "children": {
-                                "users": {
-                                    "id": "users",
-                                    "name": "Пользователи",
-                                    "active": "on",
-                                    "data": {
-                                        "label": "Пользователи",
-                                        "icon": "ri-group-line",
-                                        "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/users\/list\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
-                                    }
-                                },
                                 "pages": {
                                     "id": "pages",
                                     "name": "Страницы",
                                     "active": "on",
+                                    "__token": "$2y$10$x4UtRK60gjNA7DvGCiLZjeGzneBblR81KcZfGkDjhEvACTX8NDnaS",
                                     "data": {
                                         "label": "Страницы",
-                                        "icon": "ri-pages-line",
+                                        "icon": "browser-internet-web-network-window-edit",
                                         "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/pages\/list\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
                                     }
                                 },
@@ -58,7 +49,7 @@
                                     "active": "on",
                                     "data": {
                                         "label": "Новости",
-                                        "icon": "ri-newspaper-line",
+                                        "icon": "news-2-paper",
                                         "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/news\/list\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
                                     }
                                 },
@@ -68,7 +59,7 @@
                                     "active": "on",
                                     "data": {
                                         "label": "Задачи",
-                                        "icon": "ri-task-line",
+                                        "icon": "checklist-tasks-chechmark-square",
                                         "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/tasks\/list\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
                                     }
                                 },
@@ -78,7 +69,7 @@
                                     "active": "on",
                                     "data": {
                                         "label": "Заметки",
-                                        "icon": "ri-sticky-note-line",
+                                        "icon": "notes-edit.2",
                                         "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/notes\/list\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
                                     }
                                 },
@@ -88,44 +79,11 @@
                                     "active": "on",
                                     "data": {
                                         "label": "Справочники",
-                                        "icon": "ri-node-tree",
+                                        "icon": "programing-data.2",
                                         "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/catalogs\/list\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
                                     }
                                 }
                             }
-                        },
-                        "settings": {
-                            "id": "settings",
-                            "name": "Настройки",
-                            "active": "on",
-                            "data": {
-                                "label": "Настройки",
-                                "icon": "",
-                                "ajax": ""
-                            },
-                            "children": {
-                                "site": {
-                                    "id": "site",
-                                    "name": "Site",
-                                    "active": "on",
-                                    "data": {
-                                        "label": "Настройки",
-                                        "icon": "ri-settings-4-line",
-                                        "ajax": "{\u0027url\u0027:\u0027\/cms\/settings\/settings_ui\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
-                                    }
-                                },
-                                "filemanager": {
-                                    "id": "filemanager",
-                                    "name": "Файловый менеджер",
-                                    "active": "on",
-                                    "data": {
-                                        "label": "Файлменеджер",
-                                        "icon": "ri-folder-4-line",
-                                        "ajax": "{\u0027url\u0027:\u0027\/module\/filemanager\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
-                                    }
-                                }
-                            },
-                            "open": "true"
                         }
                     }
                 },
@@ -140,7 +98,7 @@
                             "active": "on",
                             "data": {
                                 "label": "Настройки",
-                                "icon": "ri-settings-5-line",
+                                "icon": "settings.2",
                                 "ajax": "{\u0027url\u0027:\u0027\/cms\/settings\/settings_ui\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
                             }
                         },
@@ -150,7 +108,7 @@
                             "active": "on",
                             "data": {
                                 "label": "Профиль",
-                                "icon": "ri-user-settings-line",
+                                "icon": "users-06",
                                 "ajax": "{\u0027url\u0027:\u0027\/cms\/ajax\/form\/users\/profile\u0027,\u0027html\u0027:\u0027.content-body\u0027}"
                             }
                         },
@@ -160,7 +118,7 @@
                             "active": "on",
                             "data": {
                                 "label": "Выход",
-                                "icon": "ri-logout-box-r-line",
+                                "icon": "exit-log-out-arrow",
                                 "ajax": "{\u0027url\u0027:\u0027\/cms\/logout\u0027}"
                             }
                         }
@@ -170,22 +128,28 @@
             },
             "dict": [{
                 "name": "label",
-                "label": "Метка",
+                "label": {
+                    "ru": "Метка"
+                },
                 "type": "string",
                 "value": ""
             }, {
                 "name": "icon",
-                "label": "Иконка",
-                "type": "string",
+                "label": {
+                    "ru": "Иконка"
+                },
+                "type": "myicons",
                 "value": ""
             }, {
                 "name": "ajax",
-                "label": "Свойства Ajax",
+                "label": {
+                    "ru": "Ajax"
+                },
                 "type": "text",
                 "value": ""
             }]
         },
-        "email": "oleg_frolov@mail.ru",
+        "email": "",
         "page_size": "",
         "cache": "",
         "logo1": "",
@@ -193,6 +157,8 @@
         "slogan": "",
         "logofontsize": "",
         "logo": "[]",
+        "locales": "ru,en",
+        "devmode": "on",
         "showstats": ""
     }
 }

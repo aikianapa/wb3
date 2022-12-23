@@ -8,13 +8,15 @@ class tagScripts
         $this->inner = $dom->text();
         $this->home = $dom->app->vars('_env.path_app');
         $this->path = '/assets/compress/js';
-        $this->dir = $this->home.$this->path;
         $this->ext = $dom->attr('compress') == 'true' ? 'jsgz' : 'js';
         $this->filename = $this->dom->attr('src') ? $this->dom->attr('src') : md5($this->inner).'.'.$this->ext;
         strtolower(substr($this->filename, -strlen($this->ext))) == $this->ext ? null : $this->filename.='.'.$this->ext;
         $this->filename = str_replace('.jsgz.js', '.js', $this->filename);
-        $this->file =  wbNormalizePath($this->dir.'/'.$this->filename);
-        $this->access();
+        $this->file =  wbNormalizePath($this->home.$this->path.'/'.$this->filename);
+        //$this->access();
+        $info = (object)pathinfo($this->file);
+        $this->dir = $info->dirname;
+        is_dir($this->dir) ? null : mkdir($this->dir, 0777, true);
         $this->load();
         $dom->remove();
     }

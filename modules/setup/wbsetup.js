@@ -1,19 +1,20 @@
 $('.btn-install')
-.removeAttr('disabled')
-.click(function(e){
-    $('#errors ol').html('')
-    $('#errors').addClass('d-none');
-    if ($('#setup').verify() == false) {
-        return false;
-    }
-   
-})
+    .removeAttr('disabled')
+    .click(function(e) {
+        $('#errors ol').html('')
+        $('#errors').addClass('d-none');
+        if ($('#setup').verify() == false) {
+            return false;
+        }
 
-$('#setup').on('wb-verify-false',function(e,el, err){
+    })
+
+$('#setup').on('wb-verify-false', function(e, el, err) {
+    if (err == undefined) return;
     $(el).addClass('border-danger');
     $('#errors').removeClass('d-none');
-    $('#errors ol').append('<li>'+err+'</li>');
-    setTimeout(function(){
+    $('#errors ol').append('<li>' + err + '</li>');
+    setTimeout(function() {
         $(el).removeClass('border-danger');
-    },1000)
+    }, 1000)
 })

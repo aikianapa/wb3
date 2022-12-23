@@ -52,7 +52,9 @@ var modLangInp = function() {
                     let lng = $(ev.node).data('lang')
                     ractive.set(lng, $(ev.node).val())
                     ractive.fire('complete')
-                    $(mod).find('textarea.mod-langinp-data').html(json_encode(ractive.get())).trigger('change')
+                    let data = ractive.get();
+                    delete data.width;
+                    $(mod).find('textarea.mod-langinp-data').html(json_encode(data)).trigger('change')
                 }
             }
         })

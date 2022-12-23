@@ -9,23 +9,15 @@
         <div class="card-header bg-light">
             <div class="row">
                 <div class='col-auto p-0 px-2'>
-                    <img data-src="/engine/modules/cms/tpl/assets/img/virus.svg" width="50" />
-                </div>
-                <div class='col-auto p-0'>
-                    <h2 class="tx-30 p-0 wblogo">
-                        <i class="text-dark">Web</i><i class="text-primary">Basic</i><br>
-                        <i class="tx-13 text-dark pt-2">Pandemic edition</i>
-                    </h2>
+                    <img data-src="/engine/modules/yonger/tpl/assets/img/logo.svg" width="200" />
                 </div>
             </div>
         </div>
-
 
         <form id="setup" method="post" class="card-body">
             <input type="hidden" name="setup" value="start" />
             <div id="wizard">
                 <section>
-
                     <div class="form-group">
                         <label for="">{{_LANG[header]}}</label>
                         <input class="form-control" placeholder="{{_LANG[header]}}" type="text" name="header" required>
@@ -48,7 +40,7 @@
                             <div class="form-group">
                                 <label for="">{{_LANG[chkpass]}}</label>
                                 <input class="form-control" placeholder="{{_LANG[chkpass]}}" type="password"
-                                    name="password_check" minlength='3' required>
+                                    name="password-confirm" minlength='3' required>
                             </div>
                         </div>
                     </div>

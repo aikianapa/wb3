@@ -170,9 +170,7 @@ class modYonger
             $dir = $app->vars('_env.path_app').'/forms/comments';
             is_file($dir) or is_dir($dir) ? null : symlink(__DIR__ .'/common/forms/comments', $dir);
             $file = $app->vars('_env.path_app').'/functions.php';
-            is_file($file) ? null : symlink(__DIR__ .'/common/scripts/functions.php', $file);
-            $file = $app->vars('_env.path_app').'/tpl/page.php';
-            is_file($file) ? null : symlink(__DIR__ .'/common/tpl/page.php', $file);
+            is_file($file) ? null : copy(__DIR__ .'/common/scripts/functions.php', $file);
         }
         if (is_file($app->route->path_app.'/tpl/workspace.php')) {
             $ws = $app->fromFile($app->route->path_app.'/tpl/workspace.php', true);

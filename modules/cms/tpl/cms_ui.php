@@ -1,6 +1,6 @@
 <html>
 <wb-include wb="{'src':'/engine/modules/cms/tpl/wrapper.inc.php'}"/>
-<meta http-equiv="refresh" content="1; url=/cms/login/" wb-disallow="admin">
+<meta http-equiv="refresh" content="1; url=/signin" wb-disallow="admin">
 
 <wb-jq wb-append="body">
   <div class="app-chat" wb-disallow="admin">

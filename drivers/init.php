@@ -4,6 +4,13 @@ function wbItemList($form = 'pages', $options=[])
 {
     !is_array($options) ? $options = json_decode($options, true) : null;
     $db = wbSetDb($form);
+    if (!$db) {
+        return [
+            'error' => true,
+            'msg'=> 'Database not found',
+            'list' => []
+        ];
+    }
     ini_set('max_execution_time', 900);
     ini_set('memory_limit', '1024M');
     $res = $db->ItemList($form, $options);
@@ -39,8 +46,10 @@ function wbSetDb($form)
     $exists = $app->drivers->$form->tableExist($form);
     if (!$exists && !$loop && $app->vars('_sess.user.role')=='admin') {
         if (in_array($form,$app->listForms()) OR $app->vars('_route.mode') == 'save') {
-            $app->tableCreate($form);
-            $app->_db->tableCreate($form);
+            if (!$app->tableCreate($form)) {
+                $app->_db->tableCreate($form);
+                 $app->drivers->$form = &$app->_db;
+            }
             $exists = $app->drivers->$form->tableExist($form);
         }
     }
@@ -215,7 +224,7 @@ function wbTableCreate($form = 'pages', $engine = false)
     $app = &$_ENV['app'];
     $db = wbSetDb($form);
     wbTrigger('form', __FUNCTION__, 'beforeTableCreate', func_get_args(), array());
-    $res = $db->tableCreate($form, $engine);
+    $db ? $res = $db->tableCreate($form, $engine) : null;
     $file = $app->vars('_env.dba')."/{$form}.json";
     is_file($file) ? null : $app->putContents($file,'');
     return $res;
@@ -245,12 +254,10 @@ function wbListTables($engine = false) {
 function wbTableList($engine = false)
 {
     $app = &$_ENV['app'];
-    $list = wbListFiles($_ENV['path_app'].'/database');
+    $list = glob($_ENV['path_app'].'/database.*.json');
     $res = [];
     foreach($list as $file) {
-        if (substr($file,-5) == '.json') {
-            $res[] = substr($file, 0, -5);
-        }
+        $res[] = basename($file);
     }
     return $res;
 }
