@@ -92,6 +92,7 @@
                 'id' => $item['id'],
                 'menu' => $item['menu'],
                 'menu_title' => $item['menu_title'],
+                'header' => $header,
                 'name' => $item['name'],
                 'path' => $item['path'],
                 'children' => $item['children'],
@@ -106,6 +107,10 @@
 
             if ((array)$item['menu_title'] === $item['menu_title']) {
                 @$item['menu_title'] = isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] : $item['menu_title']['ru'];
+            }
+
+            if ((array)$item['header'] === $item['header']) {
+                @$item['header'] = isset($item['header'][$_SESSION['lang']]) ? $item['header'][$_SESSION['lang']] : $item['header']['ru'];
             }
 
             $path = $item['path'];

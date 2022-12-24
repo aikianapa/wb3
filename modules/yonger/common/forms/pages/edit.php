@@ -46,8 +46,10 @@
                                                     <input name="active" wb-module="swico">
                                                 </span>
                                             </div>
-                                            <input type="text" name="name" class="form-control" wb="module=smartid"
-                                                required wb-enabled="admin">
+                                            <wb-if wb-if="'{{name}}' !== 'home'">
+                                                <input type="text" name="name"  class="form-control" wb="module=smartid" required wb-enabled="admin">
+                                            </wb-if>
+                                            <input type="text" class="form-control" value="{{name}}" disabled readonly wb-if="'{{name}}' == 'home'">
                                         </div>
                                     </div>
                                 </div>

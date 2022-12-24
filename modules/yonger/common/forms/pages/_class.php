@@ -57,7 +57,7 @@ class pagesClass extends cmsFormsClass
         if (isset($item['blocks'])) $item['template'] = '';
         $item['url'] == '/home' ? $item['url'] = '/' : null;
         $item['url'] = $item['path'] . '/' . $item['name'];
-
+        $item['name'] == 'home' ? $item['_sort'] = 0 : null;
         if (isset($item['blocks']) && (array)$item['blocks'] === $item['blocks']) {
             // custom url in seo block
             foreach ($item['blocks'] as $block) {

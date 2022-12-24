@@ -243,7 +243,7 @@ class wbDom extends DomQuery
     }
     public function fetchNode()
     {
-        $outer = $this->outer();
+        $outer = ' '.$this->outer();
         if (!strpos($outer, 'wb') && !strpos($outer, '}}') && !strpos($outer, '%7D%7D')) {
             return;
         }
@@ -266,6 +266,12 @@ class wbDom extends DomQuery
         } else {
             $_ENV['wb_steps']++;
         }
+
+        $outer = ' '.$this->outer();
+        if (!strpos($outer, 'wb') && !strpos($outer, '}}') && !strpos($outer, '%7D%7D')) {
+            return;
+        }
+
         $childrens = $this->children();
         foreach ($childrens as $wb) {
             $wb->copy($this);
