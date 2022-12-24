@@ -20,8 +20,18 @@ class tagStyles
         $this->dir = $info->dirname;
         $this->filename = $info->basename;
         is_dir($this->dir) ? null : mkdir($this->dir, 0777, true);
-        $this->load($dom);
+        $this->dom->attr('type')=='link' ? $this->load_link($dom) : $this->load($dom);
         $dom->remove();
+    }
+
+    public function load_link(&$dom) {
+        $inner = wbSetValuesStr($this->inner, $dom->item);
+        $arr = json_decode($inner, true);
+        $css = "";
+        foreach ($arr as $i => $src) {
+            $css.='<link rel="stylesheet" href="'.$src.'">'.PHP_EOL;
+        }
+        $this->dom->after($css);
     }
 
     public function load(&$dom)

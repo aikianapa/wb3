@@ -2,7 +2,7 @@
 
 <wb-snippet name="wbapp" />
 
-<wb-scripts src="main.jsgz">
+<wb-scripts src="main.js">
 	[
 	 "/engine/lib/bootstrap/js/bootstrap.bundle.min.js"
 	,"{{_var.base}}/assets/js/dashforge.js"
@@ -11,7 +11,7 @@
     ]
 </wb-scripts>
 
-<wb-styles src="/assets/css/main.css">
+<wb-styles src="main.css">
 [
 	"/engine/lib/fonts/remixicons/remixicon.css"
 	,"/engine/lib/fonts/font-awesome/css/font-awesome.min.css"

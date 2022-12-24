@@ -50,8 +50,11 @@ class tagScripts
         if ($script == '') return;
         $this->dom->attr('trigger') > '' ? $script.= PHP_EOL.'$(document).trigger("'.$this->dom->attr('trigger').'");'.PHP_EOL : null;
         
+
         if (strtolower(trim($this->dom->attr('src')) == 'wbapp')) {
             $type = ' type="text/javascript" ';
+        } else if ($this->dom->attr('type')>'') {
+            $type = $this->dom->attr('type');
         } else {
             $type = ' type="wbapp" ';
         }
