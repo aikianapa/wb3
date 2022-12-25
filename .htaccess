@@ -20,6 +20,5 @@ RewriteRule ^database(.*)$ index.php [R=404,L]
 RewriteRule ^.git(.*)$ index.php [R=404,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
 
 RewriteRule ^(.*)$ index.php [L,QSA]

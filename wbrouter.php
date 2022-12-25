@@ -50,7 +50,6 @@ final class wbRouter
         $_ENV['drve'] = $_ENV['path_engine'].'/drivers'; 			// Engine data
         $_ENV['drva'] = $_ENV['path_app'].'/drivers';	// App data
 
-
         $route_a = $_ENV['path_app'].'/router.ini';
         $route_e = $_ENV['path_engine'].'/router.ini';
         $rese = glob($_ENV['path_engine'].'/modules/*/router.ini');
@@ -62,6 +61,10 @@ final class wbRouter
         is_file($route_a) ? $this->addRouteFile($route_a) : null;
         is_file($route_e) ? $this->addRouteFile($route_e) : null;
         $_ENV["route"] = $this->getRoute();
+        if ($_ENV['route']['controller'] == 'form' && substr($_ENV['route']['uri'],-1)=='/' && $_ENV['route']['uri'] > '/') {
+            // если имя страницы совпадает с именем папки - фиксим
+            $_ENV['route']['uri'] = substr($_ENV['route']['uri'], 0, -1);
+        }
     }
 
 
