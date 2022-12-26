@@ -89,6 +89,29 @@ class modMyicons
     }
 
 
+public function icon1() {
+        $app = &$this->app;
+        $params = $this->dom->params;
+        isset($this->icon) ? $icon = $this->icon : $icon = $this->name();
+        $file = $this->path.$icon;
+        substr($this->stroke, 0, 1) !== '#' ? $this->stroke = '#'.$this->stroke : null;
+        substr($this->fill, 0, 1) !== '#' ? $this->fill = '#'.$this->fill : null;
+        if (!is_file($file)) {
+            return false;
+        }
+        $id = wbNewId();
+        $start = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="'.$id.'" width="'.$this->size.'" height="'.$this->size.'" viewBox="0 0 24 24" xml:space="preserve">';
+
+        $sprite = file_get_contents($file);
+        $sprite = $start.substr(mb_strpos('>', $sprite),$sprite);
+        echo $sprite; exit;
+        if (!$sprite) {
+            return false;
+        }
+        echo $sprite;
+
+}
+
     public function icon()
     {
         $app = &$this->app;
@@ -108,6 +131,7 @@ class modMyicons
         foreach($path as $d) {
             substr($d->attr('d'), 0, 3)== 'M0,' ? $d->remove() : null;
         }
+        
         if ($this->size) {
             $sprite->attr('width', $this->size);
             $sprite->attr('height', $this->size);
@@ -117,6 +141,7 @@ class modMyicons
         $inner = $sprite->inner();
         $this->stroke > '#' ? $inner = str_replace('#323232', $this->stroke, $inner) : null;
         $sprite->inner($inner);
+        $sprite->find('rect')->remove();
 
         $attrs = $this->dom->attributes;
         if (gettype($attrs) == 'object' && $attrs->length) {

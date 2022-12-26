@@ -14,7 +14,7 @@
             <svg class="mi mi-interface-essential-109" wb-on size="24" stroke="333333" wb-module="myicons"></svg>
         </span>
         <div class="p-2 tx-gray-700">
-            <input type="search" class="form-control" on-keyup="find" placeholder="Поиск мин. 3 буквы" autocomplete="off">
+            <input type="search" class="form-control" on-keyup="find" placeholder="Поиск... (минимум 2 символа)" autocomplete="off">
         </div>
         <div class="list d-none scroll-y pb-3 text-center" style="height: calc(100vh - 50px);">
             {{#each list}}
@@ -53,7 +53,7 @@
             find(ev) {
                 let str = $(ev.node).val() + "";
                 let len = str.length;
-                if (len > 2) {
+                if (len > 1) {
                     void(0)
                 } else {
                     myicofind.set("list", [])

@@ -92,6 +92,7 @@
                 'id' => $item['id'],
                 'menu' => $item['menu'],
                 'menu_title' => $item['menu_title'],
+                'menu_icon' => $item['menu_icon'],
                 'header' => $header,
                 'name' => $item['name'],
                 'path' => $item['path'],

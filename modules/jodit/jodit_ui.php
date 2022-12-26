@@ -1,4 +1,4 @@
-<textarea class="jodit wb-content-editor" data-lang="{{_sett.locale}}"></textarea>
+<textarea class="jodit wb-content-editor d-none" data-lang="{{_sett.locale}}"></textarea>
 <script wb-app remove>
   wbapp.loadStyles(["/engine/modules/jodit/build/jodit.min.css", "/engine/modules/jodit/jodit.css"]);
   wbapp.loadScripts([

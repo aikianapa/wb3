@@ -19,77 +19,96 @@
                 <div class="row">
                     <div class="col-5 col-lg-4 scroll-y modal-h">
                         <form id="{{_form}}EditForm">
-                            <input type="hidden" name="id" value="{{_route.id}}" wb-if="'{{_route.id}}' == '_header' OR '{{_route.id}}' == '_footer'">
+                            <input type="hidden" name="id" value="{{_route.id}}"
+                                wb-if="'{{_route.id}}' == '_header' OR '{{_route.id}}' == '_footer'">
                             <div wb-if="'{{_route.id}}' !== '_header' && '{{_route.id}}' !== '_footer'">
                                 <div class="form-group row mb-2">
                                     <div class="col-12">
                                         <div class="btn btn-info btn-block p-2 mb-0 cursor-pointer pagelink">
-                                            <svg class="d-inline mi mi-link-big" size="24" stroke="FFFFFF" wb-module="myicons"></svg>
+                                            <svg class="d-inline mi mi-link-big" size="24" stroke="FFFFFF"
+                                                wb-module="myicons"></svg>
                                             {{_route.scheme}}://{{_route.hostname}}<span class="path"></span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group row mb-2" wb-allow="admin">
-                                    <label class="col-lg-4 form-control-label">Путь</label>
-                                    <!--wb-module wb="module=yonger&mode=pageselect" /-->
-                                    <div class="col-lg-8">
-                                        <input name="path" wb="module=yonger&mode=pageselect" class="form-control"
-                                            readonly />
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label class="col-lg-4 form-control-label">Наименование</label>
-                                    <div class="col-lg-8">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text p-1">
-                                                    <input name="active" wb-module="swico">
-                                                </span>
+                                <div class="accordion">
+                                    <h6>Основное</h6>
+                                    <div>
+                                        <div class="form-group row mb-2" wb-allow="admin">
+                                            <label class="col-lg-4 form-control-label">Путь</label>
+                                            <!--wb-module wb="module=yonger&mode=pageselect" /-->
+                                            <div class="col-lg-8">
+                                                <input name="path" wb="module=yonger&mode=pageselect"
+                                                    class="form-control" readonly />
                                             </div>
-                                            <wb-if wb-if="'{{name}}' !== 'home'">
-                                                <input type="text" name="name"  class="form-control" wb="module=smartid" required wb-enabled="admin">
-                                            </wb-if>
-                                            <input type="text" class="form-control" value="{{name}}" disabled readonly wb-if="'{{name}}' == 'home'">
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row mb-2" wb-allow="admin">
-                                    <label class="col-lg-4 form-control-label">Пункт меню</label>
-                                    <div class="col">
-                                        <input type="text" name="menu_title" class="form-control"
-                                            placeholder="Пункт меню" wb="module=langinp">
-                                    </div>
-                                    <div class="col-auto py-1">
-                                        <input name="menu" wb-module="swico" data-size="30">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row mb-2">
-                                    <label class="col-lg-4 form-control-label">Заголовок</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" name="header" class="form-control" placeholder="Заголовок"
-                                            wb="module=langinp">
-                                    </div>
-                                </div>
-
-                                <div wb-if="'{{_sett.devmode}}'=='on'">
-                                    <div class="divider-text cursor-pointer"
-                                        onclick="$(this).next().toggleClass('d-none')">Присоединённый раздел > </div>
-                                    <div class="form-group row d-none mb-2">
-                                        <label class="col-lg-4 form-control-label">Раздел</label>
-                                        <div class="col-lg-8">
-                                            <select class="form-control" placeholder="{{_lang.attach}}" name="attach">
-                                                <wb-foreach wb-from="_var.attaches" wb-tpl="false">
-                                                    <option value="{{_val}}">{{_val}}</option>
-                                                </wb-foreach>
-                                            </select>
-                                        </div>
-                                        <div class="col-12 mt-2">
-                                            <input type="text" name="attach_filter" class="form-control"
-                                                placeholder="{{_lang.filter}}">
+                                        <div class="form-group row mb-2">
+                                            <label class="col-lg-4 form-control-label">Наименование</label>
+                                            <div class="col-lg-8">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text p-1">
+                                                            <input name="active" wb-module="swico">
+                                                        </span>
+                                                    </div>
+                                                    <wb-if wb-if="'{{name}}' !== 'home'">
+                                                        <input type="text" name="name" class="form-control"
+                                                            wb="module=smartid" required wb-enabled="admin">
+                                                    </wb-if>
+                                                    <input type="text" class="form-control" value="{{name}}" disabled
+                                                        readonly wb-if="'{{name}}' == 'home'">
+                                                </div>
+                                            </div>
                                         </div>
 
+                                        <div class="form-group row mb-2">
+                                            <label class="col-lg-4 form-control-label">Заголовок</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" name="header" class="form-control"
+                                                    placeholder="Заголовок" wb="module=langinp">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h6 wb-allow="admin">Пункт меню</h6>
+                                    <div wb-allow="admin">
+                                        <div class="form-group row mb-2">
+                                            <div class="col-auto">
+                                                <input name="menu" wb-module="swico">
+                                            </div>
+                                            <div class="col">
+                                                Отображать пункт в меню
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-2">
+                                            <div class="col">
+                                                <input type="text" name="menu_title" class="form-control"
+                                                    placeholder="Пункт меню" wb="module=langinp">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-2">
+                                            <div class="col">
+                                                <input type="text" name="menu_icon" class="form-control"
+                                                    placeholder="Иконка меню" wb="module=myicons">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h6>Присоединённый раздел</h6>
+                                    <div>
+                                        <div class="form-group row mb-2">
+                                            <label class="col-lg-4 form-control-label">Раздел</label>
+                                            <div class="col-lg-8">
+                                                <select class="form-control" placeholder="{{_lang.attach}}"
+                                                    name="attach">
+                                                    <wb-foreach wb-from="_var.attaches" wb-tpl="false">
+                                                        <option value="{{_val}}">{{_val}}</option>
+                                                    </wb-foreach>
+                                                </select>
+                                            </div>
+                                            <div class="col-12 mt-2">
+                                                <input type="text" name="attach_filter" class="form-control"
+                                                    placeholder="{{_lang.filter}}">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -120,14 +139,18 @@ yonger.pageEditor = function() {
         let path = $(this).val() + '/';
         $form.find('.path').html(path);
         $form.find('[name=name]').trigger('change');
-        setTimeout(function(){
+        $form.find('.accordion').accordion({
+            heightStyle: 'content'
+        });
+        setTimeout(function() {
             let blocks = ypbrBlocks.get('blocks')
-            $.each(blocks,function(i,block){
-                if (block.active == 'on' && block.name == 'seo' && block.alturl !== undefined && block.alturl > ' ') {
+            $.each(blocks, function(i, block) {
+                if (block.active == 'on' && block.name == 'seo' && block.alturl !==
+                    undefined && block.alturl > ' ') {
                     $form.find('.path').html(block.alturl)
                 }
             })
-        },100)
+        }, 100)
     });
     $form.undelegate('[name=name]', 'change keyup');
     $form.delegate('[name=name]', 'change keyup', function() {

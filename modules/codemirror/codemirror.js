@@ -30,9 +30,10 @@ $(document).on("codemirror-js-addons", function() {
         let form = $(that).parents("form")[0];
         let params = $(that).data('params');
         let value = $(that).text();
-        params.theme = 'cobalt';
-        params.mode = 'htmlmixed';
-        $(that).attr("data-theme") == undefined ? null : params.theme = $(that).attr("data-theme");
+        let data = $(that).data()
+        console.log(params);
+        params.theme == undefined ? params.theme = 'cobalt' : null
+        params.mode == undefined ? params.mode = 'htmlmixed' : null
         $(that).attr("data-mode") == undefined ? null : params.mode = $(that).attr("data-mode");
         that.wait = false;
         //params.oconv == 'base64_encode' ? value = base64_decode(value) : null;
@@ -54,11 +55,8 @@ $(document).on("codemirror-js-addons", function() {
             foldGutter: true,
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
         }
+        params.readonly == undefined ? null : options.readOnly = 'nocursor';
         let editor = CodeMirror.fromTextArea(that, options);
-        if (params.height == 'auto') {
-            $(that).next('.Codemirror').css('height', 'auto');
-        }
-        editor.setValue(value);
         //editor.foldCode(CodeMirror.Pos(0, 0));
         $(that).trigger('change');
         editor.on("change", function() {
@@ -66,9 +64,12 @@ $(document).on("codemirror-js-addons", function() {
             if ($(that).data('oconv')) eval(`value = ${$(that).data('oconv')}(value)`);
             //params.oconv == 'base64_encode' ? value = base64_encode(value) : null;
             $(that).html(value);
+            if (params.height == 'auto') {
+                $(that).next('.CodeMirror').css('height', 'auto')
+            }
             $(that).trigger('change');
-
         });
+        editor.setValue(value);
         that.editor = editor;
         $(that).data("editor", editor);
         wbapp.trigger('codemirror-init', that);
