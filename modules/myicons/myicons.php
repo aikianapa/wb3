@@ -79,7 +79,7 @@ class modMyicons
         foreach($list as $file) {
             $name = substr($file, 0, -4);
             if (substr($file,-4) == '.svg' && strpos(' '.$name,$this->app->vars('_req.find'))) {
-                $svg = $this->app->fromString('<html><svg class="mi mi-'.$name.' " size="50" stroke="333333" wb-module="myicons" data-clipboard-action="copy" data-clipboard-target=[data-id="'.$name.'"] ></svg></html>');
+                $svg = $this->app->fromString('<html><svg class="mi mi-'.$name.' " size="50" wb-module="myicons"></svg></html>');
                 $svg->fetch();
                 $res[$name] = ['svg'=>$svg->html()];
             }
@@ -104,48 +104,30 @@ class modMyicons
         if (!$sprite) {
             return false;
         }
-        $id = $sprite->attr('id');
-        $this->stroke > '#' ? $sprite->find('[stroke]')->attr('stroke', $this->stroke) : null;
-        $this->fill > '#' ? $sprite->find('[fill]')->attr('fill', $this->fill) : null;
-
-        $styled = $sprite->find('[style*="stroke:"],[style*="fill:"]');
-        foreach ($styled as $tag) {
-            $style = ' '.$tag->attr('style');
-            $stroke = strpos($style, 'stroke:');
-            $fill = strpos($style, 'fill:');
-            if ($stroke) {
-                substr($style, $stroke, 11) == 'stroke:none' ? $stroke = 'stroke:none' : $stroke = substr($style, $stroke, 14);
-                $style = str_replace($stroke, 'stroke:'.$this->stroke, $style);
-            }
-            if ($fill) {
-                substr($style, $fill, 9) == 'fill:none' ? $fill = 'fill:none' : $fill = substr($style, $fill, 12);
-                $style = str_replace($fill, 'fill:'.$this->fill, $style);
-            }
-            $tag->attr('style', $style);
+        $path = $sprite->find('[d]');
+        foreach($path as $d) {
+            substr($d->attr('d'), 0, 3)== 'M0,' ? $d->remove() : null;
         }
-
-        $sprite->find('.st0')->remove(); // удаляем рамку вокруг иконки
-        $svg = $app->fromString('<svg version="1.1" xmlns="http://www.w3.org/2000/svg"><use href=""></use></svg>');
-        $svg->find('[viewBox]')->removeAttr('viewBox');
-        $svg->find('use')->attr('href', $file.'#'.$id);
-        $svg->find('use')->after($sprite->inner());
-        $svg->find('use')->remove();
-        $svg->attr('class', $this->dom->attr('class'));
         if ($this->size) {
-            $svg->attr('width', $this->size);
-            $svg->attr('height', $this->size);
-            $svg->attr('viewBox', "0 0 24 24");
-            $svg->attr('style', "width:{$this->size}px;height:{$this->size}px;");
+            $sprite->attr('width', $this->size);
+            $sprite->attr('height', $this->size);
+            $sprite->attr('viewBox', "0 0 24 24");
+            $sprite->attr('style', "width:{$this->size}px;height:{$this->size}px;");
         }
+        $inner = $sprite->inner();
+        $this->stroke > '#' ? $inner = str_replace('#323232', $this->stroke, $inner) : null;
+        $sprite->inner($inner);
+
         $attrs = $this->dom->attributes;
         if (gettype($attrs) == 'object' && $attrs->length) {
             foreach ($attrs as $attr) {
                 if (!in_array($attr->nodeName, ['stroke','fill','size'])) {
-                    $svg->attr($attr->nodeName, $attr->nodeValue);
+                    $sprite->attr($attr->nodeName, $attr->nodeValue);
                 }
             }
         }
-        return $svg->outer();
+
+        return $sprite->outer();
     }
 
     public function name()
