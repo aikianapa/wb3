@@ -11,7 +11,7 @@
         <form class="mt-3 row" onsubmit="return false;">
             <div class="col-sm-4">
                 <div class="input-group">
-                    <input class="form-control" type="search" placeholder="Поиск... (минимум 2 символа)" on-keyup="find">
+                    <input class="form-control" type="search" placeholder="Поиск..." on-keyup="find">
                     <div class="input-group-append cursor-pointer" on-click="find">
                         <span class="input-group-text py-0">
                             <svg class="mi mi-code-search" size="24" stroke="333333" wb-module="myicons" wb-on></svg>
@@ -84,7 +84,7 @@ var myicons = new Ractive({
         },
         find(ev) {
             let str = $('#myIcons input[type=search]').val() + '';
-            if (str.length < 2) {
+            if (str.length == 0) {
                 myicons.set('list',[])
                 return
             }

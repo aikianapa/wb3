@@ -8,6 +8,7 @@ class modMyicons
         $this->path = __DIR__ . '/icons/';
         $this->stroke = null;
         $this->fill = null;
+
         if (get_class($obj) == 'wbApp') {
             $this->app = &$obj;
             $this->mode = $this->app->vars('_route.mode');
@@ -28,6 +29,16 @@ class modMyicons
         } else {
             $this->app = &$obj->app;
             $this->dom = &$obj;
+
+            $attrs = $this->dom->attributes;
+            $this->attr = ' ';
+            if (gettype($attrs) == 'object' && $attrs->length) {
+                foreach ($attrs as $attr) {
+                    if (!in_array($attr->nodeName, ['stroke','fill','size'])) {
+                        $this->attr .= $attr->nodeName.'="'.$attr->nodeValue.'" ';
+                    }
+                }
+            }
             if ($this->dom->is('input')) {
                 $this->finder();
             } else {
@@ -73,15 +84,18 @@ class modMyicons
 
     public function getlist()
     {
-        $list = scandir($this->path, 0);
+        $list = glob($this->path.'/*.svg', 0);
         header("Content-type:application/json");
         $res = [];
+        $this->stroke = '#323232';
+        $this->fill = null;
+        $this->size = 50;
+        $this->attr = '';
         foreach($list as $file) {
-            $name = substr($file, 0, -4);
-            if (substr($file,-4) == '.svg' && strpos(' '.$name,$this->app->vars('_req.find'))) {
-                $svg = $this->app->fromString('<html><svg class="mi mi-'.$name.' " size="50" wb-module="myicons"></svg></html>');
-                $svg->fetch();
-                $res[$name] = ['svg'=>$svg->html()];
+            $this->icon = basename($file);
+            $name = substr($this->icon, 0, -4);
+            if (strpos(' '.$name,$this->app->vars('_req.find'))) {
+                $res[$name] = ['svg'=>$this->icon()];
             }
         }
         echo json_encode($res);
@@ -89,30 +103,19 @@ class modMyicons
     }
 
 
-public function icon1() {
-        $app = &$this->app;
-        $params = $this->dom->params;
-        isset($this->icon) ? $icon = $this->icon : $icon = $this->name();
-        $file = $this->path.$icon;
-        substr($this->stroke, 0, 1) !== '#' ? $this->stroke = '#'.$this->stroke : null;
-        substr($this->fill, 0, 1) !== '#' ? $this->fill = '#'.$this->fill : null;
-        if (!is_file($file)) {
-            return false;
-        }
-        $id = wbNewId();
-        $start = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="'.$id.'" width="'.$this->size.'" height="'.$this->size.'" viewBox="0 0 24 24" xml:space="preserve">';
-
-        $sprite = file_get_contents($file);
-        $sprite = $start.substr(mb_strpos('>', $sprite),$sprite);
-        echo $sprite; exit;
-        if (!$sprite) {
-            return false;
-        }
-        echo $sprite;
-
+function tagInner($content, $tagname)
+{
+    $pattern = "#<\s*?$tagname\b[^>]*>(.*?)</$tagname\b[^>]*>#s";
+    preg_match($pattern, $content, $matches);
+    if (empty($matches)) {
+        return;
+    }
+    $str = html_entity_decode($matches[1]);
+    return $str;
 }
 
-    public function icon()
+
+    public function icon1()
     {
         $app = &$this->app;
         $params = $this->dom->params;
@@ -127,10 +130,7 @@ public function icon1() {
         if (!$sprite) {
             return false;
         }
-        $path = $sprite->find('[d]');
-        foreach($path as $d) {
-            substr($d->attr('d'), 0, 3)== 'M0,' ? $d->remove() : null;
-        }
+
         
         if ($this->size) {
             $sprite->attr('width', $this->size);
@@ -154,6 +154,31 @@ public function icon1() {
 
         return $sprite->outer();
     }
+
+public function icon() {
+        isset($this->icon) ? $icon = $this->icon : $icon = $this->name();
+        $file = $this->path.$icon;
+        substr($this->stroke, 0, 1) !== '#' ? $this->stroke = '#'.$this->stroke : null;
+        substr($this->fill, 0, 1) !== '#' ? $this->fill = '#'.$this->fill : null;
+        if (!is_file($file)) {
+            return false;
+        }
+        $id = wbNewId();
+        $start = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="'.$id.'" width="'.$this->size.'" height="'.$this->size.'" viewBox="0 0 24 24" xml:space="preserve" style="width:'.$this->size.'px;height:'.$this->size.'px;" '.$this->attr.'>';
+        $sprite = file_get_contents($file);
+        if (!$sprite) {
+            return false;
+        }
+        $stroke = $this->stroke == '#' ? '#323232' : $this->stroke;
+        $fill = $this->fill == '#' ? 'none' : $this->fill;
+
+        $sprite = str_replace('#323232', $stroke, $sprite);
+        $sprite = str_replace('.st', "#{$id} .st", $sprite);
+        $fill = '<path d="M0,0h24v24H0V0z" fill="'.$fill.'"></path>';
+        $sprite = $start.$fill.$this->tagInner($sprite, 'svg').'</svg>';
+        return $sprite;
+
+}
 
     public function name()
     {
