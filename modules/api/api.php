@@ -388,7 +388,7 @@ class modApi
             &field<<=val         - field < 'val'
             &field~=val          - field like 'val' (RegExp(val, "i"))
 
-            "{'active':'on','$in': ['some_value','$students'] }" - работает в запросах ($students - это имя поля-массива, в котором ищем значение)
+            "{'active':'on','$in': ['some_value','$students'] }" - работает в запросах ($students - это имя поля-массива |$-указатель на поле|, в котором ищем значение)
 
         options:
             &@return=id,name     - return selected fields only

@@ -1813,7 +1813,6 @@ function wbItemFilter($item, $options, $field = null)
                         } else {
                             $result = false;
                         }
-                        print_r([$result, $val, $arr]);
                     }
                 }
             } else if (in_array($fld,['$gte','$lte','$gt','$lt','='])) {
