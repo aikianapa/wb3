@@ -1800,12 +1800,21 @@ function wbItemFilter($item, $options, $field = null)
                     }
                 }
             } else if ($fld == '$in') {
-                $val = $expr[0];
-                $arr = $expr[1];
-                if (substr($arr,0,1) == '$') {
-                    $arr = $fields->get(substr($arr,1));
-                    (array)$arr === $arr ? null : $arr = json_decode($arr,true);
-                    if (in_array($val,$arr)) {$result;} else {$result = false;}
+                $result = true;
+                foreach ($expr as $field => $inFilter) {
+                    $val = $inFilter[0];
+                    $arr = $inFilter[1];
+                    if (substr($arr, 0, 2) == '"$' && substr($arr, -1) == '"') {
+                        $arr = $fields->get(substr($arr, 2, -1));
+                        (array)$arr === $arr ? null : $arr = json_decode($arr, true);
+                        substr($val, 0, 1) == '"' && substr($val, -1) == '"' ? $val = substr($val, 1, -1) : null;
+                        if (in_array($val, $arr)) {
+                            $result;
+                        } else {
+                            $result = false;
+                        }
+                        print_r([$result, $val, $arr]);
+                    }
                 }
             } else if (in_array($fld,['$gte','$lte','$gt','$lt','='])) {
                     $field == null ? $fldname = array_key_first($expr) : $fldname = $field;
