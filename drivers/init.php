@@ -254,7 +254,7 @@ function wbListTables($engine = false) {
 function wbTableList($engine = false)
 {
     $app = &$_ENV['app'];
-    $list = glob($_ENV['path_app'].'/database.*.json');
+    $list = glob($_ENV['path_app'].'/database/*.json');
     $res = [];
     foreach($list as $file) {
         $res[] = basename($file);
