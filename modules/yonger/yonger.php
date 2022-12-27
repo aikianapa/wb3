@@ -70,11 +70,11 @@ class modYonger
         if (!$count) {
             return '';
         }
-        $dot = $this->app->dot();
         foreach ($level as $item) {
             in_array($item['url'], ['/', '']) ? $url = '/'.$item['name'] : $url = $item['path'].'/'.$item['name'];
             if (isset($item['blocks']) && (array)$item['blocks'] === $item['blocks']) {
                 foreach ($item['blocks'] as $block) {
+                    $dot = $this->app->dot();
                     $dot->set($block);
                     if ($dot->get('name') == 'seo' && $dot->get('active') == 'on' && $dot->get('alturl') > '') {
                         $item['url'] = $url = $block['alturl'];
@@ -105,11 +105,15 @@ class modYonger
         $class = $this->app->formClass($table);
         $level = $this->app->itemList($table, $options);
         $level = $level['list'];
-        $dot = $this->app->dot();
         foreach ($level as $key => $item) {
             method_exists($class, 'beforeItemShow') ? $class->beforeItemShow($item) : null;
             isset($item['name']) ? null : $item['name'] = null;
             isset($item['header']) ? null : $item['header'] = $item['name'];
+            if ((array)$item['header'] === $item['header'] && isset($item['header']['ru'])) {
+                $item['header'] = $item['header']['ru'];
+            } else if ((array)$item['header'] === $item['header']) {
+                $item['header'] = array_shift($item['header']);
+            }
             $item['_form'] = $table;
             if ($item['header']) {
                 $item['path'] = $path;
@@ -117,8 +121,9 @@ class modYonger
                 $item['url'] = $item['path'] . '/' . $item['name'];
                 if (isset($item['blocks']) && (array)$item['blocks'] === $item['blocks']) {
                     foreach ($item['blocks'] as $block) {
+                        $dot = $this->app->dot();
                         $dot->set($block);
-                        if ($dot->get('name') == 'seo' && $dot->get('active') == 'on' && $dot->get('alturl') > '') {
+                        if ($dot->get('name') == 'seo' && $dot->get('active') == 'on' && trim($dot->get('alturl')) > ' ') {
                             $item['url'] = $block['alturl'];
                         }
                     }

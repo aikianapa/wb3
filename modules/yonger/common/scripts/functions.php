@@ -67,7 +67,6 @@
                     $app->vars('_route', $app->objToArray($app->route));
                     $route = $app->route;
                     return $route;
-                    break;
                 }
             }
         }
@@ -226,7 +225,6 @@
         $app = $_ENV['app'];
         $item == null ? $item = $_ENV['_context'] : null;
         $item = (array)$item;
-        $dot = $app->dot();
         isset($item['name']) ? null : $item['name'] = null;
         isset($item['header']) ? null : $item['header'] = $item['name'];
         $base = @wbFurlGenerate($item[$fld]);
@@ -237,6 +235,7 @@
         }
         if (isset($item['blocks']) && (array)$item['blocks'] === $item['blocks']) {
             foreach ($item['blocks'] as $block) {
+                $dot = $app->dot();
                 $dot->set($block);
                 if ($dot->get('name') == 'seo' && $dot->get('active') == 'on' && $dot->get('alturl') > '') {
                     $url = $block['alturl'];
