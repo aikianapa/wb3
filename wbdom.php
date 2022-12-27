@@ -419,7 +419,7 @@ class wbDom extends DomQuery
                 if ($atname == "wb" or substr($atname, 0, 3) == "wb-") {
                     $name = $atname;
                     $name !== "wb" ? $name = substr($atname, 3) : null;
-                    if (in_array($name, ['if','where','change','ajax','save','off'])) {
+                    if (in_array($name, ['if','where','change','ajax','save','off','api'])) {
                         $prms = [$name => $atval];
                         $this->atrs->$name = $atval;
                     } else {

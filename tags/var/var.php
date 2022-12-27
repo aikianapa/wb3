@@ -16,6 +16,9 @@ class tagVar
         }
         $attrs = $dom->attributes();
         $name = '';
+        if (isset($dom->params->api)) {
+            $api = wbAuthGetContents($dom->app->route->host.$dom->params->api);
+        } 
         foreach ($attrs as $atname => $atval) {
             $wb = substr($atname, 0, 3);
             if (!in_array($wb, ["wb","wb-"]) && $atname !== 'else') {
@@ -23,7 +26,6 @@ class tagVar
                 if (!(strpos($atval, ">") and strpos(" ".$atval, "<"))) {
                     $atval = wbAttrToValue($atval);
                 }
-
                 if (isset($dom->params->if) && $dom->params->if !== true) {
                     if (isset($attrs['else'])) {
                         $atval = $attrs['else'];
@@ -33,6 +35,7 @@ class tagVar
                         $atval = null;
                     }
                 }
+                isset($api) ? $atval=$api : null;
                 $dom->app->isJson($atval) ? $atval=json_decode($atval,true) : null;
                 $dom->app->vars("_var.{$atname}", $atval);
                 $parent->variables[$atname] = $atval;
