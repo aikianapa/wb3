@@ -80,10 +80,9 @@
                 $(ev.node).parent('[data-item]').removeClass('dd-collapsed')
                 wbapp.data('yonger.pagelist.exp_' + data.form + '_' + data.item, true)
                 if (data.inner !== "pages") {
-                    options = "?&@size=200&@return=id,_id,_form,header,name,url"
+                    options = "?&@size=200&@return=id,_id,_form,header,name,url,blocks"
                     let post = {}
                     if (data.filter > '') {
-                        console.log(typeof data.filter);
                         if (typeof data.filter == 'object') {
                             post = {
                                 filter: data.filter
@@ -97,6 +96,8 @@
                             item.ch = []
                             item.url = data.path + '/' + wbapp.furl(item.header)
                             item.menu = ''
+                            yongerPages.alturl(item)
+                            console.log(item.url);
                             ev.push('ch', item);
                         })
                     })
@@ -177,6 +178,7 @@
                 let nested = function(list, path) {
                     let ch = []
                     $.each(list, function(i, item) {
+                        yongerPages.alturl(item);
                         if (item !== undefined && item.path == path) {
                             if (wbapp.data('yonger.pagelist.exp_' + item._form + '_' + item.id) !==
                                 true) {
@@ -198,7 +200,7 @@
                     return ch
                 }
                 wbapp.post(
-                    '/api/v2/list/pages?&id!=[_header,_footer]&@sort=_sort&@return=_id,_form,id,name,header,url,path,active,menu,attach,attach_filter', {},
+                    '/api/v2/list/pages?&id!=[_header,_footer]&@sort=_sort&@return=_id,_form,id,name,header,url,path,active,menu,attach,attach_filter,blocks', {},
                     function(res) {
                         let root = []
                         $.each(res, function(i, item) {
@@ -281,6 +283,16 @@
                     }
                 })
             }
+        },
+        alturl(item) {
+            if (item.blocks !== undefined) {
+                $.each(item.blocks,function(i,block){
+                    if (block.name == 'seo' && block.alturl !== undefined && block.alturl > '') {
+                        item.url = block.alturl
+                    }
+                })
+            }
+            delete item.blocks
         }
     })
 </script>

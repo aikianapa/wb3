@@ -70,12 +70,14 @@ class modYonger
         if (!$count) {
             return '';
         }
+        $dot = $this->app->dot();
         foreach ($level as $item) {
             in_array($item['url'], ['/', '']) ? $url = '/'.$item['name'] : $url = $item['path'].'/'.$item['name'];
             if (isset($item['blocks']) && (array)$item['blocks'] === $item['blocks']) {
                 foreach ($item['blocks'] as $block) {
-                    if (isset($block['name']) && isset($block['active']) && $block['active'] == 'on' && $block['name'] == 'seo') {
-                        isset($block['alturl']) && $block['alturl'] > ' ' ? $url = $block['alturl'] : null;
+                    $dot->set($block);
+                    if ($dot->get('name') == 'seo' && $dot->get('active') == 'on' && $dot->get('alturl') > '') {
+                        $item['url'] = $url = $block['alturl'];
                     }
                 }
             }
@@ -97,16 +99,15 @@ class modYonger
             $filter = json_decode($filter, true);
         }
         $options = [
-            'return' => 'id,name,_form,header,active,tags',
+            'return' => 'id,name,_form,header,active,tags,blocks',
             'filter' => $filter
         ];
         $class = $this->app->formClass($table);
         $level = $this->app->itemList($table, $options);
         $level = $level['list'];
+        $dot = $this->app->dot();
         foreach ($level as $key => $item) {
-            if (method_exists($class, 'beforeItemShow')) {
-                $class->beforeItemShow($item);
-            }
+            method_exists($class, 'beforeItemShow') ? $class->beforeItemShow($item) : null;
             isset($item['name']) ? null : $item['name'] = null;
             isset($item['header']) ? null : $item['header'] = $item['name'];
             $item['_form'] = $table;
@@ -114,6 +115,14 @@ class modYonger
                 $item['path'] = $path;
                 $item['name'] = wbFurlGenerate($item['header']);
                 $item['url'] = $item['path'] . '/' . $item['name'];
+                if (isset($item['blocks']) && (array)$item['blocks'] === $item['blocks']) {
+                    foreach ($item['blocks'] as $block) {
+                        $dot->set($block);
+                        if ($dot->get('name') == 'seo' && $dot->get('active') == 'on' && $dot->get('alturl') > '') {
+                            $item['url'] = $block['alturl'];
+                        }
+                    }
+                }
                 $level[$key] = $item;
                 $md5 = md5($item['url']);
                 if (!isset($this->map[$md5])) {

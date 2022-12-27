@@ -58,15 +58,6 @@ class pagesClass extends cmsFormsClass
         $item['url'] == '/home' ? $item['url'] = '/' : null;
         $item['url'] = $item['path'] . '/' . $item['name'];
         $item['name'] == 'home' ? $item['_sort'] = 0 : null;
-        if (isset($item['blocks']) && (array)$item['blocks'] === $item['blocks']) {
-            // custom url in seo block
-            foreach ($item['blocks'] as $block) {
-                if (isset($block['name']) && isset($block['active']) && $block['active'] == 'on' && $block['name'] == 'seo') {
-                    isset($block['alturl']) && $block['alturl'] > ' ' ? $item['url'] = $block['alturl'] : null;
-                }
-            }
-        }
-
         $this->app->vars('_route.action') == 'list' ? $this->beforeItemShow($item) : null;
 
     }

@@ -29,10 +29,9 @@
                     }
                 }
             }
-            return $app->route;
         }
 
-        if ($app->vars('_route.controller') == 'form' && $app->vars('_route.mode') == 'show') {
+        if ($app->vars('_route.controller') == 'form' && $app->vars('_route.table') == 'pages' && $app->vars('_route.mode') == 'show') {
             $name = '';
             if (isset($app->route->name)) {
                $name=  $app->route->name;
