@@ -43,7 +43,7 @@ class WEProcessor {
           '_item' => &$_ENV['route']['item'],
           '_param'=> &$_ENV['route']['param'],
           '_locale'=> &$_ENV['locale'],
-		  '_context' => &$context
+		  '_context' => &$this->context
 	];
 		$this->vars->setReference($vars);
 	}
@@ -96,42 +96,42 @@ class WEProcessor {
 			$res = $this->context[$v];
 		} else {
 			switch (strtoupper($v)) {
-				case '_SETT': 		$res = $_ENV["settings"]; break;
-				case '_SETTINGS': 	$res = $_ENV["settings"]; break;
-				case '_SESS': 		$res = $_SESSION; break;
-				case '_SESSION': 	$res = $_SESSION; break;
-				case '_USER': 		$res = $_SESSION['user']; break;
-				case '_VAR': 		$res = $_ENV["variables"]; break;
-				case '_SRV':		$res = $_SERVER; break;
-				case '_SERVER':		$res = $_SERVER; break;
-				case '_COOK':		$res = $_COOKIE; break;
-				case '_COOKIE':		$res = $_COOKIE; break;
+				case '_SETT': 		$res = &$_ENV["settings"]; break;
+				case '_SETTINGS': 	$res = &$_ENV["settings"]; break;
+				case '_SESS': 		$res = &$_SESSION; break;
+				case '_SESSION': 	$res = &$_SESSION; break;
+				case '_USER': 		$res = &$_SESSION['user']; break;
+				case '_VAR': 		$res = &$_ENV["variables"]; break;
+				case '_SRV':		$res = &$_SERVER; break;
+				case '_SERVER':		$res = &$_SERVER; break;
+				case '_COOK':		$res = &$_COOKIE; break;
+				case '_COOKIE':		$res = &$_COOKIE; break;
 				case '_LANG': {
-					if (isset($_ENV['lang'])) $res = $_ENV["lang"];
+					if (isset($_ENV['lang'])) $res = &$_ENV["lang"];
 					else $res = 'en';
 					$ctx = $this->context;
 					if ((array)$ctx === $ctx AND isset($ctx["_global"]) AND $ctx["_global"]==false ) {
-						$res = $ctx[$res];
+						$res = &$ctx[$res];
 					} else {
 						if ((array)$_ENV["locale"] === $_ENV["locale"] AND isset($_ENV["locale"][$res])) {
-							$res = $_ENV["locale"][$res];
+							$res = &$_ENV["locale"][$res];
 						}
 					}
                     $_ENV['locale'] = (array)$_ENV['locale'];
 					if (!in_array($res,$_ENV['locale'])) {$res = array_shift($_ENV['locale']);}
 					break;
 				}
-				case '_ENV':		$res = $_ENV;  break;
-				case '_REQ':		$res = $_REQUEST; break;
-				case '_REQUEST':	$res = $_REQUEST; break;
-				case '_ROUTE':		$res = $_ENV["route"]; break;
-				case '_GET': 		$res = $_GET; break;
-				case '_POST':		$res = $_POST; break;
-				case '_CURRENT':	$res = $this->context; break;
-				case '_MODE': 		$res = $_ENV["route"]["mode"]; break;
-				case '_FORM': 		$res = $_ENV["route"]["form"]; break;
-				case '_ITEM': 		$res = $_ENV["route"]["item"]; break;
-				case '_PARAM': 		$res = $_ENV["route"]["param"]; break;
+				case '_ENV':		$res = &$_ENV;  break;
+				case '_REQ':		$res = &$_REQUEST; break;
+				case '_REQUEST':	$res = &$_REQUEST; break;
+				case '_ROUTE':		$res = &$_ENV["route"]; break;
+				case '_GET': 		$res = &$_GET; break;
+				case '_POST':		$res = &$_POST; break;
+				case '_CURRENT':	$res = &$this->context; break;
+				case '_MODE': 		$res = &$_ENV["route"]["mode"]; break;
+				case '_FORM': 		$res = &$_ENV["route"]["form"]; break;
+				case '_ITEM': 		$res = &$_ENV["route"]["item"]; break;
+				case '_PARAM': 		$res = &$_ENV["route"]["param"]; break;
 				default: {
 					$this->evalFail("UNKNOWN VARIABLE: '".json_encode($v)."'");
 					$res = null;
@@ -145,6 +145,7 @@ class WEProcessor {
 
 	public function call_fn($name, $args) {
 		//if ($this->failedEval) return null;
+		$_ENV['_context'] = &$this->context;
 		if ($this->debug) print("##call_fn($name, '".json_encode($args)."') -> ");
 		$res = null;
 		$exclude=explode(",","exec,system,passthru,readfile,shell_exec,escapeshellarg,escapeshellcmd,proc_close,proc_open,ini_alter,dl,popen,parse_ini_file,show_source,curl_exec,file_get_contents,file_put_contents,file,eval,chmod,chown");

@@ -221,4 +221,29 @@
         }
         return $res;
     }
+
+    function yongerFurl($item = null, $fld = 'header') {
+        $app = $_ENV['app'];
+        $item == null ? $item = $_ENV['_context'] : null;
+        $item = (array)$item;
+        $dot = $app->dot();
+        isset($item['name']) ? null : $item['name'] = null;
+        isset($item['header']) ? null : $item['header'] = $item['name'];
+        $base = @wbFurlGenerate($item[$fld]);
+        if ($item['_form'] == 'pages') {
+            $url = $item['path'] . '/' . $base;
+        } else {
+            $url = '/'.$item['_form'] . '/' . $base;
+        }
+        if (isset($item['blocks']) && (array)$item['blocks'] === $item['blocks']) {
+            foreach ($item['blocks'] as $block) {
+                $dot->set($block);
+                if ($dot->get('name') == 'seo' && $dot->get('active') == 'on' && $dot->get('alturl') > '') {
+                    $url = $block['alturl'];
+                    break;
+                }
+            }
+        }
+        return $url;
+    }
 ?>
