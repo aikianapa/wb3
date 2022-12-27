@@ -16,8 +16,8 @@ foreach(@$argv as $arg) {
     }
 }
 $headers = json_decode(base64_decode($headers),true);
-$_POST = $headers['post'];
-$_GET = $headers['get'];
-$_COOKIE = $headers['cook'];
+$_POST = isset($headers['post']) ? $headers['post'] : [];
+$_POST = isset($headers['get']) ? $headers['get'] : [];
+$_COOKIE = isset($headers['cook']) ? $headers['cook'] : [];
 wbAuthPostContents("{$scheme}://{$host}{$uri}", $_POST);
 ?>
