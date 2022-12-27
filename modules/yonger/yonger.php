@@ -431,35 +431,28 @@ class modYonger
     {
         $dom = &$this->dom;
         $app = &$dom->app;
-        $item = null;
-        $dom->params('view') == 'header' ? $item = $app->itemRead('pages', '_header') : null;
-        $dom->params('view') == 'footer' ? $item = $app->itemRead('pages', '_footer') : null;
-        if ($item === null && $dom->params('view') > '') {
-            $ypg = new yongerPage($this->dom);
-            $form = $ypg->blockfind($dom->params('view'));
-            $item = $dom->item;
+        $item = &$dom->item;
+        $view = $dom->params('view');
+        if (!in_array($view,['header','footer']) && $view > '') {
             if (!isset($item['blocks'])) {
+                $ypg = new yongerPage($this->dom);
+                $form = $ypg->blockfind($dom->params('view'));
                 $item['blocks'] = [];
                 $item['blocks'][0] = ['id'=>wbNewId(),'form'=>$form,'active'=>'on', 'name'=>$dom->params('view')];
-            } else {
-                foreach ($item['blocks'] as $key => $block) {
-                    if ($block['name'] !== $dom->params('view')) {
-                        unset($item['blocks'][$key]);
-                    }
-                }
-            }
-        } elseif ($item === null) {
-            $item = $dom->item;
+            } 
+        } else {
+            $dom->params('view') == 'header' ? $item = $app->itemRead('pages', '_header') : null;
+            $dom->params('view') == 'footer' ? $item = $app->itemRead('pages', '_footer') : null;
         }
         isset($item['blocks']) ? $blocks = (array)$item['blocks'] : $item['blocks'] = [];
         $blocks = (array)$item['blocks'];
         $html = $dom->parents(':root');
         $html->find('head')->length ? null : $html->prepend('<head></head>');
-        $html->find('body')->length ? null : $html->prepend('<body></body>');
+        $html->find('body')->length ? null : $html->append('<body></body>');
 
         $head = $html->find('head');
         $body = $html->find('body');
-        foreach ($blocks as $id => $block) {
+        foreach ($blocks as $block) {
             if ($block === (array)$block) {
                 isset($block['active']) ? null : $block['active'] = '';
                 //$dom->params('view') == 'header' ? $method = 'prepend' : $method = 'append';
