@@ -434,12 +434,10 @@ class modYonger
         $item = &$dom->item;
         $view = $dom->params('view');
         if (!in_array($view,['header','footer']) && $view > '') {
-            if (!isset($item['blocks'])) {
-                $ypg = new yongerPage($this->dom);
-                $form = $ypg->blockfind($dom->params('view'));
-                $item['blocks'] = [];
-                $item['blocks'][0] = ['id'=>wbNewId(),'form'=>$form,'active'=>'on', 'name'=>$dom->params('view')];
-            } 
+            $ypg = new yongerPage($this->dom);
+            $form = $ypg->blockfind($dom->params('view'));
+            $item['blocks'] = [];
+            $item['blocks'][0] = ['id'=>wbNewId(),'form'=>$form,'active'=>'on', 'name'=>$dom->params('view')];
         } else {
             $dom->params('view') == 'header' ? $item = $app->itemRead('pages', '_header') : null;
             $dom->params('view') == 'footer' ? $item = $app->itemRead('pages', '_footer') : null;
