@@ -1,10 +1,15 @@
 <?php
 $root = $_SERVER['DOCUMENT_ROOT'];
-$file = urldecode($_SERVER['REQUEST_URI']);
-$path = $root.$file;
 
-if (is_file($path)) {
-    
+if (isset($_SERVER['REQUEST_URI'])) {
+    $file = urldecode($_SERVER['REQUEST_URI']);
+    $path = $root.$file;
+} else {
+    $file = $path = null;
+}
+
+
+if ($path && is_file($path)) {
     // http://work2.loc/tpl/fonts/fontawesome-webfont.woff2?v=4.7.0.html
     $tmp = explode('?', $path); // обработка таких вот случаев
 

@@ -14,8 +14,9 @@ setTimeout(async function() {
         const parts = value.split(`; ${name}=`);
         if (parts.length === 2) return parts.pop().split(';').shift();
     }
-
-    wbapp.devmode = get_cookie('devmode');
+    let devmode = get_cookie('devmode')
+    devmode ? devmode = '' : null;
+    wbapp.devmode = devmode
     wbapp.evClick = 'tap click';
     wbapp.start();
 }, 5);
