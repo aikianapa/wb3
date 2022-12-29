@@ -74,56 +74,69 @@
 
     function yongerSiteMenu($path = '')
     {
+
         $app = &$_ENV['app'];
-        $list = $app->itemList('pages', ['sort' => '_sort','filter'=>[
-            'active'=>'on'
-            ,'menu'=>'on'
-            ,'path' => $path
-            ,'_site' => [
-                '$in'=> [null,'{{_sett.site}}']
-            ]
-        ]]);
-        $list = $list['list'];
-        foreach ($list as &$item) {
-            $header = $item['header'];
-            @$item = [
-                'id' => $item['id'],
-                'menu' => $item['menu'],
-                'menu_title' => $item['menu_title'],
-                'menu_icon' => $item['menu_icon'],
-                'header' => $header,
-                'name' => $item['name'],
-                'path' => $item['path'],
-                'children' => $item['children'],
-                'active' => $item['active'],
-                'attach' => $item['attach'],
-                'attach_filter' => $item['attach_filter']
-            ];
-            if ((array)$item['menu_title'] === $item['menu_title']) {
-                @$item['menu_title'] = isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] : $item['menu_title']['ru'];
-            }
-            $item['menu_title'] == '' ? $item['menu_title'] = $header : null;
+        $path == '' ? $list = null : $list = $app->vars('_env.cache.yonmenu');
+        if (!$list) {
+            $list = $app->itemList('pages', ['sort' => '_sort','filter'=>[
+                'active'=>'on'
+                ,'menu'=>'on'
+                ,'_site' => [
+                    '$in'=> [null,'{{_sett.site}}']
+                ]
+            ]])['list'];
+            $app->vars('_env.cache.yonmenu', $list);
+        }
 
-            if ((array)$item['menu_title'] === $item['menu_title']) {
-                @$item['menu_title'] = isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] : $item['menu_title']['ru'];
-            }
+        $checkpath = $path;
+        foreach ($list as $key => &$item) {
+            if ($item['path'] !== $checkpath) {
+                unset($list[$key]);
+            } else {
+                $header = $item['header'];
+                $item = [
+                    'id' => $item['id'],
+                    'menu' => $item['menu'],
+                    'menu_title' => $item['menu_title'],
+                    'menu_icon' => $item['menu_icon'],
+                    'header' => $header,
+                    'name' => $item['name'],
+                    'path' => $item['path'],
+                    'children' => $item['children'],
+                    'active' => $item['active'],
+                    'attach' => $item['attach'],
+                    'attach_filter' => $item['attach_filter']
+                ];
+                if ((array)$item['menu_title'] === $item['menu_title']) {
+                    $item['menu_title'] = isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] : $item['menu_title']['ru'];
+                }
+                $item['menu_title'] == '' ? $item['menu_title'] = $header : null;
 
-            if ((array)$item['header'] === $item['header']) {
-                @$item['header'] = isset($item['header'][$_SESSION['lang']]) ? $item['header'][$_SESSION['lang']] : $item['header']['ru'];
-            }
+                if ((array)$item['menu_title'] === $item['menu_title']) {
+                    $item['menu_title'] = isset($item['menu_title'][$_SESSION['lang']]) ? $item['menu_title'][$_SESSION['lang']] : $item['menu_title']['ru'];
+                }
 
-            $path = $item['path'];
-            $name = $item['name'];
-            $path.'/'.$name == '/' ? $path = '/home' : $path .= '/'.$name;
-            $item['children'] = yongerSiteMenu($path);
-            $path == '/home' ? $path =  '/' : null;
-            $item['path'] = $path;
-            if (count($item['children'])) {
-                $self = $item;
-                $self['divider'] = 'divider-after';
-                unset($self['children']);
-                array_unshift($item['children'], $self);
+                if ((array)$item['header'] === $item['header']) {
+                    $item['header'] = isset($item['header'][$_SESSION['lang']]) ? $item['header'][$_SESSION['lang']] : $item['header']['ru'];
+                }
+
+                $path = $item['path'];
+                $name = $item['name'];
+                $path.'/'.$name == '/' ? $path = '/home' : $path .= '/'.$name;
+                $item['children'] = yongerSiteMenu($path);
+                $path == '/home' ? $path =  '/' : null;
+                $item['path'] = $path;
+                if (count($item['children'])) {
+                    $self = $item;
+                    $self['divider'] = 'divider-after';
+                    unset($self['children']);
+                    array_unshift($item['children'], $self);
+                }
             }
+        }
+
+        if ($checkpath == '') {
+            unset($_ENV['cache']['yonmenu']);
         }
         return array_values($list);
     }
