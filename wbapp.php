@@ -151,8 +151,7 @@ class wbApp
         // отправка url запроса без ожидания ответа
         $url = $this->route->host.$uri;
         $cook = http_build_query($_COOKIE, '', '; ');
-        $srvip = exec("ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'");
-        $params = ['__token'=>$_SESSION["token"],'srvip'=>$srvip];
+        $params = ['__token'=>$_SESSION["token"]];
         foreach ($params as $key => &$val) {
             if (is_array($val)) {
                 $val = implode(',', $val);
