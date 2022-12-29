@@ -1,6 +1,6 @@
 <html>
 <view>
-    <meta wb="module=codemirror&height=auto&theme=lucario&readonly" name="code" >
+    <meta wb="module=codemirror&height=auto&theme=lucario&readonly" name="code">
 </view>
 <edit header="Пример кода">
     <div>

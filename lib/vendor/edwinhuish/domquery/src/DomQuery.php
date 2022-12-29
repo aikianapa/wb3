@@ -1109,7 +1109,8 @@ class DomQuery extends DomQueryNodes
     {
         $this->importNodes(\func_get_args(), function ($node, $imported_node) {
             /* @var \DOMNode $node */
-            $node->insertBefore($imported_node, $node->childNodes->item(0));
+            $child = $node->childNodes;
+            if ($child) $node->insertBefore($imported_node, $node->childNodes->item(0));
         });
 
         return $this;

@@ -130,7 +130,6 @@
             </div>
         </div>
     </div>
-</div>
 <script wb-app remove>
 yonger.pageEditor = function() {
     let $form = $('#{{_form}}EditForm');
@@ -174,6 +173,8 @@ yonger.pageEditor = function() {
 
 yonger.pageEditor();
 </script>
+</div>
+
 <wb-lang>
     [ru]
     header = Редактирование страницы

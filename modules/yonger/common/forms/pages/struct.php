@@ -111,13 +111,10 @@ var ypbrBlocks = new Ractive({
         blocks: []
     },
     on: {
-        complete() {
-            let blocks = []
-            let that = this
-            this.storage = $(ypbrBlocks.target).children('.yonger-nested').children('textarea[name=blocks]')
-            this.current = null
+        init() {
+            this.storage = $(this.el).children('.yonger-nested').children('textarea[name=blocks]').html();
             try {
-                blocks = json_decode(this.storage.html(), true)
+                blocks = json_decode(this.storage, true)
             } catch (error) {
                 null
             }
@@ -126,6 +123,12 @@ var ypbrBlocks = new Ractive({
                 data.push(blk)
             })
             this.set('blocks', data)
+        },
+        complete() {
+            let blocks = []
+            let that = this
+            this.storage = $(ypbrBlocks.target).children('.yonger-nested').children('textarea[name=blocks]')
+            this.current = null
             $('#{{_var.ypb}} .dd-list').sortable({
                 update: function(ev, line) {
                     let html = $('#{{_var.ypb}} .dd-list').outer()
