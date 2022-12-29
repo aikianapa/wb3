@@ -43,9 +43,11 @@ class tagStyles
         foreach ($arr as $i => $src) {
             $this->info = (object)pathinfo($src);
             $ext = strtolower($this->info->extension);
-            in_array($ext, ['less','scss']) ? $src = $this->app->route->host.$src : null;
-            $local = stream_is_local($src);
-            if ($local) {
+            $opts = [];
+            if (stream_is_local($src) && in_array($ext, ['less','scss'])) {
+                $src = $this->app->route->host.$src;
+            }
+            if (stream_is_local($src)) {
                 $styles->addFile($this->home.$src);
             } else {
                 $src = wbAuthGetContents($src);
@@ -53,6 +55,6 @@ class tagStyles
             }
         }
         $styles->minify($this->file);
-        $this->dom->after('<link rel="stylesheet" href="'.$this->src.'">'.PHP_EOL);
+        $this->dom->after('<script type="wbapp" remove >wbapp.loadStyles(["'.$this->src.'"])</script>'.PHP_EOL);
     }
 }
