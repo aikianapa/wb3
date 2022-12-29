@@ -113,12 +113,14 @@ var ypbrBlocks = new Ractive({
     on: {
         init() {
             this.storage = $(this.el).children('.yonger-nested').children('textarea[name=blocks]').html();
+            let data = []
+            let blocks = []
             try {
                 blocks = json_decode(this.storage, true)
             } catch (error) {
                 null
             }
-            let data = []
+            
             $.each(blocks, function(j, blk) {
                 data.push(blk)
             })
