@@ -39,7 +39,6 @@ class modYonger
         if (method_exists($this, $mode)) {
             $res = $this->$mode();
             echo $res;
-            exit;
         } elseif (!wbCheckBacktrace("wbModuleClass")) {
             $form = $app->controller('form');
             echo $form->get404();
