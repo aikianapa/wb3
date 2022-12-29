@@ -595,7 +595,7 @@ class wbDom extends DomQuery
         isset($this->item['header']) ? $header = $this->item['header'] : $header = $this->app->vars('_sett.header');
         // для блока Yonger - seo
         foreach ((array)$data->get('blocks') as $block) {
-            if ($block['name'] == 'seo' && $block['active'] == 'on') {
+            if ($block === (array)$block && $block['name'] == 'seo' && $block['active'] == 'on') {
                 $lang = $block['lang'][$_SESSION['lang']];
                 $header = $lang['title'] > '' ? $lang['title'] : $header;
                 $keywords = $lang['keywords'] > '' ? $lang['keywords'] : $keywords;
