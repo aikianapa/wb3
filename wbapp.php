@@ -132,7 +132,7 @@ class wbApp
                 // Делаем асинхронный запрос с обновлением кэша
                 header("Cache-Control: no-cache, no-store, must-revalidate");
                 header("Pragma: no-cache");
-                $this->shadow($this->route->uri);
+                //$this->shadow($this->route->uri);
                 return null;
             } else {
                 header("Cache-control: public");
@@ -151,7 +151,8 @@ class wbApp
         // отправка url запроса без ожидания ответа
         $url = $this->route->host.$uri;
         $cook = http_build_query($_COOKIE, '', '; ');
-        $params = ['__token'=>$_SESSION["token"]];
+        $srvip = exec("ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'");
+        $params = ['__token'=>$_SESSION["token"],'srvip'=>$srvip];
         foreach ($params as $key => &$val) {
             if (is_array($val)) {
                 $val = implode(',', $val);
