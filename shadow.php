@@ -15,13 +15,13 @@ foreach(@$argv as $arg) {
         $$fld = $val;
     }
 }
-
-if (!isset($__token) OR strlen($__token) < 10) {
+if (!isset($argv)) {
+    header("HTTP/1.0 404 Not Found");
     exit;
 }
 $headers = json_decode(base64_decode($headers),true);
 $_POST = isset($headers['post']) ? $headers['post'] : [];
-$_POST = isset($headers['get']) ? $headers['get'] : [];
+$_GET = isset($headers['get']) ? $headers['get'] : [];
 $_COOKIE = isset($headers['cook']) ? $headers['cook'] : [];
 wbAuthPostContents("{$scheme}://{$host}{$uri}", $_POST);
 ?>
