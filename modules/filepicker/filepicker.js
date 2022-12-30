@@ -26,7 +26,8 @@ $(document).on("filepicker-js", async function() {
 
         wbapp.on("filepicker-init", function() {
             var selector = ".filepicker";
-            var uploader = "/engine/modules/filepicker/uploader/index.php";
+            var uploader = "/engine/wbuploader.php";
+            //var uploader = "/engine/modules/filepicker/uploader/index.php";
             var size = 200;
             $(document).find(selector).each(async function() {
                 if (this.done !== undefined) return;

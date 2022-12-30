@@ -345,6 +345,7 @@ wbapp.start = async function() {
 
     setTimeout(function() {
         let load = [];
+        if (typeof Vue == 'undefined') load.push("/engine/js/vue.min.js");
         if (typeof topbar == 'undefined') load.push("/engine/js/topbar.min.js");
         if (typeof jQuery.ui == 'undefined') load.push("/engine/js/jquery-ui.min.js");
         if (typeof Ractive == 'undefined') load.push(`/engine/js/ractive.js`);
