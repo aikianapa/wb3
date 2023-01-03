@@ -1,6 +1,9 @@
 <?php
 class ctrlForm
 {
+    public $app;
+    public $target;
+
     public function __construct($app)
     {
         $this->app = $app;
@@ -61,7 +64,7 @@ class ctrlForm
                 isset($app->route->table) ? $table = $app->route->table : null;
                 $item = $app->itemRead($table, $app->route->item);
                 if ($item && !isset($item['active']) OR $item['active'] == 'on') {
-                    $item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], $item);
+                    $item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], $item);                    
                     if ((!isset($item['template']) OR $item['template'] == '') AND $app->vars('_route.tpl') > '') {
                         $dom = $app->getTpl($app->vars('_route.tpl'));
                     } elseif (isset($item['template']) and $item['template'] > '') {

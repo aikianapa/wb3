@@ -5,6 +5,12 @@ use Nahid\JsonQ\Jsonq;
 class pagesClass extends cmsFormsClass
 {
 
+    public $app;
+    public $tables;
+    public $list;
+    public $count;
+    public $tpl;
+
     function beforeItemShow(&$item)
     {
         $item = (array)$item;

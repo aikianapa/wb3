@@ -1410,7 +1410,8 @@ function wbFurlGenerate($str)
 {
     $str = mb_strtolower(wbTranslit($str));
     $str = mb_ereg_replace('[^A-Za-z0-9 ]', ' ', $str);
-    $str = str_replace([' '], '-', trim($str));
+    $str = str_replace([' ','/'], ['-','-'], trim($str));
+    $str = str_replace('__', '_', trim($str));
     $str = str_replace('--', '-', trim($str));
     $str = str_replace('--', '-', trim($str));
 

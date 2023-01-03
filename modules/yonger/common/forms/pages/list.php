@@ -80,7 +80,7 @@
                 $(ev.node).parent('[data-item]').removeClass('dd-collapsed')
                 wbapp.data('yonger.pagelist.exp_' + data.form + '_' + data.item, true)
                 if (data.inner !== "pages") {
-                    options = "?&@size=200&@return=id,_id,_form,header,name,url,blocks"
+                    options = "?&@size=200&@return=id,_id,_form,header,name,url,blocks,active"
                     let post = {}
                     if (data.filter > '') {
                         if (typeof data.filter == 'object') {

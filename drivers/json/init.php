@@ -5,6 +5,9 @@ use Nahid\JsonQ\Jsonq;
 
 class jsonDrv
 {
+    public $app;
+    public $driver;
+
     public function __construct(&$app)
     {
         $this->app = &$app;

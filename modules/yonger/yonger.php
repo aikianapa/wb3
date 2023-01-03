@@ -8,6 +8,10 @@ class modYonger
     private $app;
     private $dom;
     private $type;
+    private $tables;
+    private $count;
+    private $map;
+    private $list;
 
     public function __construct($obj)
     {

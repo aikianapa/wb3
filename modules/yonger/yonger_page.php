@@ -1,5 +1,7 @@
 <?php
 class yongerPage {
+    public $app;
+    public $dom;
 
     public function __construct($dom = null)
     {

@@ -2038,7 +2038,9 @@ wbapp.furl = function(str) {
     str = wbapp.transilt(str);
     str = str.replace("'", '');
     str = str.replace(/[^\/а-яА-Яa-zA-Z0-9_-]{1,}/gm, "-");
+    str = str.replace('/', "-");
     str = str.replace(/[__]{1,}/gm, "_");
+    str = str.replace(/[--]{1,}/gm, "-");
     str = str.replace(/[--]{1,}/gm, "-");
     if (str.substr(-1) == '-' || str.substr(-1) == '_') {
         str = str.substr(0, str.length - 1)

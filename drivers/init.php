@@ -257,7 +257,7 @@ function wbTableList($engine = false)
     $list = glob($_ENV['path_app'].'/database/*.json');
     $res = [];
     foreach($list as $file) {
-        $res[] = basename($file);
+        $res[] = substr(basename($file),0,-5);
     }
     return $res;
 }
