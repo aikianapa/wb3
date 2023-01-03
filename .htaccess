@@ -1,5 +1,6 @@
 DirectoryIndex index.php
 AddDefaultCharset UTF-8
+Options All -Indexes
 
 <IfModule mod_headers.c>
 <FilesMatch ".(webp|gif|jpg|jpeg|png|ico|svg|js|css|pdf)$">
@@ -20,5 +21,6 @@ RewriteRule ^database(.*)$ index.php [R=404,L]
 RewriteRule ^.git(.*)$ index.php [R=404,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
-
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [L,QSA]
+
