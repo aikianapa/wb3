@@ -1,6 +1,9 @@
 <?php
 class cmsFormsClass {
 
+    public $app;
+    public $form;
+
     function __construct($app) {
         $this->app = $app;
         $this->form = $app->vars("_route.form");

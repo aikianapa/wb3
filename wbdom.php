@@ -8,6 +8,22 @@ use Adbar\Dot;
 
 class wbDom extends DomQuery
 {
+    public $app;
+    public $root;
+    public $item;
+    public $head;
+    public $fetched;
+    public $strict;
+    public $role;
+    public $func;
+    public $funca;
+    public $atrs;
+    public $params;
+    public $disallow;
+    public $locale;
+    public $path;
+    public $parent;
+
     public function __call($name, $arguments)
     {
         if (method_exists($this->getFirstElmNode(), $name)) {
@@ -723,6 +739,10 @@ class wbDom extends DomQuery
 
 class wbRender extends WEProcessor
 {
+    public $vars;
+    public $inner;
+    public $item;
+
     public function __construct($dom)
     {
         $this->vars = new Dot();

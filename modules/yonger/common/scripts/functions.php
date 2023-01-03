@@ -216,6 +216,27 @@
         return $item;
     }
 
+    function yongerLinks(&$html) {
+        $app = $_ENV['app'];
+        $map = json_decode(file_get_contents($_ENV['dba'].'/_yonmap.json'), true);
+        $fr = $to = [];
+        foreach ($map as $m) {
+            if ($m['f'] == 'pages') {
+                $fr[] = urlencode('['.$m['n'].']');
+                $to[] = $m['u'];
+                $fr[] = '['.$m['n'].']';
+                $to[] = $m['u'];
+            } else {
+                $fr[] = urlencode('['.$m['f'].':'.$m['n'].']');
+                $to[] = $m['u'];
+                $fr[] = '['.$m['f'].':'.$m['n'].']';
+                $to[] = $m['u'];
+            }
+        }
+        $html = str_replace($fr, $to, $html);
+        return $html;
+    }
+
     function yongerCheckUrl($url, $form = 'pages', $id = null) {
         $res = false;
         $app = $_ENV['app'];

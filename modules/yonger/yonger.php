@@ -5,13 +5,14 @@ require_once __DIR__ . '/yonger_page.php';
 
 class modYonger
 {
-    private $app;
-    private $dom;
-    private $type;
-    private $tables;
-    private $count;
-    private $map;
-    private $list;
+    public $app;
+    public $dom;
+    public $type;
+    public $tables;
+    public $count;
+    public $map;
+    public $list;
+    public $file;
 
     public function __construct($obj)
     {
@@ -137,7 +138,7 @@ class modYonger
                 $level[$key] = $item;
                 $md5 = md5($item['url']);
                 if (!isset($this->map[$md5])) {
-                    $this->map[$md5] = ['f' => $item['_form'], 'i' => $item['id'], 'u' => $item['url']];
+                    $this->map[$md5] = ['f' => $item['_form'], 'i' => $item['id'], 'u' => $item['url'], 'n' => $item['name']];
                 }
             } else {
                 unset($level[$key]);

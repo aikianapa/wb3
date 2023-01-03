@@ -12,12 +12,18 @@ class wbApp
     public $settings;
     public $route;
     public $item;
+    public $dom;
     public $out;
     public $template;
     public $router;
     public $render;
     public $vars;
     public $lang;
+    public $dict;
+    public $data;
+    public $tpl;
+    public $user;
+    public $token;
 
     public function __construct($settings=[])
     {
@@ -57,6 +63,7 @@ class wbApp
     {
         $wbfunc='wb'.$func;
         $_ENV['app'] = &$this;
+        $res = null;
         if (method_exists($this, $func)) {
             $this->$func();
         } elseif (is_callable($wbfunc)) {

@@ -7,6 +7,9 @@ use Imagine\Image\Point;
 
 class ctrlThumbnails
 {
+    public $app;
+    public $browser;
+
     public function __construct($app)
     {
         $this->app = &$app;
