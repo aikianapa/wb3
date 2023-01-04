@@ -729,7 +729,8 @@ class wbApp
                              'Content-Type:' . " application/x-www-form-urlencoded\r\n" .
                              'Cookie: ' . $_SERVER['HTTP_COOKIE']."\r\n" .
                              'Connection: ' . " Close\r\n\r\n",
-                             'content' => http_build_query($_POST)
+                             'content' => http_build_query($_POST),
+                             'ignore_errors' => true
                      ),
                      "ssl"=>array(
                          "verify_peer"=>false,
@@ -737,8 +738,8 @@ class wbApp
                      )
                  ));
                 session_write_close();
-                $res=@file_get_contents($file, true, $context);
-                session_start();
+                $res=file_get_contents($file, true, $context);
+
             } else {
                 if (!is_file($file)) {
                     $file = str_replace($_ENV["path_app"], "", $file);

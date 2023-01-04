@@ -37,12 +37,15 @@
                     alt="{{alt}}" onload="$(this).removeAttr('loading onload')">
                 <figcaption>
                     <div class="btn-group">
-                        <a href="javascript:void(0)" class="btn btn-dark btn-icon action crop"><i
-                                class="fa fa-crop"></i></a>
+                        <a href="javascript:void(0)" class="btn btn-dark btn-icon action crop">
+                            <img src="/module/myicons/crop-square.svg?size=24&stroke=FFFFFF">
+                        </a>
                         <div class="dropdown dropup">
                             <button type="button" class="btn btn-dark btn-icon action info rounded-0"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
-                                    class="fa fa-info"></i></button>
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="/module/myicons/info-information.svg?size=24&stroke=FFFFFF">
+                            </button>
+
                             <div class="dropdown-menu">
                                 <form class="wd-250 pd-15">
                                     <div class="row">
@@ -63,8 +66,12 @@
                                 </form>
                             </div>
                         </div>
-                        <a href="javascript:void(0)" class="btn btn-dark btn-icon action delete"><i
-                                class="fa fa-trash-o text-danger"></i></a>
+                        <a href="{{&img}}" download class="btn btn-dark btn-icon">
+                            <img src="/module/myicons/image-picture-download.svg?size=24&stroke=FFFFFF">
+                        </a>
+                        <a href="javascript:void(0)" class="btn btn-dark btn-icon action delete">
+                            <img src="/module/myicons/trash-delete-bin-square.svg?size=24&stroke=dc3545">
+                        </a>
                     </div>
                 </figcaption>
             </figure>
@@ -75,41 +82,6 @@
             <figure class="pos-relative mg-b-0">
                 <img class="card-img-top rounded-10" width="{{width}}" height="{{height}}" data-src="" data-img='{{name}}' loading title="{{title}}"
                     alt="{{alt}}" onload="$(this).removeAttr('loading onload')">
-                <figcaption>
-                    <div class="btn-group">
-                        <a href="javascript:void(0)" class="btn btn-dark btn-icon pd-2 action crop">
-                            <img src="/module/myicons/crop-square.svg?size=24&stroke=FFFFFF">
-                        </a>
-                        <div class="dropdown dropup">
-                            <button type="button" class="btn btn-dark btn-icon pd-2 action info rounded-0"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="/module/myicons/info-information.svg?size=24&stroke=FFFFFF">
-                            </button>
-                            <div class="dropdown-menu">
-                                <form class="wd-250 pd-15">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <label>title</label>
-                                            <input class="form-control mg-b-2" data-title type="text"
-                                                placeholder="title">
-                                        </div>
-                                        <div class="col-12">
-                                            <label>alt</label>
-                                            <input class="form-control mg-b-2" data-alt type="text" placeholder="alt">
-                                        </div>
-                                        <div class="col-12">
-                                            <label>path</label>
-                                            <input class="form-control mg-b-2" value="{{img}}" type="text" placeholder="path" readonly>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <a href="javascript:void(0)" class="btn btn-dark btn-icon pd-2 action delete">
-                            <img src="/module/myicons/trash-delete-bin-square.svg?size=24&stroke=dc3545">
-                        </a>
-                    </div>
-                </figcaption>
             </figure>
         </div>
 

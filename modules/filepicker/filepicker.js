@@ -99,6 +99,7 @@ $(document).on("filepicker-js", async function() {
                         let file = explode("?", $(this).attr("data-src"));
                         file = file[0];
                         file = $(this).attr("data-src");
+                        filename = file.split('/').slice(-1);
                         let tmp = file;
                         if (tmp.split("/").length == 1) file = path + file;
                         let thumb = getthumb(file, update);

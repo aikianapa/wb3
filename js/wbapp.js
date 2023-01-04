@@ -278,7 +278,7 @@ wbapp.start = async function() {
                 let that = this;
                 reader.readAsDataURL(file);
                 reader.onload = function() {
-                    data[that.name] = reader.result; //base64encoded string
+                    data[that.name] = reader.result.toString(); //base64encoded string
                 };
             }
         });
