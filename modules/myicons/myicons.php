@@ -2,12 +2,23 @@
 
 class modMyicons
 {
+
+    public $app;
+    public $dom;
+    public $path = __DIR__ . '/icons/';
+    public $attr;
+    public $stroke;
+    public $fill;
+    public $size;
+    public $icon;
+    public $mode;
+
     public function __construct($obj)
     {
         $this->size = 24;
-        $this->path = __DIR__ . '/icons/';
         $this->stroke = null;
         $this->fill = null;
+        $this->attr = '';
 
         if (get_class($obj) == 'wbApp') {
             $this->app = &$obj;

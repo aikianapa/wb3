@@ -66,7 +66,7 @@
                                 </form>
                             </div>
                         </div>
-                        <a href="{{&img}}" download class="btn btn-dark btn-icon">
+                        <a href="{{img}}" download class="btn btn-dark btn-icon">
                             <img src="/module/myicons/image-picture-download.svg?size=24&stroke=FFFFFF">
                         </a>
                         <a href="javascript:void(0)" class="btn btn-dark btn-icon action delete">

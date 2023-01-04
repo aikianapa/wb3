@@ -710,7 +710,7 @@ class wbDom extends DomQuery
         }
         $unset = $this->find("template,textarea,code,pre,[wb-off]");
         foreach ($unset as $t) {
-            $t->inner(str_replace("{{", "_{_{_", $t->inner()));
+            $t->inner(str_replace(['{{','}}'], ['_(_(_','_)_)_'], $t->inner()));
         }
         if (strpos($this, "{{")) {
             $render = new wbRender($this);
@@ -723,7 +723,7 @@ class wbDom extends DomQuery
         }
         $unset = $this->find("template,textarea,code,pre,[wb-off]");
         foreach ($unset as $t) {
-            $t->inner(str_replace("_{_{_", "{{", $t->inner()));
+            $t->inner(str_replace(['_(_(_','_)_)_'], ['{{','}}'], $t->inner()));
         }
         $wbon = $this->find('[wb-on]');
         foreach ($wbon as $wb) {
