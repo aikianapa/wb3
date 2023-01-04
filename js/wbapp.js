@@ -39,9 +39,40 @@ wbapp.start = async function() {
     wbapp.session();
     wbapp.settings();
 
-    $(document).on('session_close', function() {
+    $.fn.submitForm = function() {
+        return this.submit(function(ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+            let form = this
+            let error = false;
+            let action = $(form).attr('action')
+            let method = $(form).attr('method').toUpperCase()
 
-    });
+            let data = new FormData(form);
+            data.pathname = document.location.pathname;
+
+
+            try {
+                fetch(action, { method: method, body: data })
+                    .then(function(response) {
+                        if (response.ok) {
+                            return response = response.json()
+                        } else {
+                            return { error: true }
+                        }
+                    })
+                    .then(function(data) {
+                        if (data.error) {
+                            $(form).trigger('wb-submit-fail', data);
+                        } else {
+                            $(form).trigger('wb-submit-success', data);
+                        }
+                    })
+            } catch (error) {
+                $(form).trigger('wb-submit-fail', [error]);
+            }
+        })
+    }
 
 
     $.fn.disableSelection = function() {

@@ -8,6 +8,9 @@ use Imagine\Image\Point;
 
 class wbuploader
 {
+    public $app;
+    public $root;
+    
     public function __construct()
     {
         $this->app = new wbApp();
