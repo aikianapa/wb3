@@ -45,7 +45,7 @@ class ctrlModule
     public function __call($mode, $params)
     {
         if (!is_callable(@$this->$mode)) {
-            $form = $app->controller('form');
+            $form = $this->app->controller('form');
             echo $form->get404();
             exit;
         }

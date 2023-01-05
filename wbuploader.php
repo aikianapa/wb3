@@ -36,10 +36,6 @@ class wbuploader
     public function upload()
     {
         header("Content-type:application/json");
-
-        if ($this->app->vars('_post.upload_url') == '_auto_') {
-            $this->app->vars('_post.upload_url', '/uploads/'.substr(md5($file), 0, 2));
-        } 
         $path = $_POST['upload_url'] ? str_replace('//', '/', $_POST['upload_url']) : '/uploads';
         $folderPath = str_replace('//', '/', "{$this->root}/{$path}");
         $imgext = ['gif','png','jpg','jpeg','webp'];
@@ -78,6 +74,10 @@ class wbuploader
             is_dir($folderPath) ? null : mkdir($folderPath, 0777, true);
             //File name
             $original = $_FILES["files"]["name"][0];
+            if ($this->app->vars('_post.upload_url') == '_auto_') {
+                $this->app->vars('_post.upload_url', '/uploads/'.substr(md5($original), 0, 2));
+            } 
+            $folderPath = str_replace('//', '/', "{$this->root}/{$path}");
             $filename = $original;
             if (isset($_POST['name']) && $_POST['name'] == 'original') {
                 $filename = $original;

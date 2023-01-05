@@ -23,7 +23,7 @@
                 <div class="content-body-header">
                     <div class="d-flex">
                         <nav class="nav navbar sticky-top col">
-                            <a class="navbar-brand tx-bold tx-spacing--2 order-1" href="javascript:">{{_lang.notes}}</a>
+                            <span class="navbar-brand tx-bold tx-spacing--2 order-1" href="javascript:">{{_lang.notes}}</span>
                             <button class="order-1 btn btn-success btn-sm pull-right btn-icon" id="newNote">
                                 <i class="fa fa-plus"></i> {{_lang.new}}
                             </button>

@@ -9,6 +9,17 @@ use Nahid\JsonQ\Jsonq;
 
 class tagForeach
 {
+    public $app;
+    public $dom;
+    public $tpl;
+    public $empty;
+    public $placeholder;
+    public $tid;
+    public $opt;
+    public $avg;
+    public $min;
+    public $max;
+
     public function __construct($dom)
     {
         if (!isset($dom->role)) {
@@ -163,7 +174,7 @@ class tagForeach
                     'html' => $dom->inner(),
                     'route' => $this->app->route,
                     'params' => $dom->params,
-                    'pag' => $pag->outer(),
+                    //'pag' => $pag->outer(),
                     'pos' => $pos
                 ];
                 header('Content-Type: charset=utf-8');

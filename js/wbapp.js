@@ -488,6 +488,7 @@ wbapp.lazyload = async function() {
         document.head.appendChild(link);
     });
     */
+    $("[data-src]:not([src])").attr('loading', 'lazy')
     $("[data-src]:not([src])").lazyload();
 }
 

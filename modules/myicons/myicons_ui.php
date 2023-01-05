@@ -27,7 +27,7 @@
         <div class="row list d-none scroll-y pb-5" style="height:calc(100vh - 70px);">
             {{#each list}}
             <div class='col-2 text-center' on-click="show">
-                {{{svg}}}
+                <div class="cursor-pointer">{{{svg}}}</div>
                 <br>
                 <span>{{@key}}</span>
             </div>
@@ -43,12 +43,21 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="row">
+                        <div class="col-auto">
+                            <img src="/module/myicons/150/555555/{{class}}.svg">
+                        </div>
+                        <div class="col">
                         <b>Имя:</b>
                         <p>{{class}}</p>
                         <b>SVG:</b>
                         <p>{{svg}}</p>
                         <b>IMG:</b>
                         <p>{{img}}</p>
+                            
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -56,9 +65,8 @@
     </div>
 </body>
 
-<script src="/engine/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script wb-app src="/engine/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script wb-app removed>
-
 var myicons = new Ractive({
     el: '#myIcons',
     template: $('#myIcons').html(),
@@ -77,7 +85,7 @@ var myicons = new Ractive({
         show(ev) {
             let mi = $(ev.node).children('span').text()
             myicons.set('title',mi)
-            myicons.set('class',mi)
+            myicons.set('class',mi.toLowerCase())
             myicons.set('svg',`<svg class="mi mi-${mi}" size="24" stroke="333333" wb-module="myicons"></svg>`)
             myicons.set('img',`<img src="/module/myicons/24/333333/${mi}.svg" width="24" height="24">`)
             $('#myIconsModal').modal('show');

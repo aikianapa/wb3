@@ -25,7 +25,7 @@
                             <span class="input-group-append">
                                 <button class="btn btn-success btn-sm btn-icon" type="button" id="taskCommentBtn"
                                     disabled>
-                                    <i class="ri-pencil-line"></i></button>
+                                    <i class="fa fa-pencil"></i></button>
                             </span>
 
                         </div>
@@ -37,7 +37,7 @@
                 <div class="content-body-header">
                     <div class="d-flex">
                         <nav class="nav navbar col">
-                            <a class="navbar-brand tx-bold tx-spacing--2 order-1" href="javascript:">{{_lang.tasks}}</a>
+                            <span class="navbar-brand tx-bold tx-spacing--2 order-1" href="javascript:">{{_lang.tasks}}</span>
                             <button class="order-1 btn btn-success btn-sm pull-right btn-icon" id="newTask">
                                 <i class="fa fa-plus"></i> {{_lang.new}}
                             </button>
