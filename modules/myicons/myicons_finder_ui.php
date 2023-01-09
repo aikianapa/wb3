@@ -9,7 +9,7 @@
         </div>
         <input class="form-control" name type="text" on-keyup="find" autocomplete="off">
     </div>
-    <div class="off-canvas off-canvas-overlay off-canvas-right px-1 ht-100v">
+    <div class="off-canvas off-canvas-overlay off-canvas-right bg-light ht-100v">
         <span class="r-10 t-10 pos-absolute cursor-pointer" on-click="close">
             <svg class="mi mi-interface-essential-109" wb-on size="24" stroke="333333" wb-module="myicons"></svg>
         </span>
@@ -25,7 +25,7 @@
         </div>
     </div>
 </div>
-<script>
+<script wb-app>
 (()=>{
     if (document.getElementById('{{_var.id}}').done == true) {
         return
@@ -44,7 +44,7 @@
                 }
             },
             open(ev) {
-                $("#{{_var.id}} .off-canvas").addClass("show")
+                $("#{{_var.id}} .off-canvas").toggleClass("show")
                 $("#{{_var.id}} input[type=search]").val("")
             },
             close(ev) {

@@ -6,12 +6,12 @@
 <body class="bg-light" id="signup">
     <div class="row h-100">
         <div class="col-12 d-none d-sm-flex col-sm-6 col-lg-7 pr-0" id="image">
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center col">
                 <wb-include wb-src="signleft.inc.php" />
             </div>
         </div>
         <div class="col-12 d-flex col-sm-6 col-lg-5" id="form">
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center col">
             <div class="container">
                 <div class="row mt-5">
                     <div class="col-12 tx-right">
