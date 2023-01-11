@@ -632,6 +632,7 @@ class wbDom extends DomQuery
         $this->prepend("<meta name='description' content='{$descr}' />");
         $this->prepend("<meta name='keywords' content='{$keywords}' />");
         $this->prepend("<title>{$header}</title>");
+        $this->find('[seo]')->removeAttr('seo');
     }
 
     public function setValues()
