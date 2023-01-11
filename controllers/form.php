@@ -52,7 +52,6 @@ class ctrlForm
             $this->target = $app->vars('_post.target');
             $cache = false;
         }
-        
         $app->vars('_sett.devmode') == 'on' ? $cache = false : null;
 
         if (!$cache) {

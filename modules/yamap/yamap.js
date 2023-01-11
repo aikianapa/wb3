@@ -72,6 +72,7 @@ $(document).on("yandex-map-js", function() {
             if ($(this).attr("geopos") > "") var ll = yamap_pos($(this).attr("geopos"));
             if ($(this).attr("center") > "") var cc = yamap_pos($(this).attr("center"));
             if ($(this).attr("width") > "") $(this).width($(this).attr("width"));
+            if ($(this).attr("height") > "") $(this).height($(this).attr("height"));
             if ($(this).attr("name") > "") $(this).find(".yamap_data").attr("name", $(this).attr("name"));
 
             var height = $(this).height();

@@ -1947,7 +1947,7 @@ wbapp.loadScripts = async function(scripts = [], trigger = null, func = null) {
         } else if (!loading && !loaded) {
             let script = document.createElement('script');
             document.loadingScripts.push(name);
-            wbapp._settings.devmode == 'on' ? script.src = name + "?" + wbapp.newId() : script.src = name;
+            wbapp._settings.devmode == 'on' && src.indexOf('?') == -1 ? script.src = name + "?" + wbapp.newId() : script.src = name;
             script.async = false;
             script.onload = async function() {
                 document.loadedScripts.push(name);

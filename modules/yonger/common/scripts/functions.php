@@ -18,7 +18,14 @@
                 $app->route->item = $map[$idx]['i'];
                 $app->route->name = $map[$idx]['n'];
                 $app->route->url = $map[$idx]['u'];
-                isset($app->route->tpl) ? null : $app->route->tpl = $map[$idx]['f'].".php";
+                if (!$app->vars('_route.tpl')) {
+                    $tpl = $app->getTpl($app->vars('_route.table') . '.php');
+                    if ($tpl !== NULL) {
+                        $app->route->tpl =  $app->vars('_route.table') . '.php';
+                    } else {
+                        $app->route->tpl = 'pages.php';
+                    }
+                }
                 $app->vars('_route', $app->objToArray($app->route));
                 return $app->route;
             } else if ($app->vars('_route.name') > '' && $app->vars('_route.form') > '') {
@@ -55,7 +62,7 @@
             'name'=>$name,
             'active'=>'on',
             'path' => $path
-        ]]);
+            ]]);
             foreach ($pages['list'] as $page) {
                 if ($page['url'] == $uri OR (isset($app->route->name) && $app->route->name == $page["name"])) {
                     $app->route->controller = 'form';
@@ -63,12 +70,24 @@
                     $app->route->table = 'pages';
                     $app->route->item = $page['_id'];
                     $app->route->name = $name;
-                    isset($app->route->tpl) ? null : $app->route->tpl = "page.php";
+                    isset($app->route->tpl) ? null : $app->route->tpl = "pages.php";
                     $app->vars('_route', $app->objToArray($app->route));
                     $route = $app->route;
                     return $route;
                 }
             }
+        } else if ($app->vars('_route.controller') == 'form' && $app->vars('_route.table') !== 'pages' && $app->vars('_route.mode') == 'show') {
+            if (!$app->vars('_route.tpl')) {
+                $tpl = $app->getTpl($app->vars('_route.table') . '.php');
+                if ($tpl !== NULL) {
+                    $app->route->tpl =  $app->vars('_route.table') . '.php';
+                } else {
+                    $app->route->tpl = 'pages.php';
+                }
+            }
+            $app->vars('_route', $app->objToArray($app->route));
+            $route = $app->route;
+            return $route;
         }
     }
 
@@ -255,6 +274,41 @@
         return $res;
     }
 
+
+    function yongerCrumbs($path = '/')
+    {
+        $app = &$_ENV['app'];
+        $map = json_decode(file_get_contents($app->route->path_app . '/database/_yonmap.json'), true);
+        $lang = $app->vars('_sess.lang');
+        $chunk = explode('/', $path);
+        $path = '';
+        isset($app->route->name) && !in_array($app->route->name,$chunk) ?  $chunk[] = $app->route->name : null;
+        foreach ($chunk as $cp) {
+            if ($cp > '') {
+                $path .= '/' . $cp;
+                $json = $app->json($map);
+                $res = $json->where('u', $path)->get();
+                count($res) ? $res = array_pop($res) : null;
+                $item = $app->itemRead($res['f'], $res['i']);
+                $header = '';
+                if ($item && isset($item['header'])) {
+                    if ((array)$item['header'] === $item['header']) {
+                        @$header = isset($item['header'][$lang]) ? $item['header'][$lang] : $item['header']['ru'];
+                    } else {
+                        @$header = $item['header'];
+                    }
+                    $app->route->url == $path ? $path = '' : null;
+                    $result[] = [
+                        'path' => $path,
+                        'header' => $header
+                    ];
+                }
+            }
+        }
+        return $result;
+    }
+
+
     function yongerFurl($item = null, $fld = 'header') {
         $app = $_ENV['app'];
         $item == null ? $item = $_ENV['_context'] : null;
@@ -279,4 +333,3 @@
         }
         return $url;
     }
-?>

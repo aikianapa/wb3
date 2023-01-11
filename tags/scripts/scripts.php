@@ -13,7 +13,6 @@ class tagScripts
         strtolower(substr($this->filename, -strlen($this->ext))) == $this->ext ? null : $this->filename.='.'.$this->ext;
         $this->filename = str_replace('.jsgz.js', '.js', $this->filename);
         $this->file =  wbNormalizePath($this->home.$this->path.'/'.$this->filename);
-        //$this->access();
         $info = (object)pathinfo($this->file);
         $this->dir = $info->dirname;
         is_dir($this->dir) ? null : mkdir($this->dir, 0777, true);
@@ -62,19 +61,6 @@ class tagScripts
         if ($this->ext == 'jsgz') $script = gzencode($script, 9);
         $this->app->putContents($this->file, $script);
         $this->dom->after('<script '.$type.' src="'.$this->path.'/'.$this->filename.'"></script>'.PHP_EOL);
-    }
-
-    public function access() {
-        $this->hta = $this->dir.'/.htaccess';
-        if (!is_file($this->hta)) {
-
-            $htaccess='Options All -Indexes'.PHP_EOL;
-            $htaccess.='AddType text/css cssgz'.PHP_EOL;
-            $htaccess.='AddType text/javascript jsgz'.PHP_EOL;
-            $htaccess.='AddEncoding x-gzip .cssgz .jsgz'.PHP_EOL;
-
-            $this->app->putContents($this->hta, $htaccess);
-        }
     }
 }
 ?>
