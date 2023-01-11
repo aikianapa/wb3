@@ -13,11 +13,11 @@
             if (isset($map[$idx])) {
                 $app->route->controller = 'form';
                 $app->route->mode = 'show';
-                $app->route->table = $map[$idx]['f'];
-                $app->route->form = $map[$idx]['f'];
-                $app->route->item = $map[$idx]['i'];
-                $app->route->name = $map[$idx]['n'];
-                $app->route->url = $map[$idx]['u'];
+                $app->route->table = @$map[$idx]['f'];
+                $app->route->form = @$map[$idx]['f'];
+                $app->route->item = @$map[$idx]['i'];
+                $app->route->name = @$map[$idx]['n'];
+                $app->route->url = @$map[$idx]['u'];
                 if (!$app->vars('_route.tpl')) {
                     $tpl = $app->getTpl($app->vars('_route.table') . '.php');
                     if ($tpl !== NULL) {

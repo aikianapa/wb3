@@ -551,7 +551,7 @@ class tagForeach
 
         if (isset($options['limit'])) {
             $list = array_chunk($list, intval($options['limit']));
-            $list = $list[0];
+            isset($list[0]) ? $list = $list[0] : null;
         }
         return [$list, $count, $pages, $page, $srvpag, $options];
     }
