@@ -456,7 +456,7 @@ class wbApp
             $val = wbJsonEncode($val);
         }
         if (isset($this->data['data'][$this->dict->name]) && $val > '') {
-            $res->find('option[value="'.$val)->attr("selected", true);
+            $res->find('option[value="'.$val.'"]')->attr("selected", true);
         } else {
             $res->find("option[value]:first")->attr("selected", true);
         }
