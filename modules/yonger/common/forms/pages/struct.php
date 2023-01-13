@@ -171,6 +171,9 @@ var ypbrBlocks = new Ractive({
             ypbrBlocks.current = line;
             ypbrBlocks.current.addClass('active');
             let $modal = $blockform.parents('.modal[id^=modal][id*=Edit]');
+            let parent = $modal.find('form:first').serializeJson();
+            parent.blocks == undefined ? null : delete parent.blocks
+            item._parent = parent
             wbapp.post('/module/yonger/blockform', {
                 'item': item
             }, function(editor) {

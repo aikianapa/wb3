@@ -42,9 +42,16 @@ class modFilepicker
         }
 
         if ($dom->params("ext")) {
-            $out->item['upload_ext'] = $dom->params->ext;
+            $out->item['upload_ext'] = str_replace(' ','',$dom->params->ext);
             $out->find("input[name=upload_url]")
                 ->after("<input type='hidden' name='upload_ext'>");
+            $accept = wbAttrToArray($out->item['upload_ext']);
+            foreach($accept as &$a) {
+                $a= '.'.$a;
+            }
+            $accept = implode(',',$accept);
+            $out->find('input[type=file]')->attr('accept',$accept);
+
         }
         if ($dom->params("original")) {
             $out->item['original'] = $dom->params->original;

@@ -13,6 +13,27 @@
         </button>
     </div>
 
+    <div class="listview row py-0">
+
+    </div>
+
+
+    <template id="fp-listviewItem">
+        {{#each images}}
+            <div class="card p-1 m-1 rounded-10 tx-10">
+                {{img}}
+            </div>
+
+        {{else}}
+            <div class="card p-1 m-1 rounded-10 tx-10">
+                Пусто
+            </div>
+
+        {{/each}}
+    </template>
+
+
+
     <wb-lang>
         [en]
         camera = "Camera"
@@ -22,7 +43,7 @@
         choose = "Файлы"
     </wb-lang>
     <script wb-app>
-    wbapp.loadScripts(["/engine/modules/filepicker/filepicker.js"], "filepicker-js")
+        wbapp.loadScripts(["/engine/modules/filepicker/filepicker.js"], "filepicker-js")
     </script>
 </div>
 <!-- end of #filepicker -->
