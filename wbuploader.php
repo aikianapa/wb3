@@ -36,7 +36,7 @@ class wbuploader
     public function upload()
     {
         header("Content-type:application/json");
-        $imgext = ['gif','png','jpg','jpeg','webp'];
+        $imgext = ['gif', 'png', 'jpg', 'jpeg', 'webp', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'];
         $error = false;
 
         if (isset($_POST['deletefile'])) {
@@ -83,10 +83,12 @@ class wbuploader
             //File name
             $folderPath = str_replace('//', '/', "{$this->root}/{$path}");
             $filename = $original;
-            if (isset($_POST['name']) && $_POST['name'] == 'original') {
+            if ($this->app->vars('_post.name') == 'original') {
                 $filename = $original;
-            } elseif (isset($_POST['name']) && $_POST['name'] == 'random') {
+            } elseif ($this->app->vars('_post.name') == 'random') {
                 $filename = 'fn'.uniqid().'.'.$ext;
+            } elseif ($this->app->vars('_post.original') == 'false') {
+                $filename = 'fn' . uniqid() . '.' . $ext;
             } elseif (isset($_POST['name'])) {
                 $filename = $_POST['name'];
             }
@@ -108,8 +110,12 @@ class wbuploader
                 'height' =>''
             ];
 
-            if (!in_array($ext, $imgext) && $size_raw > $size_max) {
+            if ($size_raw > $size_max) {
                 $error = $res['error'] = "Превышен размер файла {$size_max}";
+            }
+
+            if (!in_array($ext, $imgext)) {
+                $error = $res['error'] = "Расширение файла {$ext} не разрешено";
             }
 
             if (!$error && move_uploaded_file($_FILES["files"]["tmp_name"][0], $filepath)) {
