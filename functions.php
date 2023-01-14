@@ -2186,6 +2186,9 @@ function wbGetWords($str, $w = 100)
 }
 
 function wbCheckUser($login, $type = 'email', $pass = null) {
+    if (mb_strlen($login) == 0) {
+        return false;
+    }
     $users = wbItemList("users", ['filter' => [
         $type => $login,
         'isgroup' => ['$ne'=>'on'],
