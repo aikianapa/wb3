@@ -29,9 +29,6 @@ function wbInitEnviroment()
     $_ENV["wbattr"]="data-wb";
     if (!isset($_SESSION['order_id']) or '' == $_SESSION['order_id']) {
         $_SESSION['order_id'] = wbNewId();
-        $new = true;
-    } else {
-        $new = false;
     }
     isset($_ENV["driver"]) ? null : $_ENV["driver"] = "json";
     $_ENV['error'] = array();

@@ -263,7 +263,7 @@ class modApi
     {
         $this->checkMethod(['post','put','get','auth']);
         $type = $this->table ? $this->table : $this->app->vars('_sett.modules.login.loginby');
-        $type == '' ? $type = 'login' : null;
+        $type == '' ? $type = 'email' : null;
         $request = RequestParser::parse();
         $post = $request->params;
         $this->method == 'get' ? $post = array_merge($post, $this->app->vars('_get')) : null;
@@ -290,8 +290,9 @@ class modApi
     {
         $group = (object)$this->app->user->group;
         @$redirect = $group->url_logout > '' ? $group->url_logout : '/';
-        setcookie("user", null, time()-3600, "/");
+        setcookie("user", '', -1,'/');
         unset($_SESSION['user']);
+        unset($_COOKIE['user']);
         session_regenerate_id();
         session_destroy();
         return ['login'=>false,'error'=>false,'redirect'=>$redirect,'user'=>null,'role'=>null];
