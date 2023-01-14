@@ -37,7 +37,7 @@ class wbuploader
     {
         header("Content-type:application/json");
         $imgext = ['gif', 'png', 'jpg', 'jpeg', 'webp'];
-        $allow = ['gif', 'png', 'jpg', 'jpeg', 'webp', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'];
+        $allow = ['gif', 'png', 'jpg', 'jpeg', 'svg','webp', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'];
         $error = false;
 
         if (isset($_POST['deletefile'])) {
