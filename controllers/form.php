@@ -56,7 +56,7 @@ class ctrlForm
 
         if (!$cache) {
             $_ENV["cache_used"] = false;
-            isset($app->route->form) ? $dom = $app->getForm($app->route->form, $app->route->mode) : null;
+            $dom = isset($app->route->form) ? $app->getForm($app->route->form, $app->route->mode) : null;
             if ($dom->error) $dom = null;
             if (isset($app->route->item)) {
                 $table = $app->route->form;
@@ -64,9 +64,9 @@ class ctrlForm
                 $item = $app->itemRead($table, $app->route->item);
                 if ($item && !isset($item['active']) OR $item['active'] == 'on') {
                     $item = wbTrigger('form', __FUNCTION__, 'beforeItemShow', [$table], $item);                    
-                    if ((!isset($item['template']) OR $item['template'] == '') AND $app->vars('_route.tpl') > '') {
+                    if (!$dom && (!isset($item['template']) OR $item['template'] == '') AND $app->vars('_route.tpl') > '') {
                         $dom = $app->getTpl($app->vars('_route.tpl'));
-                    } elseif (isset($item['template']) and $item['template'] > '') {
+                    } elseif (!$dom && isset($item['template']) and $item['template'] > '') {
                         $dom = $app->getTpl($item['template']);
                     }
                     if (!$dom && isset($app->route->tpl)) {
