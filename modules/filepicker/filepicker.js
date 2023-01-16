@@ -191,7 +191,8 @@ $(document).on("filepicker-js", async function() {
                         ui: {
                             autoUpload: true
                         },
-                        plugins: ['ui', 'drop', 'camera', 'crop']
+                        //plugins: ['ui', 'drop', 'camera', 'crop']
+                        plugins: ['ui', 'drop', 'crop']
                     }).on('done.filepicker', function(e, data) {
                         if (data.files[0].original == null || data.files[0].size == 0 || data.files[0].error !== undefined) {
                             // ошибка загрузки
