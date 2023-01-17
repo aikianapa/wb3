@@ -574,11 +574,11 @@ class wbDom extends DomQuery
                     break;
                 }
             }
+            $atval = str_replace(['%7B%7B', '%7D%7D'], ['{{', '}}'], $atval);
             if (strpos($atname, "}}")) {
                 unset($this->attributes[$atname]);
                 $atname = wbSetValuesStr($atname, $Item);
             }
-            $atval = str_replace(['%7B%7B','%7D%7D'], ['{{','}}'], $atval);
             $atval = strpos($atval, "}}") ? $atval = wbSetValuesStr($atval, $Item) : null;
             $this->attr($atname, $atval);
         }
@@ -663,6 +663,9 @@ class wbDom extends DomQuery
                         } elseif ($inp->attr('type') == 'json') {
                             $inp->inner($value);
                         } else {
+                            if ($inp->attr('value') > '') {
+                                $value = wbSetValuesStr($inp->attr('value'), $this->item);
+                            }
                             $inp->inner(htmlentities($value));
                         }
                         $inp->params('oconv') > '' ? $inp->attr('data-oconv', $inp->params('oconv')) : null;

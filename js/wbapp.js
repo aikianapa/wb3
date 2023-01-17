@@ -343,9 +343,9 @@ wbapp.start = async function() {
                         eval(`if (obj.${idx} == undefined) obj.${idx} = {}`);
                     }
                 })
-                eval(`obj.${name} = value`);
+                eval(`obj['${name}'] = value`);
             } else {
-                eval(`obj.${name} = value`);
+                eval(`obj['${name}'] = value`);
             }
         })
         return obj;

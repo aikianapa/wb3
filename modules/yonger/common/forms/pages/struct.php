@@ -187,7 +187,7 @@ var ypbrBlocks = new Ractive({
                     ypbrBlocks.get('blocks.' + id + '.header', $(this).val());
                 })
             });
-            },50)
+            },10)
         },
         copy(ev) {
             let line = $(ev.node).parents('.dd-item');
