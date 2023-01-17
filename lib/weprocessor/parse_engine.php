@@ -246,9 +246,14 @@ class parse_engine {
 	private function perform_action($rule_id, $slice) {
 		# we have this weird calling convention....
 		$result = null;
-		$method = $this->parser->method[$rule_id];
 		#if ($this->debug) echo "rule $id: $method\n";
-		$this->parser->$method($slice, $result);
+		$method = $this->parser->method[$rule_id];
+		try {
+			$this->parser->$method($slice, $result);
+		} catch (\Throwable $th) {
+			//throw $th;
+			null;
+		}
 		return $result;
 	}
 }

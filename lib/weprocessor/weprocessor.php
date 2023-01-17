@@ -7,6 +7,7 @@ class WEProcessor {
 	private $let;
 	private $debug=false;
 	private $failedEval = false;
+	public $vars;
 
 	// определяем названия teriminals и их регулярки
 	// названия должны совпадать с тем что используем в грамматике (web.lime)
@@ -24,28 +25,33 @@ class WEProcessor {
 		include_once "weparser.class";
 		$this->context = $context;
 		$this->parser = new parse_engine(new weparser($this));
-		$this->vars = new Dot();
-		$vars = [
-          '_env'  => &$_ENV,
-          '_get'  => &$_GET,
-          '_srv'  => &$_SERVER,
-          '_post' => &$_POST,
-          '_req'  => &$_REQUEST,
-          '_route'=> &$_ENV['route'],
-          '_sett' => &$_ENV['settings'],
-          '_var'  => &$_ENV['variables'],
-          '_sess' => &$_SESSION,
-          '_user' => &$_SESSION['user'],
-          '_cookie'=>&$_COOKIE,
-          '_cook'  =>&$_COOKIE,
-          '_mode' => &$_ENV['route']['mode'],
-          '_form' => &$_ENV['route']['form'],
-          '_item' => &$_ENV['route']['item'],
-          '_param'=> &$_ENV['route']['param'],
-          '_locale'=> &$_ENV['locale'],
-		  '_context' => &$this->context
+		$this->init();
+	}
+
+
+	public function init() {
+	$this->vars = new Dot();
+	$vars = [
+		'_env'  => &$_ENV,
+		'_get'  => &$_GET,
+		'_srv'  => &$_SERVER,
+		'_post' => &$_POST,
+		'_req'  => &$_REQUEST,
+		'_route' => &$_ENV['route'],
+		'_sett' => &$_ENV['settings'],
+		'_var'  => &$_ENV['variables'],
+		'_sess' => &$_SESSION,
+		'_user' => &$_SESSION['user'],
+		'_cookie' => &$_COOKIE,
+		'_cook'  => &$_COOKIE,
+		'_mode' => &$_ENV['route']['mode'],
+		'_form' => &$_ENV['route']['form'],
+		'_item' => &$_ENV['route']['item'],
+		'_param' => &$_ENV['route']['param'],
+		'_locale' => &$_ENV['locale'],
+		'_context' => &$this->context
 	];
-		$this->vars->setReference($vars);
+	$this->vars->setReference($vars);
 	}
 
 	public function add($a1, $a2) {
@@ -312,19 +318,17 @@ class WEProcessor {
 		try {
 			$this->parser->reset();
 
-
-			$fld = substr($expr,2,-2);
-			if (!(strpos($fld,"}}"))) {
-				$res = $this->vars->get(substr($expr,2,-2));
-				if (! ((array)$res === $res) ){
-						if (strpos($res,":") && strpos($res,"}") ) {
-								$tmp = json_decode($res,true);
-								if (count($tmp)) $res = $tmp;
-								return json_encode($tmp);
-						}
+			$fld = substr($expr, 2, -2);
+			if (!(strpos($fld, "}}"))) {
+				$res = $this->vars->get($fld);
+				if (!((array)$res === $res)) {
+					if (strpos($res, ":") && strpos($res, "}")) {
+						$tmp = json_decode($res, true);
+						if (count($tmp)) $res = $tmp;
+						return json_encode($tmp, JSON_UNESCAPED_UNICODE);
+					}
 				}
-			}
-
+			} 
 
 			foreach($this->tokenize($expr) as list($t, $type)) {
 				if ($this->debug) print("tokenize: '$t' : '$type'\n");
@@ -349,11 +353,21 @@ class WEProcessor {
 		} catch (parse_error $e) {
 			$this->evalReset();
 			if ($this->debug) print($e->getMessage()."\n");
-			return $expr;
+			if (substr($expr,0,2) == '{{' && substr($expr,-2)== '}}') {
+				$tmp = $this->vars->get(substr($expr, 2, -2));
+				if (substr($expr, 2, -2) == '_var.item.per_about-tab-1-1_title') {
+					print_r([1,2,3]);
+					$tmp = $this->vars->get(substr($expr, 2, -2));
+				}
+				if ($tmp) $expr = $tmp;
+			}
+
 		}
+		return $expr;
 	}
 
 	function substitute($text) {
+		if (!strpos($text, '}}')) return $text;
 		$parts = preg_split('/\{\{(?>[^\{\{\}\}]|(?R))*\}\}/', $text, -1, PREG_SPLIT_OFFSET_CAPTURE);
 		$partsN = count($parts);
 		$substituted = '';
@@ -368,6 +382,14 @@ class WEProcessor {
 
 			$substituted = $substituted.$txt;
 			$expr = substr($text, $start, $end - $start);
+			$tmp = substr($expr, 2, -2);
+			if (strpos($tmp, '}}')) {
+				$tmp = $this->substitute($tmp);
+				$expr = substr($expr,0,2).$tmp. substr($expr,-2);
+				!$this->vars->get('_env') ? $this->init() : null;
+				$tmp = $this->vars->get(trim($tmp));
+				if ($tmp) $expr = $tmp;
+			}
 			if (strlen($expr) > 0) {
 				$substituted = $substituted.$this->calculate($expr);
 			}
