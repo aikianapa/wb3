@@ -346,7 +346,7 @@ class WEProcessor {
 				if ((array)$res === $res) return json_encode($res, JSON_UNESCAPED_UNICODE);
 				// Fix bug when '.label}}' returned if not on index
 				preg_match('/^.*?\}\}$/m', $res, $matches);
-				if (count($matches) AND substr($expr,- strlen($res)) == $res) $res = "";
+				if (count($matches) AND substr($expr,- strlen($res)) == $res) return '';
 				// Print the entire match result
 				else return $res;
 			}
@@ -355,11 +355,7 @@ class WEProcessor {
 			if ($this->debug) print($e->getMessage()."\n");
 			if (substr($expr,0,2) == '{{' && substr($expr,-2)== '}}') {
 				$tmp = $this->vars->get(substr($expr, 2, -2));
-				if (substr($expr, 2, -2) == '_var.item.per_about-tab-1-1_title') {
-					print_r([1,2,3]);
-					$tmp = $this->vars->get(substr($expr, 2, -2));
-				}
-				if ($tmp) $expr = $tmp;
+				$expr = ($tmp) ? $tmp : '';
 			}
 
 		}
