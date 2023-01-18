@@ -57,10 +57,10 @@ class WEProcessor {
 	public function add($a1, $a2) {
 		if ($this->failedEval) return null;
 
-		if ($this->debug) print("##add('". json_encode($a1) ."', '". json_encode($a2) ."') -> ");
+		# if ($this->debug) print("##add('". json_encode($a1) ."', '". json_encode($a2) ."') -> ");
 		if (is_string($a1)) $res = $a1 . $a2;
 		else $res =  $a1 + $a2;
-		if ($this->debug) print("$res##\n");
+		# if ($this->debug) print("$res##\n");
 
 		return $res;
 	}
@@ -68,14 +68,14 @@ class WEProcessor {
 	public function setLet($v) {
 		if ($this->failedEval) return null;
 
-		if ($this->debug) print("##setLet('" . json_encode($v) . "')\n");
+		# if ($this->debug) print("##setLet('" . json_encode($v) . "')\n");
 		$this->let = $v;
 	}
 
 	public function getLet() {
 		if ($this->failedEval) return null;
 
-		if ($this->debug) print("##getLet()='" . json_encode($this->let) . "'\n");
+		# if ($this->debug) print("##getLet()='" . json_encode($this->let) . "'\n");
 		if (isset($this->let)) {
 			$let = $this->let;
 			unset($this->let);
@@ -88,14 +88,14 @@ class WEProcessor {
 	public function set_variable($v, $e) {
 		if ($this->failedEval) return null;
 
-		if ($this->debug) print("##set_variable($v, $e)\n");
+		# if ($this->debug) print("##set_variable($v, $e)\n");
 		$this->context[$v] = $e;
 	}
 
 	public function get_variable($v) {
 		if ($this->failedEval) return null;
 
-		if ($this->debug) print("##get_variable(\n  '".json_encode($v)."'\n) ->\n  ");
+		# if ($this->debug) print("##get_variable(\n  '".json_encode($v)."'\n) ->\n  ");
 		if ((array)$v === $v) {
 			$res = $v;
 		} elseif (@isset($this->context[$v])) {
@@ -145,14 +145,14 @@ class WEProcessor {
 				}
 			}
 		}
-		if ($this->debug) print("'" . json_encode($res) . "'##\n");
+		# if ($this->debug) print("'" . json_encode($res) . "'##\n");
 		return $res;
 	}
 
 	public function call_fn($name, $args) {
 		//if ($this->failedEval) return null;
 		$_ENV['_context'] = &$this->context;
-		if ($this->debug) print("##call_fn($name, '".json_encode($args)."') -> ");
+		# if ($this->debug) print("##call_fn($name, '".json_encode($args)."') -> ");
 		$res = null;
 		$exclude=explode(",","exec,system,passthru,readfile,shell_exec,escapeshellarg,escapeshellcmd,proc_close,proc_open,ini_alter,dl,popen,parse_ini_file,show_source,curl_exec,file_get_contents,file_put_contents,file,eval,chmod,chown");
 		if (in_array($name,$exclude)) {
@@ -215,13 +215,13 @@ class WEProcessor {
 			}
 		}
 
-		if ($this->debug) print("'".$res."'##\n");
+		# if ($this->debug) print("'".$res."'##\n");
 		return $res;
 	}
 
 	public function call_index($name, $args) {
 		if ($this->failedEval) return null;
-		if ($this->debug) print("##call_index(\n  '".json_encode($name)."',\n  '".json_encode($args)."'\n) ->\n  ");
+		# if ($this->debug) print("##call_index(\n  '".json_encode($name)."',\n  '".json_encode($args)."'\n) ->\n  ");
 		$var = $this->get_variable($name);
 		if ($this->failedEval) return null;
 
@@ -247,36 +247,36 @@ class WEProcessor {
 				$var = null;
 			}
 		}
-		if ($this->debug) print("'". json_encode($var) ."'##");
+		# if ($this->debug) print("'". json_encode($var) ."'##");
 		return $var;
 	}
 
 	public function call_field($obj, $args) {
 		if ($this->failedEval) return null;
-		if ($this->debug) print("##call_field('".json_encode($obj)."', '".json_encode($args)."')\n");
+		# if ($this->debug) print("##call_field('".json_encode($obj)."', '".json_encode($args)."')\n");
 		if (is_object($obj)) {
-			if ($this->debug) print("OBJECT '". json_encode($obj) ."'\n");
+			# if ($this->debug) print("OBJECT '". json_encode($obj) ."'\n");
 			if ((array)$args === $args) {
 				foreach ($args as $idx) {
-					if ($this->debug) print("idx: '" . json_encode($idx) . "'\n");
+					# if ($this->debug) print("idx: '" . json_encode($idx) . "'\n");
 					$obj = $obj->$idx;
 				}
 			} else {
-				if ($this->debug) print("idx: '" . json_encode($args) . "'\n");
+				# if ($this->debug) print("idx: '" . json_encode($args) . "'\n");
 				$obj = $obj->$args;
 			}
 			return $obj;
 		} elseif ((array)$obj === $obj) {
-			if ($this->debug) print("ARRAY '". json_encode($obj) ."'\n");
+			# if ($this->debug) print("ARRAY '". json_encode($obj) ."'\n");
 			if ((array)$args === $args) {
 				foreach ($args as $idx) {
-					if ($this->debug) print("idx: '" . json_encode($idx) . "'\n");
+					# if ($this->debug) print("idx: '" . json_encode($idx) . "'\n");
 					$obj = $obj[$idx];
 				}
 			} else {
-				if ($this->debug) print("\n args: '$args'\n");
+				# if ($this->debug) print("\n args: '$args'\n");
 				foreach (explode(".", $args) as $idx) {
-					if ($this->debug) print("idx: '" . json_encode($idx) . "'\n");
+					# if ($this->debug) print("idx: '" . json_encode($idx) . "'\n");
 					isset($obj[$idx]) ? $obj = $obj[$idx] : $obj = "";
 				}
 			}
@@ -331,7 +331,7 @@ class WEProcessor {
 			} 
 
 			foreach($this->tokenize($expr) as list($t, $type)) {
-				if ($this->debug) print("tokenize: '$t' : '$type'\n");
+				# if ($this->debug) print("tokenize: '$t' : '$type'\n");
 				if ($type == "") $this->parser->eat("'$t'", null);
 				else $this->parser->eat($type, $t);
 			}
@@ -351,13 +351,18 @@ class WEProcessor {
 				else return $res;
 			}
 		} catch (parse_error $e) {
-			$this->evalReset();
-			if ($this->debug) print($e->getMessage()."\n");
-			if (substr($expr,0,2) == '{{' && substr($expr,-2)== '}}') {
+			//$this->evalReset();
+			//# if ($this->debug) print($e->getMessage()."\n");
+			if (substr($expr, 0, 2) == '{{' && substr($expr, -2) == '}}') {
+				// обработка вычисляемых переменных
 				$tmp = substr($expr, 2, -2);
-				$tmp = $this->substitute($tmp);
-				$tmp = $this->vars->get($tmp);
-				$expr = ($tmp) ? $tmp : '';
+				if (substr(trim($tmp),0,1) == '_') {
+					$tmp = $this->substitute($tmp);
+					$tmp = $this->vars->get($tmp);
+					$expr = ($tmp) ? $tmp : null;
+				} 
+			} else {
+				$this->evalReset();
 			}
 		}
 		return $expr;
