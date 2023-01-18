@@ -26,7 +26,6 @@ class modFilepicker
             $out->addClass($dom->attr('class'));
         }
 
-
         ($dom->attr("name") == '' && $dom->params("name")) ? $dom->attr("name", $dom->params("name")) : null;
 
         if ($dom->attr("name") >"") {
@@ -70,6 +69,11 @@ class modFilepicker
         $out->item['height'] = $dom->params('height');
 
         $out->fetch();
+
+        if ($dom->attr("value") > "") {
+            $value = $dom->attr("value");
+            $out->find('.filepicker-data')->inner($value);
+        }
 
         if ($dom->tagName == 'input') {
             $dom->after($out);
