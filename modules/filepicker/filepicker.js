@@ -110,7 +110,7 @@ $(document).on("filepicker-js", async function() {
                         }
                         if (strpos(' ' + file, '.')) {
                             data.push({
-                                img: file + '?im' + wbapp.newId(),
+                                img: file,
                                 width: width,
                                 height: height,
                                 alt: alt,
