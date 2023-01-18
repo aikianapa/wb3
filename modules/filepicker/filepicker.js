@@ -85,20 +85,16 @@ $(document).on("filepicker-js", async function() {
 
                 var getthumb = function(file, update = false) {
                     var thumb;
-                    if (update == true) {
-                        thumb = "/" + view + "/" + width + "x" + height + "/src" + file + "?" + wbapp.newId();
-                    } else {
-                        thumb = "/" + view + "/" + width + "x" + height + "/src" + file;
-                    }
+                    thumb = "/" + view + "/" + width + "x" + height + "/src" + file + "?" + wbapp.newId();
                     return thumb;
                 }
 
                 var setdata = function(update = false) {
                     let data = [];
                     $filepicker.find(".listview img[data-src]").each(function() {
-                        let file = explode("?", $(this).attr("data-src"));
-                        file = file[0];
-                        file = $(this).attr("data-src");
+                        let file = $(this).attr("data-src");
+                        file = file.split("?")
+                        file = file[0]
                         filename = file.split('/').slice(-1);
                         let tmp = file;
                         if (tmp.split("/").length == 1) file = path + file;
@@ -114,7 +110,7 @@ $(document).on("filepicker-js", async function() {
                         }
                         if (strpos(' ' + file, '.')) {
                             data.push({
-                                img: file,
+                                img: file + '?im' + wbapp.newId(),
                                 width: width,
                                 height: height,
                                 alt: alt,
@@ -310,6 +306,8 @@ $(document).on("filepicker-js", async function() {
                         e.stopPropagation();
                         var card = $(this).closest(".card");
                         var file = $(card).find("img").attr("data-src");
+                        file = file.split("?")
+                        file = file[0]
                         if (file == "") {
                             delete $filepicker.list[card.index()];
                             card.remove();
