@@ -354,6 +354,7 @@ class WEProcessor {
 			$this->evalReset();
 			if ($this->debug) print($e->getMessage()."\n");
 			if (substr($expr,0,2) == '{{' && substr($expr,-2)== '}}') {
+				!$this->vars->get('_env') ? $this->init() : null;
 				$tmp = $this->vars->get(substr($expr, 2, -2));
 				$expr = ($tmp) ? $tmp : '';
 			}
