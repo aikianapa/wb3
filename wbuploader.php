@@ -53,12 +53,13 @@ class wbuploader
 
         $imagine    = class_exists('Imagick') ? new Imagine\Imagick\Imagine() : new Imagine\Gd\Imagine();
         $image      = $imagine->open($filepath);
-        $sx = $this->app->vars('_post.x');
-        $sy = $this->app->vars('_post.y');
-        $width = $this->app->vars('_post.width');
-        $height = $this->app->vars('_post.height');
-        $image->resize(new Box($width, $height))
-        ->crop(new Point($sx, $sy), new Box($width, $height))
+        $sx = intval($this->app->vars('_post.x'),0);
+        $sy = intval($this->app->vars('_post.y'),0);
+        $sx < 0 ? $sx = 0 : null;
+        $sy < 0 ? $sy = 0 : null;
+        $width = intval($this->app->vars('_post.width'),0);
+        $height = intval($this->app->vars('_post.height'),0);
+        $image->crop(new Point($sx, $sy), new Box($width, $height))
         ->save($filepath);
         $size_raw = filesize($filepath);
         $size_mb = number_format(($size_raw / 1048576), 2);//Convert bytes to Megabytes
