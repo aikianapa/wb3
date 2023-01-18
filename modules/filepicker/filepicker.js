@@ -92,9 +92,9 @@ $(document).on("filepicker-js", async function() {
                 var setdata = function(update = false) {
                     let data = [];
                     $filepicker.find(".listview img[data-src]").each(function() {
-                        let file = explode("?", $(this).attr("data-src"));
-                        file = file[0];
-                        file = $(this).attr("data-src");
+                        let file = $(this).attr("data-src");
+                        file = file.split("?")
+                        file = file[0]
                         filename = file.split('/').slice(-1);
                         let tmp = file;
                         if (tmp.split("/").length == 1) file = path + file;
@@ -308,6 +308,8 @@ $(document).on("filepicker-js", async function() {
                         e.stopPropagation();
                         var card = $(this).closest(".card");
                         var file = $(card).find("img").attr("data-src");
+                        file = file.split("?")
+                        file = file[0]
                         if (file == "") {
                             delete $filepicker.list[card.index()];
                             card.remove();
