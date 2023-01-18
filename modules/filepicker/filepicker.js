@@ -85,11 +85,7 @@ $(document).on("filepicker-js", async function() {
 
                 var getthumb = function(file, update = false) {
                     var thumb;
-                    if (update == true) {
-                        thumb = "/" + view + "/" + width + "x" + height + "/src" + file + "?" + wbapp.newId();
-                    } else {
-                        thumb = "/" + view + "/" + width + "x" + height + "/src" + file;
-                    }
+                    thumb = "/" + view + "/" + width + "x" + height + "/src" + file + "?" + wbapp.newId();
                     return thumb;
                 }
 
@@ -114,7 +110,7 @@ $(document).on("filepicker-js", async function() {
                         }
                         if (strpos(' ' + file, '.')) {
                             data.push({
-                                img: file,
+                                img: file + '?im' + wbapp.newId(),
                                 width: width,
                                 height: height,
                                 alt: alt,
