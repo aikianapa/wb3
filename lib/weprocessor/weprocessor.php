@@ -354,17 +354,18 @@ class WEProcessor {
 			$this->evalReset();
 			if ($this->debug) print($e->getMessage()."\n");
 			if (substr($expr,0,2) == '{{' && substr($expr,-2)== '}}') {
-				!$this->vars->get('_env') ? $this->init() : null;
-				$tmp = $this->vars->get(substr($expr, 2, -2));
+				$tmp = substr($expr, 2, -2);
+				$tmp = $this->substitute($tmp);
+				$tmp = $this->vars->get($tmp);
 				$expr = ($tmp) ? $tmp : '';
 			}
-
 		}
 		return $expr;
 	}
 
 	function substitute($text) {
 		if (!strpos($text, '}}')) return $text;
+		!$this->vars->get('_env') ? $this->init() : null;
 		$parts = preg_split('/\{\{(?>[^\{\{\}\}]|(?R))*\}\}/', $text, -1, PREG_SPLIT_OFFSET_CAPTURE);
 		$partsN = count($parts);
 		$substituted = '';
@@ -379,14 +380,6 @@ class WEProcessor {
 
 			$substituted = $substituted.$txt;
 			$expr = substr($text, $start, $end - $start);
-			$tmp = substr($expr, 2, -2);
-			if (strpos($tmp, '}}')) {
-				$tmp = $this->substitute($tmp);
-				$expr = substr($expr,0,2).$tmp. substr($expr,-2);
-				!$this->vars->get('_env') ? $this->init() : null;
-				$tmp = $this->vars->get(trim($tmp));
-				if ($tmp) $expr = $tmp;
-			}
 			if (strlen($expr) > 0) {
 				$substituted = $substituted.$this->calculate($expr);
 			}
