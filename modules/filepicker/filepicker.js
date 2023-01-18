@@ -126,8 +126,6 @@ $(document).on("filepicker-js", async function() {
                     });
                     input.html(json_encode(data));
                     input.trigger('change');
-                    //$filepicker.find("[name=prevent_img]").val("");
-                    //$filepicker.find("[name=upload_url]").val("");
                 }
 
                 var fixoldimg = function() {
