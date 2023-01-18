@@ -10,6 +10,7 @@ class wbuploader
 {
     public $app;
     public $root;
+    public $imgext = ['gif', 'png', 'jpg', 'jpeg', 'webp'];
     
     public function __construct()
     {
@@ -17,6 +18,8 @@ class wbuploader
         $this->root = $_SERVER['DOCUMENT_ROOT'];
         if ($this->app->vars('_post._method') == "DELETE") {
             $this->delete();
+        } else if ($this->app->vars('_post._method') == "PATCH") {
+                $this->patch();
         } else {
             $this->upload();
         }
@@ -33,10 +36,52 @@ class wbuploader
         exit();
     }
 
+    public function patch() {
+        $imgext = $this->imgext;
+        $file = $this->app->vars('_post.file');
+        $filepath = realpath(str_replace('//', '/', "{$this->root}/{$file}"));
+        $filename = pathinfo($filepath, PATHINFO_BASENAME);
+        $ext = strtolower(pathinfo($filepath, PATHINFO_EXTENSION));
+        if (!in_array($ext, $imgext)) {
+            $res = [
+                'error' => true,
+                'msg' => "Расширение файла {$ext} не разрешено"
+            ];
+            echo json_encode($res);
+            exit();
+        }
+
+        $imagine    = class_exists('Imagick') ? new Imagine\Imagick\Imagine() : new Imagine\Gd\Imagine();
+        $image      = $imagine->open($filepath);
+        $sx = $this->app->vars('_post.x');
+        $sy = $this->app->vars('_post.y');
+        $width = $this->app->vars('_post.width');
+        $height = $this->app->vars('_post.height');
+        $image->resize(new Box($width, $height))
+        ->crop(new Point($sx, $sy), new Box($width, $height))
+        ->save($filepath);
+        $size_raw = filesize($filepath);
+        $size_mb = number_format(($size_raw / 1048576), 2);//Convert bytes to Megabytes
+        $res = [
+            'extension' => $ext,
+            'width' => $width,
+            'height' => $height,
+            'name' => $filename,
+            'original' => $filename,
+            'size' => $size_raw,
+            'size_mb' => $size_mb,
+            'time' => time(),
+            'type' => wbMime($ext),
+            'url' => $file
+        ];
+        echo json_encode($res);
+        exit();
+    }
+
     public function upload()
     {
         header("Content-type:application/json");
-        $imgext = ['gif', 'png', 'jpg', 'jpeg', 'webp'];
+        $imgext = $this->imgext;
         $allow = ['gif', 'png', 'jpg', 'jpeg', 'svg','webp', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'];
         $error = false;
 
