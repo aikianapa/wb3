@@ -30,8 +30,9 @@ class wbuploader
         $res = [];
         foreach($this->app->vars('_post.files') as $file) {
             $filepath = str_replace('//', '/',"{$this->root}/{$file}");
-            $res[$file] = unlink($filepath);
+            unlink($filepath);
         }
+        $res[$file] = !is_file($filepath);
         echo json_encode($res);
         exit();
     }
