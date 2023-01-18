@@ -364,6 +364,9 @@ class WEProcessor {
 			} else {
 				$this->evalReset();
 			}
+			if ((array)$expr === $expr) {
+				$expr = json_encode($expr, JSON_UNESCAPED_UNICODE);
+			}
 		}
 		return $expr;
 	}
