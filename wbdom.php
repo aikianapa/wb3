@@ -732,9 +732,9 @@ class wbDom extends DomQuery
         $wbon = $this->find('[wb-on]');
         foreach ($wbon as $wb) {
             $wb->removeAttr('wb-on');
-            $wb->copy($this);
-            $wb->root = $this->root;
-            $wb->fetchNode();
+            $wbt = $this->app->fromString('<html>'. $wb->outer().'</html>');
+            $wbt->fetch();
+            $wb->replaceWith($wbt->html());
         }
         return $this;
     }
