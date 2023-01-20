@@ -205,6 +205,10 @@ function wbInitSettings(&$app)
                             unset($query[$key]);
                             $query[substr($key, 0, strlen($key) -1)] =  ['$nin'=> $val];
                             break;
+                        case '~':
+                            unset($query[$key]);
+                            $query[substr($key, 0, strlen($key) - 1)] =  ['$like' => $val];
+                            break;
                     }
                 } else {
                     switch (substr($key, -2)) {
@@ -1819,7 +1823,12 @@ function wbItemFilter($item, $options, $field = null)
             } else {
                 foreach ($expr as $cond => $val) {
                     $field = $fields->get($fld);
-                    (array)$field === $field ?  $field = wbJsonEncode($field) : null;
+                    if ((array)$field === $field) {
+                        $array = $field;
+                        $field = wbJsonEncode($field);
+                    } else {
+                        $array = false;
+                    }
                     if (is_numeric($field) && is_numeric($val)) {
                         $field = $field * 1;
                         $val = $val * 1;
@@ -1832,7 +1841,19 @@ function wbItemFilter($item, $options, $field = null)
                             $field === $val ? $result = false : $result;
                             break;
                         case '$like':
-                            preg_match('/'.$val.'/ui', $field) ? $result : $result = false;
+                            if ($array) {
+                                // если поле является массивом
+                                // и в нём соделжится хотя-бы один из перечисленных элементов
+                                // то возвращаем true
+                                $result = false;
+                                foreach ($val as $v) {
+                                    (array)$v === $v ? $v = wbJsonEncode($v) : null;
+                                    in_array($v, $array) ? $result = true : null;
+                                    if ($result) break;
+                                }
+                            } else {
+                                preg_match('/'.$val.'/ui', $field) ? $result : $result = false;
+                            }
                             break;
                         case '$gte':
                             $field >= $val ? $result : $result = false;
@@ -1847,10 +1868,28 @@ function wbItemFilter($item, $options, $field = null)
 							$field < $val ? $result : $result = false;
                             break;
                         case '$nin':
-                            !in_array($field,(array)$val) ? $result : $result = false;
+                            if ($array) {
+                                $result = true;
+                                foreach ($val as $v) {
+                                    (array)$v === $v ? $v = wbJsonEncode($v) : null;
+                                    in_array($v, $array) ? $result = false : null;
+                                    if (!$result) break;
+                                }
+                            } else {
+                                !in_array($field, (array)$val) ? $result : $result = false;
+                            }
                             break;
                         case '$in':
-                            in_array($field,(array)$val) ? $result : $result = false;
+                            if ($array) {
+                                // если поле является массивом
+                                $result = true;
+                                foreach($val as $v) {
+                                    (array)$v === $v ? $v = wbJsonEncode($v) : null;
+                                    in_array($v, $array) ? $result : $result = false;
+                                }
+                            } else {
+                                in_array($field, (array)$val) ? $result : $result = false;
+                            }
                             break;
                         case '$regex':
                             preg_match('/'.$val.'/', $field) ? $result : $result = false;

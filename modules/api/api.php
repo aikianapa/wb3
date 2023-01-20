@@ -365,6 +365,14 @@ class modApi
         return $class->$func();
     }
 
+    function listview() {
+        header("Content-Type: text/html; charset=UTF-8");
+        $out = $this->app->fromFile(__DIR__ . '/api_ui.php');
+        $out->fetch();
+        $result = json_encode($this->list(),JSON_UNESCAPED_UNICODE);
+        echo $out;
+        exit;
+    }
 
     function list()
     {
@@ -376,9 +384,9 @@ class modApi
         /api/v2/list/{{table}}?field=value&@option=value
 
         query:
-            &field=[val1,val2]   - in_array(field,[..,..]);
-            &field!=[val1,val2]  - !in_array(field,[..,..]);
-            &field~=[val1,val2]  - массив в поле содержит одно из значений используется $like
+            &field=[val1,val2]   - in_array(field,[..,..]); значение поля присутствует в указанном массиве
+            &field!=[val1,val2]  - !in_array(field,[..,..]); значение поля отсутствует в указанном массиве
+            &field~=[val1,val2]  - массив в поле содержит одно из перечисленных значений
             &field=val           - field == 'val'
             &field!=val          - field !== 'val'
             &field"=val          - field == 'val' && field == 'VAL' && field == 'vAl' (регистр не учитывается)
@@ -407,15 +415,15 @@ class modApi
         $options = (object)$options;
         $form = $app->formClass($table);
         $app->vars('_post.filter') > '' ? $options->filter = $app->vars('_post.filter') : null;
+        $fields = $app->Dot();
+        $jflds = $app->Dot();
+        $return = isset($options->return) ? explode(',', $options->return) : false;
         if (isset($app->route->item)) {
             $json = $app->itemRead($table, $app->route->item);        
             if ($form && @method_exists($form, 'beforeItemShow')) {
                 $form->beforeItemShow($json);
             }
             if (isset($app->route->field)) {
-                $fields = $app->Dot();
-                $jflds = $app->Dot();
-
                 $fields->setReference($json);
                 if (substr($app->route->field, -2) == '.*') {
                     $json = array_values($fields->get(substr($app->route->field, 0, -2)));
@@ -425,7 +433,6 @@ class modApi
                 if ((array)$json === $json && isset($options->filter)) {
                     $json = $this->app->arrayFilter((array)$json, (array)$options);
                 }
-                $return = isset($options->return) ? explode(',', $options->return) : false;
                 if ($return) {
                     foreach($json as &$jtm) {
                         $jflds->setReference($jtm);
@@ -444,7 +451,18 @@ class modApi
             $json = $app->itemList($table, (array)$options);
             $json['list'] = (array)$json['list'];
             if ($form && @method_exists($form, 'beforeItemShow')) {
-                foreach($json['list'] as &$item) $form->beforeItemShow($item);
+                foreach($json['list'] as &$item) {
+                    $form->beforeItemShow($item);
+                    if ($return) {
+                    $jflds->setReference($item);
+                    $tmp = [];
+                    foreach ($return as $ret) {
+                        $ret = trim($ret);
+                        $tmp[$ret] = $jflds->get($ret);
+                    }
+                    $item = $tmp;
+                    }
+                }
             }
             if (isset($options->chunk)) {
                 return (array)$json;
