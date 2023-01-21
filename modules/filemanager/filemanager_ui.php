@@ -8,8 +8,8 @@
                 <div class="filemgr-sidebar-header">
                     <div id="filemanagerUploader" class="flex-fill mg-l-10">
                         <div class="uploader">
-                            <wb-module id="pickfiles" wb="module=filepicker&mode=button&original=true" class="btn btn-block btn-primary" wb-path="/">
-                                {{_lang.upload}} 
+                            <wb-module id="pickfiles" wb="module=filepicker&mode=button&original=true&ext=*" class="btn btn-block btn-primary" wb-path="/">
+                                {{_lang.upload}}
                                 <svg class="mi-upload-loading-arrow size-24" stroke="FFFFFF" wb-module="myicons"></svg>
                             </wb-module>
                         </div>
@@ -39,14 +39,13 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item hidden allow-single allow-file allow-file1"
-                                data-no-ext="zip tar arj rar gzip jpg jpeg png gif tif tiff">
+                            <li class="nav-item hidden allow-single allow-file allow-file1" data-no-ext="zip tar arj rar gzip jpg jpeg png gif tif tiff">
                                 <a href="#edit" class="nav-link">
                                     <svg class="mi mi-content-edit-pen size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.edit}}</span>
                                 </a>
                             </li>
-                            
+
                             <li class="nav-item hidden allow-single allow-dir allow-file allow-dir1 allow-file1">
                                 <a href="#rename" class="nav-link">
                                     <svg class="mi mi-input-text size-24" wb-module="myicons"></svg>
@@ -60,7 +59,7 @@
                                     <span>{{_lang.remove}}</span>
                                 </a>
                             </li>
-                            
+
                             <li class="nav-item hidden allow-all" data-no-ext="zip">
                                 <a href="#zip" class="nav-link">
                                     <svg class="mi mi-file-zip-rar-circle size-24" wb-module="myicons"></svg>
@@ -124,7 +123,7 @@
                         </nav>
                     </div>
                 </div>
-                
+
                 <table id="list" class="table table-striped table-hover tx-14 tx-gray-700">
                     <thead>
                         <tr>
@@ -164,39 +163,31 @@
                                 <!--td class="hidden-xs-down">{{ext}}</td-->
                                 <td class="actions tx-right">
                                     <div class="d-block wd-150" wb-if='"{{type}}"!=="back"'>
-                                                <a href="#edit" class="nobr nav-link" wb-if='"{{type}}"=="file"'
-                                                    data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.edit}}">
-                                                    <svg class="mi mi-content-edit-pen mr-2 size-24" wb-module="myicons"></svg>
-                                                </a>
-                                                <a href="#rendir" class="nobr nav-link" wb-if='"{{type}}"=="dir"'
-                                                    data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.rename}}">
-                                                    <svg class="mi mi-input-text size-24" wb-module="myicons"></svg>
-                                                </a>
-                                                <a href="#renfile" class="nobr nav-link" wb-if='"{{type}}"=="file"'
-                                                    data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.rename}}">
-                                                    <svg class="mi mi-input-text size-24" wb-module="myicons"></svg>
-                                                </a>
-                                                <a href="#renlink" class="nobr nav-link" wb-if='"{{type}}"=="dir1" OR "{{type}}"=="file1"'
-                                                    data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.rename}}">
-                                                    <svg class="mi mi-input-text size-24" wb-module="myicons"></svg>
-                                                </a>
-                                                <a href="{{href}}" download="{{name}}" class="nobr nav-link" wb-if='"{{type}}"=="file"'
-                                                    data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.download}}">
-                                                    <svg class="mi mi-download-arrow size-24" wb-module="myicons"></svg>
-                                                </a>
-                                                <a href="#rmfile" class="nobr nav-link" wb-if='"{{type}}"=="file"'
-                                                    data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.remove}}">
-                                                <svg class="mi mi-trash-delete-bin.3 size-24" wb-module="myicons"></svg>
-                                                </a>
-                                                <a href="#rmdir" class="nobr nav-link" wb-if='"{{type}}"=="dir"'
-                                                    data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.remove}}">
-                                                    <svg class="mi mi-trash-delete-bin.3 size-24" wb-module="myicons"></svg>
-                                                </a>
-                                                <a href="#rmlink" class="nobr nav-link" wb-if='"{{type}}"=="dir1" OR "{{type}}"=="file1"'
-                                                    data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.remove}}">
-                                                    <svg class="mi mi-trash-delete-bin.3 size-24" wb-module="myicons"></svg>
-                                                </a>
-                                </div>
+                                        <a href="#edit" class="nobr nav-link" wb-if='"{{type}}"=="file"' data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.edit}}">
+                                            <svg class="mi mi-content-edit-pen mr-2 size-24" wb-module="myicons"></svg>
+                                        </a>
+                                        <a href="#rendir" class="nobr nav-link" wb-if='"{{type}}"=="dir"' data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.rename}}">
+                                            <svg class="mi mi-input-text size-24" wb-module="myicons"></svg>
+                                        </a>
+                                        <a href="#renfile" class="nobr nav-link" wb-if='"{{type}}"=="file"' data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.rename}}">
+                                            <svg class="mi mi-input-text size-24" wb-module="myicons"></svg>
+                                        </a>
+                                        <a href="#renlink" class="nobr nav-link" wb-if='"{{type}}"=="dir1" OR "{{type}}"=="file1"' data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.rename}}">
+                                            <svg class="mi mi-input-text size-24" wb-module="myicons"></svg>
+                                        </a>
+                                        <a href="{{href}}" download="{{name}}" class="nobr nav-link" wb-if='"{{type}}"=="file"' data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.download}}">
+                                            <svg class="mi mi-download-arrow size-24" wb-module="myicons"></svg>
+                                        </a>
+                                        <a href="#rmfile" class="nobr nav-link" wb-if='"{{type}}"=="file"' data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.remove}}">
+                                            <svg class="mi mi-trash-delete-bin.3 size-24" wb-module="myicons"></svg>
+                                        </a>
+                                        <a href="#rmdir" class="nobr nav-link" wb-if='"{{type}}"=="dir"' data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.remove}}">
+                                            <svg class="mi mi-trash-delete-bin.3 size-24" wb-module="myicons"></svg>
+                                        </a>
+                                        <a href="#rmlink" class="nobr nav-link" wb-if='"{{type}}"=="dir1" OR "{{type}}"=="file1"' data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.remove}}">
+                                            <svg class="mi mi-trash-delete-bin.3 size-24" wb-module="myicons"></svg>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         </wb-foreach>
@@ -316,93 +307,93 @@
             </div>
         </div>
     </div>
-<wb-lang>
-    [ru]
-    refresh = Обновить
-    upload = Загрузить
-    actions = Действия
-    edit = Редактировать
-    rename = Переименовать
-    remove = Удалить
-    zip = Архивировать
-    unzip = Разархивировать
-    copy = Копировать
-    cut = Вырезать
-    paste = Вставить
-    download = Скачать
-    duplicate = Дублировать
-    filemanager = Файловый менеджер
-    cancel = Отмена
-    ok = Выполнить
-    save = Сохранить
-    saved = Сохранено
-    create = Создать
-    title_new_dir = Новая директория
-    title_new_file = Новый файл
-    title_rmdir = Удаление директории
-    title_rmfile = Удаление файла
-    title_rmlist = Множественное удаление
-    title_rendir = Переименование директории
-    title_renfile = Переименование файла
-    title_rewrite = Переизапись
-    title_zip = Архивация
-    title_unzip = Распаковка архива
-    prompt_new_dir = Создать новую директорию с именем
-    prompt_new_file = Создать новый файл с именем
-    prompt_rmdir = Удалить рекурсивно директорию
-    prompt_rmfile = Удалить файл
-    prompt_rmlist = Выполнить удаление
-    prompt_rmlist1 = выбранных объектов
-    prompt_rendir = Переименовать директорию
-    prompt_renfile = Переименовать файл
-    prompt_paste = Некоторые объекты уже существуют в этой директории.<br> Выполнить перезапись существующих объектов?
-    prompt_zip = Сжать выбранные объекты в архив?
-    prompt_unzip = Извлечь файлы и папки из архива?<br>Существующие объекты будут перезаписаны.
-    prompt_to = в
+    <wb-lang>
+        [ru]
+        refresh = Обновить
+        upload = Загрузить
+        actions = Действия
+        edit = Редактировать
+        rename = Переименовать
+        remove = Удалить
+        zip = Архивировать
+        unzip = Разархивировать
+        copy = Копировать
+        cut = Вырезать
+        paste = Вставить
+        download = Скачать
+        duplicate = Дублировать
+        filemanager = Файловый менеджер
+        cancel = Отмена
+        ok = Выполнить
+        save = Сохранить
+        saved = Сохранено
+        create = Создать
+        title_new_dir = Новая директория
+        title_new_file = Новый файл
+        title_rmdir = Удаление директории
+        title_rmfile = Удаление файла
+        title_rmlist = Множественное удаление
+        title_rendir = Переименование директории
+        title_renfile = Переименование файла
+        title_rewrite = Переизапись
+        title_zip = Архивация
+        title_unzip = Распаковка архива
+        prompt_new_dir = Создать новую директорию с именем
+        prompt_new_file = Создать новый файл с именем
+        prompt_rmdir = Удалить рекурсивно директорию
+        prompt_rmfile = Удалить файл
+        prompt_rmlist = Выполнить удаление
+        prompt_rmlist1 = выбранных объектов
+        prompt_rendir = Переименовать директорию
+        prompt_renfile = Переименовать файл
+        prompt_paste = Некоторые объекты уже существуют в этой директории.<br> Выполнить перезапись существующих объектов?
+        prompt_zip = Сжать выбранные объекты в архив?
+        prompt_unzip = Извлечь файлы и папки из архива?<br>Существующие объекты будут перезаписаны.
+        prompt_to = в
 
-    [en]
-    refresh = Refresh
-    upload = Upload
-    actions = Actions
-    edit = Edit
-    rename = Rename
-    remove = Remove
-    zip = Zip
-    unzip = UnZip
-    copy = Copy
-    cut = Cut
-    paste = Insert
-    download = Download
-    duplicate = Duplicate
-    filemanager = File Manager
-    cancel = Cancel
-    ok = Ok
-    save = Save
-    saved = Saved
-    create = Create
-    title_new_dir = New folder
-    title_new_file = New file
-    title_rmdir = Remove folder
-    title_rmfile = Remove file
-    title_rmlist = Remove objects
-    title_rendir = Rename folder
-    title_renfile = Rename file
-    title_rewrite = Rewrite
-    title_zip = Zip
-    title_unzip = Unzip
-    prompt_new_dir = "Create new folder with name"
-    prompt_new_file = "Create new file with name"
-    prompt_rmdir = Remove folder recursive
-    prompt_rmfile = Remove file
-    prompt_rmlist = Remove
-    prompt_rmlist1 = selected objects
-    prompt_rendir = Rename folder
-    prompt_renfile = Rename file
-    prompt_paste = Some objects already exists in this folder.<br> Rewrite exists objects?
-    prompt_zip = Zip selected objects?
-    prompt_unzip = Unzip objects from archive?<br>Exists objects will be rewrite.
-    prompt_to = to
-</wb-lang>
+        [en]
+        refresh = Refresh
+        upload = Upload
+        actions = Actions
+        edit = Edit
+        rename = Rename
+        remove = Remove
+        zip = Zip
+        unzip = UnZip
+        copy = Copy
+        cut = Cut
+        paste = Insert
+        download = Download
+        duplicate = Duplicate
+        filemanager = File Manager
+        cancel = Cancel
+        ok = Ok
+        save = Save
+        saved = Saved
+        create = Create
+        title_new_dir = New folder
+        title_new_file = New file
+        title_rmdir = Remove folder
+        title_rmfile = Remove file
+        title_rmlist = Remove objects
+        title_rendir = Rename folder
+        title_renfile = Rename file
+        title_rewrite = Rewrite
+        title_zip = Zip
+        title_unzip = Unzip
+        prompt_new_dir = "Create new folder with name"
+        prompt_new_file = "Create new file with name"
+        prompt_rmdir = Remove folder recursive
+        prompt_rmfile = Remove file
+        prompt_rmlist = Remove
+        prompt_rmlist1 = selected objects
+        prompt_rendir = Rename folder
+        prompt_renfile = Rename file
+        prompt_paste = Some objects already exists in this folder.<br> Rewrite exists objects?
+        prompt_zip = Zip selected objects?
+        prompt_unzip = Unzip objects from archive?<br>Exists objects will be rewrite.
+        prompt_to = to
+    </wb-lang>
 </div>
 <script type="wbapp">
     wbapp.loadScripts(["/engine/modules/filemanager/filemanager.js?{{_env.new_id}}"],"filemanager-js");

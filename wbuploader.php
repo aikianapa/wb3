@@ -165,7 +165,7 @@ class wbuploader
                 $error = $res['error'] = "Превышен размер файла {$size_max}";
             }
 
-            if (!in_array($ext, $allow)) {
+            if ($allow !== ['*'] && !in_array($ext, $allow)) {
                 $error = $res['error'] = "Расширение файла {$ext} не разрешено";
             }
 
