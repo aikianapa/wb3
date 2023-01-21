@@ -112,3 +112,14 @@
 .jsontree_node_empty > .jsontree_label-wrapper > .jsontree_label {
     cursor: default !important;
 }
+
+.btn {
+    border-radius: 5px;
+    padding: 5px 7px;
+    background-color: #0026ff;
+    color: #FFF;
+    margin-right: 3px;
+    font-family: sans-serif;
+    text-decoration: none;
+    box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.404);
+}
