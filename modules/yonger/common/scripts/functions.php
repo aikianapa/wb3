@@ -19,7 +19,11 @@
                 $app->route->name = @$map[$idx]['n'];
                 $app->route->url = @$map[$idx]['u'];
                 if (!$app->vars('_route.tpl')) {
-                    $tpl = $app->getTpl($app->vars('_route.table') . '.php');
+                    if ($app->vars('_route.mode') == 'show' && is_file($app->vars('_route.path_app').'/tpl/'. $app->vars('_route.table').'-show.php')) {
+                        $tpl = $app->getTpl($app->vars('_route.table') . '-show.php');
+                    } else {
+                        $tpl = $app->getTpl($app->vars('_route.table') . '.php');
+                    }
                     if ($tpl !== NULL) {
                         $app->route->tpl =  $app->vars('_route.table') . '.php';
                     } else {
