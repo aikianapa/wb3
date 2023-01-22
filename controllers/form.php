@@ -75,7 +75,7 @@ class ctrlForm
                     if (!$dom && isset($app->route->tpl)) {
                         $dom = $app->getTpl($app->route->tpl);
                     }
-                    if (!$dom ) {
+                    if (!$dom or $dom->outer <= ' ') {
                         // последняя попытка
                         $app->route->tpl = $table.'-show.php';
                         $dom = $app->getTpl($app->route->tpl);
