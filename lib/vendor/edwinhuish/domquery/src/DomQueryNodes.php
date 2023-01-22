@@ -68,7 +68,7 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
      * @var mixed
      */
     public $libxml_options =
-        LIBXML_HTML_NOIMPLIED // turns off the automatic adding of implied html/body
+    LIBXML_HTML_NOIMPLIED // turns off the automatic adding of implied html/body
         | LIBXML_HTML_NODEFDTD // prevents a default doctype being added when one is not found
         | LIBXML_COMPACT;
 
@@ -135,9 +135,9 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
                     $this->empty();
                 }
             } elseif (\is_object($arg)) {
-                throw new \InvalidArgumentException('Unknown object '.\get_class($arg).' given as argument');
+                throw new \InvalidArgumentException('Unknown object ' . \get_class($arg) . ' given as argument');
             } else {
-                throw new \InvalidArgumentException('Unknown argument '.\gettype($arg));
+                throw new \InvalidArgumentException('Unknown argument ' . \gettype($arg));
             }
         }
     }
@@ -213,7 +213,7 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
     {
         $result = $this->createChildInstance();
 
-        if ( ! isset($this->document)) {
+        if (!isset($this->document)) {
             return $result;
         }
 
@@ -222,7 +222,7 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
         if (isset($this->root_instance) || isset($this->xpath_query)) {  // all nodes as context
             foreach ($this->nodes as $node) {
                 /** @noinspection PhpUnhandledExceptionInspection */
-                if ($result_node_list = $this->xpathQuery('.'.$xpath_query, $node)) {
+                if ($result_node_list = $this->xpathQuery('.' . $xpath_query, $node)) {
                     /** @noinspection PhpUnhandledExceptionInspection */
                     $result->loadDomNodeList($result_node_list);
                 }
@@ -291,7 +291,7 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
      */
     public function loadDomNodeList(\DOMNodeList $dom_node_list)
     {
-        if ( ! isset($this->document) && $dom_node_list->length === 0) {
+        if (!isset($this->document) && $dom_node_list->length === 0) {
             throw new \Exception('DOMDocument is missing!');
         }
 
@@ -339,19 +339,19 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
     {
         $this->preserve_no_newlines = (strpos($content, '<') !== false && strpos($content, "\n") === false);
 
-        if ( ! \is_bool($this->xml_mode)) {
+        if (!\is_bool($this->xml_mode)) {
             $this->xml_mode = (stripos($content, '<?xml') === 0);
         }
 
         $this->xml_print_pi = (stripos($content, '<?xml') === 0);
 
         $xml_pi_node_added = false;
-        if ( ! $this->xml_mode && $encoding && stripos($content, '<?xml') === false) {
-            $content = '<?xml encoding="'.$encoding.'">'.$content; // add pi node to make libxml use the correct encoding
+        if (!$this->xml_mode && $encoding && stripos($content, '<?xml') === false) {
+            $content = '<?xml encoding="' . $encoding . '">' . $content; // add pi node to make libxml use the correct encoding
             $xml_pi_node_added = true;
         }
 
-//        libxml_disable_entity_loader(true);
+        //        libxml_disable_entity_loader(true);
         libxml_use_internal_errors(true);
 
         $dom_document = new \DOMDocument('1.0', $encoding);
@@ -451,23 +451,23 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
         return $result;
     }
 
-//    protected function replaceEqToNthChild(string $selector)
-//    {
-//        $callback = function ($matches) {
-//            $idx = $matches[2] * 1;
-//
-//            if ($matches[2] >= 0) {
-//                $idx = $idx + 1;
-//            }
-//
-//            return ':nth-child('.$idx.')';
-//        };
-//
-//        return preg_replace_callback(
-//            "|(:eq)\((-?[0-9]\d*)\)|",
-//            $callback,
-//            $selector);
-//    }
+    //    protected function replaceEqToNthChild(string $selector)
+    //    {
+    //        $callback = function ($matches) {
+    //            $idx = $matches[2] * 1;
+    //
+    //            if ($matches[2] >= 0) {
+    //                $idx = $idx + 1;
+    //            }
+    //
+    //            return ':nth-child('.$idx.')';
+    //        };
+    //
+    //        return preg_replace_callback(
+    //            "|(:eq)\((-?[0-9]\d*)\)|",
+    //            $callback,
+    //            $selector);
+    //    }
 
     /**
      * Get next element from node
@@ -530,7 +530,7 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
         $result = $this->find($selector);
         if ($result->length === 0) {
             if (\is_string($selector)) {
-                throw new \Exception('Find with selector "'.$selector.'" failed!');
+                throw new \Exception('Find with selector "' . $selector . '" failed!');
             }
             throw new \Exception('Find with node (collection) as selector failed!');
         }
@@ -704,8 +704,12 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
             if (isset($node->$name)) {
                 return $node->{$name};
             }
-            if ($node instanceof \DOMElement && $node->hasAttribute($name)) {
-                return $node->getAttribute($name);
+            try {
+                if ($node instanceof \DOMElement && $node->hasAttribute($name)) {
+                    return $node->getAttribute($name);
+                }
+            } catch (\Error $err) {
+                null;
             }
         }
 
@@ -727,7 +731,7 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
             return \call_user_func_array(array($this->getFirstElmNode(), $name), $arguments);
         }
 
-        throw new \Exception('Unknown call '.$name);
+        throw new \Exception('Unknown call ' . $name);
     }
 
     /**
@@ -747,9 +751,9 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
             if ($node_list instanceof \DOMNodeList) {
                 return $node_list;
             } elseif ($node_list === false && $context_node) {
-                throw new \Exception('Expression '.$expression.' is malformed or contextnode is invalid.');
+                throw new \Exception('Expression ' . $expression . ' is malformed or contextnode is invalid.');
             } elseif ($node_list === false) {
-                throw new \Exception('Expression '.$expression.' is malformed.');
+                throw new \Exception('Expression ' . $expression . ' is malformed.');
             }
         }
 
@@ -800,7 +804,7 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
     {
         $result = $this->createChildInstance();
 
-        if ( ! isset($this->document) || $this->length <= 0) {
+        if (!isset($this->document) || $this->length <= 0) {
             return $result;
         }
 
@@ -821,7 +825,7 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
         $outer_html = '';
 
         if ($this->xml_mode && $this->xml_print_pi) {
-            $outer_html .= '<?xml version="'.$this->document->xmlVersion.'" encoding="'.$this->document->xmlEncoding.'"?>';
+            $outer_html .= '<?xml version="' . $this->document->xmlVersion . '" encoding="' . $this->document->xmlEncoding . '"?>';
             $outer_html .= "\n\n";
         }
 
@@ -893,15 +897,15 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
         $html = '';
         if ($content_node = $this->getFirstElmNode()) {
             if (isset($content_node->ownerDocument)) {
-            $document = $content_node->ownerDocument;
+                $document = $content_node->ownerDocument;
 
-            foreach ($content_node->childNodes as $node) {
-                if ($this->xml_mode) {
-                    $html .= $document->saveXML($node);
-                } else {
-                    $html .= $document->saveHTML($node);
+                foreach ($content_node->childNodes as $node) {
+                    if ($this->xml_mode) {
+                        $html .= $document->saveXML($node);
+                    } else {
+                        $html .= $document->saveHTML($node);
+                    }
                 }
-            }
             }
             $html = $this->handleHtmlResult($html);
         }
@@ -957,7 +961,7 @@ abstract class DomQueryNodes implements \Countable, \IteratorAggregate, \ArrayAc
      */
     public function offsetGet($key)
     {
-        if ( ! \is_int($key)) {
+        if (!\is_int($key)) {
             throw new \BadMethodCallException('Attempting to access node list with non-integer');
         }
 
