@@ -27,15 +27,12 @@ class ctrlForm
             } else {
                 $out = $this->app->getForm($form,$mode);
             }
-            /*
-            не понятно зачем
             if ($out) {
                 if ($item > '') $out->item = $this->app->itemRead($form,$item);
                 $out->fetch();
                 echo $out->outer();
                 exit;
             }
-            */
         }
         if (!is_callable(@$this->$mode)) {
             header('HTTP/1.1 404 Not Found');
