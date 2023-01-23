@@ -4,6 +4,10 @@
 
 class mongodbDrv
 {
+    public $app;
+    public $driver;
+    public $db;
+
     public function __construct(&$app)
     {
         $this->app = &$app;
@@ -230,9 +234,16 @@ class mongodbDrv
                 $key = substr($key, 1);
             } else if (substr($key,0,1) == '*') {
                 unset($filter[$key]);
+            } else if (substr($key,0,1) !== '$') {
+                // если поле участвует в запросе, но отсутствует в projection
+                // исключаем его из финальной проверки
+                if (!in_array($key, array_keys($params['projection']))) {
+                    unset($filter[$key]);
+                }
+            } else {
+                (array)$node === $node ? $node = $this->filterPrepare($node, $params) : null;
+                $filter[$key] = $node;
             }
-            (array)$node === $node ? $node = $this->filterPrepare($node, $params) : null;
-            $filter[$key] = $node;
         }
         return $filter;
     }
