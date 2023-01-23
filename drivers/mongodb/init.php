@@ -237,7 +237,7 @@ class mongodbDrv
             } else if (substr($key,0,1) !== '$') {
                 // если поле участвует в запросе, но отсутствует в projection
                 // исключаем его из финальной проверки
-                if (!in_array($key, array_keys($params['projection']))) {
+                if (isset($params['projection']) && !in_array($key, array_keys($params['projection']))) {
                     unset($filter[$key]);
                 }
             } else {
