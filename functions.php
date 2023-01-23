@@ -1841,7 +1841,7 @@ function wbItemFilter($item, $options, $field = null)
                             $field === $val ? $result = false : $result;
                             break;
                         case '$like':
-                            if ($array) {
+                            if ($array && (array)$val==$val) {
                                 // если поле является массивом
                                 // и в нём соделжится хотя-бы один из перечисленных элементов
                                 // то возвращаем true
