@@ -60,7 +60,7 @@ class modApi
         }
 
         if ($app->vars('_sett.modules.api.active') !== 'on' or ($app->route->localreq == true && !$app->vars('_route.token'))) {
-          //  return true;
+            return true;
         }
 
         foreach ($app->vars('_sett.modules.api.allowmode') as $am) {
