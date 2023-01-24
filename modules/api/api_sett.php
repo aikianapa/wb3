@@ -49,7 +49,7 @@
             <select name="table" class="form-control" placeholder="Таблицы" wb-select2 multiple>
                 <option value="*">All</option>
                 <wb-foreach wb="from=_var.tables&tpl=false">
-                    <option value="{{_val}}" wb-if="substr({{_val}},0,1) !== '_'">{{_val}}</option>
+                    <option value="{{_val}}" wb-if="'{{substr({{_val}},0,1)}}' !== '_'">{{_val}}</option>
                 </wb-foreach>
             </select>
         </div>
@@ -95,7 +95,7 @@
             <select name="table" class="form-control" placeholder="Таблицы" wb-select2 multiple>
                 <option value="*">All</option>
                 <wb-foreach wb="from=_var.tables&tpl=false">
-                    <option value="{{_val}}" wb-if="substr({{_val}},0,1) !== '_'">{{_val}}</option>
+                    <option value="{{_val}}" wb-if="'{{substr({{_val}},0,1)}}' !== '_'">{{_val}}</option>
                 </wb-foreach>
             </select>
         </div>
@@ -119,4 +119,5 @@
         </div>
     </wb-multiinput>
 </div>
+
 </html>
