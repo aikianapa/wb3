@@ -7,6 +7,7 @@ class modApi
 {
     private $app;
     private $table;
+    private $role;
     private $mode;
     private $method;
 
@@ -30,6 +31,7 @@ class modApi
         header('Content-Type: charset=utf-8');
         header('Content-Type: application/json');
         $this->app = &$app;
+        $this->role = $this->app->vars('_sess.user.role');
         $app->api = &$this;
         $this->checkMethod(['get','post','put','auth','delete']);
         $mode = $this->mode = $app->vars('_route.mode');
@@ -58,7 +60,7 @@ class modApi
         }
 
         if ($app->vars('_sett.modules.api.active') !== 'on' or ($app->route->localreq == true && !$app->vars('_route.token'))) {
-            return true;
+          //  return true;
         }
 
         foreach ($app->vars('_sett.modules.api.allowmode') as $am) {
@@ -74,13 +76,6 @@ class modApi
 
         $access = $this->checkAllow();
 
-        if ($access) {
-            if ($app->vars('_route.token') && in_array($app->vars('_route.token'), $app->vars('_sett.modules.api.tokens'))) {
-                $access = true;
-            } else {
-                $access = $app->checkToken($app->vars('_route.token'));
-            }
-        }
         if (!$access) {
             header("HTTP/1.1 401 Unauthorized", true, 401);
             echo json_encode(['error'=>true,'msg'=>'Access denied']);
@@ -90,9 +85,10 @@ class modApi
     }
 
     public function checkAllow() {
+        $app = &$this->app;
         $table = $this->app->vars('_route.table');
         $mode = $this->app->vars('_route.mode');
-        $role = $this->app->vars('_sess.user.role');
+        $role = $this->role;
         $modes = ['create','read','update','delete','func','list'];
         if (!in_array($mode, $modes)) {
             return true;
@@ -110,6 +106,7 @@ class modApi
         $result = false;
         $allow = true;
         foreach ((array)$this->app->vars('_sett.modules.api.allow') as $am) {
+            isset($am['role']) ? null : $am['role'] = [''];
             if (in_array($table, $am['table']) OR in_array("*", $am['table'])) {
                 $allow = false;
                 if (in_array($role, $am['role']) OR in_array("*", $am['role'])) {
@@ -121,6 +118,7 @@ class modApi
         }
         $disallow = false;
         foreach ((array)$this->app->vars('_sett.modules.api.disallow') as $am) {
+            isset($am['role']) ? null : $am['role'] = [''];
             if (in_array($table, $am['table']) or in_array("*", $am['table'])) {
                 $disallow = false;
                 if (in_array($role, $am['role']) or in_array("*", $am['role'])) {
@@ -131,6 +129,15 @@ class modApi
             }
         }
         $result = ($allow == true && $disallow == false) ? true : false;
+
+        if ($result) {
+            if ($app->vars('_route.token') && in_array($app->vars('_route.token'), $app->vars('_sett.modules.api.tokens'))) {
+                $result = true;
+            } else if ($this->role > '') {
+                $result = $app->checkToken($app->vars('_route.token'));
+            }
+        }
+
         return $result;
     }
 
