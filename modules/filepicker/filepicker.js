@@ -4,6 +4,8 @@ $(document).on("filepicker-js", async function() {
         wbapp.trigger("filepicker-init");
         return;
     } else {
+        document.filepicker = true;
+        console.log("loading");
         wbapp.loadStyles([
             "/engine/modules/filepicker/assets/css/cropper.min.css",
             "/engine/modules/filepicker/assets/css/fileicons.css",
@@ -13,16 +15,12 @@ $(document).on("filepicker-js", async function() {
 
         wbapp.loadScripts([
             "/engine/modules/filepicker/assets/js/cropper.min.js",
-            "/engine/modules/filepicker/assets/js/filepicker.min.js"
-        ], "filepicker-load");
-
-        $(document).on("filepicker-load", function() {
-            wbapp.loadScripts([
+            "/engine/modules/filepicker/assets/js/filepicker.min.js",
                 "/engine/modules/filepicker/assets/js/filepicker-drop.min.js",
                 "/engine/modules/filepicker/assets/js/filepicker-camera.min.js",
                 "/engine/modules/filepicker/assets/js/filepicker-crop.min.js",
             ], "filepicker-init");
-        })
+        
 
         wbapp.on("filepicker-init", function() {
             var selector = ".filepicker";
@@ -186,7 +184,13 @@ $(document).on("filepicker-js", async function() {
                             autoUpload: true
                         },
                         //plugins: ['ui', 'drop', 'camera', 'crop']
-                        plugins: ['ui', 'drop', 'crop']
+                        plugins: ['ui', 'drop', 'crop'],
+                        crop: {
+                            container: $filepicker.find('.crop-modal')
+                        },
+                        camera: {
+                            container: $filepicker.find('.camera-modal')
+                        }
                     }).on('done.filepicker', function(e, data) {
                         if (data.files[0].original == null || data.files[0].size == 0 || data.files[0].error !== undefined) {
                             // ошибка загрузки
@@ -299,7 +303,7 @@ $(document).on("filepicker-js", async function() {
 
 
 
-                    var fp = $filepicker.filePicker();
+                    let fp = $filepicker.filePicker();
 
 
                     $filepicker.delegate("a.delete", wbapp.evClick, function(e) {
@@ -371,7 +375,6 @@ $(document).on("filepicker-js", async function() {
                 }
                 listview();
             });
-            document.filepicker = true;
         });
 
 
