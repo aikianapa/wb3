@@ -73,8 +73,12 @@ class ctrlForm
                         $dom = $app->getTpl($app->route->tpl);
                     }
                     if (!$dom ) {
-                        // последняя попытка
                         $app->route->tpl = $table.'-show.php';
+                        $dom = $app->getTpl($app->route->tpl);
+                    }
+                    if (!$dom) {
+                        // последняя попытка
+                        $app->route->tpl = $table . '.php';
                         $dom = $app->getTpl($app->route->tpl);
                         !$dom ? $dom = $this->get404() : null;
                     }
