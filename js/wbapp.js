@@ -21,7 +21,33 @@ setTimeout(async function() {
     wbapp.start();
 }, 5);
 
+wbapp.metadata = function () {
+    let meta = $(`meta[name="wbmeta"]`)
+    let data = meta.attr('content')
+    data = data > '' ? JSON.parse(atob(data)) : {}
+    wbapp._session = data.sess
+    wbapp._settings = data.sett
+    wbapp._route = data.rout
+    return data;
+}
+
+wbapp.css = function (url) {
+    return new Promise((resolve, reject) => {
+        let link = document.createElement('link');
+        link.type = 'text/css';
+        link.rel = 'stylesheet';
+        link.onload = () => resolve();
+        link.onerror = () => reject();
+        link.href = url;
+        let res = false;
+        if (!res && document.querySelector('head') !== undefined) { document.querySelector('head').append(link); res = true; }
+        if (!res && document.querySelector('body') !== undefined) { document.querySelector('body').append(link); res = true; }
+        if (!res && document.querySelector('html') !== undefined) { document.querySelector('html').append(link); res = true; }
+    });
+};
+
 wbapp.start = async function() {
+    wbapp.metadata()
     if (typeof str_replace === 'undefined') {
         loadPhpjs();
         return;
@@ -1727,17 +1753,11 @@ wbapp.renderClient = async function(params, data = {}) {
 }
 
 wbapp.newId = function(separator, prefix) {
-    if (separator == undefined) {
-        separator = "";
-    }
+    (separator == undefined) ? separator = "" : null;
     var mt = explode(" ", microtime());
     var md = substr(str_repeat("0", 2) + dechex(ceil(mt[0] * 10000)), -4);
     var id = dechex(time() + rand(100, 999));
-    if (prefix !== undefined && prefix > "") {
-        id = prefix + separator + id + md;
-    } else {
-        id = "id" + id + separator + md;
-    }
+    id = (prefix !== undefined && prefix > "") ? prefix + separator + id + md : "id" + id + separator + md;
     return id;
 }
 
@@ -1972,8 +1992,6 @@ wbapp.loadScripts = async function(scripts = [], trigger = null, func = null) {
 wbapp.loadStyles = async function(styles = [], trigger = null, func = null) {
     if (wbapp.loadedStyles == undefined) wbapp.loadedStyles = [];
     var i = 0;
-
-
     styles.forEach(function(src) {
         setTimeout(function() {
             if (wbapp.loadedStyles.indexOf(src) !== -1) {
@@ -1988,24 +2006,7 @@ wbapp.loadStyles = async function(styles = [], trigger = null, func = null) {
                 }
             } else {
                 if (wbapp.devmode && src.indexOf('?') == -1) src += '?' + wbapp.devmode;
-                var style = document.createElement('link');
-                wbapp.loadedStyles.push(src);
-                style.href = src;
-                style.rel = "stylesheet";
-                style.type = "text/css";
-                style.async = false;
-                style.onload = function() {
-                    i++;
-                    if (i >= styles.length) {
-                        if (func !== null) return func(styles);
-                        if (trigger !== null) {
-                            $(document).find("script#" + trigger + "-remove").remove();
-                            $(document).trigger(trigger);
-                            wbapp.console("Trigger: " + trigger);
-                        }
-                    }
-                }
-                document.head.appendChild(style);
+                wbapp.css(src)
             }
         }, 1)
     });
