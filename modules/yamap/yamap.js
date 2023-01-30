@@ -74,11 +74,17 @@ $(document).on("yandex-map-js", function() {
             if ($(this).attr("width") > "") $(this).width($(this).attr("width"));
             if ($(this).attr("height") > "") $(this).height($(this).attr("height"));
             if ($(this).attr("name") > "") $(this).find(".yamap_data").attr("name", $(this).attr("name"));
+            if ($(this).attr("scroll") > "") var scroll = $(this).attr("scroll");
 
             var height = $(this).height();
             if (height == 0) {
                 height = 300;
                 $(this).height(height);
+            }
+
+
+            if (scroll !== undefined && scroll == "false") {
+                map.behaviors.disable('scrollZoom');
             }
 
             $(window).on("resize", function() {
