@@ -47,7 +47,6 @@ wbapp.css = function (url) {
 };
 
 wbapp.start = async function() {
-    wbapp.metadata()
     if (typeof str_replace === 'undefined') {
         loadPhpjs();
         return;
@@ -56,6 +55,7 @@ wbapp.start = async function() {
         loadJquery();
         return;
     }
+    wbapp.metadata()
     var data = {};
     wbapp.bind = {};
     wbapp.ui = {
@@ -1937,6 +1937,15 @@ wbapp.console = async function(text) {
     }
 }
 
+wbapp.require = function(src) {
+    let script = document.createElement('script');
+    let head = document.getElementsByTagName('head')[0];
+    script.type = 'text/javascript';
+    script.src = src;
+    head.appendChild(script);
+}
+
+
 wbapp.loadScripts = async function(scripts = [], trigger = null, func = null) {
     if (document.loadedScripts == undefined) document.loadedScripts = [];
     if (document.loadingScripts == undefined) document.loadingScripts = [];
@@ -2208,7 +2217,7 @@ var loadPhpjs = async function() {
     }
 }
 
-var loadJquery = async function() {
+var loadJquery = function() {
     if (_tmpjq == false) {
         _tmpjq = true;
         let jquery = document.createElement('script');
