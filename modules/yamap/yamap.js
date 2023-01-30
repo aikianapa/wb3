@@ -84,7 +84,8 @@ $(document).on("yandex-map-js", function() {
 
 
             if (scroll !== undefined && scroll == "false") {
-                map.behaviors.disable('scrollZoom');
+                // не работает - карта не отображается
+                //map.behaviors.disable('scrollZoom');
             }
 
             $(window).on("resize", function() {
