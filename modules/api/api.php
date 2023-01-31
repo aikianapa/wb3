@@ -421,11 +421,19 @@ class modApi
         $table = $app->route->table;
         $query = (array)$app->route->query;
         $options = $this->app->filterPrepare($app->route->query);
-        $options = (object)$options;
         $form = $app->formClass($table);
-        $app->vars('_post.filter') > '' ? $options->filter = $app->vars('_post.filter') : null;
+        if ($app->vars('_post.filter') > '') {
+            $options['filter'] = (array)$app->vars('_post.filter');
+            foreach($options['filter'] as $key => $val) {
+                if (substr($key,0,1) == '@') {
+                    $options[substr($key,1)] = $val;
+                    unset($options['filter'][$key]);
+                }
+            }
+        }
         $fields = $app->Dot();
         $jflds = $app->Dot();
+        $options = (object)$options;
         $return = isset($options->return) ? explode(',', $options->return) : false;
         if (isset($app->route->item)) {
             $json = $app->itemRead($table, $app->route->item);        

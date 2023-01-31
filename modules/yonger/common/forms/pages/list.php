@@ -77,6 +77,7 @@
             },
             expand(ev) {
                 let data = $(ev.node).parent('[data-item]').data();
+                console.log(data);
                 $(ev.node).parent('[data-item]').removeClass('dd-collapsed')
                 wbapp.data('yonger.pagelist.exp_' + data.form + '_' + data.item, true)
                 if (data.inner !== "pages") {
@@ -97,7 +98,6 @@
                             item.url = data.path + '/' + wbapp.furl(item.header)
                             item.menu = ''
                             yongerPages.alturl(item)
-                            console.log(item.url);
                             ev.push('ch', item);
                         })
                     })
@@ -328,7 +328,7 @@
         <span class="dd-info col-sm-3">
             {{#if ~/role == "admin"}} {{#if inner}} {{#if inner !== "pages"}} {{#if inner !== _form}}
             <div class="dropdown d-inline">
-                <svg class="dropdown-toggle cursor-pointer mi mi-item-select-plus-add" size="24" stroke="0168fa" wb-on wb-module="myicons"
+                <svg class="cursor-pointer dropdown-toggle mi mi-item-select-plus-add" size="24" stroke="0168fa" wb-on wb-module="myicons"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></svg>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="#" on-click="newpage">Новая страница</a>
@@ -355,24 +355,24 @@
 
 
 <div class="m-3" id="yongerPages" wb-off>
-    <nav class="nav navbar navbar-expand-md col px-3 py-2 t-0 position-sticky bg-light rounded-10 z-index-150 ">
-        <h3 class="tx-bold tx-spacing--2 order-1">Страницы</h3>
-        <button class="navbar-toggler order-2" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+    <nav class="px-3 py-2 nav navbar navbar-expand-md col t-0 position-sticky bg-light rounded-10 z-index-150 ">
+        <h3 class="order-1 tx-bold tx-spacing--2">Страницы</h3>
+        <button class="order-2 navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
             aria-expanded="true" aria-label="Toggle navigation">
             <i class="wd-20 ht-20 fa fa-ellipsis-v"></i>
         </button>
-        <div class="ml-auto order-3 collapse d-md-block" id="navbarSupportedContent">
-            <input type="search" class="form-control d-inline-block rounded-10 wd-200 mb-1" placeholder="Поиск" on-keyup="find">
+        <div class="order-3 ml-auto collapse d-md-block" id="navbarSupportedContent">
+            <input type="search" class="mb-1 form-control d-inline-block rounded-10 wd-200" placeholder="Поиск" on-keyup="find">
             <div class="d-xs-block d-sm-inline-block">
-                <button type="button" class="btn btn-secondary mb-1" on-click="header">
+                <button type="button" class="mb-1 btn btn-secondary" on-click="header">
                     <svg class="mi mi-menubar-arrow-up" size="24" stroke="FFFFFF" wb-on wb-module="myicons"></svg>
                     <span class="d-none d-sm-inline">Шапка</span>
                 </button>
-                <button type="button" class="btn btn-secondary mb-1" on-click="footer">
+                <button type="button" class="mb-1 btn btn-secondary" on-click="footer">
                     <svg class="mi mi-menubar-arrow-down" size="24" stroke="FFFFFF" wb-on wb-module="myicons"></svg>
                     <span class="d-none d-sm-inline">Подвал</span>
                 </button>
-                <button type="button" class="btn btn-primary mb-1" on-click="pageadd">
+                <button type="button" class="mb-1 btn btn-primary" on-click="pageadd">
                     <svg class="mi mi-item-select-plus-add" size="24" stroke="FFFFFF" wb-on wb-module="myicons"></svg>
                     <span class="d-none d-sm-inline">Создать</span>
                 </button>
