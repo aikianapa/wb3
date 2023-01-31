@@ -164,8 +164,18 @@ class mongodbDrv
         $limit = isset($params['limit']) ? $params['limit'] : null;
         $options['filter'] = $this->filterPrepareAlt($filter, $params);
         $filter = $this->filterPrepare($filter,$params);
+
         $query = new MongoDB\Driver\Query($filter, $params);
-        $rows = $this->db->executeQuery("{$this->db->dbname}.{$form}", $query);
+        try {
+            $rows = $this->db->executeQuery("{$this->db->dbname}.{$form}", $query);
+        } catch (\Throwable $th) {
+            echo json_encode([
+                'error'=>true,
+                'msg' => 'Ошибка в запросе'
+            ], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        
         $find = $rows->toArray();
         $list = [];
         $count = 0;
@@ -214,7 +224,12 @@ class mongodbDrv
             } else if (substr($key,0,1) == '@') {
                 unset($filter[$key]);
                 $params['limit'] = null;
+            } 
+            if (wbIsJson($node)) {
+                $node = json_decode($node,true);
+                (array)$node === $node ? $node = $this->filterPrepare($node, $params) : null;
             }
+            isset($filter[$key]) ? $filter[$key] = $node : null;
         }
         return $filter;
     }
@@ -240,10 +255,12 @@ class mongodbDrv
                 if (isset($params['projection']) && !in_array($key, array_keys($params['projection']))) {
                     unset($filter[$key]);
                 }
-            } else {
-                (array)$node === $node ? $node = $this->filterPrepare($node, $params) : null;
-                $filter[$key] = $node;
             }
+            if (wbIsJson($node)) {
+                $node = json_decode($node, true);
+                (array)$node === $node ? $node = $this->filterPrepare($node, $params) : null;
+            }
+            isset($filter[$key]) ? $filter[$key] = $node : null;
         }
         return $filter;
     }
