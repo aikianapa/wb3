@@ -198,13 +198,13 @@ $(document).on("filepicker-js", async function() {
                             $.each($filepicker.list, function(i, line) {
                                 if (line.name !== undefined && line.name == data.files[0].name) {
                                     let $card = $listview.find(".card:eq(" + j + ")");
-                                    $card.find("img")
-                                        .attr("src", "/engine/modules/filepicker/assets/img/error.png")
+                                    $card.find("img.card-img-top")
+                                        .attr("src", "/thumb/" + width + "x" + height + "/src/engine/modules/filepicker/assets/img/error.png")
                                         .removeAttr("loading");
                                     wbapp.toast(wbapp._settings.sysmsg.error, data.files[0].error, { 'bgcolor': 'danger' });
                                     setTimeout(function() {
                                         if (!$(inpfile).is("[multiple]")) {
-                                            $card.find('img').attr("src", "/thumbc/" + width + "x" + height + "/src/null");
+                                            $card.find('img.card-img-top').attr("src", "/thumbc/" + width + "x" + height + "/src/null");
                                         } else {
                                             $card.remove();
                                         }

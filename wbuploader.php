@@ -87,28 +87,6 @@ class wbuploader
         $allow = ['gif', 'png', 'jpg', 'jpeg', 'svg','webp', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'];
         $error = false;
 
-        if (isset($_POST['deletefile'])) {
-        $path = $_POST['upload_url'] ? str_replace('//', '/', $_POST['upload_url']) : '/uploads';
-        $folderPath = str_replace('//', '/', "{$this->root}/{$path}");
-            $files = explode(',', $_POST['deletefile']);
-            foreach ($files as $file) {
-                @unlink($folderPath.$file);
-            }
-            if (is_file($folderPath.$_POST['deletefile'])) {
-                $res=[
-                    'error'=>true,
-                    'msg'=>"Файл не удалось удалить"
-                ];
-            } else {
-                $res=[
-                    'error'=>false,
-                    'msg'=>"Файл удалён"
-                ];
-            }
-            echo json_encode($res);
-            exit();
-        }
-
         if (!$_FILES["files"]) {//No file chosen
             $res=[
                 'error'=>true,
@@ -145,6 +123,7 @@ class wbuploader
                 $filename = $_POST['name'];
             }
             $size_max = $this->app->vars("_sett.max_upload_size");
+
             $size_raw = $_FILES["files"]["size"][0];//File size in bytes
             $size_mb = number_format(($size_raw / 1048576), 2);//Convert bytes to Megabytes
             $mime = wbMime($ext);
@@ -161,14 +140,14 @@ class wbuploader
                 'width' => '',
                 'height' =>''
             ];
-            if ($size_raw > $size_max) {
-                $error = $res['error'] = "Превышен размер файла {$size_max}";
-            }
-
             if ($allow !== ['*'] && !in_array($ext, $allow)) {
                 $error = $res['error'] = "Расширение файла {$ext} не разрешено";
+            } else  if ($size_raw == 0 || $size_raw > $size_max) {
+                $error = $res['error'] = "Превышен размер файла {$size_max}";
+            } else if ($size_raw == 0) {
+                $error = $res['error'] = "Не удалось загрузить файл {$filename}";
+                unlink($filepath);
             }
-
             if (!$error && move_uploaded_file($_FILES["files"]["tmp_name"][0], $filepath)) {
                 if (in_array($ext, $imgext)) {
                     list($width, $height, $size_raw) = $this->prepImg($filepath);
