@@ -2226,7 +2226,7 @@ function wbCheckUser($login, $type = 'email', $pass = null) {
         return false;
     }
     $users = wbItemList("users", ['filter' => [
-        $type => $login,
+        $type => strtolower($login),
         'isgroup' => ['$ne'=>'on'],
         'active' => 'on'
     ]]);
