@@ -1520,6 +1520,7 @@ wbapp.objByForm = function(form) {
 
 wbapp.tplInit = async function() {
     if (!wbapp.template) wbapp.template = {};
+/*
     if (wbapp.template['wb.modal'] == undefined) {
         var res = wbapp.getForm("snippets", "modal");
         wbapp.tpl('wb.modal', {
@@ -1527,7 +1528,7 @@ wbapp.tplInit = async function() {
             params: {}
         });
     }
-
+*/
     $(document).find("template:not([nowb])").each(async function() {
         if (this.done !== undefined) return
         else this.done = true;
