@@ -12,7 +12,7 @@
                 <div class="col-8">
                     <h5 class='header'></h5>
                 </div>
-                <i class="fa fa-close r-20 position-absolute cursor-pointer" data-dismiss="modal"
+                <i class="cursor-pointer fa fa-close r-20 position-absolute" data-dismiss="modal"
                     aria-label="Close"></i>
             </div>
             <div class="modal-body pd-20">
@@ -22,9 +22,9 @@
                             <input type="hidden" name="id" value="{{_route.id}}"
                                 wb-if="'{{_route.id}}' == '_header' OR '{{_route.id}}' == '_footer'">
                             <div wb-if="'{{_route.id}}' !== '_header' && '{{_route.id}}' !== '_footer'">
-                                <div class="form-group row mb-2">
+                                <div class="mb-2 form-group row">
                                     <div class="col-12">
-                                        <div class="btn btn-info btn-block p-2 mb-0 cursor-pointer pagelink">
+                                        <div class="p-2 mb-0 cursor-pointer btn btn-info btn-block pagelink">
                                             <svg class="d-inline mi mi-link-big" size="24" stroke="FFFFFF"
                                                 wb-module="myicons"></svg>
                                             {{_route.scheme}}://{{_route.hostname}}<span class="path"></span>
@@ -34,7 +34,7 @@
                                 <div class="accordion">
                                     <h6>Основное</h6>
                                     <div>
-                                        <div class="form-group row mb-2" wb-allow="admin">
+                                        <div class="mb-2 form-group row" wb-allow="admin">
                                             <label class="col-lg-4 form-control-label">Путь</label>
                                             <!--wb-module wb="module=yonger&mode=pageselect" /-->
                                             <div class="col-lg-8">
@@ -42,12 +42,12 @@
                                                     class="form-control" readonly />
                                             </div>
                                         </div>
-                                        <div class="form-group row mb-2">
+                                        <div class="mb-2 form-group row">
                                             <label class="col-lg-4 form-control-label">Наименование</label>
                                             <div class="col-lg-8">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text p-1">
+                                                        <span class="p-1 input-group-text">
                                                             <input name="active" wb-module="swico">
                                                         </span>
                                                     </div>
@@ -61,7 +61,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group row mb-2">
+                                        <div class="mb-2 form-group row">
                                             <label class="col-lg-4 form-control-label">Заголовок</label>
                                             <div class="col-lg-8">
                                                 <input type="text" name="header" class="form-control"
@@ -71,7 +71,7 @@
                                     </div>
                                     <h6 wb-allow="admin">Пункт меню</h6>
                                     <div wb-allow="admin">
-                                        <div class="form-group row mb-2">
+                                        <div class="mb-2 form-group row">
                                             <div class="col-auto">
                                                 <input name="menu" wb-module="swico">
                                             </div>
@@ -79,13 +79,13 @@
                                                 Отображать пункт в меню
                                             </div>
                                         </div>
-                                        <div class="form-group row mb-2">
+                                        <div class="mb-2 form-group row">
                                             <div class="col">
                                                 <input type="text" name="menu_title" class="form-control"
                                                     placeholder="Пункт меню" wb="module=langinp">
                                             </div>
                                         </div>
-                                        <div class="form-group row mb-2">
+                                        <div class="mb-2 form-group row">
                                             <div class="col">
                                                 <input type="text" name="menu_icon" class="form-control"
                                                     placeholder="Иконка меню" wb="module=myicons">
@@ -94,7 +94,7 @@
                                     </div>
                                     <h6>Присоединённый раздел</h6>
                                     <div>
-                                        <div class="form-group row mb-2">
+                                        <div class="mb-2 form-group row">
                                             <label class="col-lg-4 form-control-label">Раздел</label>
                                             <div class="col-lg-8">
                                                 <select class="form-control" placeholder="{{_lang.attach}}"
@@ -104,7 +104,7 @@
                                                     </wb-foreach>
                                                 </select>
                                             </div>
-                                            <div class="col-12 mt-2">
+                                            <div class="mt-2 col-12">
                                                 <input type="text" name="attach_filter" class="form-control"
                                                     placeholder="{{_lang.filter}}">
                                             </div>

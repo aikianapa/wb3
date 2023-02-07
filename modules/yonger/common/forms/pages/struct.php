@@ -4,16 +4,16 @@
 
 <div class="row" id="{{_var.ypb}}">
 
-    <div class="col mb-1" wb-if="'{{_sett.devmode}}'=='on'">
-        <div class="input-group order-1">
+    <div class="mb-1 col" wb-if="'{{_sett.devmode}}'=='on'">
+        <div class="order-1 input-group">
             <div class="input-group-prepend">
-                <span class="input-group-text p-1" on-click="presetSelect">
+                <span class="p-1 input-group-text" on-click="presetSelect">
                     <svg class="d-inline mi mi-interface-essential-138" size="24" stroke="323232" wb-on wb-module="myicons"></svg>
                 </span>
             </div>
             <input class="form-control" type="text" name="preset" placeholder="{{_lang.preset}}" autocomplete="off">
             <div class="input-group-append" on-click="presetSave">
-                <span class="input-group-text p-1">
+                <span class="p-1 input-group-text">
                     <svg class="d-inline mi mi-floppy-save" size="24" stroke="323232" wb-on wb-module="myicons"></svg>
                 </span>
             </div>
@@ -26,7 +26,7 @@
             <span class="d-md-none d-lg-inline"> {{_lang.addblk}}</span>
         </button>
     </div>
-    <div class="dd yonger-nested pl-3" wb-off>
+    <div class="pl-3 dd yonger-nested" wb-off>
         <ul class="dd-list" id="{{_var.ypb}}_yonblocks">
             {{#each blocks}}
             <li class="dd-item row" data-form="{{form}}" data-name="{{name}}" data-id="{{@index}}">
@@ -35,9 +35,9 @@
                     <div class="lh-5">{{header}}</div>
                     <div class="lh-5 tx-gray tx-normal tx-11">{{name}}</div>
                 </span>
-                <span class="dd-info col-auto">
+                <span class="col-auto dd-info">
                     <span class="row">
-                        <div class="col-12 text-right m-0 nobr">
+                        <div class="m-0 text-right col-12 nobr">
                             {{#if active=='on'}}
                             <svg class="dd-active on cursor-pointer d-inline mi mi-power-turn-on-square.1" size="24" stroke="82C43C" wb-on wb-module="myicons" on-click="switch"></svg>
                             {{else}}
@@ -64,12 +64,12 @@
                 <div class="modal-header">
                     <input type="search" class="form-control mg-r-20" on-keyup="search"
                         placeholder="{{_lang.search}}...">
-                    <i class="fa fa-close cursor-pointer" data-dismiss="modal" aria-label="Close"></i>
+                    <i class="cursor-pointer fa fa-close" data-dismiss="modal" aria-label="Close"></i>
                 </div>
-                <div class="modal-body p-0 pb-5 scroll-y">
+                <div class="p-0 pb-5 modal-body scroll-y">
                     <ul class="list-group" wb-off>
                         {{#each blocks}}
-                        <li class="list-group-item d-flex align-items-center cursor-pointer" on-click="select"
+                        <li class="cursor-pointer list-group-item d-flex align-items-center" on-click="select"
                         data-name='{{name}}' data-id='{{id}}' data-header="{{header}}">
                             <img src="/module/myicons/search-checkmark-circle.svg?size=30&stroke=323232"
                                 class="wd-30 wh-30 rounded-circle mg-r-15" alt="" data-name="{{name}}">
