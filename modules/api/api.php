@@ -1,7 +1,8 @@
 <?php
-
+require_once $_SERVER['DOCUMENT_ROOT'] . '/engine/lib/vendor/autoload.php';
 require_once __DIR__ .'/vendor/autoload.php';
 use Notihnio\RequestParser\RequestParser;
+use Nahid\JsonQ\Jsonq;
 
 class modApi
 {
@@ -10,6 +11,7 @@ class modApi
     private $role;
     private $mode;
     private $method;
+    private $options;
 
     function __construct($app)
     {
@@ -415,7 +417,7 @@ class modApi
             &@page=2             - return page by value
             &@sort=name:d        - sort list by field :d(desc) :a(asc)
         */
-
+        header('Access-Control-Allow-Origin: *');
         $this->checkMethod(['get','post']);
         $app = &$this->app;
         $table = $app->route->table;
@@ -433,7 +435,7 @@ class modApi
         }
         $fields = $app->Dot();
         $jflds = $app->Dot();
-        $options = (object)$options;
+        $options = $this->options = (object)$options;
         $return = isset($options->return) ? explode(',', $options->return) : false;
         if (isset($app->route->item)) {
             $json = $app->itemRead($table, $app->route->item);        
@@ -481,8 +483,13 @@ class modApi
                     }
                 }
             }
+            if (isset($options->group)) {
+                $json['list'] = $this->group($json['list']);
+                return (array)$json['list'];
+            }
+
             if (isset($options->chunk)) {
-                return (array)$json;
+                print_r((array)$json);
             } elseif (!isset($options->size)) {
                 //return $app->jsonEncode(array_values((array)$json['list']));
                 return array_values((array)$json['list']);
@@ -493,6 +500,25 @@ class modApi
             }
         }
     }
+
+    private function group($list, $flds = null)
+    {
+        $jsonq = $this->app->json($list);
+        $flds = ($flds == null) ? wbAttrToArray($this->options->group) : $flds;
+        //$total = $this->total($list);
+        $list = [];
+        if (count($flds)) {
+            $fld = array_shift($flds);
+            $grps = $jsonq->groupBy($fld)->get();
+            foreach ($grps as $key => $grp) {
+                count($flds) > 0 ? $grp = $this->group($grp, $flds) : null;
+                isset($this->options->supress) ? array_push($list,$key) : $list[$key] = $grp;
+                
+            }
+        }
+        return $list;
+    }
+
 
     function apiOptions($arr)
     {
