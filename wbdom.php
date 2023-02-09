@@ -47,7 +47,6 @@ class wbDom extends DomQuery
                 unset($this->role);
             }
         }
-
         throw new \Exception('Unknown call '.$name);
     }
 
@@ -205,9 +204,7 @@ class wbDom extends DomQuery
 
     public function fetch($item = null)
     {
-        if (!$this->app) {
-            $this->app = $_ENV["app"];
-        }
+        $this->app ? null : $this->app = &$_ENV["app"];
         $tmp = $this->app->vars('_env.locale');
         isset($this->root) ? null : $this->root = $this->parents(':root')[0];
         if ($this->is('wb-off')) {
@@ -461,7 +458,8 @@ class wbDom extends DomQuery
         $this->fetchAllows();
         if ($this->role) {
             $func="tag".ucfirst($this->role);
-            $file = $this->app->vars("_env.path_engine")."/tags/{$this->role}/{$this->role}.php";
+            $file = $this->app->vars("_env.path_app") . "/tags/{$this->role}/{$this->role}.php";
+            is_file($file) ? null : $file = $this->app->vars("_env.path_engine")."/tags/{$this->role}/{$this->role}.php";
             if (is_file($file)) {
                 require_once $file;
                 if (class_exists($func)) {
@@ -474,7 +472,8 @@ class wbDom extends DomQuery
         foreach ($this->atrs as $attr => $value) {
             $func="attr".ucfirst($attr);
             if (!class_exists($func)) {
-                $file = $this->app->vars("_env.path_engine")."/attrs/{$attr}/{$attr}.php";
+                $file = $this->app->vars("_env.path_app") . "/attrs/{$attr}/{$attr}.php";
+                is_file($file) ? null : $file = $this->app->vars("_env.path_engine")."/attrs/{$attr}/{$attr}.php";
                 if (is_file($file)) {
                     require_once $file;
                 }
