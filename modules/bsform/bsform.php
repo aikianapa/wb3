@@ -77,7 +77,7 @@ class modBsform
     {
         $inp->addClass($this->control);
         $this->wrap($inp);
-        $inp->wrap("<div class='{$this->checks}'</div>");
+        $inp->wrap("<div class='d-flex w-100p'></div>");
     }
 }
 ?>
