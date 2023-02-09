@@ -45,6 +45,7 @@ class modBsform
     function input(&$inp, $self = false)
     {
         if ($inp->hasClass($this->stop)) return;
+        if ($inp->parent('.input-group')->length) return;
         if (in_array($inp->attr('type'), ['checkbox', 'radio'])) {
             $tagtype = $inp->tag()."[type={$inp->attr('type')}]";
             $inp->addClass('wb-20 ht-20 mr-2');
