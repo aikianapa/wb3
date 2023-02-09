@@ -23,7 +23,7 @@ class modBsform
         $inputs = $this->dom->find("input,textarea,select");
         $this->dom->attr('id') > '' ? null : $this->dom->attr('id',$this->app->newId('_','form'));
         foreach ($inputs as $inp) {
-            if (!$inp->hasClass($this->stop)) {
+            if (!$inp->hasClass($this->stop) && !$inp->parent('.input-group')->length && !$inp->parent('.form-group')->length) {
                 $tag = $inp->tag();
                 method_exists($this, $tag) ? $this->$tag($inp) : null;
                 $inp->addClass($this->stop);
