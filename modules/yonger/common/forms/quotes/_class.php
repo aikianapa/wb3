@@ -24,10 +24,9 @@ class quotesClass extends cmsFormsClass {
             $res = ['error'=>true, 'msg'=>'*** Unknown error ***'];
             return json_encode($res);
         }
-            $from = $item['email'].';'.$item['name'];
-            $from = "info@digiport.ru";
+
+            $from = "mailer@".$this->app->route->domain;
             $sent = $this->app->vars('_sett.quote_email') > '' ? $this->app->vars('_sett.quote_email') : $this->app->vars('_sett.email');
-            $sent = "oleg_frolov@mail.ru";
             $res = $this->app->mail($from, $sent, $subj, $msg->outer(), $_FILES);
 
         //$item['_created'] = date('Y-m-d H:i:s');
