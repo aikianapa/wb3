@@ -557,9 +557,11 @@ function wbMail(
             foreach($attach as $fld => $files) {
                 if (is_array($files['tmp_name'])) {
                     foreach($files['tmp_name'] as $key => $name) {
-                        $mail->AddAttachment($files['tmp_name'][$key], $files['name'][$key]);
+                        if ($files['error'] == 0) {
+                            $mail->AddAttachment($files['tmp_name'][$key], $files['name'][$key]);
+                        }
                     }
-                } else {
+                } else if ($files['error']==0) {
                     $mail->AddAttachment($files['tmp_name'], $files['name']);
                 }
             }
