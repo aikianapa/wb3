@@ -1521,7 +1521,7 @@ wbapp.objByForm = function(form) {
 wbapp.tplInit = async function() {
     if (!wbapp.template) wbapp.template = {};
     if (wbapp.template['wb.modal'] == undefined) {
-        fetch('http://idees.loc/ajax/getform/snippets/modal')
+        fetch('/ajax/getform/snippets/modal')
             .then((response) => response.json())
             .then(function (res) { 
                 wbapp.tpl('wb.modal', {
