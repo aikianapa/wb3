@@ -1521,11 +1521,15 @@ wbapp.objByForm = function(form) {
 wbapp.tplInit = async function() {
     if (!wbapp.template) wbapp.template = {};
     if (wbapp.template['wb.modal'] == undefined) {
-        var res = wbapp.getForm("snippets", "modal");
-        wbapp.tpl('wb.modal', {
-            html: res.result,
-            params: {}
-        });
+        fetch('http://idees.loc/ajax/getform/snippets/modal')
+            .then((response) => response.json())
+            .then(function (res) { 
+                wbapp.tpl('wb.modal', {
+                    html: res.result,
+                    params: {}
+                });
+
+             })
     }
 
     $(document).find("template:not([nowb])").each(async function() {
