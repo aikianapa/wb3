@@ -175,11 +175,7 @@ class modApi
         //$_POST = $request->params;
         $_FILES = $request->files;
         
-        if ($this->method == 'get') {
-            $post = &$_GET;
-        } else {
-            $post = $request->params;
-        }
+        $post = ($this->method == 'get') ? $_GET: $request->params;
         $item = $this->app->vars('_route.item');
 
         ($item == '' && isset($post['id'])) ? $item = $post['id'] : null;
@@ -217,6 +213,30 @@ class modApi
                 return $item;
             }
         }
+
+
+    function save()
+    {
+        /*
+        /api/v2/save/{{table}}/{{id}}
+        */
+
+        $this->checkMethod(['post', 'get']);
+        $table = $this->table;
+        $item = $this->app->vars('_route.item');
+        $request = RequestParser::parse(); // PUT, DELETE, etc.. support
+        //$_POST = $request->params;
+        $_FILES = $request->files;
+        $post = ($this->method == 'get') ? $_GET: $request->params;
+        ($item == '' && isset($post['_id']) && $post['_id'] > '') ? $item = $post['_id'] : null ;
+        ($item == '' && isset($post['id']) && $post['id'] > '') ? $item = $post['id'] : null;
+        $post['_id'] = ($item > '') ? $post['_id'] = $item : $this->app->newId();
+        $data = $this->app->itemSave($table, $post);
+        header('HTTP/1.1 200 OK', true, 200);
+        return $data;
+        exit;
+    }
+
     function update()
     {
         /*
@@ -229,11 +249,7 @@ class modApi
         $request = RequestParser::parse(); // PUT, DELETE, etc.. support
         //$_POST = $request->params;
         $_FILES = $request->files;
-        if ($this->method == 'get') {
-            $post = &$_GET;
-        } else {
-            $post = $request->params;
-        }
+        $post = ($this->method == 'get') ? $_GET: $request->params;
         $check = $this->app->itemRead($table, $item);
         if (!$check) {
             header('HTTP/1.1 404 Not found', true, 404);
@@ -416,6 +432,8 @@ class modApi
             &@chunk=10           - chunk list and return
             &@page=2             - return page by value
             &@sort=name:d        - sort list by field :d(desc) :a(asc)
+            &@group=fld1,fld2    - группирует вывод по указанным полям
+            &@supress            - подавляет вывод промежуточных данных при группировке
         */
         header('Access-Control-Allow-Origin: *');
         $this->checkMethod(['get','post']);

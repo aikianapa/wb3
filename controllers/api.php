@@ -2,7 +2,9 @@
 use Adbar\Dot;
 class ctrlApi
 {
-
+    public $app;
+    public $mode;
+    public $method;
     /* 
     http://work2.loc/api/query/units/?active=on&square%3E=46&_context*=test&__options=sort=square:d;trigger=beforeItemShow;return=square,address;limit=2
 

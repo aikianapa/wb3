@@ -23,8 +23,7 @@
         <div class="form-group row">
             <label class="col-sm-3 form-control-label">{{_lang.enum}}</label>
             <div class="col-sm-9">
-                <input class="form-control" wb="module=tagsinput" placeholder="{{_lang.enum}}"
-                    type="text" name="enum">
+                <input class="form-control" wb="module=tagsinput" placeholder="{{_lang.enum}}" type="text" name="enum">
             </div>
         </div>
     </form>
@@ -46,10 +45,9 @@
         <div class="form-group row">
             <label class="col-sm-3 form-control-label">{{_lang.form}}</label>
             <div class="col-sm-4">
-                <select name="form" class="form-control"
-                    placeholder="{{_lang.form}}">
+                <select name="form" class="form-control" placeholder="{{_lang.form}}">
                     <wb-foreach wb="from=_env.forms">
-                    <option value='{{_val}}'>{{_val}}</option>
+                        <option value='{{_val}}'>{{_val}}</option>
                     </wb-foreach>
                 </select>
             </div>
@@ -96,6 +94,17 @@
     </form>
 </template>
 
+<template type="module">
+    <form data-title="Модуль: " action="javascript:void(0);">
+        <div class="form-group row">
+            <label class="col-12 form-control-label">Код модуля</label>
+            <div class="col-12">
+                <textarea name="code" wb-module="codemirror"></textarea>
+            </div>
+        </div>
+    </form>
+</template>
+
 <template type="treeselect">
     <form data-title="{{_lang.catalog}}: " action="javascript:void(0);">
         <div class="form-group row">
@@ -121,14 +130,14 @@
                 <select class="form-control" name="parent">
                     <option value="true">true</option>
                     <option value="false">false</option>
-                </select> 
+                </select>
             </div>
             <label class="col-sm-3 form-control-label">Childrens</label>
             <div class="col-sm-3">
                 <select class="form-control" name="childs">
                     <option value="true">true</option>
                     <option value="false">false</option>
-                </select> 
+                </select>
             </div>
         </div>
         <div class="form-group row">

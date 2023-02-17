@@ -70,8 +70,10 @@ wbapp.start = async function () {
         if (mods.indexOf('alpine') !== -1) {
             document.addEventListener('alpine:init', () => {
                 wbapp.alpine = window.Alpine = Alpine
+                console.log(Alpine);
             })
-            await import("./alpine.min.js")
+            let aaa = await import("/engine/js/alpine.min.js")
+            console.log(aaa);
         }
 
         if (mods.indexOf('bs') !== -1) {
@@ -222,7 +224,7 @@ wbapp.store = function (storage = null, key, value = undefined, binds = true) {
                 eval(`data.${key} = value`);
             }
         }
-        storage.setItem(list[0], json_encode(data));
+        storage.setItem(list[0], JSON.stringify(data));
 
         let checkBind = function (bind, key) {
             if (bind == key) return true;
@@ -241,10 +243,16 @@ wbapp.store = function (storage = null, key, value = undefined, binds = true) {
                 }
             });
             $(document).trigger("bind", { key: key, data: value });
-            $(document).trigger("bind-" + key, value);
+
             wbapp.console("Trigger: bind [" + key + "]");
         }
         return data;
+    }
+}
+
+wbapp.console = async function (text) {
+    if (wbapp._settings == undefined || wbapp._settings.devmode == 'on') {
+        console.log(text);
     }
 }
 
@@ -412,10 +420,10 @@ wbapp.formData = function (form, data = {}) {
             $.each(chunks, function (i, key) {
                 if (i < chunks.length) {
                     idx == "" ? idx = key : idx += "." + key
-                    eval(`if (obj.${idx} == undefined) obj.${idx} = {}`);
+                    eval(`if (obj[${idx}] == undefined) obj.${idx} = {}`);
                 }
             })
-            eval(`obj['${name}'] = value`);
+            eval(`obj.${name} = value`);
         } else {
             eval(`obj['${name}'] = value`);
         }

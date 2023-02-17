@@ -466,8 +466,9 @@ class wbApp
 
     public function fieldBuild_module()
     {
-        $this->tpl->setAttributes($this->dict);
-        return $this->tpl->fetch();
+        $mod = $this->fromString($this->dict->prop->code);
+        $mod->find("[name]:first")->attr('name', $this->dict->name);
+        return $mod;
     }
 
     public function addEvent($name, $params=[])
