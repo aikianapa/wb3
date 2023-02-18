@@ -24,6 +24,7 @@ setTimeout(async function() {
 wbapp.metadata = function () {
     let meta = $(`meta[name="wbmeta"]`)
     let data = meta.attr('content')
+    meta.remove()
     data = data > '' ? JSON.parse(atob(data)) : {}
     wbapp._session = data.sess
     wbapp._settings = data.sett
