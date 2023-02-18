@@ -364,7 +364,7 @@
             }
             $("#filemanager .breadcrumb .breadcrumb-item").each(function(i, li) {
                 if (i > 0 && branch.length >= i) {
-                    $(li).text().trim() == branch[i].trim() ? $(li).remove() : null;
+                    branch[i] && $(li).text().trim() == branch[i].trim() ? $(li).remove() : null;
                 }
             })
         }
