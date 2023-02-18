@@ -1,6 +1,8 @@
 <?php
 class modFilemanager
 {
+    private $app;
+
     public function __construct($obj)
     {
         $this->init($obj);
@@ -518,7 +520,11 @@ class modFilemanager
 
     public function allow()
     {
-        //return true;
-        return $this->app->role("admin");
+        if ($this->app->vars('_sett.modules.filemanager') == null OR $this->app->vars('_sett.modules.filemanager.allow')=='') {
+            return $this->app->role("admin");
+        } else {
+            $allow =explode(',',$this->app->vars('_sett.modules.filemanager.allow'));
+            return in_array($this->app->vars('_sess.user.role'),$allow);
+        }
     }
 }
