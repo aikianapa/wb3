@@ -437,6 +437,7 @@ class modYonger
     public function render()
     {
         $dom = &$this->dom;
+        if (isset($dom->done)) return;
         $app = &$dom->app;
         $item = &$dom->item;
         $view = $dom->params('view');
@@ -457,27 +458,23 @@ class modYonger
 
         $head = $html->find('head');
         $body = $html->find('body');
-        $toDom = '';
-        $toBody = '';
         foreach ($blocks as $block) {
             if ($block === (array)$block) {
                 isset($block['active']) ? null : $block['active'] = '';
-                //$dom->params('view') == 'header' ? $method = 'prepend' : $method = 'append';
-                $method = 'append';
                 if ($block['active'] == 'on') {
                     $block['_parent'] = $app->objToArray($item);
                     $res = $this->blockview($block);
                     if ($res->head) {
                         $head->append($res->head);
                     } else {
-                        isset($res->head) ? $head->append($res->head) : null;
-                        isset($res->body) ? $body->append($res->body) : null;
-                        $toDom .= $res->result;
+                        $head->length && isset($res->head) ? $head->append($res->head) : null;
+                        $body->length && isset($res->body) ? $body->append($res->body) : null;
+                        $dom->before($res->result);
                     }
                 }
             }
         }
-        $dom->after($toDom);
+        $dom->done = true;
         $dom->remove();
     }
 
