@@ -5,6 +5,7 @@ class tagInclude {
   }
 
   public function include($dom) {
+    if (isset($dom->done)) return;
     $loc = $dom->app->vars('_locale');
     if ($dom->is(":root")) $dom->rootError();
     if ($dom->params('src') == '' && $dom->attr('src') > '') $dom->params->src = $dom->attr('src');
@@ -79,6 +80,7 @@ class tagInclude {
         }
         
     }
+    $dom->done = true;
     $dom->app->vars('_locale',$loc);
     $dom->remove();
   }

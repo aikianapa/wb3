@@ -457,6 +457,8 @@ class modYonger
 
         $head = $html->find('head');
         $body = $html->find('body');
+        $toDom = '';
+        $toBody = '';
         foreach ($blocks as $block) {
             if ($block === (array)$block) {
                 isset($block['active']) ? null : $block['active'] = '';
@@ -466,15 +468,17 @@ class modYonger
                     $block['_parent'] = $app->objToArray($item);
                     $res = $this->blockview($block);
                     if ($res->head) {
-                        $head->$method($res->head);
+                        $head->append($res->head);
                     } else {
-                        $head->length && isset($res->head) ? $head->$method($res->head) : null;
-                        $body->length && isset($res->body) ? $body->$method($res->body) : null;
-                        $dom->$method($res->result);
+                        isset($res->head) ? $head->append($res->head) : null;
+                        isset($res->body) ? $body->append($res->body) : null;
+                        $toDom .= $res->result;
                     }
                 }
             }
         }
+        $dom->after($toDom);
+        $dom->remove();
     }
 
     public function logo()
