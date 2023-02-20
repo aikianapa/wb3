@@ -455,6 +455,14 @@ class modApi
         $jflds = $app->Dot();
         $options = $this->options = (object)$options;
         $return = isset($options->return) ? explode(',', $options->return) : false;
+        $group =  isset($options->group) ? explode(',', $options->group) : false;
+        if ($return && $options->filter) {
+            $return = array_keys(array_flip($return) + array_flip($options->filter));
+        }
+        if ($return && $group) {
+            $return = array_keys(array_flip($return) + array_flip($group));
+            $options->return = implode(',',$return);
+        }
         if (isset($app->route->item)) {
             $json = $app->itemRead($table, $app->route->item);        
             if ($form && @method_exists($form, 'beforeItemShow')) {
@@ -507,7 +515,7 @@ class modApi
             }
 
             if (isset($options->chunk)) {
-                print_r((array)$json);
+                //print_r((array)$json);
             } elseif (!isset($options->size)) {
                 //return $app->jsonEncode(array_values((array)$json['list']));
                 return array_values((array)$json['list']);
