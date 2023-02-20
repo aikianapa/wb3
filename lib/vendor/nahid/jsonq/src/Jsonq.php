@@ -195,6 +195,8 @@ class Jsonq
             $value = $this->getFromNested($map, $column);
             if ($value) {
                 $data[$value][] = $map;
+            } else {
+                $data[''][] = $map;
             }
         }
 
