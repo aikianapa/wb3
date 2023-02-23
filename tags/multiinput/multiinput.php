@@ -1,7 +1,10 @@
 <?php
 use Adbar\Dot;
 class tagMultiinput {
-
+  public $app;
+  public $dom;
+  public $col;
+  
   public function __construct($dom) {
 			$this->app = $dom->app;
       if (!$dom->is('[done]')) $this->multiinput($dom);
@@ -34,8 +37,8 @@ class tagMultiinput {
         $tpl = $dom->app->fromString($wrp->outer());
         $tpl->fetch();
         $fields = $dom->app->dot($textarea->item);
+        $dom->attr('value')>'' ? $fields->set($field, $dom->attr('value')) : null;
         $wrp->fetch($fields->get());
-
 				$values = $fields->get($field);
 				((array)$values === $values) ? null : $values = json_decode($values,true);
 

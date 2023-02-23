@@ -1,8 +1,13 @@
-await import("/engine/js/jquery.min.js")
+"use strict"
 import Vue from "./vue.esm.browser.min.js"
+
 var wbapp = new Object();
-var $ = wbapp.jq = window.$ = window.jQuery
 wbapp.vue = window.Vue = Vue
+
+if (window.$ == undefined) {
+    await import("/engine/js/jquery.min.js")
+    var $ = window.$ = window.jQuery.noConflict()
+}
 
 wbapp.css = function(url) {
     return new Promise((resolve, reject) => {
@@ -70,22 +75,8 @@ wbapp.start = async function () {
         if (mods.indexOf('alpine') !== -1) {
             document.addEventListener('alpine:init', () => {
                 wbapp.alpine = window.Alpine = Alpine
-                console.log(Alpine);
             })
-            let aaa = await import("/engine/js/alpine.min.js")
-            console.log(aaa);
-        }
-
-        if (mods.indexOf('bs') !== -1) {
-            wbapp.css("https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css")
-            wbapp.bs = import("./bootstrap.esm.min.js")
-        }
-        if (mods.indexOf('semantic') !== -1) {
-            await wbapp.css("/src/semantic/semantic.css")
-            await import("/engine/js/jquery.min.js")
-            wbapp.jq = $ = window.jQuery
-            await import("/src/semantic/semantic.min.js")
-
+            await import("/engine/js/alpine.min.js")
         }
     } 
     wbapp.metadata('wbsess')
@@ -102,6 +93,7 @@ wbapp.newId = function (separator, prefix) {
 }
 
 wbapp.isJson = function (queryString) {
+    if (queryString == undefined) return false
     queryString = queryString.trim().replace(" ", "");
     queryString = queryString.replaceAll("'", '"');
     if (queryString == "{}") return true;
@@ -365,6 +357,10 @@ wbapp.formData = function (form, data = {}) {
             }
         }
     });
+
+    $(form).find("[name]").each(function () {
+        $(this).data('value') !== undefined ? data[$(this).attr('name')] = $(this).data('value') : null
+    })
 
     let sel = $(form).find('select[name]:not([multiple])');
     $.each(sel, function () {
