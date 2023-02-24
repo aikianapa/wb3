@@ -516,6 +516,7 @@ class modApi
 
             if (isset($options->chunk)) {
                 //print_r((array)$json);
+                return $json['list'];
             } elseif (!isset($options->size)) {
                 //return $app->jsonEncode(array_values((array)$json['list']));
                 return array_values((array)$json['list']);
