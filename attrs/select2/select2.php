@@ -10,7 +10,7 @@ class attrSelect2 {
         if ($dom->params('options')>'') $dom->attr('wb-options', json_encode($dom->params('options')));
         $dom->addClass('select2');
         $dom->attr('select2init',true);
-        $dom->fetch();
+        //$dom->fetch(); // - так не работает wb-tree после wb-select2
         $script = "
         <script type='wbapp' remove>
             wbapp.loadStyles(['/engine/lib/js/select2/select2.min.css'],'select2-css');
