@@ -1287,7 +1287,6 @@ wbapp.ajax = async function(params, func = null) {
             if (target._params == undefined || target._params.length == 0) { void(0); } else {
 
                 if (target.filter) {
-                    console.log(params.target);
                     wbapp.template[params.target].params._params.filter = target.filter;
                 }
 
