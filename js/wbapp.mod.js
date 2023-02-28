@@ -6,8 +6,8 @@ wbapp.vue = window.Vue = Vue
 
 if (window.$ == undefined) {
     await import("/engine/js/jquery.min.js")
-    var $ = window.$ = window.jQuery.noConflict()
 }
+var $ = window.$ = window.jQuery.noConflict()
 
 wbapp.css = function(url) {
     return new Promise((resolve, reject) => {
@@ -35,6 +35,11 @@ wbapp.js = function (src) {
     }
 }
 
+wbapp.sleep = async function(ms) {
+    // await wbapp.sleep(100)
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 wbapp.html = async function (src, target = null) {
     if (target) {
         return await fetch(src)
@@ -59,6 +64,12 @@ wbapp.html = async function (src, target = null) {
     }
 }
 
+wbapp.xdata = async function(src) {
+    var data = await import(src);
+    console.log(data.default());
+    return data.default();
+}
+
 wbapp.start = async function () {
     let mods = import.meta.url.split('?')
     mods = mods[1] !== undefined ? mods[1].replace(' ', '').split(',') : null;
@@ -73,10 +84,11 @@ wbapp.start = async function () {
         }
 
         if (mods.indexOf('alpine') !== -1) {
+            await import('/engine/js/alpine-fetch.js')
+            await import('/engine/js/alpine.min.js')
             document.addEventListener('alpine:init', () => {
                 wbapp.alpine = window.Alpine = Alpine
             })
-            await import("/engine/js/alpine.min.js")
         }
     } 
     wbapp.metadata('wbsess')
