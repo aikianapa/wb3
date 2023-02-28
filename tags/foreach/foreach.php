@@ -657,7 +657,9 @@ class tagForeach
         $dom->params("where") > "" ? $options["where"] = $dom->params->where : null;
         $dom->params("return") > "" ? $options["return"] = $this->app->attrToArray($dom->params("return")) : null;
         $dom->params("sort") > "" ? $options["sort"] = $this->app->attrToArray($dom->params("sort")) : null;
-        $options['filter'] = $this->app->filterPrepare($options['filter'])["filter"];
+        // С обработчиком перестаёт работать поиск через data-ajax
+        //$options['filter'] = $this->app->filterPrepare($options['filter'])["filter"];
+
         return $options;
     }
 

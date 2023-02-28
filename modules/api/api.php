@@ -440,6 +440,7 @@ class modApi
         $app = &$this->app;
         $table = $app->route->table;
         $query = (array)$app->route->query;
+        //$options = wbFilterPrepare($app->route->query); // для обработки data-ajax
         $options = $this->app->filterPrepare($app->route->query);
         $form = $app->formClass($table);
         if ($app->vars('_post.filter') > '') {
