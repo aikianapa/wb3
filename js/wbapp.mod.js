@@ -4,6 +4,8 @@ import Vue from "./vue.esm.browser.min.js"
 var wbapp = new Object();
 wbapp.vue = window.Vue = Vue
 
+if (window.wbapp == undefined) window.wbapp = wbapp
+
 if (window.$ == undefined) {
     await import("/engine/js/jquery.min.js")
 }
@@ -40,6 +42,15 @@ wbapp.sleep = async function(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+wbapp.json = async function(src) {
+    return await fetch(src)
+        .then(function (response) { return response.json() })
+        .then(function (json) { return json })
+        .catch(function (err) {
+            console.log('Failed to fetch data: ' + src, err);
+        });
+}
+
 wbapp.html = async function (src, target = null) {
     if (target) {
         return await fetch(src)
@@ -64,9 +75,15 @@ wbapp.html = async function (src, target = null) {
     }
 }
 
-wbapp.xdata = async function(src) {
+wbapp.b64e = function (str) {
+    return btoa(unescape(encodeURIComponent(str)));
+}
+wbapp.b64d = function(str) {
+    return decodeURIComponent(escape(window.atob(str)));
+}
+
+wbapp.xinit = async function(src) {
     var data = await import(src);
-    console.log(data.default());
     return data.default();
 }
 
@@ -84,7 +101,6 @@ wbapp.start = async function () {
         }
 
         if (mods.indexOf('alpine') !== -1) {
-            await import('/engine/js/alpine-fetch.js')
             await import('/engine/js/alpine.min.js')
             document.addEventListener('alpine:init', () => {
                 wbapp.alpine = window.Alpine = Alpine
@@ -95,11 +111,19 @@ wbapp.start = async function () {
     wbapp.events()
 }
 
+wbapp.dechex = function (i) {
+    return (i + 0x10000).toString(16).substr(-4).toUpperCase();
+}
+
+wbapp.rand = function(min, max)  {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 wbapp.newId = function (separator, prefix) {
     (separator == undefined) ? separator = "" : null;
-    var mt = explode(" ", microtime());
-    var md = substr(str_repeat("0", 2) + dechex(ceil(mt[0] * 10000)), -4);
-    var id = dechex(time() + rand(100, 999));
+    var mt = Math.round((new Date).getTime() / 1000).toString().split(' ');
+    var md = ("0").repeat('2') + wbapp.dechex(Math.round(mt[0]) * 10000).substr(-4).toString().toLowerCase();
+    var id = wbapp.dechex(Math.round((new Date).getTime() / 1000) + wbapp.rand(100, 999)).toString().toLowerCase();
     id = (prefix !== undefined && prefix > "") ? prefix + separator + id + md : "id" + id + separator + md;
     return id;
 }

@@ -357,7 +357,19 @@ class wbDom extends DomQuery
 
     public function fetchStrict()
     {
-        if ($this->is('[wb-off]') or in_array($this->tagName, ['template', 'code','textarea','pre'])) {
+        if ($this->hasAttr('wb-off')) {
+            $this->removeAttr('wb-off');
+            $this->strict = true;
+            $wbon = $this->find('[wb-on]');
+            foreach ($wbon as $wb) {
+                $wb->copy($this);
+                $wb->strict = false;
+                $wb->root = $this->root;
+                $wb->fetchNode();
+            }
+            return;
+        }
+        if ($this->hasAttr('wb-off') OR in_array($this->tagName, ['template', 'code','textarea','pre'])) {
             if ($this->tagName == 'textarea' && $this->is('[wb-module]')) {
                 return;
             }
@@ -651,7 +663,7 @@ class wbDom extends DomQuery
                 $name = $inp->attr("name");
                 $value = $fields->get($name);
                 ((array)$value === $value and $inp->tagName !== "select") ? $value = wb_json_encode($value) : null;
-                if ($value > '') {
+                if ((string)$value === $value &&  $value > '') {
                     $value = str_replace('&amp;quot;', '"', $value);
                 } // борьба с ковычками в атрибутах тэгов
                 if (in_array($inp->tagName, ["input","textarea","select"])) {

@@ -85,7 +85,7 @@ class pagesClass extends cmsFormsClass
         $this->tables = $app->tableList();
         $this->jq = new Jsonq();
         $this->count = 0;
-        $out = $app->fromFile(__DIR__ . '/list.php');
+        $out = $app->fromFile(__DIR__ . '/list1.php');
         $this->tpl = $out->find('#pagesList');
         $this->list = $this->app->itemList('pages', ['return' => 'id,name,_form,header,active,attach,attach_filter,url,path,_sort']);
         $this->list = $this->list['list'];

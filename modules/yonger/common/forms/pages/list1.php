@@ -2,8 +2,8 @@
 
 <div class="m-3" id="yongerSpace">
     <nav class="nav navbar navbar-expand-md col">
-        <h3 class="tx-bold tx-spacing--2 order-1">Страницы</h3>
-        <div class="ml-auto order-2 float-right" wb-disallow="content">
+        <h3 class="order-1 tx-bold tx-spacing--2">Страницы</h3>
+        <div class="order-2 float-right ml-auto" wb-disallow="content">
             <a href="#" data-ajax="{'url':'/cms/ajax/form/pages/edit/_header','html':'modals'}"
                 class="btn btn-secondary">
                 <img src="/module/myicons/24/FFFFFF/menubar-arrow-up.svg" width="24" height="24" /> Шапка
@@ -21,7 +21,7 @@
 
     <div id="yongerPagesTree" class="dd yonger-nested">
         <span class="bg-light">
-            <div class="header p-2">
+            <div class="p-2 header">
                 <span clsss="row">
                     <div class="col-3">
                         <input type="search" class="form-control" placeholder="Поиск страницы"
@@ -51,24 +51,21 @@
                     <span class="dd-info col-sm-3">
                <style>
    .sane {
-    //background: #fc3; /* Цвет фона */
-   // border: 2px solid black; /* Параметры рамки */
-  //  padding: 20px; /* Поля вокруг текста */
     margin-top: 4%; /* Отступ сверху */
    }
   </style>
  <div class="sane">
-   <form method="post" class="text-right m-0">
+   <form method="post" class="m-0 text-right">
                             <wb-var wb-if='"{{active}}" == ""' stroke="FC5A5A" else="82C43C" />
                             <input type="checkbox" name="active" class="d-none">
-                            <img src="/module/myicons/24/0168fa/item-select-plus-add.svg" class="dd-add cursor-pointer"
+                            <img src="/module/myicons/24/0168fa/item-select-plus-add.svg" class="cursor-pointer dd-add"
                                 wb-allow="admin">
                             <img src="/module/myicons/24/7987a1/copy-paste-select-add-plus.svg" width="24" height="24"
                                 class="dd-copy" wb-allow="admin">
                             <img src="/module/myicons/24/7987a1/content-edit-pen.svg" width="24" height="24"
                                 class="dd-edit">
                             <img src="/module/myicons/24/{{_var.stroke}}/power-turn-on-square.1.svg"
-                                class="dd-active cursor-pointer" wb-allow="admin">
+                                class="cursor-pointer dd-active" wb-allow="admin">
                             <img src="/module/myicons/24/FC5A5A/trash-delete-bin.2.svg" width="24" height="24"
                                 class="dd-remove" wb-allow="admin">
                         </form>
