@@ -441,6 +441,7 @@ class modApi
         $table = $app->route->table;
         $query = (array)$app->route->query;
         $form = $app->formClass($table);
+        $options = $this->app->filterPrepare($app->route->query);
         if ($app->vars('_post.filter') > '') {
             $options['filter'] = (array)$app->vars('_post.filter');
             foreach($options['filter'] as $key => $val) {
@@ -450,7 +451,6 @@ class modApi
                 }
             }
         }
-        $options = $this->app->filterPrepare($app->route->query);
         $fields = $app->Dot();
         $jflds = $app->Dot();
         $options = $this->options = (object)$options;
