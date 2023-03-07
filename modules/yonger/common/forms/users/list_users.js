@@ -47,17 +47,17 @@
                 let base = this.get("base");
                 let filter = { isgroup: { '$ne': 'on' } }
                 $(list.el).find('.search :input').each(function() {
-                    if ($(this).attr('name') == 'filter') {
+                    if ($(this).attr('name') == 'role') {
+                        let role = $(this).val()
+                        role == '*' ? null : filter.role = role
+                    }
+                    if ($(this).attr('name') == 'filter' && $(this).val()>'') {
                         let val = $(this).val()
                         filter['$or'] = [
                             { fullname: { '$like': val } },
                             { email: { '$like': val } },
                             { phone: { '$like': val } }
                         ]
-                    }
-                    if ($(this).attr('name') == 'role') {
-                        let role = $(this).val()
-                        role == '*' ? null : filter.role = role
                     }
                 })
 
