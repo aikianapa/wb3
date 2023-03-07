@@ -358,7 +358,7 @@ class wbDom extends DomQuery
     public function fetchStrict()
     {
         if ($this->hasAttr('wb-off')) {
-            $this->removeAttr('wb-off');
+
             $this->strict = true;
             $wbon = $this->find('[wb-on]');
             foreach ($wbon as $wb) {
