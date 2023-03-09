@@ -30,23 +30,21 @@ class tagMultiinput {
         $wrp = $dom->app->fromString(str_replace("{{inner}}",$inner,$wrp));
         $dom->attr("id") > "" ? $tplId = $dom->attr("id") : $tplId='mi_'.wbNewId();
         $dom->attr("id",$tplId);
-        $textarea = $dom->app->fromString("<textarea name='{$field}' type='json' class='wb-multiinput-data' style='display:none;'></textarea>");
-        $textarea->copy($dom);
-        $textarea->attr("data-tpl",$tplId);
+        $textarea = $dom->app->fromString("<textarea data-tpl='{$tplId}' name='{$field}' type='json' class='wb-multiinput-data' style='display:none;'></textarea>");
         $dom->tpl = $wrp->outer();
         $tpl = $dom->app->fromString($wrp->outer());
         $tpl->fetch();
-        $fields = $dom->app->dot($textarea->item);
+        $fields = $dom->app->dot($dom->item);
         $dom->attr('value')>'' ? $fields->set($field, $dom->attr('value')) : null;
-        $wrp->fetch($fields->get());
+        //$wrp->fetch($fields->get());
 				$values = $fields->get($field);
 				((array)$values === $values) ? null : $values = json_decode($values,true);
-
-        $this->setData($dom,$values);
-        $dom->append($textarea)
-            ->append("\n<template id='{$tplId}'>{$tpl}</template>\n")
-            ->append('<script wb-app remove>wbapp.loadScripts(["/engine/js/php.js","/engine/js/jquery-ui.min.js","/engine/tags/multiinput/multiinput.js"],"multiinput-js");</script>'."\n\r");
-        $dom->attr('done',"");
+        $inner = $this->setData($dom,$values);
+        $inner .= $textarea;
+        $inner .= "\n<template id='{$tplId}'>{$tpl}</template>\n";
+        $inner .= '<script wb-app remove>wbapp.loadScripts(["/engine/js/php.js","/engine/js/jquery-ui.min.js","/engine/tags/multiinput/multiinput.js"],"multiinput-js");</script>'."\n\r";
+        $dom->attr('done', '');
+        $dom->html($inner);
     }
 
 		function buildInner() {
@@ -72,7 +70,7 @@ class tagMultiinput {
                 if ((array)$item === $item) {
                     $item['_idx'] = $_idx;
                     $line->item = $item;
-                    $line->fetch();
+                    $line->fetch()->attr("done", true);
                 } else {
                     $line->find("[name='{$name}']")->attr("value",$item)->attr("done",true);
                 }
@@ -80,7 +78,8 @@ class tagMultiinput {
                 $str .= $line;
             }
         }
-        $str > "" ? $dom->html($str) : $dom->html($dom->tpl);
+        $str > "" ? $str : $dom->tpl;
+        return $str;
     }
 
 }

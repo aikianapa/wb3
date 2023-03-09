@@ -6,17 +6,23 @@ var modLangInp = function() {
             id = wbapp.newId()
             $(mod).attr('id', id)
         }
+        let ticks;
+        let timer = 300
+        let time = 0
         let ractive = new Ractive({
             el: '#' + id,
             template: $('#' + id).html(),
             data: {
-                width: null
+                langs: wbapp._settings.locales.split(','),
+                lang: 'ru',
+                curr: 0,
+                data: {}
             },
             on: {
                 init() {
                     let data = $(mod).find('textarea.mod-langinp-data').html();
                     try {
-                        this.set(json_decode(data))
+                        this.set('data',json_decode(data))
                     } catch (error) {
                         let lang = $(mod).find('textarea.mod-langinp-data').next('[data-lang]').data('lang')
                         tmp = {}
@@ -26,7 +32,8 @@ var modLangInp = function() {
                     $(mod).removeClass('mod-langinp-init')
                 },
                 complete() {
-                    $.each(this.get(), function(lng, val) {
+                    $(ractive.el).find('.switch').removeClass('text-transparent').addClass('text-white')
+                    $.each(this.get('data'), function(lng, val) {
                         $(mod).find(`[data-lang="${lng}"]:input`).val(val)
                     })
                     let mi = $(this.target).parents('wb-multiinput')
@@ -36,25 +43,42 @@ var modLangInp = function() {
                             modLangInp()
                         })
                     }
-                    if (ractive.get('width') == null) {
-                        setTimeout(function() {
-                            let width = $(this.target).width();
-                            $(mod).find('.dropdown-menu').width(width);
-                            ractive.set('width', width)
-                        }, 100)
-                    }
                 },
-                dropdown(ev) {
-                    let width = $(ev.node).parent('.dropdown').width();
-                    $(mod).find('.dropdown-menu').width(width);
+                switch(ev) {
+                    let langs = ractive.get('langs')
+                    let curr = ractive.get('curr')
+                    let data = ractive.get('data')
+                    curr++
+                    curr = curr >= langs.length ? 0 : curr
+                    let lang = langs[curr]
+                    ractive.set('curr', curr)
+                    ractive.set('lang', lang)
+                    let text = ''
+                    try {
+                        text = data[lang]    
+                    } catch (error) {
+                        text = ''
+                    }
+                    $(ractive.el).find(':input[data-lang]').data('lang',lang).val(text).focus()
+                    
                 },
                 edit(ev) {
-                    let lng = $(ev.node).data('lang')
-                    ractive.set(lng, $(ev.node).val())
-                    ractive.fire('complete')
-                    let data = ractive.get();
-                    delete data.width;
+                    let lng = ractive.get('lang')
+                    let data = ractive.get('data');
+                    ractive.set('data.'+lng, $(ev.node).val())
+                    //ractive.fire('complete')
                     $(mod).find('textarea.mod-langinp-data').html(json_encode(data)).trigger('change')
+                },
+                keyup(ev) {
+                    time = 0
+                    if (ticks !== undefined) clearInterval(ticks)
+                    ticks = setInterval(function(){
+                        time = time + timer / 10
+                        if (time >= timer) {
+                            ractive.fire('edit',ev)
+                            clearInterval(ticks)
+                        }
+                    },timer /10)
                 }
             }
         })

@@ -21,7 +21,9 @@ class modLanginp
         $name = $inp->attr('name');
         $txt->attr('name', $name);
         $out->copy($dom);
-        $inp->removeAttr('name wb data-params');
+        $inp->removeAttr('name');
+        $inp->removeAttr('wb');
+        $inp->removeAttr('data-params');
         $l = wbListLocales($dom->app);
         if (count($l)) {
             $locales = [];
@@ -58,7 +60,7 @@ class modLanginp
         $out->find('.dropdown-item input')->removeAttr('name');
         $out->find('.dropdown-item textarea')->removeAttr('name');
         //$out->find('.mod-langinp.input-group')->attr('data-mid', wbNewId());
-        $dom->replaceWith($out->outer());
+        $dom->after($out->outer());
         $dom->remove();
 
     }

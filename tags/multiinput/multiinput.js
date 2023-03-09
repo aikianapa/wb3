@@ -35,7 +35,7 @@ function wb_multiinput_init() {
             return false;
         });
 
-        $multi.delegate(".wb-multiinput-row :input", "change", function() {
+        $multi.delegate(".wb-multiinput-row :input:not(.wb-multiinput-data)", "change", function() {
             if ($(this).is("select")) {
                 $(this).find("option:not(:selected)").prop("selected", false).removeAttr("selected");
                 $(this).find("option:selected").prop("selected", true).attr("selected", true);
@@ -59,7 +59,7 @@ function wb_multiinput_init() {
         return $(this);
     }
 
-    $.fn.store = function() {
+    $.fn.store = async function() {
         var data = [];
         var name = $(this).attr("name");
         $(this).children(".wb-multiinput-row").each(function(i) {
