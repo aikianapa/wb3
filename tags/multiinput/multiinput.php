@@ -43,7 +43,9 @@ class tagMultiinput {
 				((array)$values === $values) ? null : $values = json_decode($values,true);
 
         $this->setData($dom,$values);
-        $dom->append($textarea->outer()."\n<template id='{$tplId}'>{$tpl}</template>\n".'<script wb-app remove>wbapp.loadScripts(["/engine/js/php.js","/engine/js/jquery-ui.min.js","/engine/tags/multiinput/multiinput.js"],"multiinput-js");</script>'."\n\r");
+        $dom->append($textarea)
+            ->append("\n<template id='{$tplId}'>{$tpl}</template>\n")
+            ->append('<script wb-app remove>wbapp.loadScripts(["/engine/js/php.js","/engine/js/jquery-ui.min.js","/engine/tags/multiinput/multiinput.js"],"multiinput-js");</script>'."\n\r");
         $dom->attr('done',"");
     }
 
@@ -64,10 +66,9 @@ class tagMultiinput {
         $name = $dom->params("name");
         $str = "";
         $_idx = 0;
-        $linetpl = $dom->app->fromString($dom->tpl);
         if ((array)$data === $data) {
             foreach($data as $i => $item) {
-                $line = $linetpl->clone();
+                $line = $dom->app->fromString($dom->tpl);
                 if ((array)$item === $item) {
                     $item['_idx'] = $_idx;
                     $line->item = $item;
