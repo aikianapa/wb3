@@ -104,34 +104,35 @@ class modApi
         if ($role == 'admin' && $mode == 'f') {
             return true;
         }
-
         $result = false;
         $allow = true;
         foreach ((array)$this->app->vars('_sett.modules.api.allow') as $am) {
             $am['role'] = isset($am['role']) ? (array)$am['role'] : [''];
             $am['table'] = isset($am['table']) ? (array)$am['table'] : [''];
-            if (in_array($table, $am['table']) OR in_array("*", $am['table'])) {
+            if (in_array($table, $am['table']) OR in_array("*", $am['table']) or $am['table'] == [0 => '']) {
                 $allow = false;
-                if (in_array($role, $am['role']) OR in_array("*", $am['role'])) {
-                    if (in_array($mode, $am['mode']) or in_array("*", $am['mode'])) {
+                if (in_array($role, $am['role']) OR in_array("*", $am['role']) OR $am['role']== [0 => '']) {
+                    if (in_array($mode, $am['mode']) or in_array("*", $am['mode']) or $am['mode'] == [0 => '']) {
                         $allow = true;
                     }
                 }
             }
         }
+    
         $disallow = false;
         foreach ((array)$this->app->vars('_sett.modules.api.disallow') as $am) {
             $am['role'] = isset($am['role']) ? (array)$am['role'] : [''];
             $am['table'] = isset($am['table']) ? (array)$am['table'] : [''];
-            if (in_array($table, $am['table']) or in_array("*", $am['table'])) {
+            if (in_array($table, $am['table']) or in_array("*", $am['table']) or $am['table'] == [0 => '']) {
                 $disallow = false;
-                if (in_array($role, $am['role']) or in_array("*", $am['role'])) {
-                    if (in_array($mode, $am['mode']) or in_array("*", $am['mode'])) {
+                if (in_array($role, $am['role']) or in_array("*", $am['role']) or $am['role'] == [0 => '']) {
+                    if (in_array($mode, $am['mode']) or in_array("*", $am['mode']) or $am['mode'] == [0 => '']) {
                         $disallow = true;
                     }
                 }
             }
         }
+
         $result = ($allow == true && $disallow == false) ? true : false;
 
         if ($result) {

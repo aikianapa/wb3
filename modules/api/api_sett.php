@@ -20,7 +20,7 @@
             <div class="input-group">
                 <input type="text" class="form-control" name="tokens">
                 <div class="input-group-append">
-                    <span class="input-group-text p-1 cursor-pointer">
+                    <span class="p-1 cursor-pointer input-group-text">
                         <img src="/module/myicons/24/3b6998/key-circle.1.svg">
                     </span>
                 </div>
@@ -30,7 +30,7 @@
 </div>
 <div class="divider-text">Разрешения</div>
 <div class="form-group">
-    <div class="row ml-4 mr-5 pr-3">
+    <div class="pr-3 ml-4 mr-5 row">
 
         <div class="col-sm-4">
             Таблицы
@@ -45,7 +45,7 @@
     <wb-var roles="{{wbRoleList()}}" />
     <wb-var tables="{{wbTableList()}}" />
     <wb-multiinput name="allow">
-        <div class="col-sm-4 mb-1">
+        <div class="mb-1 col-sm-4">
             <select name="table" class="form-control" placeholder="Таблицы" wb-select2 multiple>
                 <option value="*">All</option>
                 <wb-foreach wb="from=_var.tables&tpl=false">
@@ -53,7 +53,7 @@
                 </wb-foreach>
             </select>
         </div>
-        <div class="col-sm-4 mb-1">
+        <div class="mb-1 col-sm-4">
             <select name="role" class="form-control" placeholder="Роли" wb-select2 multiple>
                 <option value="*">All</option>
                 <wb-foreach wb="from=_var.roles&tpl=false">
@@ -61,7 +61,7 @@
                 </wb-foreach>
             </select>
         </div>
-        <div class="col-4 mb-1">
+        <div class="mb-1 col-4">
             <select name="mode" wb-select2 multiple>
                 <option value="*">All</option>
                 <option value="c">Create</option>
@@ -76,7 +76,7 @@
 </div>
 <div class="divider-text">Запреты</div>
 <div class="form-group">
-    <div class="row ml-4 mr-5 pr-3">
+    <div class="pr-3 ml-4 mr-5 row">
 
         <div class="col-sm-4">
             Таблицы
@@ -91,7 +91,7 @@
     <wb-var roles="{{wbRoleList()}}" />
     <wb-var tables="{{wbTableList()}}" />
     <wb-multiinput name="disallow">
-        <div class="col-sm-4 mb-1">
+        <div class="mb-1 col-sm-4">
             <select name="table" class="form-control" placeholder="Таблицы" wb-select2 multiple>
                 <option value="*">All</option>
                 <wb-foreach wb="from=_var.tables&tpl=false">
@@ -99,7 +99,7 @@
                 </wb-foreach>
             </select>
         </div>
-        <div class="col-sm-4 mb-1">
+        <div class="mb-1 col-sm-4">
             <select name="role" class="form-control" placeholder="Роли" wb-select2 multiple>
                 <option value="*">All</option>
                 <wb-foreach wb="from=_var.roles&tpl=false">
@@ -107,13 +107,14 @@
                 </wb-foreach>
             </select>
         </div>
-        <div class="col-4 mb-1">
+        <div class="mb-1 col-4">
             <select name="mode" wb-select2 multiple>
                 <option value="*">All</option>
                 <option value="c">Create</option>
                 <option value="r">Read</option>
                 <option value="u">Update</option>
                 <option value="d">Delete</option>
+                <option value="l">List</option>
                 <option value="f">Func</option>
             </select>
         </div>
