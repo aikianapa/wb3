@@ -658,8 +658,8 @@ class tagForeach
         $dom->params("return") > "" ? $options["return"] = $this->app->attrToArray($dom->params("return")) : null;
         $dom->params("sort") > "" ? $options["sort"] = $this->app->attrToArray($dom->params("sort")) : null;
         // С обработчиком перестаёт работать поиск через data-ajax
-        //$options['filter'] = $this->app->filterPrepare($options['filter'])["filter"];
-
+        // нужно для обработки wb-filter <wb-foreach wb="from=..." wb-filter="..."></wb-foreach>
+        $dom->params("filter") > "" ? $options['filter'] = $this->app->filterPrepare($options['filter'])["filter"] : null;
         return $options;
     }
 
