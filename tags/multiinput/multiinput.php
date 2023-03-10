@@ -39,12 +39,12 @@ class tagMultiinput {
         //$wrp->fetch($fields->get());
 				$values = $fields->get($field);
 				((array)$values === $values) ? null : $values = json_decode($values,true);
-        $inner = $this->setData($dom,$values);
-        $inner .= $textarea;
+        $this->setData($values);
+        $inner = $textarea;
         $inner .= "\n<template id='{$tplId}'>{$tpl}</template>\n";
         $inner .= '<script wb-app remove>wbapp.loadScripts(["/engine/js/php.js","/engine/js/jquery-ui.min.js","/engine/tags/multiinput/multiinput.js"],"multiinput-js");</script>'."\n\r";
         $dom->attr('done', '');
-        $dom->html($inner);
+        $dom->append($inner);
     }
 
 		function buildInner() {
@@ -60,7 +60,8 @@ class tagMultiinput {
 				return $out;
 		}
 
-    function setData(&$dom, $data=[[]]) {
+    function setData($data=[[]]) {
+        $dom = &$this->dom;
         $name = $dom->params("name");
         $str = "";
         $_idx = 0;
@@ -70,7 +71,7 @@ class tagMultiinput {
                 if ((array)$item === $item) {
                     $item['_idx'] = $_idx;
                     $line->item = $item;
-                    $line->fetch()->attr("done", true);
+                    $line->fetch();
                 } else {
                     $line->find("[name='{$name}']")->attr("value",$item)->attr("done",true);
                 }
@@ -78,8 +79,7 @@ class tagMultiinput {
                 $str .= $line;
             }
         }
-        $str > "" ? $str : $dom->tpl;
-        return $str;
+        $str > "" ? $dom->html($str) : $dom->html($dom->tpl);
     }
 
 }
