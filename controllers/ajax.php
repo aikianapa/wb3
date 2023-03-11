@@ -322,20 +322,30 @@ class ctrlAjax
 
     public function getsett()
     {
-        $app = $this->app;
+        $app = &$this->app;
         $mods = $app->vars('_sett.modules');
         foreach($mods as $mn => $ms) {
            $class = $app->moduleClass($mn);
+           $private = $app->vars("_sett.modules.{$mn}._private");
+            $app->vars("_sett.modules.{$mn}._private",null);
            if (is_object($class) && method_exists($class,"ajaxSettings")) {
                 $ms = $class->ajaxSettings($app->vars("_sett.modules.{$mn}"));
                 $app->vars("_sett.modules.{$mn}", $ms);
+           } else if ($private > '') {
+                if ($private == '_all') {
+                    $app->vars("_sett.modules.{$mn}", null);
+                } else {
+                    $flds = explode(',',$private);
+                    foreach($flds as $fld) {
+                        if ($fld>'') $app->vars("_sett.modules.{$mn},{$fld}", null);
+                    }
+                }
            }
         }
         $sett = $app->vars('_sett');
-
         unset($sett['cmsmenu']);
         unset($sett['api_key']);
-
         echo json_encode($sett);
+        exit;
     }
 }
