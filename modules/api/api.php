@@ -68,20 +68,15 @@ class modApi
             return true;
         }
 
+        $perm = false; // Шаблоны постоянного доступа
         foreach ($app->vars('_sett.modules.api.allowmode') as $am) {
-            $amm = str_replace('//', '/', '/api/v2/' . $am);
-            if (substr($amm, -1) == '/') {
-                $amm = substr($amm, 0, -1);
-            }
-            if ($am > '' && substr($this->app->vars('_route.uri'), 0, strlen($amm)) == $amm) {
-                return true;
-            }
+            $am = wbSetValuesStr($am);
+            $url = ' '.$this->app->vars('_route.uri');
+            $this->app->vars('_route.query_string') > '' ? $url .='?'. $this->app->vars('_route.query_string') : null;
+            if (strpos($url, $am)) return true;
         }
-        $mode == null ? $mode = $app->vars('_route.mode') : null;
 
-        $access = $this->checkAllow();
-
-        if (!$access) {
+        if (!$this->checkAllow()) {
             header("HTTP/1.1 401 Unauthorized", true, 401);
             echo json_encode(['error' => true, 'msg' => 'Access denied']);
             exit;
@@ -109,20 +104,20 @@ class modApi
             return true;
         }
         $result = false;
-        $allow = true;
+        $allow = false;
         foreach ((array)$this->app->vars('_sett.modules.api.allow') as $am) {
-            $am['role'] = isset($am['role']) ? (array)$am['role'] : [''];
-            $am['table'] = isset($am['table']) ? (array)$am['table'] : [''];
-            if (in_array($table, $am['table']) or in_array("*", $am['table']) or $am['table'] == [0 => '']) {
-                $allow = false;
-                if (in_array($role, $am['role']) or in_array("*", $am['role']) or $am['role'] == [0 => '']) {
-                    if (in_array($mode, $am['mode']) or in_array("*", $am['mode']) or $am['mode'] == [0 => '']) {
+            $am['role'] = $am['role']>'' ? (array)$am['role'] : ['*'];
+            $am['mode'] = $am['mode']>'' ? (array)$am['mode'] : ['*'];
+            $am['table'] = $am['table']>'' ? (array)$am['table'] : ['*'];
+
+            if (in_array($table, $am['table']) or in_array("*", $am['table'])) {
+                if (in_array($role, $am['role']) or in_array("*", $am['role'])) {
+                    if (in_array($mode, $am['mode']) or in_array("*", $am['mode'])) {
                         $allow = true;
                     }
                 }
             }
         }
-
         $disallow = false;
         foreach ((array)$this->app->vars('_sett.modules.api.disallow') as $am) {
             $am['role'] = isset($am['role']) ? (array)$am['role'] : [''];
