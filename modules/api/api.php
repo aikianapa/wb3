@@ -68,8 +68,8 @@ class modApi
             return true;
         }
 
-        $perm = false; // Шаблоны постоянного доступа
         foreach ($app->vars('_sett.modules.api.allowmode') as $am) {
+            $am = str_replace(['{','}'],['{{','}}'],$am);
             $am = wbSetValuesStr($am);
             $url = ' '.$this->app->vars('_route.uri');
             $this->app->vars('_route.query_string') > '' ? $url .='?'. $this->app->vars('_route.query_string') : null;
