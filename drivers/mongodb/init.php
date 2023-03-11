@@ -143,7 +143,8 @@ class mongodbDrv
 
         if (isset($options['sort'])) {
             $params['sort'] = [];
-            foreach ((array)$options['sort'] as $key=> $fld) {
+            $optsort = explode(',',$options['sort']);
+            foreach ($optsort as $key=> $fld) {
                 if (!strpos(':', $key) and is_numeric($fld) and in_array($fld*1, [1,-1])) {
                     $params['sort'][$key] = $fld;
                 } elseif (!((array)$fld === $fld)) {
