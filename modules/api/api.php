@@ -1,6 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/engine/lib/vendor/autoload.php';
-require_once __DIR__ .'/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
+
 use Notihnio\RequestParser\RequestParser;
 use Nahid\JsonQ\Jsonq;
 
@@ -19,23 +20,25 @@ class modApi
         if (!wbCheckBacktrace("wbModuleClass")) {
             $this->init($app);
             exit;
-        } else if (in_array(strtolower($mode),['getsett'])) {
+        } else if (in_array(strtolower($mode), ['getsett'])) {
             $this->ajaxSettings($app);
         }
     }
 
-    function ajaxSettings($sett = null) {
+    function ajaxSettings($sett = null)
+    {
         $sett = [];
         return $sett;
     }
-    function init($app) {
+    function init($app)
+    {
         set_time_limit(60);
         header('Content-Type: charset=utf-8');
         header('Content-Type: application/json');
         $this->app = &$app;
         $this->role = $this->app->vars('_sess.user.role');
         $app->api = &$this;
-        $this->checkMethod(['get','post','put','auth','delete']);
+        $this->checkMethod(['get', 'post', 'put', 'auth', 'delete']);
         $mode = $this->mode = $app->vars('_route.mode');
         $table = $this->table = $app->vars('_route.table');
         $result = null;
@@ -44,7 +47,7 @@ class modApi
                 $result = $this->$mode();
             } elseif ($table > '') {
                 $form = $app->formClass($table);
-                $func = 'api'.$mode;
+                $func = 'api' . $mode;
                 method_exists($form, $func) ? $result = $form->$func() : null;
             }
             $result = $app->jsonEncode($result);
@@ -57,7 +60,7 @@ class modApi
     {
         $app = &$this->app;
 
-        if (in_array($this->mode, ['login','logout','token'])) {
+        if (in_array($this->mode, ['login', 'logout', 'token'])) {
             return true;
         }
 
@@ -66,7 +69,7 @@ class modApi
         }
 
         foreach ($app->vars('_sett.modules.api.allowmode') as $am) {
-            $amm = str_replace('//', '/', '/api/v2/'.$am);
+            $amm = str_replace('//', '/', '/api/v2/' . $am);
             if (substr($amm, -1) == '/') {
                 $amm = substr($amm, 0, -1);
             }
@@ -80,27 +83,28 @@ class modApi
 
         if (!$access) {
             header("HTTP/1.1 401 Unauthorized", true, 401);
-            echo json_encode(['error'=>true,'msg'=>'Access denied']);
+            echo json_encode(['error' => true, 'msg' => 'Access denied']);
             exit;
         }
         return true;
     }
 
-    public function checkAllow() {
+    public function checkAllow()
+    {
         $app = &$this->app;
         $table = $this->app->vars('_route.table');
         $mode = $this->app->vars('_route.mode');
         $role = $this->role;
-        $modes = ['create','read','update','delete','func','list'];
+        $modes = ['create', 'read', 'update', 'delete', 'func', 'list'];
         if (!in_array($mode, $modes)) {
             return true;
         }
         $mode = substr($mode, 0, 1);
 
-        if ($role == 'admin' && in_array($table,['_settings','users'])) {
+        if ($role == 'admin' && in_array($table, ['_settings', 'users'])) {
             return true;
         }
-        
+
         if ($role == 'admin' && $mode == 'f') {
             return true;
         }
@@ -109,16 +113,16 @@ class modApi
         foreach ((array)$this->app->vars('_sett.modules.api.allow') as $am) {
             $am['role'] = isset($am['role']) ? (array)$am['role'] : [''];
             $am['table'] = isset($am['table']) ? (array)$am['table'] : [''];
-            if (in_array($table, $am['table']) OR in_array("*", $am['table']) or $am['table'] == [0 => '']) {
+            if (in_array($table, $am['table']) or in_array("*", $am['table']) or $am['table'] == [0 => '']) {
                 $allow = false;
-                if (in_array($role, $am['role']) OR in_array("*", $am['role']) OR $am['role']== [0 => '']) {
+                if (in_array($role, $am['role']) or in_array("*", $am['role']) or $am['role'] == [0 => '']) {
                     if (in_array($mode, $am['mode']) or in_array("*", $am['mode']) or $am['mode'] == [0 => '']) {
                         $allow = true;
                     }
                 }
             }
         }
-    
+
         $disallow = false;
         foreach ((array)$this->app->vars('_sett.modules.api.disallow') as $am) {
             $am['role'] = isset($am['role']) ? (array)$am['role'] : [''];
@@ -148,7 +152,7 @@ class modApi
 
     public function token()
     {
-        $this->method = ['post','get'];
+        $this->method = ['post', 'get'];
         $token = $this->app->getToken();
         return ['token' => $token];
     }
@@ -169,18 +173,18 @@ class modApi
         /api/v2/create/{{table}}/{{id}}
         */
 
-        $this->checkMethod(['post','put','get']);
+        $this->checkMethod(['post', 'put', 'get']);
         $table = $this->table;
 
         $request = RequestParser::parse(); // PUT, DELETE, etc.. support
         //$_POST = $request->params;
         $_FILES = $request->files;
-        
-        $post = ($this->method == 'get') ? $_GET: $request->params;
+
+        $post = ($this->method == 'get') ? $_GET : $request->params;
         $item = $this->app->vars('_route.item');
 
         ($item == '' && isset($post['id'])) ? $item = $post['id'] : null;
-        
+
         $check = $this->app->itemRead($table, $item);
         if ($check) {
             header('HTTP/1.1 409 Conflict', true, 409);
@@ -193,27 +197,27 @@ class modApi
         exit;
     }
 
-        function read()
-        {
-            /*
+    function read()
+    {
+        /*
             /api/v2/read/{{table}}/{{id}}
             */
 
-            $this->checkMethod(['post','put','get']);
-            $table = $this->table;
-            $item = $this->app->vars('_route.item');
-            $request = RequestParser::parse(); // PUT, DELETE, etc.. support
-            //$_POST = $request->params;
-            //$_FILES = $request->files;
-            $post = $request->params;
-            $item = $this->app->itemRead($table, $item);
-            if (!$item) {
-                header('HTTP/1.1 404 Not found', true, 404);
-                return ['error'=>true,'msg'=>"Item {$item} not found",'errno'=>404];
-            } else {
-                return $item;
-            }
+        $this->checkMethod(['post', 'put', 'get']);
+        $table = $this->table;
+        $item = $this->app->vars('_route.item');
+        $request = RequestParser::parse(); // PUT, DELETE, etc.. support
+        //$_POST = $request->params;
+        //$_FILES = $request->files;
+        $post = $request->params;
+        $item = $this->app->itemRead($table, $item);
+        if (!$item) {
+            header('HTTP/1.1 404 Not found', true, 404);
+            return ['error' => true, 'msg' => "Item {$item} not found", 'errno' => 404];
+        } else {
+            return $item;
         }
+    }
 
 
     function save()
@@ -228,8 +232,8 @@ class modApi
         $request = RequestParser::parse(); // PUT, DELETE, etc.. support
         //$_POST = $request->params;
         $_FILES = $request->files;
-        $post = ($this->method == 'get') ? $_GET: $request->params;
-        ($item == '' && isset($post['_id']) && $post['_id'] > '') ? $item = $post['_id'] : null ;
+        $post = ($this->method == 'get') ? $_GET : $request->params;
+        ($item == '' && isset($post['_id']) && $post['_id'] > '') ? $item = $post['_id'] : null;
         ($item == '' && isset($post['id']) && $post['id'] > '') ? $item = $post['id'] : null;
         $post['_id'] = ($item > '') ? $post['_id'] = $item : $this->app->newId();
         $data = $this->app->itemSave($table, $post);
@@ -244,17 +248,17 @@ class modApi
         /api/v2/update/{{table}}/{{id}}
         */
 
-        $this->checkMethod(['post','put','get']);
+        $this->checkMethod(['post', 'put', 'get']);
         $table = $this->table;
         $item = $this->app->vars('_route.item');
         $request = RequestParser::parse(); // PUT, DELETE, etc.. support
         //$_POST = $request->params;
         $_FILES = $request->files;
-        $post = ($this->method == 'get') ? $_GET: $request->params;
+        $post = ($this->method == 'get') ? $_GET : $request->params;
         $check = $this->app->itemRead($table, $item);
         if (!$check) {
             header('HTTP/1.1 404 Not found', true, 404);
-            return ['error'=>true,'msg'=>"Item {$item} not found",'errno'=>404];
+            return ['error' => true, 'msg' => "Item {$item} not found", 'errno' => 404];
         } else {
             ($item > '') ? $post['_id'] = $item : null;
             $data = $this->app->itemSave($table, $post);
@@ -264,23 +268,65 @@ class modApi
         exit;
     }
 
+
     function delete()
+    {
+        /*
+        /api/v2/delete/{{table}}/{{id}}
+        /api/v2/delete/{{table}}/?id=[{{id1}},{{id2}},...]
+        */
+
+        $this->checkMethod(['get', 'post', 'delete']);
+        $table = $this->table;
+        $item = $this->app->vars('_route.item');
+        if ($item) {
+            $check = $this->app->itemRead($table, $item);
+            if ($check) {
+                $data = $this->app->itemRemove($table, $item);
+                if (isset($data['_removed'])) {
+                    return ['error' => false, 'msg' => "Item {$item} deleted", 'errno' => 204, 'data' => $data];
+                } else {
+                    header('HTTP/1.1 409 Conflict', true, 409);
+                    return ['error' => true, 'msg' => "Item {$item} don't deleted", 'errno' => 409];
+                }
+            } else {
+                header('HTTP/1.1 404 Not found', true, 404);
+            }
+        } else {
+            $list = $this->list();
+            if (!count($list)) {
+                return ['error' => true, 'msg' => "Items not found", 'errno' => 404];
+            }
+            $ready = [];
+            $fail = [];
+            foreach($list as $item) {
+                $id = $item['id'];
+                $data = $this->app->itemRemove($table, $item['id'], false);
+                isset($data['_removed']) ? $ready[] = $id : $fail[] = $id;
+            }
+            $this->app->tableFlush($table);
+            return ['error' => false, 'msg' => "Items deleted", 'errno' => 204, 'ready' => $ready, 'fail'=>$fail];
+        }
+    }
+
+
+    function delete_old()
     {
         /*
         /api/v2/delete/{{table}}/{{id}}
         */
 
-        $this->checkMethod(['get','post','delete']);
+        $this->checkMethod(['get', 'post', 'delete']);
         $table = $this->table;
         $item = $this->app->vars('_route.item');
         $check = $this->app->itemRead($table, $item);
         if ($check) {
             $data = $this->app->itemRemove($table, $item);
             if (isset($data['_removed'])) {
-                return ['error'=>false,'msg'=>"Item {$item} deleted",'errno'=>204, 'data'=>$data];
+                return ['error' => false, 'msg' => "Item {$item} deleted", 'errno' => 204, 'data' => $data];
             } else {
                 header('HTTP/1.1 409 Conflict', true, 409);
-                return ['error'=>true,'msg'=>"Item {$item} don't deleted",'errno'=>409];
+                return ['error' => true, 'msg' => "Item {$item} don't deleted", 'errno' => 409];
             }
         } else {
             header('HTTP/1.1 404 Not found', true, 404);
@@ -289,7 +335,7 @@ class modApi
 
     function login()
     {
-        $this->checkMethod(['post','put','get','auth']);
+        $this->checkMethod(['post', 'put', 'get', 'auth']);
         $type = $this->table ? $this->table : $this->app->vars('_sett.modules.login.loginby');
         $type == '' ? $type = 'email' : null;
         $request = RequestParser::parse();
@@ -303,14 +349,14 @@ class modApi
             $this->app->login($user);
             header('HTTP/1.1 200 OK', true, 200);
             @$redirect = $user->group->url_login > '' ? $user->group->url_login : null;
-            return ['login'=>true,'error'=>false,'msg'=>'You are successfully logged in','redirect'=>$redirect,'user'=>$this->app->user,'token'=>$this->app->token];
+            return ['login' => true, 'error' => false, 'msg' => 'You are successfully logged in', 'redirect' => $redirect, 'user' => $this->app->user, 'token' => $this->app->token];
         } else {
-            setcookie("user", null, time()-3600, "/");
+            setcookie("user", null, time() - 3600, "/");
             unset($_SESSION['user']);
             session_regenerate_id();
             session_destroy();
             header("HTTP/1.1 401 Unauthorized", true, 401);
-            return ['login'=>false,'error'=>true,'msg'=>'Authorization has been denied for this request.','errno'=>401];
+            return ['login' => false, 'error' => true, 'msg' => 'Authorization has been denied for this request.', 'errno' => 401];
         }
     }
 
@@ -318,12 +364,12 @@ class modApi
     {
         $group = (object)$this->app->user->group;
         @$redirect = $group->url_logout > '' ? $group->url_logout : '/';
-        setcookie("user", '', -1,'/');
+        setcookie("user", '', -1, '/');
         unset($_SESSION['user']);
         unset($_COOKIE['user']);
         session_regenerate_id();
         session_destroy();
-        return ['login'=>false,'error'=>false,'redirect'=>$redirect,'user'=>null,'role'=>null];
+        return ['login' => false, 'error' => false, 'redirect' => $redirect, 'user' => null, 'role' => null];
     }
 
 
@@ -336,13 +382,13 @@ class modApi
         /api/v2/upload/{{table}}
         */
         $this->checkMethod(['post']);
-        $uploads = '/uploads'.$this->app->vars('_post.path');
+        $uploads = '/uploads' . $this->app->vars('_post.path');
         if ($this->table > '') {
             $uploads .= $this->table;
         }
 
         if ($this->app->vars('_post.path')) {
-            $path = $this->app->vars("_env.path_app").$uploads;
+            $path = $this->app->vars("_env.path_app") . $uploads;
         }
 
         $path = wbNormalizePath($path);
@@ -353,24 +399,24 @@ class modApi
         $request = RequestParser::parse();
         $_FILES = $request->files;
         $filename = basename($_FILES['file']['name']);
-        $file = str_replace('//','/',$path .'/'. $filename);
+        $file = str_replace('//', '/', $path . '/' . $filename);
         $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
         if (move_uploaded_file($_FILES['file']['tmp_name'], $file)) {
             $msg = 'File uploaded';
-            header('HTTP/1.1 200 '.$msg, true, 200);
-            return ['error'=>false,
-                    'msg'=>$msg,
-                    'file'=>$file,
-                    'uri'=>$uploads.'/'.$filename,
-                    'filename'=>$filename,
-                    'errno'=>200
+            header('HTTP/1.1 200 ' . $msg, true, 200);
+            return [
+                'error' => false,
+                'msg' => $msg,
+                'file' => $file,
+                'uri' => $uploads . '/' . $filename,
+                'filename' => $filename,
+                'errno' => 200
             ];
         } else {
             $msg = "Unsupported Media Type";
         }
-        header('HTTP/1.1 415 '.$msg, true, 415);
-        return ['error'=>true,'msg'=>$msg,'errno'=>415];
-
+        header('HTTP/1.1 415 ' . $msg, true, 415);
+        return ['error' => true, 'msg' => $msg, 'errno' => 415];
     }
 
 
@@ -381,23 +427,24 @@ class modApi
         Если требуется доступ по токену, то соответствующая проверка должна быть в функции
         /api/v2/func/{{table}}/{{func}}
         */
-        $this->checkMethod(['post','get']);
+        $this->checkMethod(['post', 'get']);
         $app = &$this->app;
         $form = $app->route->form;
         $func = $app->route->func;
         $class = $app->formClass($form);
-        if (!method_exists($class,$func)) {
+        if (!method_exists($class, $func)) {
             header('HTTP/1.1 404 Not found', true, 404);
-            return ['error'=>true,'msg'=>"Function {$func} not found",'errno'=>404];
+            return ['error' => true, 'msg' => "Function {$func} not found", 'errno' => 404];
         }
         return $class->$func();
     }
 
-    function listview() {
+    function listview()
+    {
         header("Content-Type: text/html; charset=UTF-8");
         $out = $this->app->fromFile(__DIR__ . '/api_ui.php');
         $out->fetch();
-        $result = json_encode($this->list(),JSON_UNESCAPED_UNICODE);
+        $result = json_encode($this->list(), JSON_UNESCAPED_UNICODE);
         echo $out;
         exit;
     }
@@ -437,7 +484,7 @@ class modApi
             &@supress            - подавляет вывод промежуточных данных при группировке
         */
         header('Access-Control-Allow-Origin: *');
-        $this->checkMethod(['get','post']);
+        $this->checkMethod(['get', 'post', 'delete']);
         $app = &$this->app;
         $table = $app->route->table;
         $query = (array)$app->route->query;
@@ -445,9 +492,9 @@ class modApi
         $options = $this->app->filterPrepare($app->route->query);
         if ($app->vars('_post.filter') > '') {
             $options['filter'] = (array)$app->vars('_post.filter');
-            foreach($options['filter'] as $key => $val) {
-                if (substr($key,0,1) == '@') {
-                    $options[substr($key,1)] = $val;
+            foreach ($options['filter'] as $key => $val) {
+                if (substr($key, 0, 1) == '@') {
+                    $options[substr($key, 1)] = $val;
                     unset($options['filter'][$key]);
                 }
             }
@@ -462,10 +509,10 @@ class modApi
         }
         if ($return && $group) {
             $return = array_keys(array_flip($return) + array_flip($group));
-            $options->return = implode(',',$return);
+            $options->return = implode(',', $return);
         }
         if (isset($app->route->item)) {
-            $json = $app->itemRead($table, $app->route->item);        
+            $json = $app->itemRead($table, $app->route->item);
             if ($form && @method_exists($form, 'beforeItemShow')) {
                 $form->beforeItemShow($json);
             }
@@ -480,7 +527,7 @@ class modApi
                     $json = $this->app->arrayFilter((array)$json, (array)$options);
                 }
                 if ($return) {
-                    foreach($json as &$jtm) {
+                    foreach ($json as &$jtm) {
                         $jflds->setReference($jtm);
                         $tmp = [];
                         foreach ($return as $ret) {
@@ -497,16 +544,16 @@ class modApi
             $json = $app->itemList($table, (array)$options);
             $json['list'] = (array)$json['list'];
             if ($form && @method_exists($form, 'beforeItemShow')) {
-                foreach($json['list'] as &$item) {
+                foreach ($json['list'] as &$item) {
                     $form->beforeItemShow($item);
                     if ($return) {
-                    $jflds->setReference($item);
-                    $tmp = [];
-                    foreach ($return as $ret) {
-                        $ret = trim($ret);
-                        $tmp[$ret] = $jflds->get($ret);
-                    }
-                    $item = $tmp;
+                        $jflds->setReference($item);
+                        $tmp = [];
+                        foreach ($return as $ret) {
+                            $ret = trim($ret);
+                            $tmp[$ret] = $jflds->get($ret);
+                        }
+                        $item = $tmp;
                     }
                 }
             }
@@ -514,7 +561,6 @@ class modApi
                 $json['list'] = $this->group($json['list']);
                 return (array)$json['list'];
             }
-
             if (isset($options->chunk)) {
                 return (array)$json;
             } elseif (!isset($options->size)) {
@@ -523,7 +569,7 @@ class modApi
             } else {
                 $pages = ceil($json['count'] / $options->size);
                 $pagination = wbPagination($json['page'], $pages);
-                return ['result'=>(array)$json['list'], 'pages'=>$pages, 'page'=>$json['page'], 'pagination'=>$pagination];
+                return ['result' => (array)$json['list'], 'pages' => $pages, 'page' => $json['page'], 'pagination' => $pagination];
             }
         }
     }
@@ -539,8 +585,7 @@ class modApi
             $grps = $jsonq->groupBy($fld)->get();
             foreach ($grps as $key => $grp) {
                 count($flds) > 0 ? $grp = $this->group($grp, $flds) : null;
-                isset($this->options->supress) ? array_push($list,$key) : $list[$key] = $grp;
-                
+                isset($this->options->supress) ? array_push($list, $key) : $list[$key] = $grp;
             }
         }
         return $list;
@@ -551,7 +596,7 @@ class modApi
     {
         // convert options array to string for __options
         $options = http_build_query($arr);
-        $options = str_replace(['&','%2C'], ';', $options);
+        $options = str_replace(['&', '%2C'], ';', $options);
         return $options;
     }
 }
