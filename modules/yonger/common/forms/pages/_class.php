@@ -190,4 +190,23 @@ class pagesClass extends cmsFormsClass
         echo json_encode('true');
         exit;
     }
+
+    function sort()
+    {
+        // сортировка вложенных таблиц
+        $form = $this->app->vars('_post.form');
+        $list = $this->app->vars('_post.list');
+        $res = ['error' => true];
+        foreach ($list as $sort => $item) {
+            $this->app->itemSave($form, [
+                'id' => $item,
+                '_sort' => wbSortIndex($sort)
+            ], false);
+            $res = ['error' => false];
+        }
+        $this->app->tableFlush($form);
+        header("Content-type:application/json");
+        echo json_encode($list);
+        exit;
+    }
 }

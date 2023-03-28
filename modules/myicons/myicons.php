@@ -40,7 +40,6 @@ class modMyicons
         } else {
             $this->app = &$obj->app;
             $this->dom = &$obj;
-
             $attrs = $this->dom->attributes;
             $this->attr = ' ';
             if (gettype($attrs) == 'object' && $attrs->length) {
@@ -52,6 +51,8 @@ class modMyicons
             }
             if ($this->dom->is('input')) {
                 $this->finder();
+            } else if ($this->dom->attr('src')>'') {
+                $this->raw($this->dom->attr('src'));
             } else {
                 $this->dom->attr('size') > '' ? $this->size = $this->dom->attr('size') : null;
                 $this->dom->attr('stroke') > '' ? $this->stroke = $this->dom->attr('stroke') : null;
@@ -64,6 +65,16 @@ class modMyicons
                 $obj->remove();
             }
         }
+    }
+
+    public function raw($src) {
+        if (substr($src,-4) !== '.svg') $src.='.svg';
+        $svg = file_get_contents($this->path.$src);
+        $class = $this->dom->attr('class');
+        $this->dom->after($svg);
+        $this->dom->next()->addClass($class);
+        $this->dom->remove();
+        
     }
 
 

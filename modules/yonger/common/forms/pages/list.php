@@ -2,7 +2,8 @@
 
 <link rel="stylesheet" href="/engine/lib/js/nestable/nestable.css">
 <link rel="stylesheet" href="/engine/modules/yonger/tpl/assets/css/yonger.less">
-<script>
+<script type="module">
+    import Sortable from '/engine/js/sortable.core.esm.js'
     var yonline = Ractive.extend({
         isolated: false,
         template: $("#yonline").html(),
@@ -76,12 +77,12 @@
 
             },
             expand(ev) {
-                let data = $(ev.node).parent('[data-item]').data();
-                console.log(data);
-                $(ev.node).parent('[data-item]').removeClass('dd-collapsed')
+                let $parent = $(ev.node).parent('[data-item]')
+                let data = $parent.data();
+                $parent.removeClass('dd-collapsed')
                 wbapp.data('yonger.pagelist.exp_' + data.form + '_' + data.item, true)
                 if (data.inner !== "pages") {
-                    options = "?&@size=200&@return=id,_id,_form,header,name,url,blocks,active"
+                    var options = "?&@size=200&@sort=_sort&@return=id,_id,_form,header,name,url,blocks,active,_sort"
                     let post = {}
                     if (data.filter > '') {
                         if (typeof data.filter == 'object') {
@@ -100,6 +101,7 @@
                             yongerPages.alturl(item)
                             ev.push('ch', item);
                         })
+                        yongerPages.sortable($parent.find('ol')[0])
                     })
                 }
             },
@@ -286,38 +288,55 @@
         },
         alturl(item) {
             if (item.blocks !== undefined) {
-                $.each(item.blocks,function(i,block){
+                $.each(item.blocks, function(i, block) {
                     if (block.name == 'seo' && block.alturl !== undefined && block.alturl > '') {
                         item.url = block.alturl
                     }
                 })
             }
             delete item.blocks
+        },
+        sortable(el) {
+            let self = this
+            Sortable.create(el, {
+                onEnd: function(ev) {
+                    let list = []
+                    let form = null
+                    $(el).children('[data-item]').each((i, item) => {
+                        list.push($(item).attr('data-item'))
+                        form = $(item).attr('data-form')
+                    })
+                    if (form !== null && list.length) {
+                        $.post('/form/pages/sort',{form: form, list: list},(data)=>{
+                            
+                        })                       
+                    }
+                }
+            });
         }
     })
 </script>
 <div id="yonline" class="d-none" wb-off>
-    <li class="dd-item {{dd_collapsed}} row" data-idx="{{@index}}" data-item="{{id}}" data-name="{{name}}" data-path="{{url}}"
-        data-form="{{_form}}" data-inner="{{inner}}" data-filter="{{attach_filter}}">
+    <li class="dd-item {{dd_collapsed}} row" data-idx="{{@index}}" data-item="{{id}}" data-name="{{name}}" data-path="{{url}}" data-form="{{_form}}" data-inner="{{inner}}" data-filter="{{attach_filter}}">
         {{#if ch}}{{#if inner == 'pages'}}
-        <button class="dd-collapse" data-action="collapse" type="button" on-click="collapse">Collapse</button>
-        <button class="dd-expand" data-action="expand" type="button" on-click="expand">Expand</button>
-        {{/if}}{{/if}} {{#if _form == "pages"}}{{#if inner != 'pages'}}
-        <button class="dd-collapse" data-action="collapse" type="button" on-click="collapse">Collapse</button>
-        <button class="dd-expand" data-action="expand" type="button" on-click="expand">Expand</button>
-        {{/if}}{{/if}} {{#if _form == 'pages'}}
-        <span class="dd-handle"></span>
+                <button class="dd-collapse" data-action="collapse" type="button" on-click="collapse">Collapse</button>
+                <button class="dd-expand" data-action="expand" type="button" on-click="expand">Expand</button>
+            {{/if}}{{/if}} {{#if _form == "pages"}}{{#if inner != 'pages'}}
+                <button class="dd-collapse" data-action="collapse" type="button" on-click="collapse">Collapse</button>
+                <button class="dd-expand" data-action="expand" type="button" on-click="expand">Expand</button>
+            {{/if}}{{/if}} {{#if _form == 'pages'}}
+            <span class="dd-handle"></span>
         {{else}}
-        <span class="pos-absolute t-5 l--10">
-            <svg class="mi mi-dots" size="24" stroke="7987a1" wb-on wb-module="myicons"></svg>
-        </span>
+            <span class="pos-absolute t-5 l--10">
+                <svg class="mi mi-dots" size="24" stroke="7987a1" wb-on wb-module="myicons"></svg>
+            </span>
         {{/if}}
         <span class="dd-text d-flex col-sm-9 ellipsis">
             <span>
                 {{#if header !== ""}}
-                <span class="cursor-pointer" on-click="edit">{{header}}</span>
+                    <span class="cursor-pointer" on-click="edit">{{header}}</span>
                 {{else}}
-                <span class="cursor-pointer tx-gray-400" on-click="edit">Без заголовка</span>
+                    <span class="cursor-pointer tx-gray-400" on-click="edit">Без заголовка</span>
                 {{/if}}
                 <br>
                 <span class="dd-path {{menu}} ellipsis cursor-pointer" on-click="openurl">
@@ -327,28 +346,28 @@
         </span>
         <span class="dd-info col-sm-3">
             {{#if ~/role == "admin"}} {{#if inner}} {{#if inner !== "pages"}} {{#if inner !== _form}}
-            <div class="dropdown d-inline">
-                <svg class="cursor-pointer dropdown-toggle mi mi-item-select-plus-add" size="24" stroke="0168fa" wb-on wb-module="myicons"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></svg>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#" on-click="newpage">Новая страница</a>
-                    <a class="dropdown-item" href="#" on-click="newitem">Новая запись</a>
-                </div>
-            </div>
+                            <div class="dropdown d-inline">
+                                <svg class="cursor-pointer dropdown-toggle mi mi-item-select-plus-add" size="24" stroke="0168fa" wb-on wb-module="myicons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></svg>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="#" on-click="newpage">Новая страница</a>
+                                    <a class="dropdown-item" href="#" on-click="newitem">Новая запись</a>
+                                </div>
+                            </div>
 
-            {{/if}} {{/if}} {{/if}}
-            <svg class="cursor-pointer mi mi-copy-paste-select-add-plus" size="24" stroke="7987a1" wb-on wb-module="myicons" on-click="copy"></svg>{{/if}}
+                        {{/if}} {{/if}} {{/if}}
+                <svg class="cursor-pointer mi mi-copy-paste-select-add-plus" size="24" stroke="7987a1" wb-on wb-module="myicons" on-click="copy"></svg>{{/if}}
             <svg class="cursor-pointer mi mi-content-edit-pen.svg" size="24" stroke="7987a1" wb-on wb-module="myicons" on-click="edit"></svg>{{#if ~/role == "admin"}} {{#if active == "on"}}
-            <svg class="cursor-pointer mi mi-power-turn-on-square.1" size="24" stroke="82C43C" wb-on wb-module="myicons" on-click="switch"></svg>{{else}}
-            <svg class="cursor-pointer mi mi-power-turn-on-square" size="24" stroke="FC5A5A" wb-on wb-module="myicons" on-click="switch"></svg>{{/if}}
-            <svg class="cursor-pointer mi mi-trash-delete-bin.2" size="24" stroke="FC5A5A" wb-on wb-module="myicons" on-click="remove"></svg>{{/if}}
+                    <svg class="cursor-pointer mi mi-power-turn-on-square.1" size="24" stroke="82C43C" wb-on wb-module="myicons" on-click="switch"></svg>
+                {{else}}
+                    <svg class="cursor-pointer mi mi-power-turn-on-square" size="24" stroke="FC5A5A" wb-on wb-module="myicons" on-click="switch"></svg>{{/if}}
+                <svg class="cursor-pointer mi mi-trash-delete-bin.2" size="24" stroke="FC5A5A" wb-on wb-module="myicons" on-click="remove"></svg>{{/if}}
         </span>
         {{#if ch}}
-        <ol>
-            {{#.ch}}
-            <yonline></yonline>
-            {{/.ch}}
-        </ol>
+            <ol>
+                {{#.ch}}
+                    <yonline></yonline>
+                {{/.ch}}
+            </ol>
         {{/if}}
     </li>
 </div>
@@ -357,8 +376,7 @@
 <div class="m-3" id="yongerPages" wb-off>
     <nav class="px-3 py-2 nav navbar navbar-expand-md col t-0 position-sticky bg-light rounded-10 z-index-150 ">
         <h3 class="order-1 tx-bold tx-spacing--2">Страницы</h3>
-        <button class="order-2 navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-            aria-expanded="true" aria-label="Toggle navigation">
+        <button class="order-2 navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="true" aria-label="Toggle navigation">
             <i class="wd-20 ht-20 fa fa-ellipsis-v"></i>
         </button>
         <div class="order-3 ml-auto collapse d-md-block" id="navbarSupportedContent">
@@ -383,8 +401,8 @@
     <div id="yongerPagesTree" class="dd yonger-nested">
         <ol id="pagesList" class="dd-list">
             {{#.root}}
-            <yonline></yonline>
-            {{/root}}
+                <yonline></yonline>
+                {{/root}}
         </ol>
     </div>
     <modals></modals>

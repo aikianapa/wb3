@@ -182,6 +182,7 @@ class wbDom extends DomQuery
     public function hasAttr($attr)
     {
         $attrs = [];
+        if (!$this->attributes) return false;
         foreach ($this->attributes as $k => $v) {
             $attrs[] = $v->name;
         }
