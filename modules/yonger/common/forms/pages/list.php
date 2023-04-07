@@ -16,8 +16,9 @@
             },
             newitem(ev) {
                 let data = $(ev.node).parents('[data-item]').data();
+                data.editor > '' ? null : data.editor = 'edit'
                 wbapp.ajax({
-                    'url': '/cms/ajax/form/' + data.inner + '/edit/_new',
+                    'url': '/cms/ajax/form/' + data.inner + '/' + data.editor + '/_new',
                     'append': '#yongerPages modals'
                 });
                 $('#yongerPages').data('ev', ev)
@@ -30,8 +31,9 @@
             },
             edit(ev) {
                 let data = $(ev.node).parents('[data-item]').data();
+                data.editor > '' ? null : data.editor = 'edit'
                 wbapp.ajax({
-                    'url': '/cms/ajax/form/' + data.form + '/edit/' + data.item,
+                    'url': '/cms/ajax/form/' + data.form + '/' + data.editor + '/' + data.item,
                     'append': '#yongerPages modals'
                 });
                 $('#yongerPages').data('ev', ev)
@@ -202,7 +204,7 @@
                     return ch
                 }
                 wbapp.post(
-                    '/api/v2/list/pages?&id!=[_header,_footer]&@sort=_sort&@return=_id,_form,id,name,header,url,path,active,menu,attach,attach_filter,blocks', {},
+                    '/api/v2/list/pages?&id!=[_header,_footer]&@sort=_sort&@return=_id,_form,id,name,header,url,path,active,menu,attach,attach_filter,attach_form,blocks', {},
                     function(res) {
                         let root = []
                         $.each(res, function(i, item) {
@@ -307,9 +309,12 @@
                         form = $(item).attr('data-form')
                     })
                     if (form !== null && list.length) {
-                        $.post('/form/pages/sort',{form: form, list: list},(data)=>{
-                            
-                        })                       
+                        $.post('/form/pages/sort', {
+                            form: form,
+                            list: list
+                        }, (data) => {
+
+                        })
                     }
                 }
             });
@@ -317,7 +322,7 @@
     })
 </script>
 <div id="yonline" class="d-none" wb-off>
-    <li class="dd-item {{dd_collapsed}} row" data-idx="{{@index}}" data-item="{{id}}" data-name="{{name}}" data-path="{{url}}" data-form="{{_form}}" data-inner="{{inner}}" data-filter="{{attach_filter}}">
+    <li class="dd-item {{dd_collapsed}} row" data-idx="{{@index}}" data-item="{{id}}" data-name="{{name}}" data-path="{{url}}" data-form="{{_form}}" data-editor="{{attach_form}}" data-inner="{{inner}}" data-filter="{{attach_filter}}">
         {{#if ch}}{{#if inner == 'pages'}}
                 <button class="dd-collapse" data-action="collapse" type="button" on-click="collapse">Collapse</button>
                 <button class="dd-expand" data-action="expand" type="button" on-click="expand">Expand</button>
