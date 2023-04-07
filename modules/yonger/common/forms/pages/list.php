@@ -32,6 +32,7 @@
             edit(ev) {
                 let data = $(ev.node).parents('[data-item]').data();
                 data.editor > '' ? null : data.editor = 'edit'
+                data.form == 'pages' ? data.editor = 'edit' : null;
                 wbapp.ajax({
                     'url': '/cms/ajax/form/' + data.form + '/' + data.editor + '/' + data.item,
                     'append': '#yongerPages modals'
@@ -104,6 +105,24 @@
                             ev.push('ch', item);
                         })
                         yongerPages.sortable($parent.find('ol')[0])
+
+                        $(document).undelegate(`#${data.inner}EditForm`, 'wb-form-save');
+                        $(document).delegate(`#${data.inner}EditForm`, 'wb-form-save', function(_event, res) {
+                            let ch = ev.get('ch')
+                            let add = true
+                            ch.forEach((item, i) => {
+                                if (item.id == res.data.id) {
+                                    item = res.data
+                                    item.url = data.path + '/' + wbapp.furl(item.header)
+                                    item.menu = ''
+                                    yongerPages.alturl(item)
+                                    ch[i] = item
+                                    add = false
+                                }
+                            })
+                            if (add) ch.push(res.data)
+                            ev.set('ch', ch)
+                        })
                     })
                 }
             },
