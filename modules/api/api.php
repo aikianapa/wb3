@@ -572,6 +572,7 @@ class modApi
     private function group($list, $flds = null)
     {
         $jsonq = $this->app->json($list);
+        $jsonq->empty('');
         $flds = ($flds == null) ? wbAttrToArray($this->options->group) : $flds;
         //$total = $this->total($list);
         $list = [];
