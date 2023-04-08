@@ -60,7 +60,7 @@ class modYonger
         $this->list = $this->app->itemList('pages', ['return' => 'id,name,_form,header,active,attach,attach_filter,url,path,_sort,blocks']);
         $this->list = $this->list['list'];
         $this->yonmapnest();
-        $app->putContents($app->vars('_env.dba') . '/_yonmap.json', json_encode($this->map));
+        $app->putContents($app->vars('_env.dba') . '/_yonmap.json', json_encode($this->map,JSON_UNESCAPED_UNICODE));
         header("Content-type:application/json");
         echo json_encode(['count'=>count($this->map)]);
         exit;
@@ -93,7 +93,9 @@ class modYonger
             $attach = (isset($item['attach']) and $item['attach'] > ' ') ? true : false;
             $res1 = $res2 = null;
             $res1 = $this->yonmapnest($url);
-            substr($item['id'], 0, 1) == '_' or isset($this->map[$md5]) ? null : $this->map[$md5] = ['f' => $item['_form'], 'i' => $item['id'], 'u' => $url, 'n' => $item['name']];
+            $header = (array)$item['header'] === $item['header'] ? $item['header'][$this->app->vars('_sess.lang')] : $item['header'];
+            $active = @$item['active'] == 'on' ? 'on' : '';
+            substr($item['id'], 0, 1) == '_' or isset($this->map[$md5]) ? null : $this->map[$md5] = ['f' => $item['_form'], 'i' => $item['id'], 'u' => $url, 'n' => $item['name'],'h'=>$header, 'a'=>$active];
             $res2 = $attach ? $this->yonmaptable($item, $url) : null;
         }
     }
@@ -122,7 +124,10 @@ class modYonger
                 $item['header'] = array_shift($item['header']);
             }
             $item['_form'] = $table;
+            $header = '';
             if ($item['header']) {
+                $header = (array)$item['header'] === $item['header'] ? $item['header'][$this->app->vars('_sess.lang')] : $item['header'];
+                $active = @$item['active'] == 'on' ? 'on' : '';
                 $item['path'] = $path;
                 $item['name'] = wbFurlGenerate($item['header']);
                 $item['url'] = $item['path'] . '/' . $item['name'];
@@ -138,7 +143,7 @@ class modYonger
                 $level[$key] = $item;
                 $md5 = md5($item['url']);
                 if (!isset($this->map[$md5])) {
-                    $this->map[$md5] = ['f' => $item['_form'], 'i' => $item['id'], 'u' => $item['url'], 'n' => $item['name']];
+                    $this->map[$md5] = ['f' => $item['_form'], 'i' => $item['id'], 'u' => $item['url'], 'n' => $item['name'], 'h' => $header, 'a'=>$active];
                 }
             } else {
                 unset($level[$key]);
@@ -208,6 +213,7 @@ class modYonger
     {
         if ($this->type == 'app') {
             // return list to json;
+            /*
             if ($this->app->vars('_env.cache.yonpageselect')) {
                 $list = $this->app->vars('_env.cache.yonpageselect');
             } else {
@@ -222,7 +228,13 @@ class modYonger
                     (array)$item['header'] === $item['header'] ? $item['header'] = $item['header'][$this->app->vars('_sess.lang')] : null;
                 });
                 $this->app->vars('_env.cache.yonpageselect', $list);
-            }
+            }*/
+            $list = file_get_contents($this->app->vars('_route.path_app').'/database/_yonmap.json');
+            $list = json_decode($list,true);
+            $home = md5('/home');
+            isset($list[$home]) ? $list[$home]['u'] = '/' : null;
+            $list = array_values($list);
+            $list = wbArraySort($list, "h:a");
             header("Content-type: application/json; charset=utf-8");
             return $this->app->jsonEncode($list);
         } else {
