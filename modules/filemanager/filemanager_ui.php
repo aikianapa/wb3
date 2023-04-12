@@ -39,35 +39,35 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item hidden allow-single allow-file allow-file1" data-no-ext="zip tar arj rar gzip jpg jpeg png gif tif tiff">
+                            <li class="hidden nav-item allow-single allow-file allow-file1" data-no-ext="zip tar arj rar gzip jpg jpeg png gif tif tiff">
                                 <a href="#edit" class="nav-link">
                                     <svg class="mi mi-content-edit-pen size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.edit}}</span>
                                 </a>
                             </li>
 
-                            <li class="nav-item hidden allow-single allow-dir allow-file allow-dir1 allow-file1">
+                            <li class="hidden nav-item allow-single allow-dir allow-file allow-dir1 allow-file1">
                                 <a href="#rename" class="nav-link">
                                     <svg class="mi mi-input-text size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.rename}}</span>
                                 </a>
                             </li>
 
-                            <li class="nav-item hidden allow-all">
+                            <li class="hidden nav-item allow-all">
                                 <a href="#remove" class="nav-link">
                                     <svg class="mi mi-trash-delete-bin.3 size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.remove}}</span>
                                 </a>
                             </li>
 
-                            <li class="nav-item hidden allow-all" data-no-ext="zip">
+                            <li class="hidden nav-item allow-all" data-no-ext="zip">
                                 <a href="#zip" class="nav-link">
                                     <svg class="mi mi-file-zip-rar-circle size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.zip}}</span>
                                 </a>
                             </li>
 
-                            <li class="nav-item hidden allow-single allow-file" data-ext="zip">
+                            <li class="hidden nav-item allow-single allow-file" data-ext="zip">
                                 <a href="#unzip" class="nav-link">
                                     <svg class="mi mi-file-zip-rar-1 size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.unzip}}</span>
@@ -75,21 +75,21 @@
                             </li>
 
 
-                            <li class="nav-item hidden allow-all">
+                            <li class="hidden nav-item allow-all">
                                 <a href="#copy" class="nav-link">
                                     <svg class="mi mi-copy-paste-select-add-plus size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.copy}}</span>
                                 </a>
                             </li>
 
-                            <li class="nav-item hidden allow-all">
+                            <li class="hidden nav-item allow-all">
                                 <a href="#cut" class="nav-link">
                                     <svg class="mi mi-scissors-cut.3 size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.cut}}</span>
                                 </a>
                             </li>
 
-                            <li class="nav-item hidden allow-buffer">
+                            <li class="hidden nav-item allow-buffer">
                                 <a href="#paste" class="nav-link">
                                     <svg class="mi mi-copy-paste-select-add-plus.2 size-24" wb-module="myicons"></svg>
                                     <span>{{_lang.paste}}</span>
@@ -101,11 +101,11 @@
                 </div>
             </div>
             <!-- content-left -->
-            <div class="chat-content p-2" id="panel">
+            <div class="p-2 chat-content" id="panel">
                 <div class="content-body-header">
                     <div class="d-flex">
                         <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb py-1 px-2">
+                            <ol class="px-2 py-1 breadcrumb">
                                 <li class="breadcrumb-item" prepend="nav .breadcrumb">
                                     <a href="#" data-path="">
                                         <svg class="mi mi-home-house-big size-24" stroke="0168fa" wb-module="myicons"></svg>
@@ -148,7 +148,7 @@
                                 </td>
                                 <td class="col name ellipsis">
                                     <i class="fa {{type}} {{ext}} tx-24 tx-primary lh-0 valign-middle" wb-if="'{{type}}'!=='back'"></i>
-                                    <svg class="mi mi-folder-group-arrow mr-2 size-24" wb-module="myicons" wb-if="'{{type}}'=='back'"></svg>
+                                    <svg class="mr-2 mi mi-folder-group-arrow size-24" wb-module="myicons" wb-if="'{{type}}'=='back'"></svg>
                                     <span class="pd-l-5">{{name}}</span>
                                 </td>
                                 <td class="hidden-xs">
@@ -164,7 +164,7 @@
                                 <td class="actions tx-right">
                                     <div class="d-block wd-150" wb-if='"{{type}}"!=="back"'>
                                         <a href="#edit" class="nobr nav-link" wb-if='"{{type}}"=="file"' data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.edit}}">
-                                            <svg class="mi mi-content-edit-pen mr-2 size-24" wb-module="myicons"></svg>
+                                            <svg class="mr-2 mi mi-content-edit-pen size-24" wb-module="myicons"></svg>
                                         </a>
                                         <a href="#rendir" class="nobr nav-link" wb-if='"{{type}}"=="dir"' data-toggle="tooltip" data-placement="left" data-trigger="hover" title="{{_lang.rename}}">
                                             <svg class="mi mi-input-text size-24" wb-module="myicons"></svg>
@@ -197,7 +197,7 @@
         </div>
 
 
-        <div id="filemanagerModalDialog" class="modal fade hidden" tabindex="-1" role="dialog" aria-hidden="true">
+        <div id="filemanagerModalDialog" class="hidden modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <template name="newdir">
                 <title>{{_lang.title_new_dir}}</title>
                 <p>{{_lang.prompt_new_dir}}:<br> {{newname}}</p>
@@ -278,7 +278,7 @@
         <div id="filemanagerModalSrc" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
-                    <div class="modal-header p-1">
+                    <div class="p-1 modal-header">
                         <p class="modal-title text-secondary">
                             <button type="button" class="btn btn-primary btn-xs btn-edit-save">
                                 {{_lang.save}}
@@ -298,7 +298,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div id="filemanagerSrc" class="tab-content  p-a m-b-md">
+                    <div id="filemanagerSrc" class="tab-content p-a m-b-md">
                         <div class="tab-pane show active" role="tabpanel">
                             <wb-module wb="{'module':'codemirror'}" id="filemanagerEditor" name="text" />
                         </div>

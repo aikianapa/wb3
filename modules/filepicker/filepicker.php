@@ -49,6 +49,7 @@ class modFilepicker
                 $a= '.'.$a;
             }
             $accept = implode(',',$accept);
+            $accept == '.*' ? $accept = '*' : null;
             $out->find('input[type=file]')->attr('accept',$accept);
 
         }
