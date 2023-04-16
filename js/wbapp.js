@@ -10,8 +10,8 @@ setTimeout(async function() {
     typeof(loader) !== 'undefined' && loader !== null ? wbapp.delay = 20 : wbapp.delay = 10;
 
     var get_cookie = function(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
+        const value = '; '+document.cookie;
+        const parts = value.split('; '+name+'=');
         if (parts.length === 2) return parts.pop().split(';').shift();
     }
     let devmode = get_cookie('devmode')
@@ -370,7 +370,11 @@ wbapp.start = async function() {
                         eval(`if (obj.${idx} == undefined) obj.${idx} = {}`);
                     }
                 })
-                eval(`obj['${name}'] = value`);
+                try {
+                    eval(`obj.${name} = value`)
+                } catch (error) {
+                    eval(`obj['${name}'] = value`);                    
+                }
             } else {
                 eval(`obj['${name}'] = value`);
             }
