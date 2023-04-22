@@ -180,7 +180,7 @@ function tagInner($content, $tagname)
 public function icon() {
         isset($this->icon) ? $icon = $this->icon : $icon = $this->name();
         $file = $this->path.$icon;
-        substr($this->stroke, 0, 1) !== '#' ? $this->stroke = '#'.$this->stroke : null;
+        substr($this->stroke, 0, 1) !== '#' && $this->stroke !== 'currentColor' ? $this->stroke = '#'.$this->stroke : null;
         substr($this->fill, 0, 1) !== '#' ? $this->fill = '#'.$this->fill : null;
         if (!is_file($file)) {
             return false;
@@ -193,7 +193,6 @@ public function icon() {
         }
         $stroke = $this->stroke == '#' ? '#323232' : $this->stroke;
         $fill = $this->fill == '#' ? 'none' : $this->fill;
-
         $sprite = str_replace('#323232', $stroke, $sprite);
         $sprite = str_replace('.st', "#{$id} .st", $sprite);
         $fill = '<path d="M0,0h24v24H0V0z" fill="'.$fill.'"></path>';

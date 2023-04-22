@@ -7,3 +7,7 @@ Disallow: /forms
 Disallow: /tpl
 Disallow: /backup
 Disallow: /cgi-bin
+Disallow: /modules
+Disallow: /uploads
+Disallow: /signup
+Disallow: /signin
