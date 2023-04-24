@@ -2084,7 +2084,20 @@ String.prototype.replaceArray = function(find, replace) {
     return replaceString;
 };
 
-wbapp.furl = function(str) {
+wbapp.getWords = function (str, w = 100) {
+    let res = '';
+    str = str.replace('&nbsp;', ' ');
+    str = str.replace(/\n/g, " ");
+    str = str.replace(/<\/?[^>]+(>|$)/g, '').trim();
+    let arr = str.split(' ');
+    for (let i = 0; i <= w; ++i) { if (arr[i]) { res = res + ' ' + arr[i]; } } if (arr.length > w) {
+        res = res + '…';
+    }
+    res = res.trim();
+    return res;
+}
+
+wbapp.furl = function (str) {
     str = wbapp.transilt(str);
     str = str.replace("'", '');
     str = str.replace(/[^\/а-яА-Яa-zA-Z0-9_-]{1,}/gm, "-");
@@ -2095,11 +2108,8 @@ wbapp.furl = function(str) {
     if (str.substr(-1) == '-' || str.substr(-1) == '_') {
         str = str.substr(0, str.length - 1)
     }
-    //str = str.replace('-', '_');
     return str.toLowerCase();
 }
-
-
 
 wbapp.transilt = function(word) {
     let cyr = [
