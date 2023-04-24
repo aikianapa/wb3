@@ -612,8 +612,8 @@ class wbDom extends DomQuery
 
     public function setSeo()
     {
-        $descr = $this->find("meta[name=description]")->inner();
-        $keywords = $this->find("meta[name=keywords]")->inner();
+        $descr = $this->find("meta[name=description]")->attr('content');
+        $keywords = $this->find("meta[name=keywords]")->attr('content');
         $header = $this->find("title")->text();
         $this->find("title")->remove();
         $this->find("meta[name=description]")->remove();
