@@ -114,6 +114,7 @@ class ctrlForm
             //$out = $out->outer();
             !strpos(' '.trim($out), '<!DOCTYPE') ? $out = '<!DOCTYPE html>'.$out : null;
             is_callable('beforeShow') ? $out = beforeShow($out) : null;
+            $app->vars('_route.tpl') == '404.php' ? header($_SERVER['SERVER_PROTOCOL'] . " 404 Not Found", true) : null;
             echo $out;
             $app->setCache($out);
 
