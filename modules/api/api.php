@@ -500,7 +500,7 @@ class modApi
         $return = isset($options->return) ? explode(',', $options->return) : false;
         $group =  isset($options->group) ? explode(',', $options->group) : false;
         if ($return && $options->filter) {
-            $return = array_keys(array_flip($return) + array_flip($options->filter));
+            $return = @array_keys(@array_flip($return) + @array_flip($options->filter));
         }
         if ($return && $group) {
             $return = array_keys(array_flip($return) + array_flip($group));
