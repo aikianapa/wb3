@@ -2223,7 +2223,7 @@ function wbGetWords($str, $w = 100)
     return $res;
 }
 
-function wbCheckUser($login, $type = 'email', $pass = null) {
+function wbCheckUser($login, $type = 'email', $pass = false) {
     if (mb_strlen($login) == 0) {
         return false;
     }
@@ -2239,7 +2239,7 @@ function wbCheckUser($login, $type = 'email', $pass = null) {
     $user['group'] = wbItemRead("users", $user['role']);
     $user['group'] ? null : $user['group'] = ['active'=>'on']; 
     $user = wbArrayToObj($user);
-    if ($user->group->active == "on" and $pass == null) {
+    if ($user->group->active == "on" and $pass === false) {
         return $user;
     } else if ($user->group->active == "on" and wbPasswordCheck($pass, $user->password)) {
         return $user;

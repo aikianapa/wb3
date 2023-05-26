@@ -1,6 +1,6 @@
 <html>
 <nav class="nav navbar navbar-expand-md col">
-  <a class="navbar-brand tx-bold tx-spacing--2 order-1" href="javascript:">{{_lang.header}}</a>
+  <a class="order-1 navbar-brand tx-bold tx-spacing--2" href="javascript:">{{_lang.header}}</a>
 </nav>
 
   <form class="m-3">
@@ -56,7 +56,7 @@
     </div>
     
     <div class="row">
-      <div class="col-sm-7 mt-5">
+      <div class="mt-5 col-sm-7">
         <div class="form-group row">
           <label class="col-sm-5 form-control-label">{{_lang.brand1}}</label>
           <div class="col-sm-7">
