@@ -366,6 +366,7 @@ class modYonger
             $result->body = $section->find('body');
             $section->find('body')->remove();
         }
+        @$section->children()->prepend("<div content='pageMenuAnchor' id='blk{$item["id"]}'></div>");
         $result->result = $section->inner();
         return $result;
     }
