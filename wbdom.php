@@ -641,6 +641,7 @@ class wbDom extends DomQuery
         } elseif ($this->app->vars('_var.title_prepend')) {
             $header = trim($this->app->vars('_var.title_prepend') . ' ' . $header);
         }
+        if (is_array($header)) $header = $header[$this->app->lang];
         $this->prepend("<meta name='description' content='{$descr}' />");
         $this->prepend("<meta name='keywords' content='{$keywords}' />");
         $this->prepend("<title>{$header}</title>");
