@@ -204,7 +204,7 @@ class wbApp
     {
         is_string($user) ? $user = $this->itemRead('users', $user) : null;
         is_object($user) ? null : $user = $this->arrayToObj($user);
-        isset($user->avatar) ? null : $user->avatar = [0=>['img'=>"",'alt'=>'User','title'=>'']];
+        if (!isset($user->avatar)) $user->avatar = [0=>['img'=>"",'alt'=>'User','title'=>'']];
         (array)$user->avatar === $user->avatar ? null : $user->avatar=['img'=>"/uploads/users/{$user->id}/{$user->avatar->img}",'alt'=>'User','title'=>''];
         $user->group = wbArrayToObj(wbItemRead("users", $user->role));
         if (!$user->group or $user->group->active !== 'on' or $user->active !== 'on') {
