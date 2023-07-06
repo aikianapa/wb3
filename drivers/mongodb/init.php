@@ -230,7 +230,9 @@ class mongodbDrv
                 $node = json_decode($node,true);
                 (array)$node === $node ? $node = $this->filterPrepare($node, $params) : null;
             }
-            isset($filter[$key]) ? $filter[$key] = $node : null;
+            if (isset($filter[$key])) {
+                is_numeric($node) ? $filter[$key] = (string)$node : $filter[$key] = $node;
+            }
         }
         return $filter;
     }
@@ -263,7 +265,9 @@ class mongodbDrv
                 $node = json_decode($node, true);
                 (array)$node === $node ? $node = $this->filterPrepare($node, $params) : null;
             }
-            isset($filter[$key]) ? $filter[$key] = $node : null;
+            if (isset($filter[$key])) {
+                is_numeric($node) ? $filter[$key] = (string)$node : $filter[$key] = $node;
+            }
         }
         return $filter;
     }

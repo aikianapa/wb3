@@ -202,6 +202,7 @@ class wbApp
 
     public function login($user)
     {
+        if (!$user) return false;
         is_string($user) ? $user = $this->itemRead('users', $user) : null;
         is_object($user) ? null : $user = $this->arrayToObj($user);
         if (!isset($user->avatar)) $user->avatar = [0=>['img'=>"",'alt'=>'User','title'=>'']];
