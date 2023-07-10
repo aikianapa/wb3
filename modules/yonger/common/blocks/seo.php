@@ -1,9 +1,9 @@
 <html>
 <view head>
-    <title seo>{{title}}</title>
-    <meta seo name="description" content="{{descr}}">
-    <meta seo name="keywords" content="{{keywords}}">
-    <link seo href="{{_route.host}}{{_route.uri}}" rel="canonical">
+    <title>{{title}}</title>
+    <meta name="description" content="{{descr}}">
+    <meta name="keywords" content="{{keywords}}">
+    <link href="{{_route.host}}{{_route.uri}}" rel="canonical">
 </view>
 <edit header="{{_lang.header}}" head>
     <div id="yongerBlockSeoAltUrl">
