@@ -26,7 +26,8 @@ class mongodbDrv
         $dbname == '' and isset($ini['dbnull']) ? $dbname = $ini['dbnull'] : null;
         $dbname == '' ? $dbname = str_replace('.', '_', $this->app->route->domain) : null;
         try {
-            $mongo = new MongoDB\Driver\Manager("mongodb://{$ini['user']}:{$ini['password']}@{$ini['host']}:{$ini['port']}");
+            $userPass = !empty($ini['user']) || !empty($ini['password']) ? "{$ini['user']}:{$ini['password']}@" : '';
+            $mongo = new MongoDB\Driver\Manager("mongodb://{$userPass}{$ini['host']}:{$ini['port']}");
             if (!$mongo) {
                 throw new Exception('mongoErr');
             }
