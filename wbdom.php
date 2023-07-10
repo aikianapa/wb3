@@ -642,9 +642,10 @@ class wbDom extends DomQuery
             $header = trim($this->app->vars('_var.title_prepend') . ' ' . $header);
         }
         if (is_array($header)) $header = $header[$this->app->lang];
-        $this->find('head')->prepend("<meta name='description' content='{$descr}' />");
-        $this->find('head')->prepend("<meta name='keywords' content='{$keywords}' />");
-        $this->find('head')->prepend("<title>{$header}</title>");
+        $this->find('head')
+            ->prepend("<meta name='description' content='{$descr}' />")
+            ->prepend("<meta name='keywords' content='{$keywords}' />")
+            ->prepend("<title>{$header}</title>");
     }
 
     public function setValues()
