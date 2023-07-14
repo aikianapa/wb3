@@ -59,7 +59,7 @@
                 let data = $(ev.node).parents('[data-item]').data();
                 let active = '';
                 ev.get('active') == 'on' ? active = '' : active = 'on';
-                wbapp.post('/api/v2/update/pages/' + data.item, {
+                wbapp.post('/api/v2/update/' + data.form + '/' + data.item, {
                     active: active
                 }, function(res) {
                     if (res.active !== undefined) ev.set('active', res.active)
