@@ -166,10 +166,10 @@ class ctrlThumbnails
             } else {
                 switch ($ext) {
                                     case 'jpg':
-                                        $options = ['jpeg_quality'=>80];
+                                        $options = ['jpeg_quality'=>90];
                                         break;
                                     case 'png':
-                                        $options = ['png_compression_level'=>8];
+                                        $options = ['png_compression_level'=>9];
                                         break;
                                     case 'webp':
                                         $options = ['webp_quality' => 90];
