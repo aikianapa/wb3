@@ -81,7 +81,7 @@ class attrChange
         }
         $dom->attr('onclick', $onclick);
         $dom->append("
-        <script type='wbapp' remove>
+        <script type='text/wbapp' remove>
         wbapp.loadScripts(['/engine/attrs/change/filter.js'],'wb-change-filter-js');
         </script>
         ");

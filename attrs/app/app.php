@@ -3,6 +3,6 @@ class attrApp
 {
     public function __construct($dom)
     {
-        $dom->is('script') ? $dom->attr('type','wbapp') : null;
+        $dom->is('script') ? $dom->attr('type','text/wbapp') : null;
     }
 }
