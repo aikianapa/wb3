@@ -395,7 +395,7 @@
         prompt_to = to
     </wb-lang>
 </div>
-<script type="wbapp">
+<script type="text/wbapp">
     wbapp.loadScripts(["/engine/modules/filemanager/filemanager.js?{{_env.new_id}}"],"filemanager-js");
     wbapp.loadStyles(["/engine/modules/filemanager/filemanager.less"]);
 </script>

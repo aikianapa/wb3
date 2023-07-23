@@ -37,7 +37,7 @@
   </head>
   <body class="app-chat">
 
-		<script type="wbapp">
+		<script type="text/wbapp">
 			wbapp.loadStyles([
         "{{_var.base}}/assets/css/dashforge.css"
 				,"{{_var.base}}/assets/css/dashforge.chat.css"

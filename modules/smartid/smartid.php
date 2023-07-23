@@ -16,7 +16,7 @@ class modSmartid {
         $dom->addClass( 'wb-smartid' );
         $dom->attr( 'required', 'true' );
         $dom->removeAttr( 'wb' );
-        $dom->after( '<script type="wbapp">wbapp.loadScripts(["/engine/modules/smartid/smartid.js"],"smartid-js");</script>' );
+        $dom->after( '<script type="text/wbapp">wbapp.loadScripts(["/engine/modules/smartid/smartid.js"],"smartid-js");</script>' );
         return $dom;
     }
 }

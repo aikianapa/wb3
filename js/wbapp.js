@@ -998,7 +998,7 @@ wbapp.updateInputs = function() {
 
 wbapp.wbappScripts = async function() {
     var done = [];
-    $(document).find("script[type=wbapp],script[wbapp],script[wb-app]").each(function() {
+    $(document).find("script[type=wbapp],[type='text/wbapp'],script[wbapp],script[wb-app]").each(function() {
         if (this.done !== undefined) return;
         this.done = true;
         let src = null;

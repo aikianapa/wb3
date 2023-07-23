@@ -1,4 +1,4 @@
-<script type="wbapp">
+<script type="text/wbapp">
     wbapp.loadStyles(["/engine/lib/bootstrap/css/bootstrap.min.css"],"bootstrap-css");
     wbapp.loadScripts([
       "/engine/lib/js/popper/popper.min.js",

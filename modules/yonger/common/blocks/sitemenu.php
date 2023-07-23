@@ -28,7 +28,7 @@
       $dom->find('#{{id}} .navbar-nav li.divider-after')->after('<div />')->next()->addClass('dropdown-divider');
       $dom->find('#{{id}} .navbar-nav li:not(.dropdown) .nav-link')->removeAttr('data-toggle');
       " />
-                <script type="wbapp">
+                <script type="text/wbapp">
                 $('#{{id}} .dropdown-submenu a.dropdown-toggle').on("click", function(e) {
                     e.stopPropagation();
                     e.preventDefault();

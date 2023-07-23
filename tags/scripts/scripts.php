@@ -55,7 +55,7 @@ class tagScripts
         } else if ($this->dom->attr('type')>'') {
             $type = $this->dom->attr('type');
         } else {
-            $type = ' type="wbapp" ';
+            $type = ' type="text/wbapp" ';
         }
         $script = $loaded.PHP_EOL.';'.PHP_EOL.$script;
         if ($this->ext == 'jsgz') $script = gzencode($script, 9);

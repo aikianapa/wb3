@@ -2,7 +2,7 @@
     <div class="mod-subform-inner">
 
     </div>
-    <script type="wbapp">
+    <script type="text/wbapp">
         wbapp.loadScripts(["/engine/modules/subform/subform.js"],"mod-subform-js",function(){
             mod_subform();
         });

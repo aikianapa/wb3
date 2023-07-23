@@ -55,6 +55,6 @@ class tagStyles
             }
         }
         $styles->minify($this->file);
-        $this->dom->after('<script type="wbapp" remove >wbapp.loadStyles(["'.$this->src.'"])</script>'.PHP_EOL);
+        $this->dom->after('<script type="text/wbapp" remove >wbapp.loadStyles(["'.$this->src.'"])</script>'.PHP_EOL);
     }
 }

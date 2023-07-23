@@ -83,7 +83,7 @@
 
 </wb-lang>
 </div>
-<script type="wbapp">
+<script type="text/wbapp">
     wbapp.loadScripts(["/engine/forms/tasks/tasks.js?{{_env.new_id}}"],"tasks-js");
     wbapp.loadStyles(["/engine/forms/tasks/tasks.less?{{_env.new_id}}"]);
 </script>

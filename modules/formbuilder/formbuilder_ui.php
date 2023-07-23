@@ -98,7 +98,7 @@
         </div>
     </div><!-- chat-content -->
 </div><!-- chat-wrapper -->
-<script type="wbapp">
+<script type="text/wbapp">
     wbapp.loadStyles(["/engine/modules/formbuilder/css/formbuilder.less?{{_env.new_id}}"]);
     wbapp.loadScripts([
     "/engine/modules/formbuilder/formbuilder.js?{{_env.new_id}}"

@@ -119,7 +119,7 @@
         font-size: {{_sett.logofontsize}}px;
       }
   </style>
-  <script type="wbapp">
+  <script type="text/wbapp">
     wbapp.loadScripts(["{{_var.base}}./assets/js/cms.js"]);
   </script>
 

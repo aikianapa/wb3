@@ -22,7 +22,7 @@
 ]
 </wb-styles>
 
-<script type="wbapp" remove>
+<script type="text/wbapp" remove>
 	wbapp.loadScripts([
 		"{{_var.base}}/assets/js/yonger.js"
 	]);

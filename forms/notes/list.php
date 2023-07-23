@@ -58,7 +58,7 @@
 
     </wb-lang>
 </div>
-<script type="wbapp">
+<script type="text/wbapp">
     wbapp.loadScripts(["/engine/forms/notes/notes.js?{{_env.new_id}}"],"notes-js");
     wbapp.loadStyles(["/engine/forms/notes/notes.less?{{_env.new_id}}"]);
 </script>

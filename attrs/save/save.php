@@ -54,7 +54,7 @@ class attrSave extends wbDom
             if ($params->editor) {
                 $dom->addClass($params->editor)->removeAttr("contenteditable");
                 $scripts = '["/engine/modules/'.$params->editor.'/'.$params->editor.'.js"]';
-                $dom->append('<script type="wbapp">wbapp.loadScripts('.$scripts.',"'.$params->editor.'-js");</script>');
+                $dom->append('<script type="text/wbapp">wbapp.loadScripts('.$scripts.',"'.$params->editor.'-js");</script>');
             }
         }
         $callback = "wbapp.save($(this),".json_encode($params).");";
