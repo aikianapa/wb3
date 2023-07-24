@@ -51,6 +51,7 @@ $(document).on("filepicker-js", async function() {
                 let field = "images";
                 var path = $filepicker.find("[name=upload_url]").val();
                 var getparams = function() {
+                    let settings = wbapp._settings.modules.filepicker
                     $form = $("<form/>");
                     $form.append($filepicker.find('.fileinput').clone());
                     $form.find('[wb-name]').each(function() {
@@ -62,6 +63,7 @@ $(document).on("filepicker-js", async function() {
                         params[$(this).attr("wb-name")] = $(this).val();
                         params[$(this).attr("wb-tmp-name")] = $(this).val();
                     });
+                    params['webp'] = settings.webp !== undefined && settings.webp == 'on' ? true : false
                     $filepicker.params = params;
                     return params;
                 }

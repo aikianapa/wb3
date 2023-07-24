@@ -5,13 +5,14 @@ require __DIR__."/functions.php";
 
 use Imagine\Image\Box;
 use Imagine\Image\Point;
+use WebPConvert\WebPConvert;
 
 class wbuploader
 {
     public $app;
     public $root;
     public $imgext = ['gif', 'png', 'jpg', 'jpeg', 'webp'];
-    
+    private $res;
     public function __construct()
     {
         $this->app = new wbApp();
@@ -27,13 +28,13 @@ class wbuploader
     
     public function delete() {
         header("Content-type:application/json");
-        $res = [];
+        $this->res = [];
         foreach($this->app->vars('_post.files') as $file) {
             $filepath = str_replace('//', '/',"{$this->root}/{$file}");
             unlink($filepath);
         }
-        $res[$file] = !is_file($filepath);
-        echo json_encode($res);
+        $this->res[$file] = !is_file($filepath);
+        echo json_encode($this->res);
         exit();
     }
 
@@ -44,11 +45,11 @@ class wbuploader
         $filename = pathinfo($filepath, PATHINFO_BASENAME);
         $ext = strtolower(pathinfo($filepath, PATHINFO_EXTENSION));
         if (!in_array($ext, $imgext)) {
-            $res = [
+            $this->res = [
                 'error' => true,
                 'msg' => "Расширение файла {$ext} не разрешено"
             ];
-            echo json_encode($res);
+            echo json_encode($this->res);
             exit();
         }
 
@@ -64,7 +65,7 @@ class wbuploader
         ->save($filepath);
         $size_raw = filesize($filepath);
         $size_mb = number_format(($size_raw / 1048576), 2);//Convert bytes to Megabytes
-        $res = [
+        $this->res = [
             'extension' => $ext,
             'width' => $width,
             'height' => $height,
@@ -76,7 +77,7 @@ class wbuploader
             'type' => wbMime($ext),
             'url' => $file
         ];
-        echo json_encode($res);
+        echo json_encode($this->res);
         exit();
     }
 
@@ -88,11 +89,11 @@ class wbuploader
         $error = false;
 
         if (!$_FILES["files"]) {//No file chosen
-            $res=[
+            $this->res=[
                 'error'=>true,
                 'msg'=>"ERROR: Please browse for a file before clicking the upload button."
             ];
-            echo json_encode($res);
+            echo json_encode($this->res);
             exit();
         } else {
             $original = $_FILES["files"]["name"][0];
@@ -123,12 +124,12 @@ class wbuploader
                 $filename = $_POST['name'];
             }
             $size_max = $this->app->vars("_sett.max_upload_size");
-
+            $webp       = (string)$this->app->vars('_post.webp');
             $size_raw = $_FILES["files"]["size"][0];//File size in bytes
             $size_mb = number_format(($size_raw / 1048576), 2);//Convert bytes to Megabytes
             $mime = wbMime($ext);
             $filepath = str_replace('//', '/',"{$folderPath}/{$filename}");
-            $res = [
+            $this->res = [
                 'extension'=>$ext,
                 'size'=>$size_raw,
                 'size_mb'=>$size_mb,
@@ -141,27 +142,23 @@ class wbuploader
                 'height' =>''
             ];
             if ($allow !== ['*'] && !in_array($ext, $allow)) {
-                $error = $res['error'] = "Расширение файла {$ext} не разрешено";
+                $error = $this->res['error'] = "Расширение файла {$ext} не разрешено";
             } else  if ($size_raw == 0 || $size_raw > $size_max) {
-                $error = $res['error'] = "Превышен размер файла {$size_max}";
+                $error = $this->res['error'] = "Превышен размер файла {$size_max}";
             } else if ($size_raw == 0) {
-                $error = $res['error'] = "Не удалось загрузить файл {$filename}";
+                $error = $this->res['error'] = "Не удалось загрузить файл {$filename}";
                 unlink($filepath);
             }
             if (!$error && move_uploaded_file($_FILES["files"]["tmp_name"][0], $filepath)) {
                 if (in_array($ext, $imgext)) {
-                    list($width, $height, $size_raw) = $this->prepImg($filepath);
-                    $res['width'] = $width;
-                    $res['height'] = $height;
-                    $res['size'] = $size_raw;
-                    $res['size_mb'] = number_format(($size_raw / 1048576), 2);
+                    $this->prepImg($filepath);
                 }
                 if ($size_raw > $size_max) {
-                    $error = $res['error'] = "Превышен размер файла {$size_max}";
+                    $error = $this->res['error'] = "Превышен размер файла {$size_max}";
                     unlink($filepath);
                 }
             }
-            echo json_encode([$res]);
+            echo json_encode([$this->res]);
         }
     }
 
@@ -190,7 +187,7 @@ class wbuploader
         $r1         = $width / $height;
         $r2         = $maxw / $maxh;
         $ratio      = $r1 / $r2;
-
+        $webp       = (string)$this->app->vars('_post.webp');
         if ($ratio < 1) {
             $resize    = new Imagine\Image\Box(intval($maxw), $maxh / $ratio);
             $image->resize($resize);
@@ -239,7 +236,21 @@ class wbuploader
                 break;
         }
         $canvas->save($file, $options);
-        return [$maxw, $maxh, filesize($file)];
+        if ($webp == 'on' && $ext !== 'webp' && in_array($ext, ['jpg', 'jpeg', 'png'])) {
+            $options = [];
+            $prev = $file;
+            $file = substr($prev, 0, - (strlen($ext) + 1)) . '.webp';
+            WebPConvert::convert($prev, $file, $options);
+
+            $this->res['name'] = substr($this->res['name'], 0, - (strlen($ext) + 1)) . '.webp';
+            $this->res['url'] = substr($this->res['url'], 0, - (strlen($ext) + 1)) . '.webp';
+            $this->res['extension'] = 'webp';
+            $this->res['type'] = wbMime($file);
+        }
+        $this->res['width'] = $maxw;
+        $this->res['height'] = $maxh;
+        $this->res['size'] = filesize($file);
+        $this->res['size_mb'] = number_format(($this->res['size'] / 1048576), 2);
     }
 }
 new wbuploader();

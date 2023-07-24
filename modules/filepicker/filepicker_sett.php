@@ -3,8 +3,7 @@
     <label class="form-control-label col-sm-4">{{_lang.resizeTo}}</label>
     <div class="col-sm-8">
         <div class="input-group">
-            <input type="number" name="resizeto" class="form-control" placeholder="{{_lang.resizeTo}}" min="10"
-                max="10000" />
+            <input type="number" name="resizeto" class="form-control" placeholder="{{_lang.resizeTo}}" min="10" max="10000" />
             <div class="input-group-append">
                 <span class="input-group-text">px</span>
             </div>
@@ -14,12 +13,17 @@
     <label class="form-control-label col-sm-4">{{_lang.quality}}</label>
     <div class="col-sm-8">
         <div class="input-group">
-            <input type="number" name="quality" class="form-control" placeholder="{{_lang.quality}}" min="1"
-                max="100" />
+            <input type="number" name="quality" class="form-control" placeholder="{{_lang.quality}}" min="1" max="100" />
             <div class="input-group-append">
                 <span class="input-group-text">%</span>
             </div>
         </div>
+    </div>
+</div>
+<div class="mt-1 formgroup row">
+    <label class="form-control-label col-sm-4">WEBP конвертация</label>
+    <div class="col-sm-8">
+        <wb-module wb="module=switch" name="webp" />
     </div>
 </div>
 
