@@ -236,7 +236,7 @@ class wbuploader
                 break;
         }
         $canvas->save($file, $options);
-        if ($webp == 'on' && $ext !== 'webp' && in_array($ext, ['jpg', 'jpeg', 'png'])) {
+        if ($webp == 'true' && $ext !== 'webp' && in_array($ext, ['jpg', 'jpeg', 'png'])) {
             $options = [];
             $prev = $file;
             $file = substr($prev, 0, - (strlen($ext) + 1)) . '.webp';
