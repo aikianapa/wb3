@@ -51,7 +51,7 @@ $(document).on("filepicker-js", async function() {
                 let field = "images";
                 var path = $filepicker.find("[name=upload_url]").val();
                 var getparams = function() {
-                    let settings = wbapp._settings.modules.filepicker
+                    let settings = wbapp._settings.modules.filepicker !== undefined ? wbapp._settings.modules.filepicker : {}
                     $form = $("<form/>");
                     $form.append($filepicker.find('.fileinput').clone());
                     $form.find('[wb-name]').each(function() {
