@@ -116,6 +116,7 @@ class ctrlForm
             $app->setCache($out);
         } else {
             $_ENV["cache_used"] = true;
+            echo $cache;
             ob_get_contents();
             ob_flush();
         }
