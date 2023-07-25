@@ -114,7 +114,6 @@ class wbDom extends DomQuery
         return $this;
     }
 
-
     public function rootError()
     {
         if ($this->is(':root')) {

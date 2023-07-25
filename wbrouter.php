@@ -185,7 +185,6 @@ final class wbRouter
                 break; // URL обработан!
             }
         }
-
         $_ENV['route'] = self::returnRoute();
         return $_ENV['route'];
     }

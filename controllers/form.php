@@ -40,9 +40,9 @@ class ctrlForm
             exit;
         }
     }
-
     public function show()
     {
+
         header('HTTP/1.1 200 OK');
         $app = &$this->app;
         $cache = $app->getCache();
