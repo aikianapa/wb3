@@ -3,7 +3,8 @@
     <title>{{title}}</title>
     <meta name="description" content="{{descr}}">
     <meta name="keywords" content="{{keywords}}">
-    <link href="{{_route.host}}{{_route.uri}}" rel="canonical">
+    <link href="{{_route.host}}{{_route.uri}}" rel="canonical" wb-if="'{{_route.uri}}'!=='/'">
+    <link href="{{_route.host}}" rel="canonical" wb-if="'{{_route.uri}}' == ''>''">
 </view>
 <edit header="{{_lang.header}}" head>
     <div id="yongerBlockSeoAltUrl">
@@ -18,18 +19,18 @@
             </div>
         </div>
     </div>
-            <script>
-            $('#yongerBlockSeoAltUrl .yonger-block-common input[name=active]').attr('on-change','alturl')
-            new Ractive({
-                el: '#yongerBlockSeoAltUrl',
-                template: $('#yongerBlockSeoAltUrl').html(),
-                on: {
-                    alturl() {
-                        yonger.pageEditor.changePath()
-                    }
+    <script>
+        $('#yongerBlockSeoAltUrl .yonger-block-common input[name=active]').attr('on-change', 'alturl')
+        new Ractive({
+            el: '#yongerBlockSeoAltUrl',
+            template: $('#yongerBlockSeoAltUrl').html(),
+            on: {
+                alturl() {
+                    yonger.pageEditor.changePath()
                 }
-            })
-            </script>
+            }
+        })
+    </script>
 
     <wb-multilang wb-lang="{{_sett.locales}}" name="lang">
         <div class="form-group row">
@@ -48,8 +49,7 @@
         <div class="form-group row">
             <label class="form-control-label col-md-3">{{_lang.keywords}}</label>
             <div class="col-9">
-                <input type="text" class="form-control" name="keywords" placeholder="{{_lang.keywords}}"
-                    wb-module="tagsinput">
+                <input type="text" class="form-control" name="keywords" placeholder="{{_lang.keywords}}" wb-module="tagsinput">
             </div>
         </div>
     </wb-multilang>
