@@ -2850,7 +2850,7 @@ function is_tag( $tag = '' ) {
 
     function wbUsageStat()
     {
-        (isset($_ENV["cache_used"]) and $_ENV["cache_used"] == 'on') ? $cache = 'Yes' : $cache = 'No';
+        (isset($_ENV["cache_used"]) and $_ENV["cache_used"] == true) ? $cache = 'Yes' : $cache = 'No';
         $mem = memory_get_usage();
         $mem = wbFormatBytes($mem, 2);
         $peak = memory_get_peak_usage();
