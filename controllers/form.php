@@ -52,8 +52,6 @@ class ctrlForm
             $this->target = $app->vars('_post.target');
             $cache = false;
         }
-        $app->vars('_sett.devmode') == 'on' OR $app->route->cache == false ? $cache = false : null;
-
         if (!$cache) {
             $_ENV["cache_used"] = false;
             $dom = isset($app->route->form) ? $app->getForm($app->route->form, $app->route->mode) : null;

@@ -109,9 +109,8 @@ class wbApp
 
     public function cacheControl()
     {
-        $cache = $this->route->cache;
-        $this->vars('_sett.devmode') == 'on' ? $cache = null : null;
-        $cache && ((!count($_POST) and isset($_GET['update']) and count($_GET) == 1) or count($_POST) or count($_GET)) ? $cache = null : null;
+        $cache = ($this->vars('_sett.devmode') == 'on' OR $this->route->cache == false) ? false : true;
+        $cache && ((!count($_POST) and isset($_GET['update']) and count($_GET) == 1) or count($_POST) or count($_GET)) ? $cache = false : null;
         return $cache;
     }
 
@@ -120,10 +119,10 @@ class wbApp
     public function getCache()
     {
         $cache = $this->cacheControl();
-        if ($cache == null) {
+        if ($cache == false) {
             header("Cache-Control: no-cache, no-store, must-revalidate");
             header("Pragma: no-cache");
-            return null;
+            return false;
         }
 
         $cid = $this->getCacheId();
