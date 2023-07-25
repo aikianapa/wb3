@@ -52,7 +52,8 @@ class ctrlForm
             $this->target = $app->vars('_post.target');
             $cache = false;
         }
-        if (!$cache) {
+        var_dump($cache);
+        if ($cache === false OR $cache === null) {
             $_ENV["cache_used"] = false;
             $dom = isset($app->route->form) ? $app->getForm($app->route->form, $app->route->mode) : null;
             if ($dom->error) $dom = null;
@@ -117,7 +118,6 @@ class ctrlForm
 
         } else {
             $_ENV["cache_used"] = true;
-            echo $cache;
             ob_get_contents();
             ob_flush();
         }
