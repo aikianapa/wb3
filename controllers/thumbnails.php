@@ -103,11 +103,10 @@ class ctrlThumbnails
             }
         }
         $expire = "expires: " . gmdate("D, d M Y H:i:s", time() + (60 * 60 * 24 * 30)) . " GMT";
-        header("Cache-Control: private");
+        header("Cache-Control: public");
         header($expire);
         if ($cache) {
-            echo $this->cache();
-            exit;
+            $this->cache();
         }
 
         if ($app->vars('_route.params') and isset($app->vars('_route.params')[0])) {
