@@ -1,5 +1,6 @@
 <?php
 session_cache_limiter("must-revalidate");
+header('Cache-control: private');
 header('Cache-Control: max-age=31536000');
 @session_start([
     "gc_probability" => 5,
