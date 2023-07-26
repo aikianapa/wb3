@@ -12,7 +12,6 @@ if (isset($_SERVER['REQUEST_URI'])) {
 if ($path && is_file($path)) {
     // http://work2.loc/tpl/fonts/fontawesome-webfont.woff2?v=4.7.0.html
     $tmp = explode('?', $path); // обработка таких вот случаев
-
     $info = new SplFileInfo($tmp[0]);
     $ext  = $info->getExtension();
     if (!in_array($ext,['less','scss','php','html'])) {

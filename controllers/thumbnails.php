@@ -103,7 +103,10 @@ class ctrlThumbnails
             }
         }
 
-        if ($cache) $this->cache();
+        if ($cache) {
+            echo $this->cache();
+            exit;
+        }
 
         if ($app->vars('_route.params') and isset($app->vars('_route.params')[0])) {
             $tmp=base64_decode($app->vars('_route.params')[0]);
