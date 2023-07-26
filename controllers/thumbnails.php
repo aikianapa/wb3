@@ -102,7 +102,9 @@ class ctrlThumbnails
                 $cache=false;
             }
         }
-
+        $expire = "expires: " . gmdate("D, d M Y H:i:s", time() + (60 * 60 * 24 * 30)) . " GMT";
+        header("Cache-Control: private");
+        header($expire);
         if ($cache) {
             echo $this->cache();
             exit;
