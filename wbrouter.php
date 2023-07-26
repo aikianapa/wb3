@@ -283,7 +283,7 @@ final class wbRouter
         $ROUTE['lang'] = self::$lang;
         $ROUTE['_post'] = $_POST;
         $ROUTE['_get'] = $_GET;
-        $cache = in_array($_SERVER['HTTP_CACHE_CONTROL'],['max-age=0','no-cache']) ? false : true;
+        $cache = (isset($_SERVER['HTTP_CACHE_CONTROL']) && in_array($_SERVER['HTTP_CACHE_CONTROL'],['max-age=0','no-cache'])) ? false : true;
         if (isset($ROUTE['cache']) && $ROUTE['cache'] == 'true') $cache = true;
         if (isset($ROUTE['cache']) && $ROUTE['cache'] == 'false') $cache = false;
         $ROUTE['cache'] = $cache;
