@@ -25,6 +25,8 @@ class ctrlApi
         set_time_limit(10);
         header('Content-Type: charset=utf-8');
         header('Content-Type: application/json');
+        header('Cache-Control: no-cache');
+        header('Cache-Control: max-age=0');
         $this->app = &$app;
         $mode = $this->mode = $app->vars('_route.mode');
         $table = $app->vars('_route.table');

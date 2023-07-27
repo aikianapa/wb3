@@ -16,6 +16,8 @@ class modApi
 
     function __construct($app)
     {
+        header('Cache-Control: no-cache');
+        header('Cache-Control: max-age=0');
         $mode = $this->mode = $app->vars('_route.mode');
         if (!wbCheckBacktrace("wbModuleClass")) {
             $this->init($app);

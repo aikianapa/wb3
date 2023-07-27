@@ -8,6 +8,8 @@ class ctrlAjax
     {
         header('Content-Type: charset=utf-8');
         header('Content-Type: application/json');
+        header('Cache-Control: no-cache');
+        header('Cache-Control: max-age=0');
         include_once($_ENV['path_engine'].'/attrs/save/ajax.php');
         include_once($_ENV['path_engine'].'/attrs/tree/ajax.php');
         $this->app = $app;
