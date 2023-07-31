@@ -57,13 +57,46 @@ class modYonger
         $this->tables = $app->tableList();
         $this->count = 0;
         $this->map = [];
-        $this->list = $this->app->itemList('pages', ['return' => 'id,name,_form,header,active,attach,attach_filter,url,path,_sort,blocks']);
+        $this->list = $this->app->itemList('pages', ['return' => 'id,name,_lastdate,_form,header,active,attach,attach_filter,url,path,_sort,blocks']);
         $this->list = $this->list['list'];
         $this->yonmapnest();
         $app->putContents($app->vars('_env.dba') . '/_yonmap.json', json_encode($this->map,JSON_UNESCAPED_UNICODE));
+        if ($app->vars('_sett.modules.yonger.sitemapxml') == 'on') {$this->sitemapxml();}
         header("Content-type:application/json");
         echo json_encode(['count'=>count($this->map)]);
         exit;
+    }
+
+
+    public function sitemapxml() {
+        $app = &$this->app;
+        $yonmap = file_get_contents($app->vars('_env.dba') . '/_yonmap.json');
+        $yonmap = json_decode($yonmap,true);
+        $nr = "\n";
+$xml = '<?xml version="1.0" encoding="UTF-8"?>
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">'.PHP_EOL;
+            
+        foreach ($yonmap as $item) {
+            if ($item['a'] == 'on') {
+                $priority = $item['u'] == '/home' ? 1 : 0.80;
+            $xml.= "<url>{$nr}<loc>". htmlspecialchars($app->route->host . $item['u'])."</loc>{$nr}<lastmod>{$item['d']}</lastmod>{$nr}<priority>{$priority}</priority>{$nr}</url>{$nr}";
+            }
+        }
+        $xml.="</urlset>{$nr}";
+        file_put_contents($app->route->path_app.'/sitemap.xml',$xml);
+        if ($app->route->mode == 'sitemapxml') {
+            header("Content-Type: text/xml");
+            header("Cache-Control: no-cache, must-revalidate");
+            header("Cache-Control: post-check=0,pre-check=0");
+            header("Cache-Control: max-age=0");
+            header("Pragma: no-cache");
+            echo $xml;
+            exit;
+
+        }
     }
 
     private function yonmapnest($path = '')
@@ -95,7 +128,10 @@ class modYonger
             $res1 = $this->yonmapnest($url);
             $header = (array)$item['header'] === $item['header'] ? $item['header'][$this->app->vars('_sess.lang')] : $item['header'];
             $active = @$item['active'] == 'on' ? 'on' : '';
-            substr($item['id'], 0, 1) == '_' or isset($this->map[$md5]) ? null : $this->map[$md5] = ['f' => $item['_form'], 'i' => $item['id'], 'u' => $url, 'n' => $item['name'],'h'=>$header, 'a'=>$active];
+            $gmtime = new DateTime($item['_lastdate']);
+            $gmtime->setTimezone(new DateTimeZone("Europe/Moscow"));
+            $gmtime = $gmtime->format("c");
+            substr($item['id'], 0, 1) == '_' or isset($this->map[$md5]) ? null : $this->map[$md5] = ['f' => $item['_form'], 'i' => $item['id'], 'u' => $url, 'n' => $item['name'],'h'=>$header, 'a'=>$active, 'd'=>$gmtime];
             $res2 = $attach ? $this->yonmaptable($item, $url) : null;
         }
     }
@@ -108,7 +144,7 @@ class modYonger
             $filter = json_decode($filter, true);
         }
         $options = [
-            'return' => 'id,name,_form,header,active,tags,blocks',
+            'return' => 'id,name,_form,_lastdate,header,active,tags,blocks',
             'filter' => $filter
         ];
         $class = $this->app->formClass($table);
@@ -143,7 +179,10 @@ class modYonger
                 $level[$key] = $item;
                 $md5 = md5($item['url']);
                 if (!isset($this->map[$md5])) {
-                    $this->map[$md5] = ['f' => $item['_form'], 'i' => $item['id'], 'u' => $item['url'], 'n' => $item['name'], 'h' => $header, 'a'=>$active];
+                    $gmtime = new DateTime($item['_lastdate']);
+                    $gmtime->setTimezone(new DateTimeZone("Europe/Moscow"));
+                    $gmtime = $gmtime->format("c");
+                    $this->map[$md5] = ['f' => $item['_form'], 'i' => $item['id'], 'u' => $item['url'], 'n' => $item['name'], 'h' => $header, 'a'=>$active, 'd' => $gmtime];
                 }
             } else {
                 unset($level[$key]);
