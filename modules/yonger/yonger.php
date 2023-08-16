@@ -67,38 +67,6 @@ class modYonger
         exit;
     }
 
-
-    public function sitemapxml() {
-        $app = &$this->app;
-        $yonmap = file_get_contents($app->vars('_env.dba') . '/_yonmap.json');
-        $yonmap = json_decode($yonmap,true);
-        $nr = "\n";
-$xml = '<?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">'.PHP_EOL;
-            
-        foreach ($yonmap as $item) {
-            if ($item['a'] == 'on') {
-                $priority = $item['u'] == '/home' ? 1 : 0.80;
-            $xml.= "<url>{$nr}<loc>". htmlspecialchars($app->route->host . $item['u'])."</loc>{$nr}<lastmod>{$item['d']}</lastmod>{$nr}<priority>{$priority}</priority>{$nr}</url>{$nr}";
-            }
-        }
-        $xml.="</urlset>{$nr}";
-        file_put_contents($app->route->path_app.'/sitemap.xml',$xml);
-        if ($app->route->mode == 'sitemapxml') {
-            header("Content-Type: text/xml");
-            header("Cache-Control: no-cache, must-revalidate");
-            header("Cache-Control: post-check=0,pre-check=0");
-            header("Cache-Control: max-age=0");
-            header("Pragma: no-cache");
-            echo $xml;
-            exit;
-
-        }
-    }
-
     private function yonmapnest($path = '')
     {
         $this->count++;
@@ -867,6 +835,37 @@ $xml = '<?xml version="1.0" encoding="UTF-8"?>
             return $json[$name]['blocks'];
         } else {
             return [];
+        }
+    }
+
+    public function sitemapxml()
+    {
+        $app = &$this->app;
+        $yonmap = file_get_contents($app->vars('_env.dba') . '/_yonmap.json');
+        $yonmap = json_decode($yonmap, true);
+        $nr = "\n";
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">' . PHP_EOL;
+
+        foreach ($yonmap as $item) {
+            if ($item['a'] == 'on') {
+                $priority = $item['u'] == '/home' ? 1 : 0.80;
+                $xml .= "<url>{$nr}<loc>" . htmlspecialchars($app->route->host . $item['u']) . "</loc>{$nr}<lastmod>{$item['d']}</lastmod>{$nr}<priority>{$priority}</priority>{$nr}</url>{$nr}";
+            }
+        }
+        $xml .= "</urlset>{$nr}";
+        file_put_contents($app->route->path_app . '/sitemap.xml', $xml);
+        if ($app->route->mode == 'sitemapxml') {
+            header("Content-Type: text/xml");
+            header("Cache-Control: no-cache, must-revalidate");
+            header("Cache-Control: post-check=0,pre-check=0");
+            header("Cache-Control: max-age=0");
+            header("Pragma: no-cache");
+            echo $xml;
+            exit;
         }
     }
 }
