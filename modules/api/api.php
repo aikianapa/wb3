@@ -221,19 +221,33 @@ class modApi
     {
         /*
         /api/v2/save/{{table}}/{{id}}
+        /api/v2/save/{{table}}/{{id}}/{{field}}
         */
-
         $this->checkMethod(['post', 'get']);
         $table = $this->table;
         $item = $this->app->vars('_route.item');
+        $field = $this->app->vars('_route.field');
         $request = RequestParser::parse(); // PUT, DELETE, etc.. support
         //$_POST = $request->params;
         $_FILES = $request->files;
         $post = ($this->method == 'get') ? $_GET : $request->params;
-        ($item == '' && isset($post['_id']) && $post['_id'] > '') ? $item = $post['_id'] : null;
-        ($item == '' && isset($post['id']) && $post['id'] > '') ? $item = $post['id'] : null;
-        $post['_id'] = ($item > '') ? $post['_id'] = $item : $this->app->newId();
-        $data = $this->app->itemSave($table, $post);
+        $data = $this->app->itemRead($table, $item);
+        $data ? null : $data = ['_id' => $this->app->newId()];
+        $item > '' ? $data['_id'] = $item : null;
+        !$field && isset($post['id']) && $post['id'] > '' ? $data['_id'] = $post['id'] : null;
+        !$field && isset($post['_id']) && $post['_id'] > '' ? $data['_id'] = $post['_id'] : null;
+        if ($field > '') {
+            $doted = $this->app->dot($data);
+            $doted->set($field, $post);
+            $data = $doted->get();
+        } else {
+            $data = array_merge($data, $post);
+        }
+        $data = $this->app->itemSave($table, $data);
+        if ($field > '') {
+            $doted = @$this->app->dot($data);
+            $data = $doted->get($field);
+        }
         header('HTTP/1.1 200 OK', true, 200);
         return $data;
         exit;
@@ -462,7 +476,7 @@ class modApi
             &field=val           - field == 'val'
             &field!=val          - field !== 'val'
             &field"=val          - field == 'val' && field == 'VAL' && field == 'vAl' (регистр не учитывается)
-            &field*=val          - field like 'val'
+            &field~=val          - field like 'val'
             &field>=val          - field >= 'val'
             &field<=val          - field <= 'val'
             &field>>=val         - field > 'val'
