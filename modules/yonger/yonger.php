@@ -852,7 +852,7 @@ class modYonger
 
         foreach ($yonmap as $item) {
             if ($item['a'] == 'on') {
-                $priority = $item['u'] == '/home' ? 1 : 0.80;
+                $priority = $item['u'] == '/home' ? 1 : 1;
                 $xml .= "<url>{$nr}<loc>" . htmlspecialchars($app->route->host . $item['u']) . "</loc>{$nr}<lastmod>{$item['d']}</lastmod>{$nr}<priority>{$priority}</priority>{$nr}</url>{$nr}";
             }
         }
