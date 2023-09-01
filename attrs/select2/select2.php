@@ -26,6 +26,7 @@ class attrSelect2 {
                         $(that).css('visibility','visible');
                         $(that).attr('wb-select2')>'' ? options = json_decode($(that).attr('wb-select2')) : options = {};
                         if (options.placeholder == undefined) options.placeholder = $(that).attr('placeholder');
+                        //options.allowClear = true
                         $(that).removeAttr('wb-select2');
                         $(that).select2(options)
                         $(that).on('select2:select', function (e) {

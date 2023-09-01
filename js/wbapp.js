@@ -851,6 +851,7 @@ wbapp.save = async function(obj, params, func = null) {
     setTimeout(function() {
         // Задержка для ожидания обработки возможных плагинов
         data = wbapp.objByForm(form);
+        
         if (data._idx) delete data._idx;
 
         //if ($(obj).is("input,select,textarea,button,img,a") && params.table && (params.id || params.item)) {
@@ -895,7 +896,8 @@ wbapp.save = async function(obj, params, func = null) {
         if ($(obj).data('saved-id') !== undefined) {
             data['id'] = $(obj).data('saved-id');
         }
-        wbapp.post(params.url, data, function(data) {
+
+        wbapp.post(params.url, {__json:JSON.stringify(data)}, function(data) {
             if (data.error == true) {
                 $(obj).trigger("wb-save-error", {
                     params: params,

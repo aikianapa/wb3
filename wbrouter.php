@@ -198,7 +198,11 @@ final class wbRouter
         $ROUTE = array();
         $controller = 'form';
         $action = 'mode';
-
+        if (array_key_exists('__json', $_POST)) {
+            // Принимаем JSON данные
+            $_POST = array_merge((array)$_POST, json_decode($_POST['__json'], true));
+            unset($_POST['__json']);
+        }
         //$form = isset(self::$params[0]) ? self::$params[0]: 'default_form';
         //$mode = isset(self::$params[1]) ? self::$params[1]: 'default_mode';
         foreach (self::$params as $i => $param) {
