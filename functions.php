@@ -187,7 +187,6 @@ function wbInitSettings(&$app)
     {
         $query = (array)$query;
         $options = [];
-
         foreach ($query as $key => $val) {
             if (substr($key, 0, 1) == '@') {
                 $options[substr($key, 1)] = $val;
@@ -199,25 +198,26 @@ function wbInitSettings(&$app)
                     $val = explode(",", substr($val, 1, strlen($val) -2));
                     switch (substr($key, -1)) {
                         default:
-                            $query[$key] = ['$in' => $val];
+                            $query[] = [$key => ['$in' => $val]];
+                            unset($query[$key]);
                             break;
                         case '!':
                             unset($query[$key]);
-                            $query[substr($key, 0, strlen($key) -1)] =  ['$nin'=> $val];
+                            $query[] = [substr($key, 0, strlen($key) -1) =>  ['$nin'=> $val]];
                             break;
                         case '~':
                             unset($query[$key]);
-                            $query[substr($key, 0, strlen($key) - 1)] =  ['$like' => $val];
+                            $query[] = [substr($key, 0, strlen($key) - 1) =>  ['$like' => $val]];
                             break;
                     }
                 } else {
                     switch (substr($key, -2)) {
                         case '<<': // меньше (<)
-                            $query[substr($key, 0, strlen($key) -2)] = ['$lt'=>$val];
+                            $query[] = [substr($key, 0, strlen($key) -2) => ['$lt'=>$val]];
                             unset($query[$key]);
                             break;
                         case '>>': // больше (>)
-                            $query[substr($key, 0, strlen($key) -2)] = ['$gt'=>$val];
+                            $query[] = [substr($key, 0, strlen($key) -2) => ['$gt'=>$val]];
                             unset($query[$key]);
                             break;
                     }
@@ -225,24 +225,28 @@ function wbInitSettings(&$app)
                     if (isset($query[$key])) {
                         switch (substr($key, -1)) {
                             case '<': // меньше или равно (<=)
-                                $query[substr($key, 0, strlen($key) -1)] = ['$lte'=>$val];
+                                $query[] = [substr($key, 0, strlen($key) -1) => ['$lte'=>$val]];
                                 unset($query[$key]);
                                 break;
                             case '>': // больше или равно (>=)
-                                $query[substr($key, 0, strlen($key) -1)] = ['$gte'=>$val];
+                                $query[] = [substr($key, 0, strlen($key) -1) => ['$gte'=>$val]];
                                 unset($query[$key]);
                                 break;
                             case '"': // двойная кавычка (") без учёта регистра
-                                $query[substr($key, 0, strlen($key) -1)] = ['$regex' => '(?mi)^'.$val."$"];
+                                $query[] = [substr($key, 0, strlen($key) -1) => ['$regex' => '(?mi)^'.$val."$"]];
                                 unset($query[$key]);
                                 break;
                             case '~':
                                 //var regex = new RegExp(val, "i");
-                                $query[substr($key, 0, strlen($key) -1)] = ['$like'=>$val];
+                                $query[] = [substr($key, 0, strlen($key) -1) => ['$like'=>$val]];
                                 unset($query[$key]);
                                 break;
                             case '!':
-                                $query[substr($key, 0, strlen($key) -1)] = ['$ne'=>$val];
+                                $query[] = [substr($key, 0, strlen($key) -1) => ['$ne'=>$val]];
+                                unset($query[$key]);
+                                break;
+                            default:
+                                $query[] = [$key=>$val];
                                 unset($query[$key]);
                                 break;
                         }
@@ -250,7 +254,33 @@ function wbInitSettings(&$app)
                 }
             }
         }
-        $options["filter"] = $query;
+        $fields = [];
+        $q = [];
+        $idx = 0;
+
+        foreach($query as $i => $v) {
+            if ((array)$v === $v) {
+                $key = array_keys($v)[0];
+                in_array($key, array_keys($fields)) ? $fields[$key][] = $idx : $fields[$key] = [$idx];
+            } else {
+                $key = $i;
+                in_array($key, array_keys($fields)) ? $fields[$key][] = $idx : $fields[$key] = [$idx];
+            }
+            $idx++;
+        }
+
+        foreach($fields as $field => $val) {
+            if (count($val) > 1) {
+                foreach($val as $i) {
+                    $q['$and'][] = [$field => $query[$i][$field]];
+                }
+            } else {
+                $q[$field] = $query[$val[0]][$field];
+            }
+        }
+
+        $options["filter"] = $q;
+    // ['$and' => [['event_date' => ['$ne' => '']], ['event_date' => ['$gt' => '2023-09']]]]
         return $options;
     }
 
