@@ -11,7 +11,11 @@ class modLang
 		$langs = wbListLocales($app);
 		!count($langs) ? $langs = ['en','ru'] : null;
 		$lang = $langs[0];
-		$p = $app->vars('_route.mode');
+        try {
+            $p = $app->vars('_route.mode');
+        } catch (\Throwable $th) {
+            $p = 'ru';
+        }
 		in_array($p, $langs) ? $lang = $p : null;
 		$_SESSION["lang"] = $_ENV["lang"] = $_COOKIE["lang"] = $lang;
         if ($app->vars('_route.params.0') == 'set') {
