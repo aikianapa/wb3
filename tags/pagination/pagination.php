@@ -102,9 +102,9 @@ class tagPagination
                 $pag->find("[data-page='next']")->remove();
                 $pag->find("[data-page='prev']")->remove();
                 $pag->find("[data-page!='more']")->css('display', 'none');
-                isset($more[1]) && $more[1]>' ' ? $pag->find("[data-page='more'] .page-link")->inner($more[1]) : null;
+                isset($more[1]) && $more[1]>' ' ? $pag->find("[data-page='more'] .page-link")->inner($more[1]) : @$more[1]=='';
                 $more[1] == '' ? $pag->find('*')->css('color', 'transparent')->css('border-color', 'transparent') : null;
-                $more[0] == 'true' ?  $pag->find("[data-page='more']")->attr('data-trigger', 'auto') : $pag->find("[data-page='more']")->attr('data-trigger', $more[0]);
+                $more[0] == 'true' ?  $pag->find("[data-page='more']")->attr('data-trigger', 'auto') : $pag->find("[data-page='more']")->attr('data-trigger', @$more[0]);
 
                 $pag->find('[data-page=more] .page-link')->attr('data-page', $page + 1);
             } else {

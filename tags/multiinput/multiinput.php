@@ -48,6 +48,7 @@ class tagMultiinput {
     }
 
 		function buildInner() {
+        gc_enable();
 				$app = &$this->app;
 				$dom = &$this->dom;
 				$col = $dom->app->fromString($this->col->outer());
@@ -56,7 +57,9 @@ class tagMultiinput {
 						$col->inner($app->fieldBuild($fld));
 						$col->find("[done]")->removeAttr("done");
 						$out .= $col->outer()."\n";
+            gc_collect_cycles();
 				}
+        gc_disable();
 				return $out;
 		}
 
@@ -66,6 +69,7 @@ class tagMultiinput {
         $str = "";
         $_idx = 0;
         if ((array)$data === $data) {
+            gc_enable();
             foreach($data as $i => $item) {
                 $line = $dom->app->fromString($dom->tpl);
                 if ((array)$item === $item) {
@@ -77,7 +81,9 @@ class tagMultiinput {
                 }
 								$_idx++;
                 $str .= $line;
+                gc_collect_cycles();
             }
+            gc_disable();
         }
         $str > "" ? $dom->html($str) : $dom->html($dom->tpl);
     }

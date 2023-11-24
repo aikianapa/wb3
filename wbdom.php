@@ -234,13 +234,15 @@ class wbDom extends DomQuery
             } // так нужно для рутовых тэгов
         }
         $childrens = $this->children();
+        gc_enable();
         foreach ($childrens as $wb) {
             $wb->copy($this);
             $wb->app = &$this->app;
             $wb->root = $this->root;
             $wb->fetchNode();
+            gc_collect_cycles();
         }
-
+        gc_disable();
         $this->setValues();
         $this->app->vars("_env.locale", $tmp);
         if ($this->app->vars('_sett.devmode') == 'on' && $this->is('[rel=preload]')) {
@@ -286,11 +288,14 @@ class wbDom extends DomQuery
         }
 
         $childrens = $this->children();
+        gc_enable();
         foreach ($childrens as $wb) {
             $wb->copy($this);
             $wb->root = $this->root;
             $wb->fetchNode();
+            gc_collect_cycles();
         }
+        gc_disable();
         $this->setValues();
         if ($this->find('.nav-pagination')->length) {
             $this->fixPagination();
@@ -574,7 +579,7 @@ class wbDom extends DomQuery
         }
         $Item == null ? $Item = $this->item : null;
         is_object($Item) ? $Item=wbObjToArray($Item) : null;
-
+        gc_enable();
         foreach ($this->attributes as $at) {
             $atname = $at->name;
             $atval = $at->value;
@@ -592,7 +597,9 @@ class wbDom extends DomQuery
             }
             $atval = strpos($atval, "}}") ? $atval = wbSetValuesStr($atval, $Item) : null;
             $this->attr($atname, $atval);
+            gc_collect_cycles();
         }
+        gc_disable();
         return $this;
     }
 
@@ -652,7 +659,7 @@ class wbDom extends DomQuery
         if ($this->strict) {
             return;
         }
-
+        gc_enable();
         isset($this->item) ? null : $this->item = [];
         $fields = $this->app->dot($this->item);
         $inputs = $this->find("[name]:not([done])");
@@ -722,11 +729,13 @@ class wbDom extends DomQuery
                     $inp->attr("value", $value);
                     $inp->attr("done", "");
                 }
+                gc_collect_cycles();
             }
         }
         $unset = $this->find("template,textarea,code,pre,[wb-off]");
         foreach ($unset as $t) {
             $t->inner(str_replace(['{{','}}'], ['_(_(_','_)_)_'], $t->inner()));
+            gc_collect_cycles();
         }
         if (strpos($this, "{{")) {
             $render = new wbRender($this);
@@ -737,9 +746,11 @@ class wbDom extends DomQuery
                 $this->inner($html);
             }
         }
+        gc_collect_cycles();
         $unset = $this->find("template,textarea,code,pre,[wb-off]");
         foreach ($unset as $t) {
             $t->inner(str_replace(['_(_(_','_)_)_'], ['{{','}}'], $t->inner()));
+            gc_collect_cycles();
         }
         $wbon = $this->find('[wb-on]');
         foreach ($wbon as $wb) {
@@ -747,7 +758,9 @@ class wbDom extends DomQuery
             $wbt = $this->app->fromString('<html>'. $wb->outer().'</html>');
             $wbt->fetch();
             $wb->replaceWith($wbt->html());
+            gc_collect_cycles();
         }
+        gc_disable();
         return $this;
     }
 }

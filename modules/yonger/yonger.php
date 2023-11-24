@@ -478,7 +478,6 @@ class modYonger
 
         $head = $html->find('head');
         $body = $html->find('body');
-        gc_enable();
         foreach ($blocks as $block) {
             if ($block === (array)$block) {
                 isset($block['active']) ? null : $block['active'] = '';
@@ -493,10 +492,8 @@ class modYonger
                         $dom->before($res->result);
                     }
                 }
-                gc_collect_cycles();
             }
         }
-        gc_disable();
         $dom->done = true;
         $dom->remove();
     }
