@@ -12,6 +12,7 @@ class ctrlAjax
         header('Cache-Control: max-age=0');
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Headers: *");
+        header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT, PATCH, OPTIONS');
         include_once($_ENV['path_engine'].'/attrs/save/ajax.php');
         include_once($_ENV['path_engine'].'/attrs/tree/ajax.php');
         $this->app = $app;
