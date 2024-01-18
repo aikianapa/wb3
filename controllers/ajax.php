@@ -10,6 +10,8 @@ class ctrlAjax
         header('Content-Type: application/json');
         header('Cache-Control: no-cache');
         header('Cache-Control: max-age=0');
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Headers: *");
         include_once($_ENV['path_engine'].'/attrs/save/ajax.php');
         include_once($_ENV['path_engine'].'/attrs/tree/ajax.php');
         $this->app = $app;
