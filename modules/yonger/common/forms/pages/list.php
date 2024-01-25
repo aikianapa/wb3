@@ -113,6 +113,13 @@
                             ch.forEach((item, i) => {
                                 if (item.id == res.data.id) {
                                     item = res.data
+                                    if (typeof item.header === 'object') {
+                                        try {
+                                            item.header = item.header[wbapp._session.lang]
+                                        } catch (error) {
+                                            item.header = Object.values(item.header)[0]
+                                        }
+                                    }
                                     item.url = data.path + '/' + wbapp.furl(item.header)
                                     item.menu = ''
                                     yongerPages.alturl(item)
@@ -272,7 +279,7 @@
                             let line = $('#yongerPages').data('ev').component;
                             let data = $(node).parents(".dd-item").parents(".dd-item").data()
                             if (form !== "pages" && data.form == 'pages') {
-                                line.parent.fire('expand')
+                                //line.parent.fire('expand')
                             } else {
                                 if (el.data.path == data.path) {
                                     line.set(el.data)
