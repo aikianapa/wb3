@@ -1,6 +1,7 @@
 <?php
 session_cache_limiter("must-revalidate");
 header('Cache-control: private');
+session_id(@$_GET['PHPSESSID']);
 @session_start([
     "gc_probability" => 5,
     "gc_divisor" => 80,
