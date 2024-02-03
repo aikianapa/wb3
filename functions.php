@@ -65,7 +65,7 @@ function wbInitEnviroment()
                           1008 => 'Delete item {{1}} in table {{0}}',
                           1009 => 'Flush data from cache table {{0}}',
                           1010 => 'Failed to create table {{0}}',
-                          1010 => 'Create a table {{0}}',
+                          1014 => 'Create a table {{0}}',
                           1011 => 'Template {{0}} not found',
                           1012 => 'Form {{0}} not found',
                           1013 => 'PHP code not valid',
