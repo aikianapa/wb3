@@ -251,7 +251,7 @@ final class wbRouter
         $ROUTE['scheme'] = $scheme;
         $ROUTE['hostname'] = $_SERVER['HTTP_HOST'];
         $ROUTE['port'] = $_SERVER['SERVER_PORT'];
-        $ROUTE['localreq'] = $_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR'] ? true : false;
+        $ROUTE['localreq'] = $_SERVER['REMOTE_ADDR'] == gethostbyname($ROUTE['hostname']) ? true : false;
         $tmp = explode('.', $ROUTE['hostname']);
         $count = count($tmp);
         if ($count == 1) {
