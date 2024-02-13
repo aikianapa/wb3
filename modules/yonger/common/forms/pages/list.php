@@ -97,7 +97,11 @@
                         }
                     }
                     wbapp.post('/api/v2/list/' + data.inner + options, post, function(res) {
-                        $.each(res.result, function(i, item) {
+
+                        res.result = Object.values(res.result)
+
+                        res.result.forEach((item,i) => {
+                            console.log(i,item);
                             item.ch = []
                             item.url = data.path + '/' + wbapp.furl(item.header)
                             item.menu = ''
@@ -317,7 +321,7 @@
         alturl(item) {
             if (item.blocks !== undefined) {
                 $.each(item.blocks, function(i, block) {
-                    if (block.name == 'seo' && block.alturl !== undefined && block.alturl > '') {
+                    if (block && block.name == 'seo' && block.alturl !== undefined && block.alturl > '') {
                         item.url = block.alturl
                     }
                 })
