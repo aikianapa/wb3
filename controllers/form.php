@@ -40,19 +40,35 @@ class ctrlForm
             exit;
         }
     }
-    public function show()
+
+    public function render() {
+        $this->show(false);
+    }
+
+    public function show($show = true)
     {
 
         header('HTTP/1.1 200 OK');
         $app = &$this->app;
         $cache = $app->getCache();
-        $item = [];
         if ($app->vars('_post._tid') > '' and $app->vars('_post._tid') == $app->vars('_post.target') and $app->vars('_post.filter') > '') {
             // признак фильрации в темплейте
             $this->target = $app->vars('_post.target');
             $cache = false;
         }
-        if ($cache === false or $cache === null or !$cache) {
+        if ($cache) {
+            echo $cache;
+            if ($app->vars('_sett.showstats') == 'on') {
+                $_ENV["cache_used"] = false;
+                echo wbUsageStat();
+            }
+            exit;
+        }
+
+
+        $item = [];
+
+        
             $_ENV["cache_used"] = false;
             $dom = isset($app->route->form) ? $app->getForm($app->route->form, $app->route->mode) : null;
             if ($dom->error) $dom = null;
@@ -89,7 +105,7 @@ class ctrlForm
                 $dom = $this->get404();
             }
             $dom->fetch();
-            $dom->setSeo();
+            if ($show) $dom->setSeo();
 
             if ($app->vars('_sett.devmode') == 'on') {
                 $scripts = $dom->find('script[src]:not([src*="?"])');
@@ -109,17 +125,12 @@ class ctrlForm
             //$out = $this->app->fromString($out);
             //$this->app->module('compress',$out);
             //$out = $out->outer();
-            !strpos(' ' . trim($out), '<!DOCTYPE') ? $out = '<!DOCTYPE html>' . $out : null;
+            $show && !strpos(' ' . trim($out), '<!DOCTYPE') ? $out = '<!DOCTYPE html>' . $out : null;
             is_callable('beforeShow') ? $out = beforeShow($out) : null;
             $app->vars('_route.tpl') == '404.php' ? header($_SERVER['SERVER_PROTOCOL'] . " 404 Not Found", true) : null;
             echo $out;
             $app->setCache($out);
-        } else {
-            $_ENV["cache_used"] = true;
-            echo $cache;
-            ob_get_contents();
-            ob_flush();
-        }
+        
         if ($app->vars('_sett.showstats') == 'on')  echo wbUsageStat();
         ob_get_contents();
         @ob_end_flush();
