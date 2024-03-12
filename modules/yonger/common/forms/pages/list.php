@@ -41,6 +41,7 @@
             },
             copy(ev) {
                 let data = $(ev.node).parents('[data-item]').data();
+                let url
                 data.form == 'pages' ? url = '/module/yonger/copypage/' : url = '/ajax/copy/' + data
                     .form + '/' + data.item + '/';
                 wbapp.ajax({
