@@ -110,6 +110,10 @@ class wbApp
     public function cacheControl()
     {
         $cache = ($this->vars('_sett.devmode') == 'on' OR $this->route->cache == "false") ? false : true;
+        if ($cache && isset ($_SERVER['HTTP_CACHE_CONTROL'])) {
+            parse_str($_SERVER['HTTP_CACHE_CONTROL'], $cc);
+            $cache = isset ($cc['no-cache']) ? false : $cache;
+        }
         $cache = $cache && ((!count($_POST) and isset($_GET['update']) and count($_GET) == 1) or count($_POST) or count($_GET)) ? false : $cache ;
         return $cache;
     }

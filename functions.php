@@ -2145,8 +2145,8 @@ function wbAuthPostContents($url, $post=null, $username=null, $password=null)
 {
     if (func_num_args()==3) {
         $password=$username;
-        $username=$get;
-        $post=array();
+        $username=$post;
+        $post=[];
     }
     if (!is_array($post)) {
         $post=(array)$post;

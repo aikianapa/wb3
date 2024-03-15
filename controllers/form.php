@@ -47,7 +47,6 @@ class ctrlForm
 
     public function show($show = true)
     {
-
         header('HTTP/1.1 200 OK');
         $app = &$this->app;
         $cache = $app->getCache();
