@@ -1546,7 +1546,7 @@ function wbPage404(&$app=null)
 {
     header("HTTP/1.0 404 Not Found");
     if ($app == null) {
-        $app = new wbApp();
+        $app = isset($_ENV['app']) ? $_ENV['app'] : new wbApp();
     }
     $_ENV["route"]["error"]="404";
     $dom = $app->getTpl("404.php");

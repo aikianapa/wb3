@@ -478,8 +478,10 @@ class modYonger
 
         $head = $html->find('head');
         $body = $html->find('body');
+
         foreach ($blocks as $block) {
             if ($block === (array)$block) {
+                $start = microtime();
                 isset($block['active']) ? null : $block['active'] = '';
                 if ($block['active'] == 'on') {
                     $block['_parent'] = $app->objToArray($item);
@@ -492,6 +494,8 @@ class modYonger
                         $dom->before($res->result);
                     }
                 }
+                $time = (microtime()-$start);
+                //echo "<p>".$block['name'].' '.$time."</p>\n";
             }
         }
         $dom->done = true;
