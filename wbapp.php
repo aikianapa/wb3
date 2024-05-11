@@ -285,6 +285,7 @@ class wbApp
             }
             $class = "ctrl".ucfirst($controller);
             if (!class_exists($class)) {
+                header("HTTP/1.0 404 Not Found");
                 echo "Controller not found: {$controller}";
             } else {
                 new $class($this);
