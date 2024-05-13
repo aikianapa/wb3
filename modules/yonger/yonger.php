@@ -481,7 +481,7 @@ class modYonger
 
         foreach ($blocks as $block) {
             if ($block === (array)$block) {
-                $start = microtime();
+                //$start = microtime();
                 isset($block['active']) ? null : $block['active'] = '';
                 if ($block['active'] == 'on') {
                     $block['_parent'] = $app->objToArray($item);
@@ -494,7 +494,7 @@ class modYonger
                         $dom->before($res->result);
                     }
                 }
-                $time = (microtime()-$start);
+                //$time = (microtime()-$start);
                 //echo "<p>".$block['name'].' '.$time."</p>\n";
             }
         }
