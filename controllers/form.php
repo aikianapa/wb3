@@ -97,6 +97,8 @@ class ctrlForm
                     }
                     $dom ? $dom->item = $item : null;
                 }
+            } else if ($app->vars('_route.name') > '') {
+            // Заглушка чтобы не отображались страницы по id, если задан name
             } else if ($app->vars('_route.tpl') > '') {
                 $dom = $app->getTpl($app->vars('_route.tpl'));
             }
